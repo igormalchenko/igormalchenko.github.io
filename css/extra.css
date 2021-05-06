@@ -180,10 +180,18 @@ a:hover, a:focus, a:active {
     color: white;
     border: 0px;
     font-size: 2rem;
+/*
+background: rgb(67,21,72);
+background: linear-gradient(90deg, rgba(67,21,72,1) 0%, rgba(134,41,128,1) 48%, rgba(158,84,165,1) 100%);
+*/
 }
 
 .button-purple:hover {
     background-color: #9e54a5;
+/*
+background: rgb(67,21,72);
+background: linear-gradient(90deg, rgba(67,21,72,1) 0%, rgba(134,41,128,1) 16%, rgba(158,84,165,1) 43%);
+*/
 }
 
 .high-height {
