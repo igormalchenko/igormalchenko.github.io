@@ -30,7 +30,7 @@ h6 {
 }
 
 h1 {
-  font-size: 6rem;
+  font-size: 5rem;
   line-height: 5.5rem;
 }
 
@@ -184,4 +184,8 @@ a:hover, a:focus, a:active {
 .button-purple:hover {
     background-color: #86298f;
     color: palevioletred;
+}
+
+.high-height {
+    line-height: 1.6;
 }
