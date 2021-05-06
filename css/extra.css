@@ -174,3 +174,14 @@ a {
 a:hover, a:focus, a:active {
   color: #824027;
 }
+
+.button-purple {
+    background-color: #86298f;
+    color: white;
+    border: 0px;
+}
+
+.button-purple:hover {
+    background-color: #86298f;
+    color: palevioletred;
+}
