@@ -33,9 +33,19 @@ h1 {
   font-size: 4.5rem;
   line-height: 5.5rem;
 }
+@media (max-width: 768px) {
+  h1 {
+    font-size: 3rem;
+  }
+}
 
 h2 {
   font-size: 3.5rem;
+}
+@media (max-width: 768px) {
+  h2 {
+    font-size: 2rem;
+  }
 }
 
 h3 {
