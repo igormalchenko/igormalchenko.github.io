@@ -14,4 +14,5 @@
   transform: translateY(-3%);
   animation: floater 5s infinite;
   transition: ease 5s;
+  max-width: 40vw;
 }
