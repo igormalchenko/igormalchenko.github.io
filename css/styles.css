@@ -24,7 +24,7 @@
   --white: #fff;
   --gray: #6c757d;
   --gray-dark: #343a40;
-  --primary: #86298f;
+  --primary: #ff96af;
   --secondary: #6c757d;
   --success: #28a745;
   --info: #17a2b8;
@@ -159,13 +159,14 @@ sup {
 }
 
 a {
-  color: #86298f;
+  color: #fd698b;
+  font-weight: 600;
   text-decoration: none;
   background-color: transparent;
 }
 a:hover {
-  color: #501956;
-  text-decoration: underline;
+  color: #fa406b;
+  /* text-decoration: underline; */
 }
 
 a:not([href]):not([class]) {
@@ -6107,9 +6108,9 @@ a.close.disabled {
   vertical-align: text-top !important;
 }
 
-.bg-primary {
+/* .bg-primary {
   background-color: #86298f !important;
-}
+} */
 
 a.bg-primary:hover, a.bg-primary:focus,
 button.bg-primary:hover,
