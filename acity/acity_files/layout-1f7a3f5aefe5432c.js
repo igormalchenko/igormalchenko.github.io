@@ -1,0 +1,9 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[7287,3710],{35211:function(e,t,r){Promise.resolve().then(r.bind(r,30931))},30931:function(e,t,r){"use strict";r.r(t),r.d(t,{default:function(){return GeneralThemeProvider}});var n=r(57437),s=r(2265),o=r(8925);function GeneralThemeProvider(e){let{children:t}=e,r=(0,o.Z)(e=>e.setTheme);return(0,s.useEffect)(()=>{r("general"),document.getElementsByTagName("html")[0].classList.remove("apuestas"),document.getElementsByTagName("html")[0].classList.remove("casino"),document.getElementsByTagName("html")[0].classList.add("general"),sessionStorage.setItem("globalTheme","general")},[]),(0,n.jsx)(n.Fragment,{children:t})}},8925:function(e,t,r){"use strict";var n=r(94660),s=r(74810);let o=(0,n.Ue)()((0,s.tJ)(e=>({theme:"general",previousTheme:null,setTheme:t=>e(e=>({previousTheme:e.theme===t?e.previousTheme:e.theme,theme:t}))}),{name:"theme-store",storage:(0,s.FL)(()=>sessionStorage)}));t.Z=o},30622:function(e,t,r){"use strict";/**
+ * @license React
+ * react-jsx-runtime.production.min.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */var n=r(2265),s=Symbol.for("react.element"),o=Symbol.for("react.fragment"),a=Object.prototype.hasOwnProperty,l=n.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,u={key:!0,ref:!0,__self:!0,__source:!0};function q(e,t,r){var n,o={},i=null,m=null;for(n in void 0!==r&&(i=""+r),void 0!==t.key&&(i=""+t.key),void 0!==t.ref&&(m=t.ref),t)a.call(t,n)&&!u.hasOwnProperty(n)&&(o[n]=t[n]);if(e&&e.defaultProps)for(n in t=e.defaultProps)void 0===o[n]&&(o[n]=t[n]);return{$$typeof:s,type:e,key:i,ref:m,props:o,_owner:l.current}}t.Fragment=o,t.jsx=q,t.jsxs=q},57437:function(e,t,r){"use strict";e.exports=r(30622)}},function(e){e.O(0,[5166,2971,2472,1744],function(){return e(e.s=35211)}),_N_E=e.O()}]);
