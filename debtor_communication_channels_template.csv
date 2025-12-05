@@ -1,0 +1,8 @@
+debtor_communication_channel.debtor_communication_channel_external_reference_id,debtor_communication_channel.debtor_external_reference_id,debtor_communication_channel.value,debtor_communication_channel.value,debtor_communication_channel.value,debtor_communication_channel.value,debtor_communication_channel.value,debtor_communication_channel.value,debtor_communication_channel.value,debtor_communication_channel.value,debtor_communication_channel.prioritity_channel_(per_chanel_type),debtor_communication_channel.allow_certified
+Debtor Communication Channel Id,Debtor Id,Email,Phone Number,Address Line 1,Address Line 2,Address Zip Code,Address Town/City,Address State/Province,Address Country,Prioritity Channel (per chanel type),Allow Certified
+987f6876df7,9h87g9hj0,daniel@altar.io,,,,,,,,FALSE,TRUE
+d23456hj6,9h87g9hj0,danielcastroruivo@gmail.com,,,,,,,,TRUE,
+g546h6j7h5,9h87g9hj0,,(351)965083685,,,,,,,TRUE,
+3f45867h5g5,9h87g9hj0,,(351)937829384,,,,,,,FALSE,
+f5f345gh5g4,9h87g9hj0,,,Rua Central 34,andar 4 DTO,1200-124,Lisboa,Ribatejo,PT,TRUE,
+,,,,,,,,,,TRUE,
