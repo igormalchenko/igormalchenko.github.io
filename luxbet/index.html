@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0A0A0F" />
+  <title>LuxBet Casino - Premium Online Gaming</title>
+  <meta name="description" content="Experience the ultimate online casino with premium slots, live dealer games, table games, and sports betting." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===========================
+       RESET & BASE
+    =========================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0A0A0F;
+      color: #E8E4DC;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    img { display: block; max-width: 100%; }
+    select { font-family: inherit; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2A2A36; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8A8578; }
+
+    /* ===========================
+       TOKENS
+    =========================== */
+    :root {
+      --bg: #0A0A0F;
+      --bg-card: #12121A;
+      --bg-elevated: #16161E;
+      --bg-overlay: #1E1E28;
+      --bg-secondary: #1A1A24;
+      --sidebar-bg: #0E0E14;
+      --border: #2A2A36;
+      --text: #E8E4DC;
+      --text-muted: #8A8578;
+      --text-secondary: #C4BFB3;
+      --gold: #D4A853;
+      --gold-light: #F0C35C;
+      --gold-dark: #A07C3A;
+      --success: #4CAF50;
+      --danger: #B33A3A;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    /* ===========================
+       LAYOUT
+    =========================== */
+    .app-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+
+    .body-layout {
+      display: flex;
+      flex: 1;
+    }
+
+    /* ===========================
+       HEADER
+    =========================== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 10, 15, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      gap: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .header-center { flex: 1; display: flex; justify-content: center; padding: 0 24px; }
+    .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius);
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
+    .logo-text span { color: var(--gold); }
+
+    .menu-btn {
+      width: 40px; height: 40px;
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .menu-btn:hover { background: var(--bg-secondary); color: var(--text); }
+
+    .search-bar {
+      position: relative;
+      width: 100%; max-width: 400px;
+    }
+    .search-bar .search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); pointer-events: none;
+    }
+    .search-bar input {
+      width: 100%; height: 40px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text);
+      padding: 0 36px 0 38px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-bar input:focus { border-color: var(--gold); }
+    .search-bar .clear-btn {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); display: none; align-items: center; justify-content: center;
+    }
+    .search-bar input:not(:placeholder-shown) + .clear-btn { display: flex; }
+
+    .notif-btn {
+      position: relative;
+      width: 40px; height: 40px;
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .notif-btn:hover { background: var(--bg-secondary); color: var(--text); }
+    .notif-badge {
+      position: absolute; right: 6px; top: 6px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #0A0A0F;
+      font-size: 9px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .balance-pill {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      font-size: 13px; font-weight: 600;
+      color: var(--text);
+    }
+    .balance-pill svg { color: var(--gold); }
+
+    .btn-deposit {
+      height: 40px;
+      padding: 0 18px;
+      border-radius: var(--radius);
+      background: var(--gold);
+      color: #0A0A0F;
+      font-size: 13px; font-weight: 700;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-deposit:hover { background: var(--gold-light); }
+
+    /* Profile dropdown */
+    .profile-wrap { position: relative; }
+    .profile-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px;
+      border-radius: var(--radius);
+      transition: background 0.15s;
+    }
+    .profile-btn:hover { background: var(--bg-secondary); }
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #0A0A0F;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .chevron {
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+    .chevron.open { transform: rotate(180deg); }
+
+    .profile-dropdown {
+      position: absolute; right: 0; top: calc(100% + 8px);
+      width: 220px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: none;
+      z-index: 200;
+    }
+    .profile-dropdown.open { display: block; }
+    .profile-dropdown-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .profile-dropdown-head .name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .profile-dropdown-head .uname { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .vip-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(212,168,83,0.15);
+      color: var(--gold);
+      font-size: 10px; font-weight: 700;
+    }
+    .dropdown-item {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; padding: 10px 16px;
+      font-size: 13px; color: var(--text);
+      transition: background 0.12s;
+    }
+    .dropdown-item:hover { background: var(--bg-secondary); }
+    .dropdown-item.danger { color: #e55; }
+    .dropdown-item.danger:hover { background: rgba(179,58,58,0.1); }
+    .dropdown-divider { border-top: 1px solid var(--border); }
+
+    /* Mobile search bar */
+    .mobile-search {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+    }
+    .mobile-search.open { display: block; }
+
+    /* ===========================
+       SIDEBAR
+    =========================== */
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10,10,15,0.8);
+      backdrop-filter: blur(4px);
+      z-index: 40;
+    }
+    .sidebar-overlay.open { display: block; }
+
+    .sidebar {
+      position: fixed; left: 0; top: 0;
+      z-index: 50;
+      width: 256px; height: 100%;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    /* Desktop: always visible inline */
+    @media (min-width: 1024px) {
+      .sidebar {
+        position: sticky;
+        top: 61px;
+        height: calc(100vh - 61px);
+        transform: translateX(0) !important;
+        flex-shrink: 0;
+      }
+      .sidebar-overlay { display: none !important; }
+      .menu-btn { display: none !important; }
+    }
+
+    .sidebar-mobile-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    @media (min-width: 1024px) {
+      .sidebar-mobile-head { display: none; }
+    }
+
+    .sidebar-body {
+      flex: 1; overflow-y: auto;
+      padding: 12px;
+    }
+
+    /* User card in sidebar */
+    .user-card {
+      margin-bottom: 16px;
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+    .user-card-top { display: flex; align-items: center; gap: 12px; }
+    .user-card-info { flex: 1; min-width: 0; }
+    .user-card-info .name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .user-card-balance { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .user-card-balance .label { font-size: 11px; color: var(--text-muted); }
+    .user-card-balance .amount { font-size: 18px; font-weight: 700; color: var(--text); }
+    .btn-deposit-sm {
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      background: var(--gold);
+      color: #0A0A0F;
+      font-size: 11px; font-weight: 700;
+      transition: background 0.15s;
+    }
+    .btn-deposit-sm:hover { background: var(--gold-light); }
+
+    /* VIP progress in sidebar */
+    .vip-progress-wrap { margin-top: 12px; }
+    .vip-progress-labels { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+    .vip-progress-labels .label { color: var(--text-muted); }
+    .vip-progress-labels .pct { color: var(--gold); font-weight: 600; }
+    .progress-bar-track {
+      height: 6px; border-radius: 3px;
+      background: var(--bg-secondary); overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: var(--gold);
+      transition: width 1s ease;
+    }
+
+    /* Sidebar nav section */
+    .nav-section { margin-bottom: 16px; }
+    .nav-section-label {
+      padding: 0 8px;
+      margin-bottom: 6px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; padding: 10px 12px;
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 500;
+      color: var(--text-secondary);
+      transition: background 0.12s, color 0.12s;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .nav-item.active { background: rgba(212,168,83,0.12); color: var(--gold); }
+    .nav-item.active svg { color: var(--gold); }
+
+    /* Stats card in sidebar */
+    .stats-card {
+      margin-bottom: 16px;
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+    .stats-card .label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .stat-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .stat-row:last-child { margin-bottom: 0; }
+    .stat-row-left { display: flex; align-items: center; gap: 7px; }
+    .stat-row-left span { font-size: 11px; color: var(--text-muted); }
+    .stat-row .value { font-size: 11px; font-weight: 700; }
+    .value-green { color: var(--success); }
+    .value-gold { color: var(--gold); }
+    .value-white { color: var(--text); }
+
+    /* Sidebar footer */
+    .sidebar-footer {
+      border-top: 1px solid var(--border);
+      padding: 10px 12px;
+    }
+
+    /* ===========================
+       MAIN CONTENT
+    =========================== */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 20px 20px 40px;
+      overflow-x: hidden;
+    }
+
+    /* ===========================
+       HERO BANNER
+    =========================== */
+    .hero-banner {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      aspect-ratio: 3/1;
+      min-height: 200px;
+      margin-bottom: 24px;
+    }
+    @media (min-width: 768px) {
+      .hero-banner { min-height: 280px; }
+    }
+
+    .hero-slide {
+      position: absolute; inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
+    }
+    .hero-slide.active { opacity: 1; pointer-events: auto; }
+
+    .hero-slide img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(10,10,15,0.92) 0%, rgba(10,10,15,0.6) 50%, transparent 100%);
+    }
+    .hero-content {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 24px 32px;
+    }
+    @media (min-width: 768px) {
+      .hero-content { padding: 40px 48px; }
+    }
+    .hero-badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: rgba(212,168,83,0.9);
+      color: #0A0A0F;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      width: fit-content;
+    }
+    .hero-title {
+      font-size: 22px; font-weight: 800;
+      line-height: 1.2;
+      color: var(--text);
+      max-width: 380px;
+      margin-bottom: 8px;
+    }
+    @media (min-width: 768px) {
+      .hero-title { font-size: 36px; }
+    }
+    .hero-desc {
+      font-size: 13px; color: var(--text-muted);
+      max-width: 340px; margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    @media (min-width: 768px) {
+      .hero-desc { font-size: 15px; }
+    }
+    .btn-hero {
+      width: fit-content;
+      padding: 10px 24px;
+      border-radius: var(--radius);
+      background: var(--gold);
+      color: #0A0A0F;
+      font-size: 13px; font-weight: 700;
+      transition: background 0.15s;
+    }
+    .btn-hero:hover { background: var(--gold-light); }
+
+    .hero-prev, .hero-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(10,10,15,0.6);
+      backdrop-filter: blur(4px);
+      color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .hero-prev { left: 12px; }
+    .hero-next { right: 12px; }
+    .hero-prev:hover, .hero-next:hover { background: rgba(10,10,15,0.9); }
+
+    .hero-dots {
+      position: absolute; bottom: 14px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 6px;
+    }
+    .hero-dot {
+      height: 7px; border-radius: 4px;
+      background: rgba(255,255,255,0.25);
+      width: 7px;
+      transition: width 0.3s, background 0.3s;
+    }
+    .hero-dot.active { width: 22px; background: var(--gold); }
+
+    /* ===========================
+       JACKPOT TICKER
+    =========================== */
+    .jackpot-ticker {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(212,168,83,0.2);
+      background: var(--bg-elevated);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .jackpot-ticker-head {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      background: rgba(212,168,83,0.06);
+      border-bottom: 1px solid rgba(212,168,83,0.15);
+    }
+    .jackpot-ticker-head span {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+    .jackpot-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) {
+      .jackpot-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .jackpot-cell + .jackpot-cell { border-left: 1px solid var(--border); border-top: none; }
+    }
+    .jackpot-cell {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .jackpot-cell:first-child { border-top: none; }
+    @media (min-width: 640px) {
+      .jackpot-cell { border-top: none; }
+    }
+    .jackpot-name { font-size: 11px; color: var(--text-muted); }
+    .jackpot-amount {
+      font-size: 20px; font-weight: 700;
+      color: var(--gold);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.5px;
+    }
+
+    /* ===========================
+       SECTION HEADERS
+    =========================== */
+    .section { margin-bottom: 32px; }
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap; gap: 10px;
+    }
+    .section-title {
+      font-size: 17px; font-weight: 700;
+      color: var(--text);
+    }
+    .section-title .count { font-size: 13px; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
+    .view-all {
+      font-size: 12px; font-weight: 600; color: var(--gold);
+      transition: color 0.15s;
+    }
+    .view-all:hover { color: var(--gold-light); }
+
+    /* ===========================
+       CATEGORY TABS
+    =========================== */
+    .category-tabs-wrap {
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 18px;
+    }
+    .category-tabs-wrap::-webkit-scrollbar { display: none; }
+    .category-tabs {
+      display: flex; gap: 6px;
+      min-width: max-content;
+      padding-bottom: 2px;
+    }
+    .cat-tab {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .cat-tab:hover { border-color: rgba(212,168,83,0.4); color: var(--text); }
+    .cat-tab.active {
+      border-color: var(--gold);
+      background: rgba(212,168,83,0.1);
+      color: var(--gold);
+    }
+
+    /* ===========================
+       RECENTLY PLAYED
+    =========================== */
+    .h-scroll-wrap {
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-left: -4px; margin-right: -4px;
+    }
+    .h-scroll-wrap::-webkit-scrollbar { display: none; }
+    .h-scroll-inner {
+      display: flex; gap: 12px;
+      padding: 4px;
+      min-width: max-content;
+    }
+    .recent-card {
+      width: 120px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .recent-card:hover {
+      border-color: rgba(212,168,83,0.4);
+      box-shadow: 0 4px 20px rgba(212,168,83,0.08);
+    }
+    .recent-card-img {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+    .recent-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .recent-card:hover .recent-card-img img { transform: scale(1.08); }
+    .recent-play-overlay {
+      position: absolute; inset: 0;
+      background: rgba(10,10,15,0.55);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .recent-card:hover .recent-play-overlay { opacity: 1; }
+    .play-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A0A0F;
+    }
+    .recent-card-body { padding: 8px; }
+    .recent-card-body .name { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .recent-card-body .provider { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ===========================
+       GAME GRID
+    =========================== */
+    .game-grid-filters {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .filter-search {
+      position: relative; flex: 1; min-width: 140px; max-width: 220px;
+    }
+    .filter-search .search-icon {
+      position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); pointer-events: none;
+    }
+    .filter-search input {
+      width: 100%; height: 36px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text);
+      padding: 0 10px 0 30px;
+      font-size: 12px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .filter-search input::placeholder { color: var(--text-muted); }
+    .filter-search input:focus { border-color: var(--gold); }
+
+    .filter-btn {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      font-size: 12px; font-weight: 500;
+      display: flex; align-items: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { color: var(--text); }
+    .filter-btn.active { border-color: var(--gold); background: rgba(212,168,83,0.1); color: var(--gold); }
+
+    .filters-panel {
+      display: none;
+      gap: 16px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .filters-panel.open { display: flex; }
+
+    .filter-group { display: flex; flex-direction: column; gap: 4px; }
+    .filter-group label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .filter-group select {
+      height: 32px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text);
+      padding: 0 8px;
+      font-size: 12px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .filter-group select:focus { border-color: var(--gold); }
+    .reset-link { font-size: 12px; color: var(--gold); cursor: pointer; margin-top: 18px; }
+    .reset-link:hover { text-decoration: underline; }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 480px) { .game-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 768px) { .game-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1280px) { .game-grid { grid-template-columns: repeat(5, 1fr); } }
+
+    /* ===========================
+       GAME CARD
+    =========================== */
+    .game-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .game-card:hover {
+      border-color: rgba(212,168,83,0.35);
+      box-shadow: 0 6px 24px rgba(212,168,83,0.07);
+      transform: translateY(-2px);
+    }
+    .game-card-img {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+    .game-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .game-card:hover .game-card-img img { transform: scale(1.1); }
+
+    .game-card-overlay {
+      position: absolute; inset: 0;
+      background: rgba(10,10,15,0.6);
+      backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .game-card:hover .game-card-overlay { opacity: 1; }
+
+    .game-badges {
+      position: absolute; left: 8px; top: 8px;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .badge-hot {
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--danger);
+      color: var(--text);
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-new {
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--success);
+      color: #0A0A0F;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .fav-btn {
+      position: absolute; right: 8px; top: 8px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(10,10,15,0.6);
+      color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+      backdrop-filter: blur(4px);
+    }
+    .fav-btn:hover, .fav-btn.active { background: var(--gold); color: #0A0A0F; }
+
+    .player-count {
+      position: absolute; left: 8px; bottom: 8px;
+      display: flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(10,10,15,0.7);
+      backdrop-filter: blur(4px);
+    }
+    .player-count .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--success); }
+    .player-count span { font-size: 10px; font-weight: 500; color: var(--text); }
+
+    .game-card-body { padding: 10px 10px 10px; }
+    .game-card-body .name {
+      font-size: 12px; font-weight: 600;
+      color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .game-card-body .provider {
+      font-size: 11px; color: var(--text-muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .game-card-body .rtp {
+      font-size: 10px; color: var(--text-muted);
+      margin-top: 3px;
+    }
+    .game-card-body .rtp span { color: var(--gold); font-weight: 600; }
+
+    .no-results {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 64px 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      gap: 8px;
+    }
+    .no-results p { font-size: 14px; font-weight: 500; }
+    .no-results span { font-size: 12px; color: rgba(138,133,120,0.6); }
+
+    /* ===========================
+       PROMOTIONS
+    =========================== */
+    .promos-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 640px) { .promos-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .promo-card {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .promo-card:hover {
+      border-color: rgba(212,168,83,0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    .promo-card-img {
+      position: relative; aspect-ratio: 2/1; overflow: hidden;
+    }
+    .promo-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .promo-card:hover .promo-card-img img { transform: scale(1.05); }
+    .promo-card-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,15,0.8) 0%, transparent 60%);
+    }
+    .promo-badge-img {
+      position: absolute; top: 10px; left: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(212,168,83,0.9);
+      color: #0A0A0F;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .promo-card-body { padding: 14px; }
+    .promo-card-body .title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .promo-card-body .desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+    .btn-promo {
+      display: inline-block;
+      padding: 7px 18px;
+      border-radius: var(--radius);
+      background: var(--gold);
+      color: #0A0A0F;
+      font-size: 12px; font-weight: 700;
+      transition: background 0.15s;
+    }
+    .btn-promo:hover { background: var(--gold-light); }
+
+    /* ===========================
+       VIP SECTION
+    =========================== */
+    .vip-section {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(212,168,83,0.2);
+      background: var(--bg-elevated);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .vip-inner {
+      padding: 24px;
+      position: relative;
+    }
+    @media (min-width: 768px) { .vip-inner { padding: 32px; } }
+    .vip-glow-1 {
+      position: absolute; right: -40px; top: -40px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: rgba(212,168,83,0.05); filter: blur(40px);
+      pointer-events: none;
+    }
+    .vip-glow-2 {
+      position: absolute; left: -40px; bottom: -40px;
+      width: 130px; height: 130px; border-radius: 50%;
+      background: rgba(212,168,83,0.05); filter: blur(40px);
+      pointer-events: none;
+    }
+    .vip-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; position: relative; }
+    .vip-icon-wrap {
+      width: 48px; height: 48px; border-radius: var(--radius-lg);
+      background: rgba(212,168,83,0.12);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .vip-head-text .title { font-size: 18px; font-weight: 700; color: var(--text); }
+    .vip-head-text .sub { font-size: 13px; color: var(--text-muted); }
+    .vip-head-text .sub span { color: var(--gold); font-weight: 600; }
+
+    .vip-tiers {
+      display: flex; justify-content: space-between;
+      margin-top: 8px;
+    }
+    .vip-tier-dot-wrap { display: flex; flex-direction: column; align-items: center; }
+    .vip-tier-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg-secondary);
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .vip-tier-dot.reached { border-color: var(--gold); background: var(--gold); }
+    .vip-tier-label { margin-top: 4px; font-size: 10px; color: var(--text-muted); display: none; }
+    .vip-tier-dot.reached + .vip-tier-label { color: var(--gold); font-weight: 600; }
+    @media (min-width: 480px) { .vip-tier-label { display: block; } }
+
+    .vip-perks {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin: 20px 0;
+      position: relative;
+    }
+    @media (min-width: 640px) { .vip-perks { grid-template-columns: repeat(2, 1fr); } }
+    .perk-item { display: flex; align-items: center; gap: 8px; }
+    .perk-check {
+      width: 14px; height: 14px; flex-shrink: 0;
+      color: var(--gold);
+    }
+    .perk-item span { font-size: 12px; color: var(--text-muted); }
+
+    .btn-vip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      border-radius: var(--radius);
+      background: var(--gold);
+      color: #0A0A0F;
+      font-size: 13px; font-weight: 700;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .btn-vip:hover { background: var(--gold-light); }
+
+    /* ===========================
+       PROVIDERS
+    =========================== */
+    .providers-grid {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .provider-pill {
+      padding: 7px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      font-size: 12px; font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .provider-pill:hover { border-color: rgba(212,168,83,0.4); color: var(--text); }
+
+    /* ===========================
+       FOOTER
+    =========================== */
+    .footer {
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
+      padding: 40px 24px;
+    }
+    .footer-top {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    @media (min-width: 1024px) {
+      .footer-top { flex-direction: row; justify-content: space-between; }
+    }
+    .footer-brand { max-width: 280px; }
+    .footer-brand .logo { margin-bottom: 12px; }
+    .footer-brand p { font-size: 12px; line-height: 1.6; color: var(--text-muted); }
+
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    @media (min-width: 640px) { .footer-links { grid-template-columns: repeat(4, 1fr); } }
+    .footer-links-col h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text); margin-bottom: 12px; }
+    .footer-links-col ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .footer-links-col a { font-size: 12px; color: var(--text-muted); transition: color 0.15s; }
+    .footer-links-col a:hover { color: var(--gold); }
+
+    .footer-badges {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 24px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .footer-badge-item { display: flex; align-items: center; gap: 7px; }
+    .footer-badge-item span { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+
+    .footer-payments {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .footer-payments .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px; }
+    .payment-methods { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .payment-method {
+      padding: 5px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      font-size: 11px; font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .footer-bottom { text-align: center; }
+    .footer-bottom p { font-size: 11px; line-height: 1.7; color: rgba(138,133,120,0.6); }
+    .footer-bottom a { color: var(--gold); }
+    .footer-bottom a:hover { text-decoration: underline; }
+
+    /* ===========================
+       UTILITY
+    =========================== */
+    .hidden { display: none !important; }
+    @media (max-width: 639px) { .sm-hidden { display: none !important; } }
+    @media (max-width: 767px) { .md-hidden { display: none !important; } }
+    @media (min-width: 768px) { .md-show { display: flex !important; } }
+
+    /* SVG inline */
+    svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- ========== HEADER ========== -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <!-- Left -->
+      <div class="header-left">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <a href="#" class="logo" aria-label="LuxBet Casino home">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#0A0A0F"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+          <span class="logo-text">Lux<span>Bet</span></span>
+        </a>
+      </div>
+
+      <!-- Center search (desktop) -->
+      <div class="header-center md-hidden" style="display:none;">
+        <div class="search-bar">
+          <span class="search-icon">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input type="text" id="headerSearch" placeholder="Search games, providers..." autocomplete="off" />
+          <button class="clear-btn" id="headerSearchClear" aria-label="Clear search">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div class="header-right">
+        <!-- Mobile search toggle -->
+        <button class="notif-btn md-hidden" id="mobileSearchToggle" aria-label="Search" style="display:flex;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+
+        <!-- Notifications -->
+        <button class="notif-btn" aria-label="3 notifications">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-badge">3</span>
+        </button>
+
+        <!-- Balance (tablet+) -->
+        <div class="balance-pill sm-hidden" style="display:flex;">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          <span>$12,847.53</span>
+        </div>
+
+        <!-- Deposit (tablet+) -->
+        <button class="btn-deposit sm-hidden" style="display:flex;">Deposit</button>
+
+        <!-- Profile -->
+        <div class="profile-wrap" id="profileWrap">
+          <button class="profile-btn" id="profileBtn" aria-haspopup="true" aria-expanded="false">
+            <div class="avatar">AK</div>
+            <svg class="chevron" id="profileChevron" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown" role="menu">
+            <div class="profile-dropdown-head">
+              <div class="name">Alexander K.</div>
+              <div class="uname">@alexk_vip</div>
+              <span class="vip-badge">Platinum</span>
+            </div>
+            <div>
+              <button class="dropdown-item" role="menuitem">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                My Profile
+              </button>
+              <button class="dropdown-item" role="menuitem">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                Wallet
+              </button>
+              <button class="dropdown-item" role="menuitem">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                Bonuses
+              </button>
+              <button class="dropdown-item" role="menuitem">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold)"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                VIP Club
+              </button>
+              <button class="dropdown-item" role="menuitem">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
+              </button>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div>
+              <button class="dropdown-item danger" role="menuitem">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile search bar -->
+    <div class="mobile-search" id="mobileSearch">
+      <div class="search-bar">
+        <span class="search-icon">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input type="text" id="mobileSearchInput" placeholder="Search games, providers..." autocomplete="off" />
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== BODY ========== -->
+  <div class="body-layout">
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+      <!-- Mobile close header -->
+      <div class="sidebar-mobile-head">
+        <span style="font-size:13px;font-weight:600;color:var(--text);">Menu</span>
+        <button class="menu-btn" id="sidebarCloseBtn" aria-label="Close menu">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-body">
+        <!-- User card -->
+        <div class="user-card">
+          <div class="user-card-top">
+            <div class="avatar">AK</div>
+            <div class="user-card-info">
+              <div class="name">Alexander K.</div>
+              <span class="vip-badge" style="margin-top:4px;display:inline-block;">Platinum</span>
+            </div>
+          </div>
+          <div class="user-card-balance">
+            <div>
+              <div class="label">Balance</div>
+              <div class="amount">$12,847.53</div>
+            </div>
+            <button class="btn-deposit-sm">Deposit</button>
+          </div>
+          <div class="vip-progress-wrap">
+            <div class="vip-progress-labels">
+              <span class="label">VIP Progress</span>
+              <span class="pct">72%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" style="width:72%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories nav -->
+        <div class="nav-section">
+          <div class="nav-section-label">Categories</div>
+          <nav>
+            <button class="nav-item active" data-cat="all">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              All Games
+            </button>
+            <button class="nav-item" data-cat="slots">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-3.92-8.85-3.27-14.22-.04"/></svg>
+              Slots
+            </button>
+            <button class="nav-item" data-cat="live-casino">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+              Live Casino
+            </button>
+            <button class="nav-item" data-cat="table-games">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 8v8M8 12h8"/></svg>
+              Table Games
+            </button>
+            <button class="nav-item" data-cat="sports">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+              Sports
+            </button>
+          </nav>
+        </div>
+
+        <!-- Quick links -->
+        <div class="nav-section">
+          <div class="nav-section-label">Quick Links</div>
+          <nav>
+            <button class="nav-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10"/><path d="M12 8v4l3 3"/><circle cx="18.5" cy="18.5" r="3.5"/><path d="m21 21 1.5 1.5"/></svg>
+              Popular
+            </button>
+            <button class="nav-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Recent
+            </button>
+            <button class="nav-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Favorites
+            </button>
+            <button class="nav-item">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+              Promotions
+            </button>
+          </nav>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-card">
+          <div class="label">Your Stats</div>
+          <div class="stat-row">
+            <div class="stat-row-left">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <span>Recent Win</span>
+            </div>
+            <span class="value value-green">+$2,340.00</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-row-left">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+              <span>Bonus Balance</span>
+            </div>
+            <span class="value value-gold">$450.00</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat-row-left">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              <span>Total Wagered</span>
+            </div>
+            <span class="value value-white">$87,430</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar footer links -->
+      <div class="sidebar-footer">
+        <button class="nav-item" style="font-size:12px;padding:8px 10px;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Help &amp; Support
+        </button>
+        <button class="nav-item" style="font-size:12px;padding:8px 10px;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Responsible Gaming
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <main class="main-content" id="mainContent">
+
+      <!-- Hero Banner -->
+      <section class="hero-banner" aria-label="Promotional banners">
+        <div class="hero-slide active" id="slide-0">
+          <img src="images/promo-hero.jpg" alt="200% Welcome Reload bonus" />
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-badge">VIP Exclusive</span>
+            <h2 class="hero-title">200% Welcome Reload</h2>
+            <p class="hero-desc">Get a 200% match on your next deposit up to $5,000. Exclusive for VIP members.</p>
+            <button class="btn-hero">Claim Now</button>
+          </div>
+        </div>
+        <div class="hero-slide" id="slide-1">
+          <img src="images/promo-cashback.jpg" alt="Weekend Cashback promotion" />
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-badge">Every Weekend</span>
+            <h2 class="hero-title">Weekend Cashback</h2>
+            <p class="hero-desc">Enjoy 15% cashback on all losses every weekend. No wagering requirements.</p>
+            <button class="btn-hero">Learn More</button>
+          </div>
+        </div>
+        <div class="hero-slide" id="slide-2">
+          <img src="images/promo-freespins.jpg" alt="Free Spins Tournament" />
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-badge">Tournament</span>
+            <h2 class="hero-title">Free Spins Tournament</h2>
+            <p class="hero-desc">Compete in our weekly tournament for a share of 50,000 free spins. Top 100 win.</p>
+            <button class="btn-hero">Join Now</button>
+          </div>
+        </div>
+
+        <button class="hero-prev" id="heroPrev" aria-label="Previous slide">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="hero-next" id="heroNext" aria-label="Next slide">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <div class="hero-dots" role="tablist" aria-label="Banner slides">
+          <button class="hero-dot active" data-slide="0" aria-label="Slide 1" role="tab" aria-selected="true"></button>
+          <button class="hero-dot" data-slide="1" aria-label="Slide 2" role="tab" aria-selected="false"></button>
+          <button class="hero-dot" data-slide="2" aria-label="Slide 3" role="tab" aria-selected="false"></button>
+        </div>
+      </section>
+
+      <!-- Jackpot Ticker -->
+      <div class="jackpot-ticker" aria-live="polite" aria-label="Live jackpot amounts">
+        <div class="jackpot-ticker-head">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Live Jackpots</span>
+        </div>
+        <div class="jackpot-grid">
+          <div class="jackpot-cell">
+            <span class="jackpot-name">Mega Fortune</span>
+            <span class="jackpot-amount" id="jackpot-0">$2,847,391.47</span>
+          </div>
+          <div class="jackpot-cell">
+            <span class="jackpot-name">Divine Fortune</span>
+            <span class="jackpot-amount" id="jackpot-1">$1,253,678.92</span>
+          </div>
+          <div class="jackpot-cell">
+            <span class="jackpot-name">Hall of Gods</span>
+            <span class="jackpot-amount" id="jackpot-2">$4,521,034.18</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recently Played -->
+      <section class="section" aria-labelledby="recent-title">
+        <div class="section-head">
+          <h2 class="section-title" id="recent-title">Recently Played</h2>
+          <a href="#" class="view-all">View All</a>
+        </div>
+        <div class="h-scroll-wrap">
+          <div class="h-scroll-inner" id="recentlyPlayed">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Category Tabs + Game Grid -->
+      <section class="section" aria-labelledby="games-title">
+        <div class="category-tabs-wrap" role="tablist" aria-label="Game categories">
+          <div class="category-tabs">
+            <button class="cat-tab active" data-cat="all" role="tab" aria-selected="true">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              All Games
+            </button>
+            <button class="cat-tab" data-cat="slots" role="tab" aria-selected="false">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-3.92-8.85-3.27-14.22-.04"/></svg>
+              Slots
+            </button>
+            <button class="cat-tab" data-cat="live-casino" role="tab" aria-selected="false">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+              Live Casino
+            </button>
+            <button class="cat-tab" data-cat="table-games" role="tab" aria-selected="false">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Table Games
+            </button>
+            <button class="cat-tab" data-cat="sports" role="tab" aria-selected="false">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+              Sports
+            </button>
+          </div>
+        </div>
+
+        <!-- Game grid header + filters -->
+        <div class="section-head">
+          <h2 class="section-title" id="games-title">
+            <span id="gameGridTitle">All Games</span>
+            <span class="count" id="gameGridCount"></span>
+          </h2>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <div class="filter-search">
+              <span class="search-icon">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </span>
+              <input type="text" id="gameSearch" placeholder="Filter games..." autocomplete="off" />
+            </div>
+            <button class="filter-btn" id="filterToggle">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+              Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters panel -->
+        <div class="filters-panel" id="filtersPanel">
+          <div class="filter-group">
+            <label for="providerFilter">Provider</label>
+            <select id="providerFilter">
+              <option value="all">All Providers</option>
+              <option>Pragmatic Play</option>
+              <option>Evolution</option>
+              <option>NetEnt</option>
+              <option>Microgaming</option>
+              <option>Red Tiger</option>
+              <option>Amatic</option>
+              <option>Betsoft</option>
+              <option>Play'n GO</option>
+              <option>Yggdrasil</option>
+              <option>Nolimit City</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="sortFilter">Sort By</label>
+            <select id="sortFilter">
+              <option value="popular">Most Popular</option>
+              <option value="newest">Newest</option>
+              <option value="a-z">A - Z</option>
+            </select>
+          </div>
+          <button class="reset-link" id="resetFilters">Reset filters</button>
+        </div>
+
+        <!-- Game grid output -->
+        <div class="game-grid" id="gameGrid" role="list" aria-label="Games"></div>
+        <div class="no-results hidden" id="noResults" aria-live="polite">
+          <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:rgba(138,133,120,0.4)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>No games found</p>
+          <span>Try adjusting your filters or search query</span>
+        </div>
+      </section>
+
+      <!-- Promotions -->
+      <section class="section" aria-labelledby="promos-title">
+        <div class="section-head">
+          <h2 class="section-title" id="promos-title">Promotions</h2>
+          <a href="#" class="view-all">View All</a>
+        </div>
+        <div class="promos-grid">
+          <div class="promo-card">
+            <div class="promo-card-img">
+              <img src="images/promo-hero.jpg" alt="200% Welcome Reload" />
+              <div class="promo-card-img-overlay"></div>
+              <span class="promo-badge-img">VIP Exclusive</span>
+            </div>
+            <div class="promo-card-body">
+              <div class="title">200% Welcome Reload</div>
+              <div class="desc">Get a 200% match on your next deposit up to $5,000. Exclusive for VIP members.</div>
+              <button class="btn-promo">Claim Now</button>
+            </div>
+          </div>
+          <div class="promo-card">
+            <div class="promo-card-img">
+              <img src="images/promo-cashback.jpg" alt="Weekend Cashback" />
+              <div class="promo-card-img-overlay"></div>
+              <span class="promo-badge-img">Every Weekend</span>
+            </div>
+            <div class="promo-card-body">
+              <div class="title">Weekend Cashback</div>
+              <div class="desc">Enjoy 15% cashback on all losses every weekend. No wagering requirements.</div>
+              <button class="btn-promo">Learn More</button>
+            </div>
+          </div>
+          <div class="promo-card">
+            <div class="promo-card-img">
+              <img src="images/promo-freespins.jpg" alt="Free Spins Tournament" />
+              <div class="promo-card-img-overlay"></div>
+              <span class="promo-badge-img">Tournament</span>
+            </div>
+            <div class="promo-card-body">
+              <div class="title">Free Spins Tournament</div>
+              <div class="desc">Compete in our weekly tournament for a share of 50,000 free spins. Top 100 win.</div>
+              <button class="btn-promo">Join Now</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIP Club -->
+      <div class="vip-section" aria-labelledby="vip-title">
+        <div class="vip-inner">
+          <div class="vip-glow-1"></div>
+          <div class="vip-glow-2"></div>
+          <div class="vip-head">
+            <div class="vip-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gold)"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+            </div>
+            <div class="vip-head-text">
+              <div class="title" id="vip-title">VIP Club</div>
+              <div class="sub">Your current tier: <span>Platinum</span></div>
+            </div>
+          </div>
+          <!-- Progress bar -->
+          <div class="vip-progress-wrap" style="margin-bottom:6px;">
+            <div class="vip-progress-labels">
+              <span class="label">Progress to Diamond</span>
+              <span class="pct">72%</span>
+            </div>
+            <div class="progress-bar-track" style="height:8px;border-radius:4px;">
+              <div class="progress-bar-fill" style="width:72%;height:100%;border-radius:4px;"></div>
+            </div>
+          </div>
+          <!-- Tier dots -->
+          <div class="vip-tiers">
+            <div class="vip-tier-dot-wrap">
+              <div class="vip-tier-dot reached"></div>
+              <span class="vip-tier-label">Bronze</span>
+            </div>
+            <div class="vip-tier-dot-wrap">
+              <div class="vip-tier-dot reached"></div>
+              <span class="vip-tier-label">Silver</span>
+            </div>
+            <div class="vip-tier-dot-wrap">
+              <div class="vip-tier-dot reached"></div>
+              <span class="vip-tier-label">Gold</span>
+            </div>
+            <div class="vip-tier-dot-wrap">
+              <div class="vip-tier-dot reached"></div>
+              <span class="vip-tier-label">Platinum</span>
+            </div>
+            <div class="vip-tier-dot-wrap">
+              <div class="vip-tier-dot"></div>
+              <span class="vip-tier-label">Diamond</span>
+            </div>
+          </div>
+          <!-- Perks -->
+          <div class="vip-perks">
+            <div class="perk-item">
+              <svg class="perk-check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Personal Account Manager</span>
+            </div>
+            <div class="perk-item">
+              <svg class="perk-check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Higher Withdrawal Limits</span>
+            </div>
+            <div class="perk-item">
+              <svg class="perk-check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Exclusive Bonuses &amp; Cashback</span>
+            </div>
+            <div class="perk-item">
+              <svg class="perk-check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Birthday &amp; Anniversary Gifts</span>
+            </div>
+            <div class="perk-item">
+              <svg class="perk-check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Priority Support 24/7</span>
+            </div>
+            <div class="perk-item">
+              <svg class="perk-check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Invitations to VIP Events</span>
+            </div>
+          </div>
+          <button class="btn-vip">
+            Explore VIP Benefits
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Game Providers -->
+      <section class="section" aria-labelledby="providers-title">
+        <div class="section-head">
+          <h2 class="section-title" id="providers-title">Game Providers</h2>
+        </div>
+        <div class="providers-grid">
+          <button class="provider-pill">Pragmatic Play</button>
+          <button class="provider-pill">Evolution</button>
+          <button class="provider-pill">NetEnt</button>
+          <button class="provider-pill">Microgaming</button>
+          <button class="provider-pill">Red Tiger</button>
+          <button class="provider-pill">Amatic</button>
+          <button class="provider-pill">Betsoft</button>
+          <button class="provider-pill">Play'n GO</button>
+          <button class="provider-pill">Yggdrasil</button>
+          <button class="provider-pill">Nolimit City</button>
+        </div>
+      </section>
+
+    </main><!-- /main -->
+  </div><!-- /body-layout -->
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-icon" style="width:30px;height:30px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#0A0A0F"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+          <span class="logo-text" style="font-size:17px;">Lux<span>Bet</span></span>
+        </div>
+        <p>LuxBet is a premium online gaming destination offering the finest selection of slots, live casino, table games, and sports betting. Licensed and regulated for your safety.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-links-col">
+          <h3>Casino</h3>
+          <ul>
+            <li><a href="#">Slots</a></li>
+            <li><a href="#">Live Casino</a></li>
+            <li><a href="#">Table Games</a></li>
+            <li><a href="#">Jackpots</a></li>
+            <li><a href="#">New Games</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h3>Sports</h3>
+          <ul>
+            <li><a href="#">Football</a></li>
+            <li><a href="#">Basketball</a></li>
+            <li><a href="#">Tennis</a></li>
+            <li><a href="#">Esports</a></li>
+            <li><a href="#">Live Betting</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Live Chat</a></li>
+            <li><a href="#">Email Us</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Complaints</a></li>
+          </ul>
+        </div>
+        <div class="footer-links-col">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">AML Policy</a></li>
+            <li><a href="#">KYC Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-badges">
+      <div class="footer-badge-item">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gold)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>SSL Encrypted</span>
+      </div>
+      <div class="footer-badge-item">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gold)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>24/7 Support</span>
+      </div>
+      <div class="footer-badge-item">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gold)"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>Licensed &amp; Regulated</span>
+      </div>
+    </div>
+
+    <div class="footer-payments">
+      <div class="label">Accepted Payment Methods</div>
+      <div class="payment-methods">
+        <span class="payment-method">Visa</span>
+        <span class="payment-method">Mastercard</span>
+        <span class="payment-method">Bitcoin</span>
+        <span class="payment-method">Ethereum</span>
+        <span class="payment-method">USDT</span>
+        <span class="payment-method">Bank Transfer</span>
+        <span class="payment-method">Apple Pay</span>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>LuxBet is operated by LuxBet Entertainment Ltd. Gambling can be addictive. Please play responsibly. Only available to players 18+. If you need help, visit <a href="#">BeGambleAware.org</a>.</p>
+      <p style="margin-top:6px;font-size:10px;color:rgba(138,133,120,0.4);">2024-2026 LuxBet Entertainment Ltd. All rights reserved.</p>
+    </div>
+  </footer>
+
+</div><!-- /app-wrapper -->
+
+<script>
+  // ===========================
+  // DATA
+  // ===========================
+  const GAMES = [
+    { id:"1",  name:"Pharaoh's Gold",      provider:"Pragmatic Play", image:"images/games/pharaoh-gold.jpg",    category:"slots",       isHot:true,  isNew:false, players:1247, rtp:96.5  },
+    { id:"2",  name:"Book of Fortune",     provider:"Amatic",         image:"images/games/book-of-fortune.jpg", category:"slots",       isHot:false, isNew:true,  players:834,  rtp:95.3  },
+    { id:"3",  name:"Sweet Bonanza",       provider:"Pragmatic Play", image:"images/games/sweet-bonanza.jpg",   category:"slots",       isHot:true,  isNew:false, players:2156, rtp:96.48 },
+    { id:"4",  name:"Wolf Moon",           provider:"Amatic",         image:"images/games/wolf-moon.jpg",       category:"slots",       isHot:false, isNew:false, players:623,  rtp:97.04 },
+    { id:"5",  name:"Live Blackjack VIP",  provider:"Evolution",      image:"images/games/live-blackjack.jpg",  category:"live-casino", isHot:true,  isNew:false, players:89,   rtp:null  },
+    { id:"6",  name:"Lightning Roulette",  provider:"Evolution",      image:"images/games/live-roulette.jpg",   category:"live-casino", isHot:false, isNew:true,  players:312,  rtp:null  },
+    { id:"7",  name:"Gates of Olympus",    provider:"Pragmatic Play", image:"images/games/gates-olympus.jpg",   category:"slots",       isHot:true,  isNew:false, players:3241, rtp:96.5  },
+    { id:"8",  name:"Starburst",           provider:"NetEnt",         image:"images/games/starburst.jpg",       category:"slots",       isHot:false, isNew:false, players:1893, rtp:96.09 },
+    { id:"9",  name:"Live Baccarat",       provider:"Evolution",      image:"images/games/live-baccarat.jpg",   category:"live-casino", isHot:false, isNew:false, players:156,  rtp:null  },
+    { id:"10", name:"Dragon Fortune",      provider:"Red Tiger",      image:"images/games/dragon-fortune.jpg",  category:"slots",       isHot:true,  isNew:true,  players:1567, rtp:95.73 },
+    { id:"11", name:"Casino Hold'em",      provider:"Evolution",      image:"images/games/live-poker.jpg",      category:"table-games", isHot:false, isNew:false, players:78,   rtp:null  },
+    { id:"12", name:"Lucky Sevens",        provider:"Betsoft",        image:"images/games/lucky-sevens.jpg",    category:"slots",       isHot:false, isNew:false, players:445,  rtp:95.8  },
+    { id:"13", name:"Mega Jackpot",        provider:"Microgaming",    image:"images/games/mega-jackpot.jpg",    category:"slots",       isHot:true,  isNew:false, players:4512, rtp:88.12 },
+  ];
+  const RECENTLY_PLAYED_IDS = ["1","3","5","7","10"];
+  const favorites = new Set();
+
+  // ===========================
+  // HEADER: RESPONSIVE SEARCH
+  // ===========================
+  const mobileSearchToggle = document.getElementById('mobileSearchToggle');
+  const mobileSearch = document.getElementById('mobileSearch');
+  const headerCenter = document.querySelector('.header-center');
+
+  function applySearchLayout() {
+    if (window.innerWidth >= 768) {
+      headerCenter.style.display = 'flex';
+      mobileSearchToggle.style.display = 'none';
+      mobileSearch.classList.remove('open');
+    } else {
+      headerCenter.style.display = 'none';
+      mobileSearchToggle.style.display = 'flex';
+    }
+  }
+  applySearchLayout();
+  window.addEventListener('resize', applySearchLayout);
+
+  mobileSearchToggle.addEventListener('click', () => {
+    mobileSearch.classList.toggle('open');
+    if (mobileSearch.classList.contains('open')) {
+      document.getElementById('mobileSearchInput').focus();
+    }
+  });
+
+  document.getElementById('headerSearchClear').addEventListener('click', () => {
+    document.getElementById('headerSearch').value = '';
+    document.getElementById('headerSearch').focus();
+  });
+
+  // Responsive balance/deposit buttons
+  function applySmLayout() {
+    const balancePill = document.querySelector('.balance-pill');
+    const depositBtn = document.querySelector('.btn-deposit');
+    if (window.innerWidth >= 640) {
+      balancePill.style.display = 'flex';
+      depositBtn.style.display = 'flex';
+    } else {
+      balancePill.style.display = 'none';
+      depositBtn.style.display = 'none';
+    }
+  }
+  applySmLayout();
+  window.addEventListener('resize', applySmLayout);
+
+  // ===========================
+  // PROFILE DROPDOWN
+  // ===========================
+  const profileBtn = document.getElementById('profileBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+  const profileChevron = document.getElementById('profileChevron');
+
+  profileBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = profileDropdown.classList.toggle('open');
+    profileChevron.classList.toggle('open', isOpen);
+    profileBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('profileWrap').contains(e.target)) {
+      profileDropdown.classList.remove('open');
+      profileChevron.classList.remove('open');
+      profileBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // ===========================
+  // SIDEBAR TOGGLE
+  // ===========================
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  menuBtn.addEventListener('click', openSidebar);
+  sidebarCloseBtn.addEventListener('click', closeSidebar);
+  sidebarOverlay.addEventListener('click', closeSidebar);
+
+  // ===========================
+  // HERO BANNER CAROUSEL
+  // ===========================
+  const SLIDE_COUNT = 3;
+  let currentSlide = 0;
+  let heroPaused = false;
+
+  function goToSlide(n) {
+    document.getElementById('slide-' + currentSlide).classList.remove('active');
+    document.querySelectorAll('.hero-dot')[currentSlide].classList.remove('active');
+    document.querySelectorAll('.hero-dot')[currentSlide].setAttribute('aria-selected','false');
+    currentSlide = (n + SLIDE_COUNT) % SLIDE_COUNT;
+    document.getElementById('slide-' + currentSlide).classList.add('active');
+    document.querySelectorAll('.hero-dot')[currentSlide].classList.add('active');
+    document.querySelectorAll('.hero-dot')[currentSlide].setAttribute('aria-selected','true');
+  }
+
+  document.getElementById('heroNext').addEventListener('click', () => goToSlide(currentSlide + 1));
+  document.getElementById('heroPrev').addEventListener('click', () => goToSlide(currentSlide - 1));
+  document.querySelectorAll('.hero-dot').forEach(dot => {
+    dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.slide)));
+  });
+
+  const heroAutoPlay = setInterval(() => { if (!heroPaused) goToSlide(currentSlide + 1); }, 5000);
+  document.querySelector('.hero-banner').addEventListener('mouseenter', () => heroPaused = true);
+  document.querySelector('.hero-banner').addEventListener('mouseleave', () => heroPaused = false);
+
+  // ===========================
+  // JACKPOT TICKER
+  // ===========================
+  let jackpotAmounts = [2847391.47, 1253678.92, 4521034.18];
+
+  function formatJackpot(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
+  }
+
+  setInterval(() => {
+    jackpotAmounts = jackpotAmounts.map(a => a + Math.random() * 2.5 + 0.1);
+    jackpotAmounts.forEach((a, i) => {
+      document.getElementById('jackpot-' + i).textContent = formatJackpot(a);
+    });
+  }, 100);
+
+  // ===========================
+  // RECENTLY PLAYED
+  // ===========================
+  function buildRecentCard(game) {
+    return `
+      <div class="recent-card" title="${game.name}" role="button" aria-label="Play ${game.name}">
+        <div class="recent-card-img">
+          <img src="${game.image}" alt="${game.name}" loading="lazy" />
+          <div class="recent-play-overlay">
+            <div class="play-circle">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="recent-card-body">
+          <div class="name">${game.name}</div>
+          <div class="provider">${game.provider}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  const recentGames = GAMES.filter(g => RECENTLY_PLAYED_IDS.includes(g.id));
+  document.getElementById('recentlyPlayed').innerHTML = recentGames.map(buildRecentCard).join('');
+
+  // ===========================
+  // GAME GRID
+  // ===========================
+  let activeCategory = 'all';
+  let gameSearch = '';
+  let activeProvider = 'all';
+  let activeSort = 'popular';
+
+  function buildGameCard(game) {
+    const isFav = favorites.has(game.id);
+    return `
+      <div class="game-card" role="listitem" data-id="${game.id}">
+        <div class="game-card-img">
+          <img src="${game.image}" alt="${game.name}" loading="lazy" />
+          <div class="game-card-overlay">
+            <div class="play-circle" style="width:48px;height:48px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+          </div>
+          <div class="game-badges">
+            ${game.isHot ? '<span class="badge-hot">Hot</span>' : ''}
+            ${game.isNew ? '<span class="badge-new">New</span>' : ''}
+          </div>
+          <button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${game.id}" aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}" aria-pressed="${isFav}">
+            <svg width="13" height="13" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          ${game.players ? `<div class="player-count"><div class="dot"></div><span>${game.players.toLocaleString()}</span></div>` : ''}
+        </div>
+        <div class="game-card-body">
+          <div class="name">${game.name}</div>
+          <div class="provider">${game.provider}</div>
+          ${game.rtp ? `<div class="rtp">RTP: <span>${game.rtp}%</span></div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  const CATEGORY_LABELS = {
+    'all': 'All Games',
+    'slots': 'Slots',
+    'live-casino': 'Live Casino',
+    'table-games': 'Table Games',
+    'sports': 'Sports Betting',
+  };
+
+  function renderGameGrid() {
+    let games = [...GAMES];
+
+    if (activeCategory !== 'all') {
+      games = games.filter(g => g.category === activeCategory);
+    }
+    if (gameSearch) {
+      const q = gameSearch.toLowerCase();
+      games = games.filter(g => g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q));
+    }
+    if (activeProvider !== 'all') {
+      games = games.filter(g => g.provider === activeProvider);
+    }
+    if (activeSort === 'popular') {
+      games.sort((a, b) => (b.players || 0) - (a.players || 0));
+    } else if (activeSort === 'newest') {
+      games.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+    } else {
+      games.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    const grid = document.getElementById('gameGrid');
+    const noResults = document.getElementById('noResults');
+
+    document.getElementById('gameGridTitle').textContent = CATEGORY_LABELS[activeCategory] || 'All Games';
+    document.getElementById('gameGridCount').textContent = '(' + games.length + ')';
+
+    if (games.length === 0) {
+      grid.innerHTML = '';
+      noResults.classList.remove('hidden');
+    } else {
+      noResults.classList.add('hidden');
+      grid.innerHTML = games.map(buildGameCard).join('');
+    }
+
+    // Attach fav button events
+    grid.querySelectorAll('.fav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.fav;
+        if (favorites.has(id)) {
+          favorites.delete(id);
+        } else {
+          favorites.add(id);
+        }
+        renderGameGrid();
+      });
+    });
+  }
+
+  // Category tab clicks (top tabs)
+  document.querySelectorAll('.cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.cat-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      activeCategory = tab.dataset.cat;
+
+      // Sync sidebar nav
+      document.querySelectorAll('.nav-item[data-cat]').forEach(n => n.classList.remove('active'));
+      const sidebarMatch = document.querySelector('.nav-item[data-cat="' + activeCategory + '"]');
+      if (sidebarMatch) sidebarMatch.classList.add('active');
+
+      renderGameGrid();
+    });
+  });
+
+  // Sidebar nav category clicks
+  document.querySelectorAll('.nav-item[data-cat]').forEach(item => {
+    item.addEventListener('click', () => {
+      activeCategory = item.dataset.cat;
+
+      document.querySelectorAll('.nav-item[data-cat]').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+
+      document.querySelectorAll('.cat-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      const tabMatch = document.querySelector('.cat-tab[data-cat="' + activeCategory + '"]');
+      if (tabMatch) { tabMatch.classList.add('active'); tabMatch.setAttribute('aria-selected','true'); }
+
+      closeSidebar();
+      renderGameGrid();
+      document.getElementById('mainContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Game search input
+  document.getElementById('gameSearch').addEventListener('input', (e) => {
+    gameSearch = e.target.value;
+    renderGameGrid();
+  });
+
+  // Filters toggle
+  const filterToggle = document.getElementById('filterToggle');
+  const filtersPanel = document.getElementById('filtersPanel');
+  filterToggle.addEventListener('click', () => {
+    const isOpen = filtersPanel.classList.toggle('open');
+    filterToggle.classList.toggle('active', isOpen);
+  });
+
+  document.getElementById('providerFilter').addEventListener('change', (e) => {
+    activeProvider = e.target.value;
+    renderGameGrid();
+  });
+  document.getElementById('sortFilter').addEventListener('change', (e) => {
+    activeSort = e.target.value;
+    renderGameGrid();
+  });
+  document.getElementById('resetFilters').addEventListener('click', () => {
+    activeProvider = 'all';
+    activeSort = 'popular';
+    document.getElementById('providerFilter').value = 'all';
+    document.getElementById('sortFilter').value = 'popular';
+    renderGameGrid();
+  });
+
+  // Provider pills (filter game grid)
+  document.querySelectorAll('.provider-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const provName = pill.textContent.trim();
+      activeProvider = provName;
+      document.getElementById('providerFilter').value = provName;
+      filtersPanel.classList.add('open');
+      filterToggle.classList.add('active');
+      renderGameGrid();
+      document.querySelector('.category-tabs-wrap').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Initial render
+  renderGameGrid();
+</script>
+</body>
+</html>
