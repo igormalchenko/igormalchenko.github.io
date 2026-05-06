@@ -262,18 +262,18 @@
     Inline links in body text     →  .link
 
     ────────────────────────────────────────────────────────────────────────
-    COPY REUSE RULE — HARD RULE
+    TWO-SOURCE RULE — HARD RULE
     ────────────────────────────────────────────────────────────────────────
-    If copy already exists anywhere on the site — copy it verbatim.
-    This applies to: nav, footer, card text, section headings, FAQ answers,
-    CTA text, stat badges, integration descriptions, pricing features.
-    Do NOT rewrite, rephrase, or "improve" existing copy.
-    Consistency across pages is more important than variety.
-    Only write new copy when the content genuinely does not exist yet.
+    Every page has exactly two sources:
+      · index.html          → source of truth for DESIGN (components,
+                              structure, class names, section order)
+      · The live page URL   → source of truth for CONTENT (every word,
+                              heading, tagline, CTA, stat, FAQ answer)
 
-    When reusing a full section from a specific page — copy the copy from
-    THAT page verbatim. Do not pull copy from other pages or invent new
-    wording. The source page is the single source of truth for that section.
+    Always read the live page FIRST and extract all copy before writing
+    any HTML. Do NOT invent, rephrase, or "improve" any copy.
+    Do NOT pull copy from index.html or any other page for content.
+    If the live page has no content yet — only then may you write new copy.
 
     ────────────────────────────────────────────────────────────────────────
     ABSOLUTE PROHIBITIONS — NEVER DO THESE
@@ -317,8 +317,8 @@
       <div style="background: #fff5f5; border: 1px solid #fecdd3; border-radius: var(--radius-card); padding: 28px 32px;">
         <p style="font-family: var(--font-mono); font-size: 11px; color: #e11d48; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Never do these</p>
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Rewrite copy that already exists — copy it verbatim</p>
-          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Pull copy from a different page than the one you're copying — use copy from THAT page only</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Write or invent copy — read the live page first and use its words verbatim</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Use index.html for copy — index.html = design only; live page URL = content only</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Write new CSS or create new class names</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use inline styles (except <code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px;">background/padding</code> on &lt;section&gt; shells)</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use hex colors anywhere in HTML</p>
