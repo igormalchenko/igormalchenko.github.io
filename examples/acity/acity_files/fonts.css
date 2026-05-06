@@ -1,0 +1,136 @@
+@font-face {
+    font-family: 'Editor-Bold';
+    src: url(framework/casino-online/fonts/v2/TTNormsPro-Regular.eot);
+    src: url(framework/casino-online/fonts/v2/ttnorms-bold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Bold.otf) format('opentype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.eot?#iefix) format('embedded-opentype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.woff2) format('woff2'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.ttf) format('truetype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.svg#TTNormsPro-Bold) format('svg');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'tt norms pro';
+    src: url(framework/casino-online/fonts/v2/TTNormsPro-Regular.eot);
+    src: url(framework/casino-online/fonts/v2/ttnorms-regular.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Regular.otf) format('opentype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Regular.eot?#iefix)
+            format('embedded-opentype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Regular.woff2) format('woff2'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Regular.ttf) format('truetype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Regular.svg#TTNormsPro-Regular)
+            format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'tt norms pro';
+    src: url(framework/casino-online/fonts/v2/TTNormsPro-Bold.eot);
+    src: url(framework/casino-online/fonts/v2/ttnorms-bold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Bold.otf) format('opentype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.eot?#iefix) format('embedded-opentype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.woff2) format('woff2'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.ttf) format('truetype'),
+        url(framework/casino-online/fonts/v2/TTNormsPro-Bold.svg#TTNormsPro-Bold) format('svg');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Promos module fonts */
+
+@font-face {
+    font-family: 'Editor-Extra-Bold';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/ttnorms-extrabold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-ExtraBold.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Editor-Medium';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/ttnorms-regular.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Regular.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Editor';
+    font-weight: normal;
+    src: url(framework/casino-online/fonts/v2/ttnorms-regular.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Regular.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Editor';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/ttnorms-bold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Bold.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Editor';
+    font-weight: 800;
+    src: url(framework/casino-online/fonts/v2/ttnorms-extrabold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-ExtraBold.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Norms-Light';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/ttnorms-light.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Light.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Norms-Regular';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/ttnorms-regular.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Regular.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Norms-Bold';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/ttnorms-bold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Bold.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Norms-Extra-Bold';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/TTNormsPro-Bold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-ExtraBold.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'TT Norms Pro';
+    font-weight: light;
+    src: url(framework/casino-online/fonts/v2/ttnorms-light.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Light.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'TT Norms Pro';
+    font-weight: normal;
+    src: url(framework/casino-online/fonts/v2/ttnorms-regular.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Regular.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'TT Norms Pro';
+    font-weight: bold;
+    src: url(framework/casino-online/fonts/v2/ttnorms-bold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-Bold.otf) format('opentype');
+}
+
+@font-face {
+    font-family: 'TT Norms Pro';
+    font-weight: 800;
+    src: url(framework/casino-online/fonts/v2/ttnorms-extrabold.woff2) format('woff'),
+        url(framework/casino-online/fonts/v2/TypeType-TT-Norms-Pro-ExtraBold.otf) format('opentype');
+}
