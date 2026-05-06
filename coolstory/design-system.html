@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coolstory — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;900&family=Inter:wght@400;500;600;700&family=Fragment+Mono&display=swap&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .ds-page {
+      max-width: var(--width-content);
+      margin: 0 auto;
+      padding: 80px 80px;
+    }
+    .ds-title {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 500;
+      letter-spacing: -2px;
+      color: var(--c-dark);
+      margin-bottom: 8px;
+    }
+    .ds-subtitle {
+      font-size: 18px;
+      color: var(--c-text-muted);
+      margin-bottom: 80px;
+    }
+    .ds-section {
+      margin-bottom: 80px;
+    }
+    .ds-section-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--c-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 1px solid var(--c-border);
+      padding-bottom: 12px;
+      margin-bottom: 40px;
+    }
+    .ds-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .ds-row--col {
+      flex-direction: column;
+    }
+    .ds-item-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+      margin-top: 10px;
+    }
+    .ds-item {
+      display: flex;
+      flex-direction: column;
+    }
+    /* Type specimens */
+    .ds-type-specimen {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--c-border);
+    }
+    .ds-type-specimen:last-child { border-bottom: none; }
+    .ds-type-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+      margin-top: 6px;
+    }
+    /* Color swatches */
+    .ds-swatch {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .ds-swatch-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+      margin-top: 8px;
+    }
+    /* Card grid */
+    .ds-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .ds-card-grid--2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .ds-card-grid--4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    /* Gradient swatches */
+    .ds-gradient {
+      height: 100px;
+      border-radius: var(--radius-card);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    /* Section bg swatches */
+    .ds-bg-swatch {
+      height: 80px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+    }
+    /* Token displays */
+    .ds-spacing-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .ds-spacing-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .ds-spacing-bar {
+      height: 10px;
+      background: var(--c-blue);
+      border-radius: 5px;
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+    .ds-radius-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: flex-end;
+    }
+    .ds-radius-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .ds-radius-box {
+      width: 72px;
+      height: 72px;
+      background: rgba(52, 133, 253, 0.12);
+      border: 2px solid var(--c-blue);
+    }
+    .ds-grid-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: flex-start;
+    }
+    .ds-grid-item {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+      min-width: 120px;
+    }
+    .ds-grid-preview {
+      display: grid;
+      gap: 6px;
+    }
+    .ds-grid-cell {
+      height: 36px;
+      background: rgba(52, 133, 253, 0.12);
+      border: 1px solid var(--c-blue);
+      border-radius: 6px;
+    }
+    /* Usage annotations */
+    .ds-note {
+      font-size: 12px;
+      color: var(--c-text-muted);
+      border-left: 2px solid var(--c-border);
+      padding: 8px 12px;
+      margin: 16px 0 28px;
+      line-height: 1.7;
+    }
+    .ds-note strong { color: var(--c-dark); font-weight: 500; }
+    .ds-note code { font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body style="background: #fafafa;">
+
+<div class="ds-page">
+
+  <p class="ds-title">Design System</p>
+  <p class="ds-subtitle">Coolstory.me — all unique styles and components</p>
+
+  <!--
+    ════════════════════════════════════════════════════════════════════════
+    HOW TO BUILD A PAGE
+    ════════════════════════════════════════════════════════════════════════
+
+    PURPOSE
+    This design system is the ONLY source of truth for building Coolstory pages.
+    Every class, token, and component you need is defined here.
+    Do NOT invent new styles. Do NOT write new CSS. Do NOT use inline styles.
+    Your job is to assemble existing components — nothing more.
+
+    ────────────────────────────────────────────────────────────────────────
+    PAGE ANATOMY (top → bottom, every page)
+    ────────────────────────────────────────────────────────────────────────
+    1. <nav class="nav"> — always first, always identical across pages
+    2. Hero OR section-header — exactly one of these opens the content:
+         · <section class="hero"> — homepage only
+         · <div class="section-header"> inside a <section> — all other pages
+    3. Content sections — any number of <section> elements with themed backgrounds
+    4. <section class="cta-section"> — strong call-to-action, typically near end
+    5. <footer class="footer"> — always last, always identical across pages
+
+    ────────────────────────────────────────────────────────────────────────
+    SECTION BACKGROUND RULE (alternate for visual rhythm)
+    ────────────────────────────────────────────────────────────────────────
+    · style="background: var(--section-bg-1)"  — product/feature sections (blue-tinted gradient)
+    · style="background: var(--section-bg-2)"  — utility/informational sections (grey gradient)
+    · style="background: var(--c-white)"        — sections with strong own visuals (cards with gradients, integrations, pricing)
+    · Never use two identical backgrounds back-to-back.
+    · Alternate bg-1 and bg-2 freely; use white sparingly to let card visuals breathe.
+
+    ────────────────────────────────────────────────────────────────────────
+    CONTENT SECTION SHELL (copy this pattern for every new section)
+    ────────────────────────────────────────────────────────────────────────
+    <section style="background: var(--section-bg-1); padding: var(--section-py) 0;">
+      <div class="container">
+        <div class="section-header">
+          <h2>Section Title</h2>
+          <p>Optional subheading.</p>
+        </div>
+        [grid or component goes here]
+      </div>
+    </section>
+
+    ────────────────────────────────────────────────────────────────────────
+    GRID SELECTION GUIDE
+    ────────────────────────────────────────────────────────────────────────
+    · .grid-4  — icon-heavy cards with short text (integration tiles, small feature pills)
+    · .grid-3  — standard feature or use-case cards (default choice for cards)
+    · .grid-2  — two-column content splits (collapses to 1-col at tablet)
+    · .stack   — full-width stacked items (blog post list, document sections)
+    · .container--narrow inside .container — document/policy pages (max 860px)
+    · Do NOT use .grid-3--2-mobile on text-heavy cards (cards become too narrow at mobile).
+
+    ────────────────────────────────────────────────────────────────────────
+    COMPONENT SELECTION GUIDE
+    ────────────────────────────────────────────────────────────────────────
+    Use cases / feature overview  →  .card  (pick a --color modifier)
+    Pricing tiers                 →  .pricing-card  (.pricing-card--pro for recommended)
+    Integrations / partners       →  .integration
+    Social proof                  →  .testimonial-card  + .testimonials-marquee
+    Footer nav                    →  .footer  (copy verbatim — never modify structure)
+    Long-form text page           →  .document-page  + .container--narrow
+    Blog article list             →  .stack  of  .featured-article__card  items
+    Inline links in body text     →  .link
+
+    ────────────────────────────────────────────────────────────────────────
+    ABSOLUTE PROHIBITIONS — NEVER DO THESE
+    ────────────────────────────────────────────────────────────────────────
+    ✗ Never write new CSS or create new class names
+    ✗ Never use inline styles (except background/padding on <section> shells, as shown above)
+    ✗ Never use hex color values anywhere in HTML
+    ✗ Never reference internal CSS tokens in HTML:
+        --c-green, --c-orange, --c-red, --c-teal, --c-purple
+        (these are applied automatically by component CSS)
+    ✗ Never use <h1> outside the hero section
+    ✗ Never set font-size, font-family, or font-weight inline
+    ✗ Never nest a .container inside another .container
+    ✗ Never use .grid-2 for more than 2 direct children
+    ✗ Never use .grid-3--2-mobile on cards with multi-line body text
+    ════════════════════════════════════════════════════════════════════════
+  -->
+
+  <!-- ================================================
+       HOW TO BUILD A PAGE
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">How to Build a Page</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+
+      <!-- Page anatomy -->
+      <div style="background: var(--c-grey); border-radius: var(--radius-card); padding: 28px 32px;">
+        <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Page anatomy</p>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-family: var(--font-mono); color: var(--c-text-muted);">1 · <span style="color: var(--c-dark);">&lt;nav class="nav"&gt;</span> — every page</div>
+          <div style="background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-family: var(--font-mono); color: var(--c-text-muted);">2 · <span style="color: var(--c-dark);">&lt;section class="hero"&gt;</span> — home only</div>
+          <div style="background: #f0f4fa; border: 1px solid var(--c-border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-family: var(--font-mono); color: var(--c-text-muted);">2 · <span style="color: var(--c-dark);">&lt;div class="section-header"&gt;</span> — other pages</div>
+          <div style="background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-family: var(--font-mono); color: var(--c-text-muted);">3 · content <span style="color: var(--c-dark);">&lt;section&gt;</span>s — any number</div>
+          <div style="background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-family: var(--font-mono); color: var(--c-text-muted);">4 · <span style="color: var(--c-dark);">&lt;section class="cta-section"&gt;</span></div>
+          <div style="background: var(--c-white); border: 1px solid var(--c-border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-family: var(--font-mono); color: var(--c-text-muted);">5 · <span style="color: var(--c-dark);">&lt;footer class="footer"&gt;</span> — every page</div>
+        </div>
+      </div>
+
+      <!-- Prohibitions -->
+      <div style="background: #fff5f5; border: 1px solid #fecdd3; border-radius: var(--radius-card); padding: 28px 32px;">
+        <p style="font-family: var(--font-mono); font-size: 11px; color: #e11d48; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Never do these</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Write new CSS or create new class names</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use inline styles (except <code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px;">background/padding</code> on &lt;section&gt; shells)</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use hex colors anywhere in HTML</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Reference internal tokens (<code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px;">--c-green</code>, <code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px;">--c-orange</code> …) in HTML</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use &lt;h1&gt; outside the hero section</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Set font-size, font-family, or font-weight inline</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Nest .container inside another .container</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use .grid-3--2-mobile on text-heavy cards</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section background rule -->
+    <div style="background: var(--c-grey); border-radius: var(--radius-card); padding: 28px 32px; margin-bottom: 24px;">
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Section background rule — always alternate, never repeat</p>
+      <div style="display: flex; gap: 16px;">
+        <div style="flex: 1; background: var(--section-bg-1); border: 1px solid var(--c-border); border-radius: 12px; padding: 16px 20px;">
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); margin-bottom: 6px;">--section-bg-1</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">Product &amp; feature sections. Blue-tinted gradient.</p>
+        </div>
+        <div style="flex: 1; background: var(--section-bg-2); border: 1px solid var(--c-border); border-radius: 12px; padding: 16px 20px;">
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); margin-bottom: 6px;">--section-bg-2</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">Utility &amp; informational sections. Grey gradient.</p>
+        </div>
+        <div style="flex: 1; background: var(--c-white); border: 1px solid var(--c-border); border-radius: 12px; padding: 16px 20px;">
+          <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); margin-bottom: 6px;">--c-white</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">Sections with strong card visuals: gradients, integrations, pricing. Use sparingly.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section shell -->
+    <div style="background: var(--c-grey); border-radius: var(--radius-card); padding: 28px 32px; margin-bottom: 24px;">
+      <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Content section shell — copy this pattern</p>
+      <pre style="font-family: var(--font-mono); font-size: 13px; color: var(--c-dark); background: var(--c-white); border: 1px solid var(--c-border); border-radius: 10px; padding: 20px 24px; line-height: 1.8; margin: 0; overflow-x: auto; white-space: pre-wrap;"><span style="color: var(--c-text-muted);">&lt;section</span> style="background: var(--section-bg-1); padding: var(--section-py) 0;"<span style="color: var(--c-text-muted);">&gt;</span>
+  <span style="color: var(--c-text-muted);">&lt;div</span> class="container"<span style="color: var(--c-text-muted);">&gt;</span>
+    <span style="color: var(--c-text-muted);">&lt;div</span> class="section-header"<span style="color: var(--c-text-muted);">&gt;</span>
+      <span style="color: var(--c-text-muted);">&lt;h2&gt;</span>Section Title<span style="color: var(--c-text-muted);">&lt;/h2&gt;</span>
+      <span style="color: var(--c-text-muted);">&lt;p&gt;</span>Optional subheading.<span style="color: var(--c-text-muted);">&lt;/p&gt;</span>
+    <span style="color: var(--c-text-muted);">&lt;/div&gt;</span>
+    <span style="color: var(--c-blue);">&lt;!-- grid or component goes here --&gt;</span>
+  <span style="color: var(--c-text-muted);">&lt;/div&gt;</span>
+<span style="color: var(--c-text-muted);">&lt;/section&gt;</span></pre>
+    </div>
+
+    <!-- Grid + Component guide -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      <div style="background: var(--c-grey); border-radius: var(--radius-card); padding: 28px 32px;">
+        <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Grid selection</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.grid-4</code> — icon tiles, short-text cards (4 columns)</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.grid-3</code> — feature &amp; use-case cards (default)</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.grid-2</code> — two-column splits (→ 1 col at tablet)</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.stack</code> — full-width vertical list (blog, docs)</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.container--narrow</code> — inside .container for document pages</p>
+        </div>
+      </div>
+      <div style="background: var(--c-grey); border-radius: var(--radius-card); padding: 28px 32px;">
+        <p style="font-family: var(--font-mono); font-size: 11px; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Component selection</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.card</code> + color modifier — features, use cases</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.pricing-card</code> — pricing tiers (.pricing-card--pro = recommended)</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.integration</code> — partner / integration grid</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.testimonial-card</code> + <code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.testimonials-marquee</code> — social proof</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.document-page</code> — privacy policy, terms, long-form</p>
+          <p style="font-size: 13px; margin: 0; color: var(--c-dark); line-height: 1.5;"><code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px;">.link</code> — inline text links in body copy</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Typography
+    USAGE:
+      h1 — hero section only, one per page. Lexend 500, 100px.
+      h2 — section titles, one per section. Lexend 500, 63px.
+      h3 — card titles, feature item headings. Lexend 600, 28px.
+      .hero__sub — hero subtitle only. 22px Inter.
+      section subheading — optional <p> below h2 in section headers. 18px, --c-text-muted.
+      body / card description — card and section body text. 16px, --c-body. Max-width ~560px for readability.
+      small — footer nav links, metadata, labels. 14px, --c-text-muted.
+      monospace — code snippets only. Fragment Mono, 15px.
+    RESPONSIVE: h1 scales 100px → 72px (tablet) → 48px (mobile). h2: 63px → 48px → 36px. Handled automatically.
+    NEVER set font-size or font-family inline — use semantic elements and existing classes.
+  -->
+  <!-- ================================================
+       TYPOGRAPHY
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Typography</p>
+    <p class="ds-note"><strong>h1</strong> — hero only, one per page · <strong>h2</strong> — section titles · <strong>h3</strong> — card/feature headings · <strong>body</strong> — <code>--c-body</code>, max-width ~560px · <strong>small</strong> — <code>--c-text-muted</code>, 14px · <strong>mono</strong> — code blocks only. Never set font properties inline.</p>
+
+    <div class="ds-type-specimen">
+      <h1>Drive user engagement</h1>
+      <p class="ds-type-meta">h1 — Lexend 500 · 100px · -5px tracking · line-height 100px</p>
+    </div>
+    <div class="ds-type-specimen">
+      <h2>Stories in action</h2>
+      <p class="ds-type-meta">h2 — Lexend 500 · 63px · -2.5px tracking · line-height 73px</p>
+    </div>
+    <div class="ds-type-specimen">
+      <h3>Story management</h3>
+      <p class="ds-type-meta">h3 — Lexend 600 · 28px · -0.6px tracking · line-height 34px</p>
+    </div>
+    <div class="ds-type-specimen">
+      <p class="hero__sub">Share news, product updates, offers, and onboarding guides with short videos <span class="accent">that everybody loves</span></p>
+      <p class="ds-type-meta">hero subtitle — Inter 400 · 22px · line-height 36px</p>
+    </div>
+    <div class="ds-type-specimen">
+      <p style="font-size: 18px; color: var(--c-text-muted);">A collection of robust and intuitive SDKs built for integration in a matter of minutes</p>
+      <p class="ds-type-meta">section subheading — Inter 400 · 18px · color: text-muted</p>
+    </div>
+    <div class="ds-type-specimen">
+      <p style="font-size: 16px; line-height: 1.6; color: var(--c-body); max-width: 560px;">Guide users through new features with short, engaging story tutorials embedded right in your product.</p>
+      <p class="ds-type-meta">body / card description — Inter 400 · 16px · line-height 1.6 · --c-body</p>
+    </div>
+    <div class="ds-type-specimen">
+      <p style="font-size: 14px; color: var(--c-text-muted);">Homepage · Book a demo · Features · Docs · Blog</p>
+      <p class="ds-type-meta">small / footer links — Inter 400 · 14px · color: text-muted</p>
+    </div>
+    <div class="ds-type-specimen">
+      <p style="font-family: var(--font-mono); font-size: 15px; line-height: 1.8; color: #282828;">&lt;script src="widget.js"&gt;&lt;/script&gt;</p>
+      <p class="ds-type-meta">monospace / code — Fragment Mono 400 · 15px · line-height 1.8</p>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Section Header
+    USAGE:
+      Default (centered): most content sections — use cases, pricing, integrations, how-it-works.
+      .section__header--left: sections whose content is left-aligned (feature lists with inline links).
+      Structure: <div class="section__header [section__header--left]"> <h2>…</h2> <p>…</p> </div>
+      The <p> subtitle is optional. Use it when the heading alone needs context.
+    NEVER center-align a section header that sits above a left-aligned list.
+  -->
+  <!-- ================================================
+       SECTION HEADER
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Section Header — centered (default)</p>
+    <p class="ds-note"><strong>Default (centered)</strong> — use cases, pricing, integrations, how-it-works, FAQ. <strong>.section__header--left</strong> — feature lists with inline links. Subtitle <code>&lt;p&gt;</code> is optional.</p>
+    <div class="section__header">
+      <h2>Stories in action</h2>
+      <p>Every use case that once needed a popup, email, or tooltip — now a story.</p>
+    </div>
+  </div>
+
+  <div class="ds-section">
+    <p class="ds-section-label">Section Header — left-aligned (.section__header--left)</p>
+    <div class="section__header section__header--left">
+      <h2>Frequently asked questions</h2>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Color Tokens
+    USAGE:
+      --c-blue (#3485fd)       PRIMARY brand accent. btn-cta, links (.link), badge icons, highlights.
+      --c-pink (#f772d0)       SECONDARY brand accent. Hero title accent word (.pink span), purple card icons.
+      --c-dark (#282828)       Primary text, btn-primary background.
+      --c-white (#ffffff)      Page backgrounds, text on dark surfaces.
+      --c-blue-light (#609cf5) Lighter blue — icon color on .card--blue only.
+      --c-body (#4b5563)       Card and section body paragraph text.
+      --c-text-muted (#6b7280) Metadata, labels, secondary UI text.
+      --c-border (#d0d5dd)     Dividers, card/input borders.
+      --c-grey (#f8f8f8)       Subtle fill. Rarely used directly.
+      --c-green / --c-orange / --c-red / --c-teal / --c-purple: extended palette for card & integration icon colors only.
+    RULE: NEVER use raw hex values in HTML/CSS — always reference tokens.
+  -->
+  <!-- ================================================
+       COLORS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Colors</p>
+    <p class="ds-note"><strong>--c-blue</strong> primary accent (buttons, links) · <strong>--c-pink</strong> secondary accent (hero title) · <strong>--c-dark</strong> text + btn-primary · <strong>--c-body</strong> card/section paragraphs · <strong>--c-text-muted</strong> labels/metadata. Always use tokens, never raw hex.</p>
+    <div class="ds-row">
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-dark);"></div>
+        <p class="ds-swatch-label">--c-dark<br>#282828</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-white); border: 1px solid #e5e7eb;"></div>
+        <p class="ds-swatch-label">--c-white<br>#ffffff</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-blue);"></div>
+        <p class="ds-swatch-label">--c-blue<br>#3485fd</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-blue-light);"></div>
+        <p class="ds-swatch-label">--c-blue-light<br>#609cf5</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-pink);"></div>
+        <p class="ds-swatch-label">--c-pink<br>#f772d0</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-border);"></div>
+        <p class="ds-swatch-label">--c-border<br>#d0d5dd</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-text-muted);"></div>
+        <p class="ds-swatch-label">--c-text-muted<br>#6b7280</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-grey);"></div>
+        <p class="ds-swatch-label">--c-grey<br>#f8f8f8</p>
+      </div>
+      <div class="ds-item">
+        <div class="ds-swatch" style="background: var(--c-body);"></div>
+        <p class="ds-swatch-label">--c-body<br>#4b5563</p>
+      </div>
+    </div>
+    <p class="ds-note" style="margin-top: 24px;"><strong>Internal CSS tokens — do not use in HTML.</strong> These are applied automatically by component CSS. Never reference them in markup or inline styles.<br>
+      <code>--c-green</code> card--green icon · <code>--c-orange</code> card--orange icon · <code>--c-red</code> card--pink icon · <code>--c-teal</code> card--teal icon · <code>--c-purple</code> integration web icon</p>
+    <div class="ds-row" style="margin-top: 16px; gap: 12px;">
+      <div class="ds-item"><div class="ds-swatch" style="background:var(--c-green);width:48px;height:48px;border-radius:12px;opacity:0.5;"></div><p class="ds-swatch-label" style="font-size:10px;">--c-green</p></div>
+      <div class="ds-item"><div class="ds-swatch" style="background:var(--c-orange);width:48px;height:48px;border-radius:12px;opacity:0.5;"></div><p class="ds-swatch-label" style="font-size:10px;">--c-orange</p></div>
+      <div class="ds-item"><div class="ds-swatch" style="background:var(--c-red);width:48px;height:48px;border-radius:12px;opacity:0.5;"></div><p class="ds-swatch-label" style="font-size:10px;">--c-red</p></div>
+      <div class="ds-item"><div class="ds-swatch" style="background:var(--c-teal);width:48px;height:48px;border-radius:12px;opacity:0.5;"></div><p class="ds-swatch-label" style="font-size:10px;">--c-teal</p></div>
+      <div class="ds-item"><div class="ds-swatch" style="background:var(--c-purple);width:48px;height:48px;border-radius:12px;opacity:0.5;"></div><p class="ds-swatch-label" style="font-size:10px;">--c-purple</p></div>
+    </div>
+  </div>
+
+  <!--
+    TOKENS: Spacing
+    --gap-cards (28px)   gap for all card grids (.grid-2/3/4)
+    --gap-text (40px)    gap for text/link grids
+    --gap-content (60px) gap for 2-col content splits (feature-section, footer__inner)
+    --section-py (120px) vertical padding on all page sections. Scales to 72px on mobile.
+    Always use these tokens in gap/padding; never hardcode spacing values.
+  -->
+  <!-- ================================================
+       SPACING TOKENS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Spacing</p>
+    <p class="ds-note"><strong>--gap-cards</strong> 28px — card grids · <strong>--gap-text</strong> 40px — text/link grids · <strong>--gap-content</strong> 60px — 2-col splits · <strong>--section-py</strong> 120px — section vertical padding (auto-scales on mobile). Use tokens, never hardcode.</p>
+    <div class="ds-spacing-list">
+      <div class="ds-spacing-item">
+        <div class="ds-spacing-bar" style="width: var(--gap-cards);"></div>
+        <p class="ds-item-label">--gap-cards · 28px · card grids</p>
+      </div>
+      <div class="ds-spacing-item">
+        <div class="ds-spacing-bar" style="width: var(--gap-text);"></div>
+        <p class="ds-item-label">--gap-text · 40px · text / link grids</p>
+      </div>
+      <div class="ds-spacing-item">
+        <div class="ds-spacing-bar" style="width: var(--gap-content);"></div>
+        <p class="ds-item-label">--gap-content · 60px · 2-col content splits</p>
+      </div>
+      <div class="ds-spacing-item">
+        <div class="ds-spacing-bar" style="width: var(--section-py);"></div>
+        <p class="ds-item-label">--section-py · 120px · section vertical padding</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    TOKENS: Border Radius
+    --radius-icon (20px)  icon background squares inside cards
+    --radius-card (32px)  all cards, feature sections, hero DS preview wrapper
+    --radius-btn (48px)   all buttons
+    --radius-pill (100px) badges, stat-badges
+  -->
+  <!-- ================================================
+       RADIUS TOKENS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Border Radius</p>
+    <p class="ds-note"><strong>--radius-icon</strong> 20px icons · <strong>--radius-card</strong> 32px cards · <strong>--radius-btn</strong> 48px buttons · <strong>--radius-pill</strong> 100px badges. Always use tokens.</p>
+    <div class="ds-radius-row">
+      <div class="ds-radius-item">
+        <div class="ds-radius-box" style="border-radius: var(--radius-icon);"></div>
+        <p class="ds-item-label">--radius-icon<br>20px · icon bg</p>
+      </div>
+      <div class="ds-radius-item">
+        <div class="ds-radius-box" style="border-radius: var(--radius-card);"></div>
+        <p class="ds-item-label">--radius-card<br>32px · cards</p>
+      </div>
+      <div class="ds-radius-item">
+        <div class="ds-radius-box" style="border-radius: var(--radius-btn);"></div>
+        <p class="ds-item-label">--radius-btn<br>48px · buttons</p>
+      </div>
+      <div class="ds-radius-item">
+        <div class="ds-radius-box" style="border-radius: var(--radius-pill);"></div>
+        <p class="ds-item-label">--radius-pill<br>100px · badges</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    TOKENS: Shadows
+    --shadow-card       resting state on all cards (applied automatically by .card CSS)
+    --shadow-card-hover elevated state on hover (applied automatically on .card:hover)
+    Never apply shadows manually — they are part of the card component style.
+  -->
+  <!-- ================================================
+       SHADOWS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Shadows</p>
+    <p class="ds-note">Applied automatically by <code>.card</code> and <code>.card:hover</code>. Do not set shadows manually.</p>
+    <div class="ds-row">
+      <div class="ds-item">
+        <div style="width: 160px; height: 80px; background: var(--c-white); border-radius: var(--radius-card); box-shadow: var(--shadow-card);"></div>
+        <p class="ds-item-label">--shadow-card · resting</p>
+      </div>
+      <div class="ds-item">
+        <div style="width: 160px; height: 80px; background: var(--c-white); border-radius: var(--radius-card); box-shadow: var(--shadow-card-hover);"></div>
+        <p class="ds-item-label">--shadow-card-hover · elevated</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Grid Columns
+    .grid-2  2 cols desktop → 1 col tablet + mobile
+    .grid-3  3 cols desktop → 2 col tablet → 1 col mobile
+    .grid-4  4 cols desktop → 2 col tablet → 1 col mobile
+    .grid-3--2-mobile  exception: 3 cols desktop → 2 cols mobile (add alongside .grid-3)
+    .stack             vertical stack, full-width items, gap: --gap-cards (blog listings, stacked cards)
+    All grids use --gap-cards (28px).
+    Use .grid-3 for use-case/privacy cards, .grid-4 for stat/pricing cards, .grid-2 for feature cards.
+    Use .stack for vertical lists where each item is full-width (e.g. blog article list).
+    .container--narrow (860px): use on document/legal pages instead of .container.
+  -->
+  <!-- ================================================
+       GRID COLUMNS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Grid Columns</p>
+    <p class="ds-note"><strong>.grid-2</strong> feature/core cards · <strong>.grid-3</strong> use-case/privacy cards (1-col on mobile — do NOT add <code>.grid-3--2-mobile</code> for text-heavy cards) · <strong>.grid-4</strong> stat/pricing cards · <strong>.stack</strong> vertical full-width list (blog articles). All use <code>--gap-cards</code>. <code>.grid-3--2-mobile</code> is only safe for very compact, icon-only items.</p>
+    <div class="ds-grid-row">
+      <div class="ds-grid-item">
+        <div class="ds-grid-preview" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="ds-grid-cell"></div><div class="ds-grid-cell"></div>
+        </div>
+        <p class="ds-item-label">.grid-2 · gap-cards</p>
+      </div>
+      <div class="ds-grid-item">
+        <div class="ds-grid-preview" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="ds-grid-cell"></div><div class="ds-grid-cell"></div><div class="ds-grid-cell"></div>
+        </div>
+        <p class="ds-item-label">.grid-3 · gap-cards</p>
+      </div>
+      <div class="ds-grid-item">
+        <div class="ds-grid-preview" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="ds-grid-cell"></div><div class="ds-grid-cell"></div><div class="ds-grid-cell"></div><div class="ds-grid-cell"></div>
+        </div>
+        <p class="ds-item-label">.grid-4 · gap-cards</p>
+      </div>
+    </div>
+      <div class="ds-grid-item">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div class="ds-grid-cell" style="width: 100%;"></div>
+          <div class="ds-grid-cell" style="width: 100%;"></div>
+          <div class="ds-grid-cell" style="width: 100%;"></div>
+        </div>
+        <p class="ds-item-label">.stack · full-width items</p>
+      </div>
+      <div class="ds-grid-item">
+        <div style="height: 36px; background: rgba(52,133,253,0.06); border: 1px dashed var(--c-blue); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--c-blue);">max-width: 860px</span>
+        </div>
+        <p class="ds-item-label">.container--narrow · legal/doc pages</p>
+      </div>
+    </div>
+    <div style="margin-top: 32px;">
+      <p class="ds-item-label" style="margin-bottom: 12px;">Tablet ≥810px: grid-2 → 1col, grid-3 → 2col, grid-4 → 2col &nbsp;·&nbsp; Mobile ≤809px: all → 1col &nbsp;·&nbsp; Exception: .grid-3--2-mobile → 2col on mobile</p>
+    </div>
+  </div>
+
+  <!--
+    TOKENS: Card Gradients
+    Applied via class modifiers on .card: .card--blue, --purple, --green, --orange, --pink, --teal, --grey
+    Colors are purely aesthetic — use them for visual variety in a list (use cases, features, user types).
+    No semantic meaning. Do not repeat the same color twice in the same grid.
+    --card-grey is for neutral/informational cards (privacy, security) — no stat-badge.
+    NEVER set background inline on a card. Always use the class modifier.
+  -->
+  <!-- ================================================
+       CARD GRADIENTS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Card Gradients</p>
+    <p class="ds-note">Applied via <code>.card--[color]</code> modifiers. Purely aesthetic variety — no semantic meaning. Avoid repeating the same color in one grid. <strong>--card-grey</strong> = neutral/informational cards only (no stat-badge). Never set <code>background</code> inline on a card.</p>
+    <div class="ds-card-grid">
+      <div>
+        <div class="ds-gradient" style="background: var(--card-blue);"></div>
+        <p class="ds-swatch-label">--card-blue</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--card-purple);"></div>
+        <p class="ds-swatch-label">--card-purple</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--card-green);"></div>
+        <p class="ds-swatch-label">--card-green</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--card-orange);"></div>
+        <p class="ds-swatch-label">--card-orange</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--card-pink);"></div>
+        <p class="ds-swatch-label">--card-pink</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--card-teal);"></div>
+        <p class="ds-swatch-label">--card-teal</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--card-grey);"></div>
+        <p class="ds-swatch-label">--card-grey</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    TOKENS: Section Backgrounds
+    RULE:
+      section--bg1 (--section-bg-1, blue-grey tint): product/feature sections
+        → use cases, integrations, how-it-works, feature sections.
+      section--bg2 (--section-bg-2, neutral grey tint): utility/info sections
+        → FAQ, privacy.
+      No class (white): sections with strong own visual — hero, CTA, pricing, footer.
+    Apply as a class on the section wrapper: <section class="section--bg1"> or wrap a div.
+    --badge-bg is only for badge/pill backgrounds — not for sections.
+    Alternate bg1/bg2 between adjacent feature sections for visual rhythm.
+  -->
+  <!-- ================================================
+       SECTION BACKGROUNDS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Section Backgrounds</p>
+    <p class="ds-note"><strong>section--bg1</strong> (blue-grey) → product/feature sections (use cases, integrations, how-it-works). <strong>section--bg2</strong> (grey) → utility/info sections (FAQ, privacy). <strong>White</strong> → hero, CTA, pricing, footer. <strong>--badge-bg</strong> → badge/pill only, never sections. Alternate bg1/bg2 between adjacent feature sections.</p>
+    <div class="ds-card-grid">
+      <div>
+        <div class="ds-gradient" style="background: var(--section-bg-1);"></div>
+        <p class="ds-swatch-label">--section-bg-1 · light blue-grey fade</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--section-bg-2);"></div>
+        <p class="ds-swatch-label">--section-bg-2 · light grey fade</p>
+      </div>
+      <div>
+        <div class="ds-gradient" style="background: var(--badge-bg);"></div>
+        <p class="ds-swatch-label">--badge-bg · badge/pill background</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Icon System — Material Symbols Rounded
+    CDN: Google Fonts (already in <head>)
+    Usage: <span class="material-symbols-rounded">icon_name</span>
+    CSS sets size and variation automatically per context — do NOT add inline font-size or font-variation-settings.
+
+    SIZE CONTEXTS (CSS-controlled):
+      48px filled (opsz 48): .card__icon (use cases + integrations)
+      20px filled (opsz 20): .btn, .badge, .stat-badge, .pricing-card__feature
+      20px outlined FILL 0 wght 300: FAQ summary toggle only
+
+    ICON REGISTRY (all icons currently in use):
+      notifications     → blue card / product updates
+      check_circle      → purple card / user onboarding
+      lightbulb         → green card / feature discovery
+      star              → orange card / upsells
+      shopping_bag      → pink card / shoppable stories
+      forum             → teal card / user feedback
+      desktop_windows   → web integration
+      science           → React Native integration
+      web, search, lock → privacy cards
+      bolt              → hero badge
+      calendar_today    → CTA buttons
+      trending_up       → stat badges
+      check             → pricing feature checkmarks
+      add               → FAQ toggle (rotates 45deg via details[open] CSS)
+
+    To use a new icon: add its name to the Google Fonts CSS URL icon parameter if not already included.
+    Icon colors are set by CSS per card/context — do NOT set color inline on icons inside cards.
+  -->
+  <!-- ================================================
+       ICONS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Icons — Material Symbols Rounded (filled)</p>
+    <p class="ds-note">Use <code>&lt;span class="material-symbols-rounded"&gt;icon_name&lt;/span&gt;</code>. CSS controls size/color per context automatically — never set <code>font-size</code> or <code>color</code> inline on icons inside components. <strong>48px filled</strong>: <code>.card__icon</code> (use cases &amp; integrations) · <strong>20px filled</strong>: buttons, badges, pricing · <strong>20px outlined</strong>: FAQ toggle only.</p>
+    <p class="ds-type-meta" style="margin-bottom: 24px;">Font: <code>Material Symbols Rounded</code> via Google Fonts. Use <code>&lt;span class="material-symbols-rounded"&gt;icon_name&lt;/span&gt;</code>. Size and fill controlled via CSS per context.</p>
+    <div class="ds-row" style="flex-wrap: wrap; gap: 32px; align-items: flex-start;">
+
+      <!-- 48px card icons -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-blue-light)">notifications</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">notifications</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-pink)">check_circle</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">check_circle</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-green)">lightbulb</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">lightbulb</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-orange)">star</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">star</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-red)">shopping_bag</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">shopping_bag</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-teal)">forum</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">forum</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-purple)">desktop_windows</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">desktop_windows</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-pink)">science</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">science</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-blue)">web</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">web</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-blue)">search</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">search</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;color:var(--c-blue)">lock</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">lock</code>
+      </div>
+
+      <!-- UI-size icons (20px) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:20px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20;color:var(--c-blue)">bolt</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">bolt · 20px</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:20px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20;color:var(--c-blue)">calendar_today</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">calendar_today · 20px</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:20px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20;color:var(--c-blue)">trending_up</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">trending_up · 20px</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:20px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 20;color:var(--c-dark)">check</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">check · 20px</code>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:80px;">
+        <span class="material-symbols-rounded" style="font-size:20px;font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 20;color:var(--c-dark)">add</span>
+        <code style="font-size:11px;color:var(--c-text-muted)">add · outlined · FAQ</code>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Link
+    Class: .link (on <a> or any element)
+    Use for: inline text links in body copy, feature section "Learn more →" links.
+    Style: --c-blue, 1px underline at 35% opacity → full opacity on hover.
+    NEVER replace a .btn with .link for a primary action.
+    Use .link when the action is secondary/contextual, embedded in running text.
+  -->
+  <!-- ================================================
+       LINK
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Link</p>
+    <p class="ds-note">Use <code>.link</code> for <strong>inline text links</strong> in body copy or "Learn more →" style actions. NOT a replacement for <code>.btn</code> — only for secondary/contextual links.</p>
+    <div class="ds-row ds-row--col" style="gap: 12px;">
+      <div class="ds-type-specimen" style="border: none; padding: 12px 0 0;">
+        <p style="font-size: 16px; line-height: 1.6; color: var(--c-body);">
+          Embed stories directly into your product with our lightweight SDK —
+          <a class="link">read the integration docs</a> to get started in minutes.
+        </p>
+        <p class="ds-type-meta">inline in body copy</p>
+      </div>
+      <div class="ds-type-specimen" style="border: none; padding: 12px 0 0;">
+        <a class="link" style="font-size: 16px;">Learn more →</a>
+        <p class="ds-type-meta">standalone contextual link (feature section)</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Buttons
+    HIERARCHY (most → least prominent):
+      1. .btn.btn-primary      PRIMARY: main nav CTA (Sign Up). Dark filled. Most prominent.
+      2. .btn.btn-secondary    SECONDARY: softer nav action (Sign In). Outlined dark.
+      3. .btn.btn-cta          HERO/LANDING CTA: blue filled, always paired with an icon.
+      4. .btn.btn-cta-outline  INVERSE CTA: white outlined, ONLY on blue/dark backgrounds (CTA section).
+      .btn (no modifier)       Unstyled base — pricing card contact button only.
+    RULES:
+      Nav always shows btn-primary + btn-secondary as a pair.
+      Landing/hero CTAs always use btn-cta (with icon).
+      btn-cta-outline is ONLY for colored/dark backgrounds — NEVER on white.
+      btn-cta should ALWAYS include an icon span.
+  -->
+  <!-- ================================================
+       BUTTONS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Buttons</p>
+    <p class="ds-note"><strong>btn-primary</strong> main nav CTA (dark) · <strong>btn-secondary</strong> softer nav action (outlined) · <strong>btn-cta</strong> hero/landing CTA (blue, always with icon) · <strong>btn-cta-outline</strong> on dark/blue backgrounds ONLY. Nav always shows primary+secondary pair. Never use btn-cta-outline on white.</p>
+    <div class="ds-row" style="align-items: center;">
+      <div class="ds-item">
+        <a class="btn btn-primary">Sign Up</a>
+        <p class="ds-item-label">.btn-primary</p>
+      </div>
+      <div class="ds-item">
+        <a class="btn btn-secondary">Sign In</a>
+        <p class="ds-item-label">.btn-secondary</p>
+      </div>
+      <div class="ds-item">
+        <a class="btn btn-cta">Book a Demo
+          <span class="material-symbols-rounded">calendar_today</span>
+        </a>
+        <p class="ds-item-label">.btn-cta</p>
+      </div>
+      <div class="ds-item" style="background: var(--c-blue); padding: 24px; border-radius: 16px;">
+        <a class="btn btn-cta-outline">Book a Demo
+          <span class="material-symbols-rounded">calendar_today</span>
+        </a>
+        <p class="ds-item-label" style="color: rgba(255,255,255,0.6);">.btn-cta-outline (on blue)</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Badges & Pills
+    .badge               Hero eyebrow badge. One per hero, above h1. Always icon + text.
+    .badge.badge--dark   Category/industry label on feature sections (e.g. "Sportsbooks"). No icon.
+    .stat-badge          Metric inside a card. Icon + stat text. Use ONLY inside .card.
+    NEVER use stat-badge outside a card.
+    NEVER use .badge as a general-purpose label — badge--dark is for categories, .badge for eyebrows.
+  -->
+  <!-- ================================================
+       BADGE / PILL
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Badges &amp; Pills</p>
+    <p class="ds-note"><strong>.badge</strong> — hero eyebrow only (icon + text, one per hero) · <strong>.badge--dark</strong> — category label on feature sections · <strong>.stat-badge</strong> — metric inside <code>.card</code> only. Never mix contexts.</p>
+    <div class="ds-row" style="align-items: center;">
+      <div class="ds-item">
+        <span class="badge">
+          <span class="material-symbols-rounded">bolt</span>
+          5 minutes to integrate
+        </span>
+        <p class="ds-item-label">.badge</p>
+      </div>
+      <div class="ds-item">
+        <span class="stat-badge">
+          <span class="material-symbols-rounded">trending_up</span>
+          60% higher engagement vs popups
+        </span>
+        <p class="ds-item-label">.stat-badge</p>
+      </div>
+      <div class="ds-item">
+        <span class="badge badge--dark">Sportsbooks</span>
+        <p class="ds-item-label">.badge--dark</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Card (use-case / feature)
+    Structure: <div class="card card--[color]"> <div class="card__icon"> <span class="material-symbols-rounded">…</span> </div> <div class="card__body"> <h3>…</h3> <p>…</p> <span class="stat-badge">…</span> </div> </div>
+    COLOR MODIFIERS: card--blue, --purple, --green, --orange, --pink, --teal, --grey
+      Colors are purely aesthetic for visual variety. No semantic meaning.
+      Do not repeat the same color twice in the same grid.
+    card--grey: neutral variant for informational/trust sections. No stat-badge.
+    ALWAYS include: icon + h3 + p.
+    stat-badge is optional but only for colored cards (not grey).
+    Icon color is set by CSS per modifier — do NOT override.
+    GRID: .grid-3 only. Do NOT add .grid-3--2-mobile — cards are too text-heavy for 2-col on small screens.
+    NEVER set background inline — always use the modifier class.
+  -->
+  <!-- ================================================
+       USE CASE CARDS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Cards</p>
+    <p class="ds-note"><strong>Structure:</strong> <code>.card .card--[color]</code> → <code>.card__icon</code> (icon) + <code>.card__body</code> (h3 + p + optional stat-badge). Colors are aesthetic only — no semantic meaning, no repeats in same grid. <strong>card--grey</strong> = neutral/trust cards, no stat-badge. Icon color set by CSS — do not override. Grid: <code>.grid-3</code> (1-col on mobile — do NOT add <code>.grid-3--2-mobile</code>, cards are too text-heavy to be 2-col on small screens).</p>
+    <div class="grid-3">
+
+      <div class="card card--blue">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">notifications</span>
+        </div>
+        <div class="card__body">
+          <h3>Product updates</h3>
+          <p>Announce new features and changes with story-style updates. Users stay informed and ready to try what's new.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            60% higher engagement vs popups
+          </span>
+        </div>
+      </div>
+
+      <div class="card card--purple">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">check_circle</span>
+        </div>
+        <div class="card__body">
+          <h3>User onboarding</h3>
+          <p>Guide users through new features with short, engaging story tutorials embedded right in your product.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            40% higher activation in SMB
+          </span>
+        </div>
+      </div>
+
+      <div class="card card--green">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">lightbulb</span>
+        </div>
+        <div class="card__body">
+          <h3>Feature discovery</h3>
+          <p>Spotlight lesser-known features, guiding users to tools that add value and enhance their experience.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            35% boost in new feature adoption
+          </span>
+        </div>
+      </div>
+
+      <div class="card card--orange">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">star</span>
+        </div>
+        <div class="card__body">
+          <h3>Upsells</h3>
+          <p>Highlight premium features to help users see extra value and encourage upgrades right within the app.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            Up to 35% higher conversion
+          </span>
+        </div>
+      </div>
+
+      <div class="card card--pink">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">shopping_bag</span>
+        </div>
+        <div class="card__body">
+          <h3>Shoppable stories</h3>
+          <p>Showcase products in story-style videos that link directly to product pages.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            3× higher conversions
+          </span>
+        </div>
+      </div>
+
+      <div class="card card--teal">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">forum</span>
+        </div>
+        <div class="card__body">
+          <h3>User feedback</h3>
+          <p>Deliver key updates and team highlights with a personal touch.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            2× more responses
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Stat Card
+    Structure: <div class="stat-card"> <p class="stat-card__value">…</p> <p class="stat-card__label">…</p> <p class="stat-card__description">…</p> </div>
+    Two variants (same class, different content):
+      Number variant: __value = "40%", "2×", etc. For metrics / social proof sections.
+      Emoji variant:  __value = single emoji. For audience segments / use-case types.
+    GRID: .grid-4
+    Do NOT mix number and emoji variants in the same grid.
+    __description is optional but recommended for context.
+  -->
+  <!-- ================================================
+       STAT CARDS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Stat Cards — number variant</p>
+    <p class="ds-note"><strong>Number variant</strong> (40%, 2×) → metrics/social proof · <strong>Emoji variant</strong> (🚀) → audience segments/use-cases. Same <code>.stat-card</code> class. Grid: <code>.grid-4</code>. Never mix variants in one grid.</p>
+    <div class="grid-4">
+      <div class="stat-card">
+        <p class="stat-card__value">40%</p>
+        <p class="stat-card__label">Faster setup</p>
+        <p class="stat-card__description">Integrate in minutes with our lightweight JS snippet — no backend changes required.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__value">2×</p>
+        <p class="stat-card__label">Higher retention</p>
+        <p class="stat-card__description">Users who watch stories return twice as often as those who don't.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__value">60%</p>
+        <p class="stat-card__label">More engagement</p>
+        <p class="stat-card__description">Story-style updates outperform traditional popups and banners consistently.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__value">3×</p>
+        <p class="stat-card__label">Better conversions</p>
+        <p class="stat-card__description">Shoppable stories convert at three times the rate of static product pages.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-section">
+    <p class="ds-section-label">Stat Cards — emoji variant</p>
+    <div class="grid-4">
+      <div class="stat-card">
+        <p class="stat-card__value">🚀</p>
+        <p class="stat-card__label">SaaS Platforms</p>
+        <p class="stat-card__description">Drive activation and feature adoption inside your web app with embedded stories.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__value">📱</p>
+        <p class="stat-card__label">Mobile Apps</p>
+        <p class="stat-card__description">Native SDK for iOS and Android — stories that feel at home on any device.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__value">🛍️</p>
+        <p class="stat-card__label">E-commerce</p>
+        <p class="stat-card__description">Turn product discovery into conversions with shoppable story experiences.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__value">📰</p>
+        <p class="stat-card__label">Media &amp; Publishers</p>
+        <p class="stat-card__description">Package editorial content as stories to increase time-on-site and return visits.</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Privacy / Neutral Card
+    Use .card.card--grey for trust, security, privacy, or any informational item with no metric.
+    Same structure as use-case card but WITHOUT stat-badge.
+    Grid: .grid-3
+    These cards intentionally have no color to signal neutrality/trustworthiness.
+  -->
+  <!-- ================================================
+       PRIVACY CARDS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Privacy Cards</p>
+    <p class="ds-note"><code>.card.card--grey</code> — neutral/trust cards (privacy, security). Same structure as use-case card but <strong>no stat-badge</strong>. Grid: <code>.grid-3</code>.</p>
+    <div class="grid-3">
+      <div class="card card--grey">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">web</span>
+        </div>
+        <div class="card__body">
+          <h3>Minimal page access</h3>
+          <p>The widget queries for known selectors inside its container instead of scanning the whole DOM.</p>
+        </div>
+      </div>
+      <div class="card card--grey">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">search</span>
+        </div>
+        <div class="card__body">
+          <h3>Transparent calls</h3>
+          <p>All requests go to a small, predictable set of endpoints over HTTPS.</p>
+        </div>
+      </div>
+      <div class="card card--grey">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">lock</span>
+        </div>
+        <div class="card__body">
+          <h3>Request-only data</h3>
+          <p>The widget records only the interaction signals you configure.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Pricing Card
+    HIERARCHY (most → least prominent):
+      1. .pricing-card.pricing-card--dark  PRO — RECOMMENDED tier. Dark/black. Premium feel.
+      2. .pricing-card.pricing-card--blue  STARTER — secondary recommended. Blue/accent.
+      3. .pricing-card                     TRIAL / ENTERPRISE — flanking tiers. White/default.
+    Structure: <div class="pricing-card [modifier]"> <h3>…</h3> <ul class="pricing-card__features"> <li class="pricing-card__feature"> <span class="material-symbols-rounded">check</span> feature text </li> </ul> <a class="btn">…</a> </div>
+    GRID: always .grid-4
+    Typical tier order: Trial (default) → Starter (blue) → Pro (dark) → Enterprise (default).
+    Feature checkmarks always use icon: check (Material Symbols, sized by CSS).
+    Text and icon colors on --blue and --dark cards are handled by CSS (white).
+  -->
+  <!-- ================================================
+       PRICING CARDS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Pricing Cards</p>
+    <p class="ds-note"><strong>pricing-card--dark</strong> = Pro (RECOMMENDED, dark/premium) · <strong>pricing-card--blue</strong> = Starter (secondary, accent blue) · <strong>default</strong> = Trial/Enterprise (flanking). Order: Trial → Starter → Pro → Enterprise. Grid: <code>.grid-4</code>. Checkmark icon color handled by CSS — no overrides needed.</p>
+    <div class="grid-4">
+      <div class="pricing-card">
+        <h3>Trial</h3>
+        <ul class="pricing-card__features">
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>100 views</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>1 story</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>1 widget</li>
+        </ul>
+        <a class="btn">Contact Us</a>
+      </div>
+      <div class="pricing-card pricing-card--blue">
+        <h3>Starter</h3>
+        <ul class="pricing-card__features">
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>100,000 views/month</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>Unlimited stories</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>1 widget</li>
+        </ul>
+        <a class="btn">Contact Us</a>
+      </div>
+      <div class="pricing-card pricing-card--dark">
+        <h3>Pro</h3>
+        <ul class="pricing-card__features">
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>500,000 views/month</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>Unlimited stories</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>Unlimited widgets</li>
+        </ul>
+        <a class="btn">Contact Us</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Enterprise</h3>
+        <ul class="pricing-card__features">
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>Everything in Pro</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>Custom interactions</li>
+          <li class="pricing-card__feature"><span class="material-symbols-rounded">check</span>Data residency options</li>
+        </ul>
+        <a class="btn">Contact Us</a>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Core Feature Card
+    Use for: product feature showcase with image/screenshot area + title + description.
+    Structure: <div class="core-feature-card"> <div class="core-feature-card__img">…</div> <h3>…</h3> <p>…</p> </div>
+    __img area: should contain a screenshot, illustration, or mockup. NOT an icon.
+    GRID: .grid-2 (2-col desktop, 1-col mobile).
+    Typically followed by a .core-features__text-grid to expand the feature list in compact form.
+  -->
+  <!-- ================================================
+       CORE FEATURE CARD
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Core Feature Cards</p>
+    <p class="ds-note"><strong>Feature image card</strong> — <code>.core-feature-card__img</code> holds a screenshot/illustration (not an icon). Grid: <code>.grid-2</code>. Typically paired with text feature items below for extended feature list.</p>
+    <div class="grid-2">
+      <div class="core-feature-card">
+        <div class="core-feature-card__img" style="background: #e8eeff; height: 180px;"></div>
+        <h3>Story management</h3>
+        <p>Manage every aspect of your stories in one place, from creation to publishing.</p>
+      </div>
+      <div class="core-feature-card">
+        <div class="core-feature-card__img" style="background: #f0e8ff; height: 180px;"></div>
+        <h3>Scheduling</h3>
+        <p>Schedule stories to go live at specific times and set expiration dates for temporary promotions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Text Feature Items
+    Use for: compact feature list with no images or icons. Title + short description only.
+    Structure: <div class="core-features__text-grid"> <div class="core-features__text-item"> <h3>…</h3> <p>…</p> </div> … </div>
+    Grid: .core-features__text-grid (4-col desktop, 2-col tablet+mobile).
+    Typically 4 or 8 items. Use after .core-feature-card grid to expand feature detail.
+    Does NOT have its own section title — sits within the same section as core feature cards.
+  -->
+  <!-- ================================================
+       TEXT FEATURE ITEMS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Text Feature Items</p>
+    <p class="ds-note"><strong>Compact feature list</strong> — no icons/images, title + description only. Grid: <code>.core-features__text-grid</code> (4-col → 2-col mobile). Typically 4–8 items. Used after core feature cards in the same section.</p>
+    <div class="core-features__text-grid">
+      <div class="core-features__text-item">
+        <h3>Interactions</h3>
+        <p>Add buttons, polls, CTAs, and swipe-ups directly in stories to drive user actions.</p>
+      </div>
+      <div class="core-features__text-item">
+        <h3>AI generation</h3>
+        <p>Use one of our integrations to generate stories from text and speed-up production further.</p>
+      </div>
+      <div class="core-features__text-item">
+        <h3>Multi-format</h3>
+        <p>Seamlessly incorporate images, short videos, and GIFs into stories to diversify content.</p>
+      </div>
+      <div class="core-features__text-item">
+        <h3>Cross-platform</h3>
+        <p>Deploy stories that look and feel consistent on iOS, Android, and web platforms.</p>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Feature Section
+    Full-width 2-col layout: media + copy. One topic per section instance.
+    Structure:
+      <div class="section--bg[1|2]">
+        <div class="container">
+          <div class="feature-section [feature-section--reversed]">
+            <div class="feature-section__media">…</div>
+            <div class="feature-section__copy">
+              <span class="badge badge--dark">Category</span>
+              <h2 class="feature-section__headline">… <span class="accent">…</span></h2>
+              <p class="feature-section__body">…</p>
+              <a class="feature-section__link">Learn more →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    Default: media left, copy right.
+    .feature-section--reversed: media right, copy left. Alternate between instances.
+    Always wrap with section--bg1 or section--bg2. Alternate per instance.
+    .feature-section__link has its own style: dark text, font-weight 600, animated gap on hover (arrow effect). NOT the same as .link.
+    .accent span in headline applies the blue gradient text effect.
+  -->
+  <!-- ================================================
+       FEATURE SECTION
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Feature Section — media + copy</p>
+    <p class="ds-note"><strong>Media + copy split</strong>. Default: media left. <code>.feature-section--reversed</code>: media right — alternate between instances. Always wrap in <code>.section--bg1</code> or <code>--bg2</code> (alternate). <code>.feature-section__link</code> is its own style (dark, bold, animated gap on hover) — not <code>.link</code>. Use <code>.accent</code> span for blue gradient word in headline.</p>
+    <div class="section--bg2" style="border-radius: var(--radius-card); padding: var(--section-py) 0;">
+      <div class="container" style="max-width: 100%;">
+        <div class="feature-section">
+          <div class="feature-section__media">
+            <div style="width:100%; aspect-ratio: 4/3; background: linear-gradient(135deg, #e8eeff, #f0e8ff); border-radius: var(--radius-card); display:flex; align-items:center; justify-content:center; color:var(--c-text-muted); font-size:14px;">[mockup]</div>
+          </div>
+          <div class="feature-section__copy">
+            <span class="badge badge--dark">Sportsbooks</span>
+            <h2 class="feature-section__headline">Stories that drive <span class="accent">everything</span></h2>
+            <p class="feature-section__body">Engage fans between games with live updates, highlight reels, and personalised offers delivered as stories — right inside your app.</p>
+            <a class="feature-section__link">Learn more →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-section">
+    <p class="ds-section-label">Feature Section — reversed</p>
+    <div class="section--bg1" style="border-radius: var(--radius-card); padding: var(--section-py) 0;">
+      <div class="container" style="max-width: 100%;">
+        <div class="feature-section feature-section--reversed">
+          <div class="feature-section__media">
+            <div style="width:100%; aspect-ratio: 4/3; background: linear-gradient(135deg, #b0f7d1, #d1ffec); border-radius: var(--radius-card); display:flex; align-items:center; justify-content:center; color:var(--c-text-muted); font-size:14px;">[mockup]</div>
+          </div>
+          <div class="feature-section__copy">
+            <span class="badge badge--dark">E-commerce</span>
+            <h2 class="feature-section__headline">Turn browsing into <span class="accent">buying</span></h2>
+            <p class="feature-section__body">Shoppable stories let customers discover, explore, and purchase products without ever leaving the story — reducing friction at every step.</p>
+            <a class="feature-section__link">Learn more →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Integration Items
+    Use for: listing supported SDK / integration types (Web, React Native, etc.).
+    Structure:
+      <div class="integration__grid">
+        <div class="integration__item">
+          <div class="card__icon"><span class="material-symbols-rounded">icon_name</span></div>
+          <div class="integration__text">
+            <h3>Name</h3>
+            <p>Description.</p>
+          </div>
+        </div>
+      </div>
+    Icon: use card__icon (reuses the same white rounded box as use-case cards, with a shadow added by integration context CSS).
+    Icon colors: first item = var(--c-purple), second = var(--c-pink) — set automatically by CSS, no override needed.
+    Typically 2 items. Add more as integrations expand.
+    No sdk-pill needed — omit labels.
+  -->
+  <!-- ================================================
+       INTEGRATION ITEMS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Integration Items</p>
+    <p class="ds-note"><strong>SDK/integration listing.</strong> Use <code>.card__icon</code> for the icon box (same component as use-case cards — shadow applied automatically in this context). Icon colors (purple/pink) set by CSS for first/second child — no override needed. Structure: <code>.integration__grid</code> → <code>.integration__item</code> → <code>.card__icon</code> + <code>.integration__text</code> (h3 + p).</p>
+    <div class="integration__grid">
+      <div class="integration__item">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">desktop_windows</span>
+        </div>
+        <div class="integration__text">
+          <h3>Web</h3>
+          <p>A simple and lightweight JS library built for maximum compatibility.</p>
+        </div>
+      </div>
+      <div class="integration__item">
+        <div class="card__icon">
+          <span class="material-symbols-rounded">science</span>
+        </div>
+        <div class="integration__text">
+          <h3>React Native</h3>
+          <p>A robust SDK for cross-platform apps built with React Native.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: FAQ Accordion
+    Uses native HTML <details>/<summary> — no JavaScript needed.
+    Structure:
+      <div class="faq__list">
+        <details class="faq__item">
+          <summary class="faq__question">
+            Question text
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">Answer text.</div>
+        </details>
+      </div>
+    Browser handles open/close natively. CSS rotates the icon 45deg on details[open].
+    Icon: always "add" (outlined, wght 300) — set by CSS. Do NOT use a different icon.
+    Use with standard .section__header (centered, same as every other section).
+  -->
+  <!-- ================================================
+       FAQ ITEM
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">FAQ Item</p>
+    <p class="ds-note">Native <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> — no JS. Browser handles open/close. Icon <code>add</code> rotates 45deg when open via <code>details[open]</code> CSS. Use standard <code>.section__header</code> (centered) for the section title.</p>
+    <div class="faq__list">
+      <details class="faq__item" open>
+        <summary class="faq__question">
+          How does Coolstory work?
+          <span class="material-symbols-rounded">add</span>
+        </summary>
+        <div class="faq__answer">Coolstory helps you communicate with your userbase by providing stories as a service in a single product. As soon as it's integrated into your app, you can create and post stories for your users to see straight from the Coolstory web or mobile apps.</div>
+      </details>
+      <details class="faq__item">
+        <summary class="faq__question">
+          How do I post a story?
+          <span class="material-symbols-rounded">add</span>
+        </summary>
+        <div class="faq__answer">Collapsed answer.</div>
+      </details>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: How It Works Card Pair
+    Fixed 2-col layout: widget preview (left) + code snippet (right).
+    Not a repeatable pattern — this is a single section.
+    Structure: .how-it-works__grid > [widget col] + [code col]
+      Widget col: .how-it-works__side-title.blue + .how-it-works__side-sub + .how-it-works__widget-card
+      Code col:   .how-it-works__side-title.pink + .how-it-works__side-sub + .how-it-works__code-card
+    Code uses syntax token spans: .tok-tag, .tok-attr, .tok-equals, .tok-string inside <pre class="how-it-works__code">
+    Wrap in section--bg2.
+  -->
+  <!-- ================================================
+       HOW IT WORKS CARDS
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">How It Works Cards</p>
+    <p class="ds-note"><strong>Fixed 2-col section</strong> — widget mockup (left, .blue title) + code snippet (right, .pink title). Not repeatable. Code uses <code>.tok-tag / .tok-attr / .tok-string</code> spans for syntax highlighting. Wrap in <code>section--bg2</code>.</p>
+    <div class="how-it-works__grid">
+      <div>
+        <h3 class="how-it-works__side-title blue">You get this…</h3>
+        <p class="how-it-works__side-sub">Instagram-like stories within your <strong>web</strong> or <strong>mobile</strong> app</p>
+        <div class="how-it-works__widget-card" style="display:flex; align-items:center; justify-content:center; color: var(--c-text-muted); font-size: 14px; padding: 40px;">[widget mockup image]</div>
+      </div>
+      <div>
+        <h3 class="how-it-works__side-title pink">…with this</h3>
+        <p class="how-it-works__side-sub">A few lines of code</p>
+        <div class="how-it-works__code-card">
+          <pre class="how-it-works__code"><span class="tok-tag">&lt;div</span> <span class="tok-attr">id</span><span class="tok-equals">=</span><span class="tok-string">"coolstory-container"</span><span class="tok-tag">&gt;&lt;/div&gt;</span>
+<span class="tok-tag">&lt;script</span>
+    <span class="tok-attr">type</span><span class="tok-equals">=</span><span class="tok-string">"module"</span>
+    <span class="tok-attr">src</span><span class="tok-equals">=</span><span class="tok-string">"https://app.coolstory.me/widget/widget.js"</span>
+<span class="tok-tag">&gt;&lt;/script&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Featured Article Card
+    Use for: blog post / case study callout. Full-width horizontal card.
+    Structure: <a class="featured-article__card"> <div class="featured-article__image-wrap">…</div> <div class="featured-article__text"> <h3>…</h3> </div> </a>
+    MUST be an <a> element (not <div>) for hover state to work.
+    Image fill: left half, fills height. Text: right half, white background, 40px padding.
+    Can be used solo (featured callout) or inside .grid-2 for a blog listing grid.
+    Link to the full article via href on the <a>.
+  -->
+  <!-- ================================================
+       FEATURED ARTICLE CARD
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Featured Article Card</p>
+    <p class="ds-note">Root element must be <code>&lt;a&gt;</code> (not <code>&lt;div&gt;</code>) for hover state. Image left half, text right half. Use solo as a featured callout, or inside <code>.stack</code> for a blog listing (full-width cards stacked vertically).</p>
+    <a class="featured-article__card">
+      <div class="featured-article__image-wrap" style="background: linear-gradient(135deg, #e8eeff, #f0e8ff); min-height: 280px; display:flex; align-items:center; justify-content:center; color: var(--c-text-muted); font-size: 14px;">[article image]</div>
+      <div class="featured-article__text">
+        <h3>How Readdle improved their activation by 70% with stories</h3>
+      </div>
+    </a>
+  </div>
+
+  <!--
+    COMPONENT: Hero Section
+    Structure:
+      <section class="hero">
+        <div class="hero__blob hero__blob--pink"></div>
+        <div class="hero__blob hero__blob--blue"></div>
+        <div class="hero__inner">   ← 2fr text : 1fr media grid
+          <div class="hero__content">
+            <span class="badge">…</span>              ← eyebrow badge (always .badge with icon)
+            <h1>…</h1>                                ← headline; use .black / .pink / default spans for color words
+            <p class="hero__sub">…</p>                ← subtitle; use <span class="accent"> for blue link-style text
+            <a class="btn btn-cta">…</a>              ← always btn-cta (never btn-primary here)
+          </div>
+          <div class="hero__video-wrap">
+            <video class="hero__video" autoplay loop muted playsinline src="…"></video>
+          </div>
+        </div>
+      </section>
+    Background blobs: always include both --pink (top-right) and --blue (bottom-left).
+    Grid is 2fr : 1fr — text column wider so h1 wraps in ~3 lines, not 4.
+    h1 color spans: default = blue gradient, .black = --c-dark, .pink = --c-pink.
+    NEVER use btn-primary in hero — always btn-cta.
+  -->
+  <!--
+    COMPONENT: Document Page
+    Use for: privacy policy, terms of service, legal pages — any long-form reading document.
+    Wrapper: <div class="container--narrow"> constrains width to 860px for comfortable reading.
+    Scoped h1/h2/h3 sizes: smaller than global (56px / 32px / 22px) — appropriate for document reading.
+    Structure:
+      <div class="document-page">
+        <div class="container--narrow">
+          <h1>Privacy Policy</h1>
+          <p class="document-page__meta">Last updated: January 1, 2026</p>
+          <hr class="document-page__divider">
+          <h2>1. Acceptance of Terms</h2>
+          <p>…</p>
+          <h3>1.1 Definitions</h3>
+          <p>…</p>
+          <ol><li>…</li></ol>
+        </div>
+      </div>
+    NEVER use global h1/h2/h3 sizes on document pages — they are overridden by .document-page scoping.
+    NEVER use .container (too wide) — always .container--narrow for document pages.
+  -->
+  <!-- ================================================
+       DOCUMENT PAGE
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Document Page (privacy policy, terms, legal)</p>
+    <p class="ds-note">Wrapper: <code>.container--narrow</code> (860px max-width). h1/h2/h3 are scoped smaller inside <code>.document-page</code> — 56px / 32px / 22px. Use <code>.document-page__meta</code> for date, <code>.document-page__divider</code> for the hr. Body text and lists styled automatically. Never use <code>.container</code> — always <code>.container--narrow</code> here.</p>
+    <div class="document-page" style="border: 1px solid var(--c-border); border-radius: var(--radius-card); padding: 60px 80px;">
+      <h1>Privacy Policy</h1>
+      <p class="document-page__meta">Last updated: January 1, 2026</p>
+      <hr class="document-page__divider">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using Coolstory, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the service.</p>
+      <h3>1.1 Definitions</h3>
+      <p>For the purposes of this agreement, the following definitions apply to all sections.</p>
+      <ol>
+        <li>The term "Service" refers to the Coolstory platform and all associated products.</li>
+        <li>The term "User" refers to any individual or entity accessing the Service.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ================================================
+       HERO
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Hero — default (2fr text + 1fr media)</p>
+    <p class="ds-note"><strong>Grid: 2fr text : 1fr media</strong> (keeps h1 to ~3 lines). Always include both blobs (--pink top-right, --blue bottom-left). h1 color spans: default = blue gradient · <code>.black</code> = dark · <code>.pink</code> = accent. CTA: always <code>.btn-cta</code> (never btn-primary). Eyebrow: always <code>.badge</code> with icon.</p>
+    <div style="border-radius: var(--radius-card); overflow: hidden;">
+      <div class="hero" style="min-height: 520px; padding: 48px 0;">
+        <div class="hero__blob hero__blob--pink"></div>
+        <div class="hero__blob hero__blob--blue"></div>
+        <div class="hero__inner">
+          <div class="hero__content">
+            <span class="badge">
+              <span class="material-symbols-rounded">bolt</span>
+              5 minutes to integrate
+            </span>
+            <h1>
+              <span class="black">Drive</span> <span>user<br>engagement</span> <span class="black">with</span><br>
+              <span class="pink">stories</span>
+            </h1>
+            <p class="hero__sub">Share news, product updates, offers, and onboarding guides with short videos <span class="accent">that everybody loves</span></p>
+            <a class="btn btn-cta">
+              Book a Demo
+              <span class="material-symbols-rounded">calendar_today</span>
+            </a>
+          </div>
+          <div class="hero__video-wrap">
+            <video src="https://framerusercontent.com/assets/0hZS7B7HzHm2AZJnvMfk5oPu6U.mp4" autoplay loop muted playsinline class="hero__video"></video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Nav
+    Structure: <nav class="nav"> <div class="nav__inner"> <a class="nav__logo"><img …></a> <nav class="nav__links"> <a href="#section-id">…</a> … </nav> <div class="nav__actions"> <a class="btn btn-primary">Sign Up</a> <a class="btn btn-secondary">Sign In</a> </div> </div> </nav>
+    .nav is position: fixed at top of page. Override to static only in design system preview.
+    .nav__logo: always an <img> of "images/Coolstory long logo.png", never text.
+    .nav__links: smooth-scroll anchor links (href="#section-id"). Hidden on mobile (≤809px).
+    .nav__actions: ALWAYS exactly btn-primary + btn-secondary pair. Never add a third button.
+    NEVER put btn-cta in the nav — that is for landing sections only.
+  -->
+  <!-- ================================================
+       NAV
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Nav</p>
+    <p class="ds-note"><strong>Fixed top bar.</strong> Logo: always <code>&lt;img&gt;</code> of Coolstory long logo. Links: smooth-scroll anchors, hidden on mobile. Actions: always exactly <code>btn-primary + btn-secondary</code> — no third button, never <code>btn-cta</code> in nav.</p>
+    <div style="border: 1px solid var(--c-border); border-radius: 16px; overflow: hidden;">
+      <nav class="nav" style="position: static;">
+        <div class="nav__inner" style="max-width: 100%; padding: 18px 32px;">
+          <a class="nav__logo">
+            <img src="images/Coolstory long logo.png" alt="Coolstory">
+          </a>
+          <nav class="nav__links">
+            <a>Home</a>
+            <a>Use cases</a>
+            <a>Pricing</a>
+            <a>FAQ</a>
+            <a>Blog</a>
+          </nav>
+          <div class="nav__actions">
+            <a class="btn btn-primary">Sign Up</a>
+            <a class="btn btn-secondary">Sign In</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: CTA Section
+    Use for: end-of-page conversion banner. One per page, placed near the bottom before footer.
+    Structure: <div class="cta-section"> <h2>…</h2> <p>…</p> <a class="btn btn-cta-outline">… <span class="material-symbols-rounded">calendar_today</span> </a> </div>
+    Background: blue gradient (defined in .cta-section CSS). All text is white.
+    ALWAYS use btn-cta-outline here (NOT btn-cta) — background is colored.
+    ALWAYS include the calendar_today icon in the button.
+    NEVER use btn-primary or btn-secondary on this section.
+  -->
+  <!-- ================================================
+       CTA SECTION
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">CTA Section</p>
+    <p class="ds-note"><strong>End-of-page conversion banner.</strong> One per page, before footer. Blue gradient background → always use <code>btn-cta-outline</code> (NOT btn-cta). Always include <code>calendar_today</code> icon. Never use btn-primary/secondary here.</p>
+    <div style="border-radius: var(--radius-card); overflow: hidden;">
+      <div class="cta-section" style="padding: 80px;">
+        <h2>Explode your engagement</h2>
+        <p>Record, upload, and publish a story — that's all it takes.</p>
+        <a class="btn btn-cta-outline">
+          Book a Demo
+          <span class="material-symbols-rounded">calendar_today</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    COMPONENT: Footer
+    Structure:
+      <footer class="footer">
+        <div class="container">
+          <div class="footer__inner">
+            <div>
+              <div class="footer__brand"><img src="images/Coolstory long logo.png" alt="Coolstory"></div>
+            </div>
+            <div>
+              <p class="footer__col-title">Column Title</p>
+              <ul class="footer__links"> <li><a href="…">Link</a></li> … </ul>
+            </div>
+            … (more columns)
+          </div>
+          <div class="footer__bottom"><p>© 2026 Coolstory</p></div>
+        </div>
+      </footer>
+    .footer__brand: always the Coolstory long logo <img>, never text.
+    .footer__col-title: column heading. Current columns: Coolstory, Use cases, Legal.
+    .footer__links: <ul> with <li><a> items. Links are unstyled by default (color: inherit).
+    .footer__bottom: copyright line. Update year as needed.
+    Footer sits on white background — no section-bg class needed.
+  -->
+  <!-- ================================================
+       FOOTER
+       ================================================ -->
+  <div class="ds-section">
+    <p class="ds-section-label">Footer</p>
+    <p class="ds-note"><strong>footer__inner</strong>: brand column + link columns grid. Brand: always <code>&lt;img&gt;</code> of Coolstory long logo. Columns: <code>footer__col-title</code> + <code>footer__links</code> ul. <code>footer__bottom</code>: copyright. White background — no section-bg needed.</p>
+    <div style="border: 1px solid var(--c-border); border-radius: var(--radius-card); overflow: hidden;">
+      <footer class="footer">
+        <div class="container">
+          <div class="footer__inner">
+            <div>
+              <div class="footer__brand">
+                <img src="images/Coolstory long logo.png" alt="Coolstory">
+              </div>
+            </div>
+            <div>
+              <p class="footer__col-title">Coolstory</p>
+              <ul class="footer__links">
+                <li><a>Homepage</a></li>
+                <li><a>Book a demo</a></li>
+                <li><a>Features</a></li>
+                <li><a>Docs</a></li>
+                <li><a>Blog</a></li>
+              </ul>
+            </div>
+            <div>
+              <p class="footer__col-title">Use cases</p>
+              <ul class="footer__links">
+                <li><a>User onboarding</a></li>
+                <li><a>Feature discovery</a></li>
+                <li><a>Product updates</a></li>
+                <li><a>Shoppable stories</a></li>
+                <li><a>User feedback</a></li>
+                <li><a>Upsells</a></li>
+              </ul>
+            </div>
+            <div>
+              <p class="footer__col-title">Legal</p>
+              <ul class="footer__links">
+                <li><a>Terms &amp; Conditions</a></li>
+                <li><a>Privacy policy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="footer__bottom">
+            <p>© 2026 Coolstory</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

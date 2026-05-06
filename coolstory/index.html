@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coolstory.me — Improve your onboarding and adoption metrics in 1-2-3</title>
+  <meta name="description" content="Share news, product updates, offers, and onboarding guides with short videos that everybody loves.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;900&family=Inter:wght@400;500;600;700&family=Fragment+Mono&display=swap&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       NAV
+       ============================================================ -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="./" class="nav__logo">
+        <img src="images/Coolstory long logo.png" alt="Coolstory">
+      </a>
+      <nav class="nav__links">
+        <a href="./">Home</a>
+        <a href="./#usecases">Use cases</a>
+        <a href="./#priceless">Pricing</a>
+        <a href="./#faq">FAQ</a>
+        <a href="./blog">Blog</a>
+      </nav>
+      <div class="nav__actions">
+        <a href="https://app.coolstory.me/signup" class="btn btn-primary">Sign Up</a>
+        <a href="https://app.coolstory.me/login" class="btn btn-secondary">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <div class="hero__blob hero__blob--pink"></div>
+    <div class="hero__blob hero__blob--blue"></div>
+    <div class="hero__inner">
+      <div class="hero__content">
+        <span class="badge">
+          <span class="material-symbols-rounded">bolt</span>
+          5 minutes to integrate
+        </span>
+        <h1>
+          <span class="black">Drive</span> <span>user<br>engagement</span> <span class="black">with</span><br>
+          <span class="pink">stories</span>
+        </h1>
+        <p class="hero__sub">
+          Share news, product updates, offers, and onboarding guides with short videos <span class="accent">that everybody loves</span>
+        </p>
+        <a href="https://calendly.com/imalchenko/chat-with-igor" class="btn btn-cta" target="_blank" rel="noopener">
+          Book a Demo
+          <span class="material-symbols-rounded">calendar_today</span>
+        </a>
+      </div>
+      <div class="hero__video-wrap">
+        <video
+          src="https://framerusercontent.com/assets/0hZS7B7HzHm2AZJnvMfk5oPu6U.mp4"
+          autoplay
+          loop
+          muted
+          playsinline
+          class="hero__video"
+        ></video>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS
+       ============================================================ -->
+  <section class="section section--bg1" id="how">
+    <div class="container">
+      <div class="section__header">
+        <h2>How it works</h2>
+      </div>
+      <div class="how-it-works__grid">
+        <!-- Left: You get this -->
+        <div>
+          <h3 class="how-it-works__side-title blue">You get this…</h3>
+          <p class="how-it-works__side-sub">Instagram-like stories within your <strong>web</strong> or <strong>mobile</strong> app</p>
+          <div class="how-it-works__widget-card">
+            <img
+              src="images/widget-stories-mockup.png"
+              alt="Coolstory widget showing story circles with avatars: Latest news, Highlights, Q&A, Upcoming, Backstage"
+              width="628"
+              height="309"
+            >
+          </div>
+        </div>
+        <!-- Right: with this -->
+        <div>
+          <h3 class="how-it-works__side-title pink">…with this</h3>
+          <p class="how-it-works__side-sub">A few lines of code</p>
+          <div class="how-it-works__code-card">
+            <pre class="how-it-works__code"><span class="tok-tag">&lt;div</span> <span class="tok-attr">id</span><span class="tok-equals">=</span><span class="tok-string">"coolstory-container"</span><span class="tok-tag">&gt;&lt;/div&gt;</span>
+<span class="tok-tag">&lt;script</span>
+    <span class="tok-attr">type</span><span class="tok-equals">=</span><span class="tok-string">"module"</span>
+    <span class="tok-attr">src</span><span class="tok-equals">=</span><span class="tok-string">"https://app.coolstory.me/widget/widget.js"</span>
+<span class="tok-tag">&gt;&lt;/script&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STORIES IN ACTION (use cases)
+       ============================================================ -->
+  <section class="section" id="usecases">
+    <div class="container">
+      <div class="section__header">
+        <h2>Stories in action</h2>
+        <p>Every use case that once needed a popup, email, or tooltip — now a story.</p>
+      </div>
+      <div class="grid-3">
+
+        <!-- Product updates -->
+        <div class="card card--blue">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">notifications</span>
+          </div>
+          <div class="card__body">
+          <h3>Product updates</h3>
+          <p>Announce new features and changes with story-style updates. Users stay informed and ready to try what's new.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            60% higher engagement vs popups
+          </span>
+          </div>
+        </div>
+
+        <!-- User onboarding -->
+        <div class="card card--purple">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">check_circle</span>
+          </div>
+          <div class="card__body">
+          <h3>User onboarding</h3>
+          <p>Guide users through new features with short, engaging story tutorials embedded right in your product.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            40% higher activation in SMB
+          </span>
+          </div>
+        </div>
+
+        <!-- Feature discovery -->
+        <div class="card card--green">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">lightbulb</span>
+          </div>
+          <div class="card__body">
+          <h3>Feature discovery</h3>
+          <p>Spotlight lesser-known features, guiding users to tools that add value and enhance their experience.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            35% boost in new feature adoption
+          </span>
+          </div>
+        </div>
+
+        <!-- Upsells -->
+        <div class="card card--orange">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">star</span>
+          </div>
+          <div class="card__body">
+          <h3>Upsells</h3>
+          <p>Highlight premium features to help users see extra value and encourage upgrades right within the app.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            Up to 35% higher conversion
+          </span>
+          </div>
+        </div>
+
+        <!-- Shoppable stories -->
+        <div class="card card--pink">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">shopping_bag</span>
+          </div>
+          <div class="card__body">
+          <h3>Shoppable stories</h3>
+          <p>Showcase products in story-style videos that link directly to product pages, turning inspiration into sales with just a tap.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            3× higher conversions on products
+          </span>
+          </div>
+        </div>
+
+        <!-- User feedback -->
+        <div class="card card--teal">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">forum</span>
+          </div>
+          <div class="card__body">
+          <h3>User feedback</h3>
+          <p>Deliver key updates and team highlights with a personal touch, giving users a glimpse inside.</p>
+          <span class="stat-badge">
+            <span class="material-symbols-rounded">trending_up</span>
+            60% higher survey response rates
+          </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FEATURED ARTICLE
+       ============================================================ -->
+  <section class="section section--bg1">
+    <div class="container">
+      <div class="section__header">
+        <h2>Featured article</h2>
+      </div>
+      <a href="./how-readdle-improved-their-activation-by-70-percent-with-stories" class="featured-article__card">
+        <div class="featured-article__image-wrap">
+          <img
+            src="images/readdle-article.png"
+            alt="How Readdle improved their activation by 70% with stories — phone showing Readdle app alongside Readdle logo"
+            width="700"
+            height="400"
+          >
+        </div>
+        <div class="featured-article__text">
+          <h3>How Readdle improved their activation by 70% with stories</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CORE FEATURES
+       ============================================================ -->
+  <section class="section section--bg2">
+    <div class="container">
+      <div class="section__header">
+        <h2>Core features</h2>
+      </div>
+      <div class="core-features__items">
+
+        <!-- 2×2 screenshot+feature grid -->
+        <div class="grid-2">
+          <div class="core-feature-card">
+            <div class="core-feature-card__img">
+              <img src="images/feature-story-management.png" alt="Story management dashboard" width="620" height="305">
+            </div>
+            <h3>Story management</h3>
+            <p>Manage every aspect of your stories in one place, from creation to publishing.</p>
+          </div>
+          <div class="core-feature-card">
+            <div class="core-feature-card__img">
+              <img src="images/feature-scheduling.png" alt="Scheduling calendar UI" width="620" height="305">
+            </div>
+            <h3>Scheduling</h3>
+            <p>Schedule stories to go live at specific times and set expiration dates for temporary promotions or announcements.</p>
+          </div>
+          <div class="core-feature-card">
+            <div class="core-feature-card__img">
+              <img src="images/feature-analytics.png" alt="Analytics chart showing story views per month" width="620" height="305">
+            </div>
+            <h3>Analytics</h3>
+            <p>Track story views, completion rates, and click-throughs with real-time metrics.</p>
+          </div>
+          <div class="core-feature-card">
+            <div class="core-feature-card__img">
+              <img src="images/feature-segmentation.png" alt="Segmentation UI with audience attributes" width="620" height="305">
+            </div>
+            <h3>Segmentation</h3>
+            <p>Segment users based on behavior, demographics, or app activity to deliver tailored stories to the right audiences.</p>
+          </div>
+        </div>
+
+        <!-- Remaining 4 features: text-only grid -->
+        <div class="core-features__text-grid">
+          <div class="core-features__text-item">
+            <h3>Interactions</h3>
+            <p>Add buttons, polls, CTAs, and swipe-ups directly in stories to drive user actions.</p>
+          </div>
+          <div class="core-features__text-item">
+            <h3>AI generation</h3>
+            <p>Use one of our integrations to generate stories from text and speed-up production further.</p>
+          </div>
+          <div class="core-features__text-item">
+            <h3>Multi-format</h3>
+            <p>Seamlessly incorporate images, short videos, and GIFs into stories to diversify content.</p>
+          </div>
+          <div class="core-features__text-item">
+            <h3>Cross-platform</h3>
+            <p>Deploy stories that look and feel consistent on iOS, Android, and web platforms.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SEAMLESS INTEGRATION
+       ============================================================ -->
+  <section class="section section--bg1">
+    <div class="container">
+      <div class="section__header">
+        <h2>Seamless integration<br>with your app</h2>
+        <p>A collection of robust and intuitive SDKs built for integration in a matter of minutes</p>
+      </div>
+      <div class="integration__grid">
+
+        <!-- Web -->
+        <div class="integration__item">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">desktop_windows</span>
+          </div>
+          <div class="integration__text">
+            <h3>Web</h3>
+            <p>A simple and lightweight JS library built for maximum compatibility.</p>
+          </div>
+        </div>
+
+        <!-- React Native -->
+        <div class="integration__item">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">science</span>
+          </div>
+          <div class="integration__text">
+            <h3>React Native</h3>
+            <p>A robust SDK for cross-platform apps built with React Native</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PRIVACY AND SECURITY
+       ============================================================ -->
+  <section class="section section--bg2">
+    <div class="container">
+      <div class="section__header">
+        <h2>Privacy and security</h2>
+      </div>
+      <div class="grid-3">
+
+        <!-- Minimal page access -->
+        <div class="card card--grey">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">web</span>
+          </div>
+          <div class="card__body">
+            <h3>Minimal page access</h3>
+            <p>The widget queries for known selectors inside its container instead of scanning the whole DOM or walking global state. It doesn't intercept submissions or read input values.</p>
+          </div>
+        </div>
+
+        <!-- Transparent calls -->
+        <div class="card card--grey">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">search</span>
+          </div>
+          <div class="card__body">
+            <h3>Transparent calls</h3>
+            <p>All requests from the widget go to a small, predictable set of endpoints over HTTPS, so it's easy to allowlist and monitor in egress and CSP rules.</p>
+          </div>
+        </div>
+
+        <!-- Request-only data -->
+        <div class="card card--grey">
+          <div class="card__icon">
+            <span class="material-symbols-rounded">lock</span>
+          </div>
+          <div class="card__body">
+            <h3>Request-only data</h3>
+            <p>The widget records only the interaction signals you configure (e.g., view, click, completion) and includes just the metadata needed to attribute the event.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PRICING
+       ============================================================ -->
+  <section class="section" id="priceless">
+    <div class="container">
+      <div class="section__header">
+        <h2>Pricing</h2>
+        <p>Flexible options for both minimal or extensive use</p>
+      </div>
+      <div class="grid-4">
+
+        <!-- Trial -->
+        <div class="pricing-card">
+          <h3>Trial</h3>
+          <ul class="pricing-card__features">
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              100 views
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              1 story
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              1 widget
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              No tooltips
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Limited support
+            </li>
+          </ul>
+          <a href="https://calendly.com/imalchenko/chat-with-igor" class="btn" target="_blank" rel="noopener">Contact Us</a>
+        </div>
+
+        <!-- Starter -->
+        <div class="pricing-card pricing-card--blue">
+          <h3>Starter</h3>
+          <ul class="pricing-card__features">
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              100,000 views per month
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Unlimited stories
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              1 widget
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              No tooltips
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Email support
+            </li>
+          </ul>
+          <a href="https://calendly.com/imalchenko/chat-with-igor" class="btn" target="_blank" rel="noopener">Contact Us</a>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card pricing-card--dark">
+          <h3>Pro</h3>
+          <ul class="pricing-card__features">
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              500,000 views per month
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Unlimited stories
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Unlimited widgets
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Customizable tooltips
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              24/7 Priority support
+            </li>
+          </ul>
+          <a href="https://calendly.com/imalchenko/chat-with-igor" class="btn" target="_blank" rel="noopener">Contact Us</a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="pricing-card">
+          <h3>Enterprise</h3>
+          <ul class="pricing-card__features">
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Everything in Pro
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Custom interactions
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Rate limiting
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Data residency options
+            </li>
+            <li class="pricing-card__feature">
+              <span class="material-symbols-rounded">check</span>
+              Bulk data import/export
+            </li>
+          </ul>
+          <a href="https://calendly.com/imalchenko/chat-with-igor" class="btn" target="_blank" rel="noopener">Contact Us</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FAQ
+       ============================================================ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section__header">
+        <h2>Frequently asked questions</h2>
+      </div>
+      <div class="faq__list">
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            How does Coolstory work?
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">Coolstory helps you communicate with your userbase by providing stories as a service in a single product. As soon as it's integrated into your app, you can create and post stories for your users to see straight from the Coolstory web or mobile apps.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            How do I post a story?
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">It's easily done by going to a Coolstory app on either web or mobile and uploading the video just like you would do on Instagram or TikTok. Once the video is uploaded, you post it to your userbase or some of the segments.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            Do I need engineers to make it work?
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">Yes, you need someone with engineering background to integrate the SDK into your app. We've made it really simple, so it should take less than an hour of work.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            How does it help with engagement?
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">All social platforms are adopting short-form content for a reason — that's the current way of absorbing information. Coolstory is bringing this familiar format to your B2B setting, where customers will learn your product via short-form content instead of massive knowledge bases.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            Do you offer a trial?
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">Yes, all our plans come with a 14-day unlimited trial to make sure you can set up and use your new stories functionality.</div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            Can I get a refund?
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">We work on a subscription basis, but if you've activated the subscription but haven't used the bandwidth — feel free to ping us at hello@coolstory.me</div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            I have a problem
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">Don't hesistate to write us at hello@coolstory.me</div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__question">
+            Will anyone else see my stories?
+            <span class="material-symbols-rounded">add</span>
+          </summary>
+          <div class="faq__answer">Your stories are your stories. Nobody outside of your team and your users will ever see the contents of your stories.</div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CTA
+       ============================================================ -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Explode your engagement</h2>
+      <p>Record, upload, and publish a story — that's all it takes.</p>
+      <a href="https://calendly.com/imalchenko/chat-with-igor" class="btn btn-cta-outline" target="_blank" rel="noopener">
+        Book a Demo
+        <span class="material-symbols-rounded">calendar_today</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <!-- Brand -->
+        <div>
+          <div class="footer__brand">
+            <img src="images/Coolstory long logo.png" alt="Coolstory">
+          </div>
+        </div>
+        <!-- Coolstory links -->
+        <div>
+          <p class="footer__col-title">Coolstory</p>
+          <ul class="footer__links">
+            <li><a href="./">Homepage</a></li>
+            <li><a href="https://calendly.com/imalchenko/chat-with-igor" target="_blank" rel="noopener">Book a demo</a></li>
+            <li><a href="./#usecases">Features</a></li>
+            <li><a href="./docs">Docs</a></li>
+            <li><a href="./blog">Blog</a></li>
+          </ul>
+        </div>
+        <!-- Use cases -->
+        <div>
+          <p class="footer__col-title">Use cases</p>
+          <ul class="footer__links">
+            <li><a href="./user-onboarding">User onboarding</a></li>
+            <li><a href="./">Feature discovery</a></li>
+            <li><a href="./product-updates">Product updates</a></li>
+            <li><a href="./shoppable-stories">Shoppable stories</a></li>
+            <li><a href="./">User feedback</a></li>
+            <li><a href="./">Upsells</a></li>
+          </ul>
+        </div>
+        <!-- Legal -->
+        <div>
+          <p class="footer__col-title">Legal</p>
+          <ul class="footer__links">
+            <li><a href="./terms">Terms &amp; Conditions</a></li>
+            <li><a href="./privacy">Privacy policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2026 Coolstory</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
