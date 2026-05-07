@@ -269,11 +269,34 @@
                               structure, class names, section order)
       · The live page URL   → source of truth for CONTENT (every word,
                               heading, tagline, CTA, stat, FAQ answer)
+                              AND section order & structure for that page
 
     Always read the live page FIRST and extract all copy before writing
     any HTML. Do NOT invent, rephrase, or "improve" any copy.
     Do NOT pull copy from index.html or any other page for content.
     If the live page has no content yet — only then may you write new copy.
+
+    ────────────────────────────────────────────────────────────────────────
+    ASSET RULE — IMAGES & VIDEOS
+    ────────────────────────────────────────────────────────────────────────
+    For every image or video on the live page:
+      1. Scrape the asset URL from the live page DOM (src attribute).
+      2. Use the URL directly if it is publicly accessible (CDN links are fine).
+      3. If the asset cannot be found or is inaccessible, insert a clearly
+         labelled placeholder and FLAG IT to the user immediately:
+         ⚠️ ASSET NEEDED: [description of what the asset should be]
+         Do NOT invent placeholder images or leave silent broken references.
+
+    ────────────────────────────────────────────────────────────────────────
+    COMPONENT FIDELITY — HARD RULE
+    ────────────────────────────────────────────────────────────────────────
+    Use every component EXACTLY as defined in the design system.
+    · Do not omit required child elements (e.g. icon inside .badge)
+    · Do not add extra wrappers, modifiers, or inline overrides
+    · If a variant is needed (e.g. .badge--dark), use the defined variant —
+      do not invent new ones
+    · When in doubt, check the DS component against the rendered output
+      before shipping
 
     ────────────────────────────────────────────────────────────────────────
     ABSOLUTE PROHIBITIONS — NEVER DO THESE
@@ -317,8 +340,13 @@
       <div style="background: #fff5f5; border: 1px solid #fecdd3; border-radius: var(--radius-card); padding: 28px 32px;">
         <p style="font-family: var(--font-mono); font-size: 11px; color: #e11d48; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">Never do these</p>
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Write or invent copy — read the live page first and use its words verbatim</p>
-          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Use index.html for copy — index.html = design only; live page URL = content only</p>
+          <div style="background: rgba(225,29,72,0.06); border-radius: 10px; padding: 12px 14px; margin-bottom: 2px;">
+            <p style="font-family: var(--font-mono); font-size: 10px; color: #e11d48; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 8px 0;">Three sources — one job each</p>
+            <p style="font-size: 12px; color: var(--c-dark); margin: 0 0 4px 0; line-height: 1.6;"><strong>Design system</strong> → component HTML structure &amp; CSS class names</p>
+            <p style="font-size: 12px; color: var(--c-dark); margin: 0 0 4px 0; line-height: 1.6;"><strong>index.html</strong> → page structure &amp; design patterns only</p>
+            <p style="font-size: 12px; color: var(--c-dark); margin: 0; line-height: 1.6;"><strong>Live page URL</strong> → every word of copy (verbatim) + section order &amp; structure for that specific page</p>
+          </div>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Write, invent, or rephrase any copy — always take it verbatim from the live page URL</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Write new CSS or create new class names</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use inline styles (except <code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px;">background/padding</code> on &lt;section&gt; shells)</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use hex colors anywhere in HTML</p>

@@ -21,8 +21,16 @@
   --font-body:    'Inter', sans-serif;
   --font-mono:    'Fragment Mono', monospace;
 
+  /* Spacing scale */
+  --space-xs:  8px;
+  --space-sm:  16px;
+  --space-md:  32px;
+  --space-lg:  48px;
+  --space-xl:  80px;
+  --space-2xl: 120px;
+
   /* Section padding */
-  --section-py: 120px;
+  --section-py: var(--space-2xl);
 
   /* Max widths */
   --width-content: 1440px;

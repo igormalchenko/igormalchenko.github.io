@@ -36,76 +36,103 @@
   </nav>
 
   <!-- ============================================================
-       PAGE INTRO
+       HERO
        ============================================================ -->
-  <section style="background: var(--section-bg-1); padding: var(--section-py) 0;">
-    <div class="container">
-      <div class="section__header">
+  <section class="hero">
+    <div class="hero__blob hero__blob--pink"></div>
+    <div class="hero__blob hero__blob--blue"></div>
+    <div class="hero__inner">
+      <div class="hero__content">
         <span class="badge">
-          <span class="material-symbols-rounded">check_circle</span>
-          User onboarding
+          <span class="material-symbols-rounded">bolt</span>
+          5 minutes to integrate
         </span>
-        <h2>Turn new users into<br>power users</h2>
-        <p>Guide users to their first 'aha' moment with in-app stories that are 3× more engaging than tooltips, modals, or emails.</p>
-        <a href="https://calendly.com/imalchenko/chat-with-igor" class="btn btn-cta" target="_blank" rel="noopener">
-          Book a Demo
-          <span class="material-symbols-rounded">calendar_today</span>
+        <h1>
+          <span class="black">Turn</span> <span>signups</span> <span class="black">into</span><br>
+          <span class="pink">successful users</span>
+        </h1>
+        <p class="hero__sub">
+          Guide users through new features with short, engaging story tutorials <span class="accent">embedded right in your product</span>
+        </p>
+        <a href="https://app.coolstory.me/signup" class="btn btn-cta">
+          Get started
         </a>
+      </div>
+      <div class="hero__video-wrap">
+        <video
+          src="https://framerusercontent.com/assets/0hZS7B7HzHm2AZJnvMfk5oPu6U.mp4"
+          autoplay
+          loop
+          muted
+          playsinline
+          class="hero__video"
+        ></video>
       </div>
     </div>
   </section>
 
   <!-- ============================================================
-       WHY IT MATTERS — stat cards
+       MODERN ONBOARDING IS… + STATS
        ============================================================ -->
   <section style="background: var(--c-white); padding: var(--section-py) 0;">
     <div class="container">
       <div class="section__header">
-        <h2>Onboarding is your biggest lever</h2>
-        <p>Most churn is decided in the first week. Stories are the fastest way to get users to value.</p>
+        <h2>Modern onboarding is…</h2>
       </div>
-      <div class="grid-3">
+      <div class="grid-4">
 
-        <div class="card card--purple">
-          <div class="card__icon">
-            <span class="material-symbols-rounded">trending_up</span>
-          </div>
-          <div class="card__body">
-            <h3>40% higher activation</h3>
-            <p>Average lift in SMB activation rates when switching from emails and modals to in-app onboarding stories.</p>
-            <span class="stat-badge">
-              <span class="material-symbols-rounded">trending_up</span>
-              vs. email onboarding
-            </span>
-          </div>
+        <div class="stat-card">
+          <p class="stat-card__value">⏱️</p>
+          <p class="stat-card__label">Fast</p>
+          <p class="stat-card__description">Users want to understand your product immediately — not after 10 steps and a PDF guide</p>
         </div>
 
-        <div class="card card--blue">
-          <div class="card__icon">
-            <span class="material-symbols-rounded">play_circle</span>
-          </div>
-          <div class="card__body">
-            <h3>3× more engaging</h3>
-            <p>Users watch stories to completion far more often than they read tooltips, walkthrough emails, or knowledge base articles.</p>
-            <span class="stat-badge">
-              <span class="material-symbols-rounded">trending_up</span>
-              vs. tooltips &amp; modals
-            </span>
-          </div>
+        <div class="stat-card">
+          <p class="stat-card__value">👀</p>
+          <p class="stat-card__label">Visual</p>
+          <p class="stat-card__description">People learn by watching, not reading — video walkthroughs beat tooltip walls every time</p>
         </div>
 
-        <div class="card card--green">
-          <div class="card__icon">
-            <span class="material-symbols-rounded">schedule</span>
-          </div>
-          <div class="card__body">
-            <h3>Week 1 is everything</h3>
-            <p>67% of users who churn do so before the end of their first week. Stories get users to value before they give up.</p>
-            <span class="stat-badge">
-              <span class="material-symbols-rounded">trending_up</span>
-              critical onboarding window
-            </span>
-          </div>
+        <div class="stat-card">
+          <p class="stat-card__value">🎯</p>
+          <p class="stat-card__label">Focused</p>
+          <p class="stat-card__description">Good onboarding highlights what matters most — not everything at once</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="stat-card__value">🔄</p>
+          <p class="stat-card__label">Continuous</p>
+          <p class="stat-card__description">Support doesn't end at signup. Keep guiding users as they explore more</p>
+        </div>
+
+      </div>
+      <div class="section__header" style="margin-top: var(--space-xl);">
+        <h3>… and we can help with that</h3>
+      </div>
+      <div class="grid-4">
+
+        <div class="stat-card">
+          <p class="stat-card__value">40%</p>
+          <p class="stat-card__label">Faster setup</p>
+          <p class="stat-card__description">Quick, visual guides help users reach first value without friction or setup fatigue</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="stat-card__value">2x</p>
+          <p class="stat-card__label">Activation boost</p>
+          <p class="stat-card__description">Focused onboarding ensures users don't miss the most important parts of your product</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="stat-card__value">20%</p>
+          <p class="stat-card__label">Higher engagement</p>
+          <p class="stat-card__description">Video onboarding keeps users watching, clicking, and interacting more</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="stat-card__value">25%</p>
+          <p class="stat-card__label">Better adoption</p>
+          <p class="stat-card__description">Ongoing onboarding nudges users forward as they explore deeper product layers</p>
         </div>
 
       </div>
@@ -113,28 +140,23 @@
   </section>
 
   <!-- ============================================================
-       FEATURE: SEGMENTATION
+       FEATURE: SHOW DON'T TELL
        ============================================================ -->
   <section style="background: var(--section-bg-1); padding: var(--section-py) 0;">
     <div class="container">
       <div class="feature-section">
         <div class="feature-section__media">
-          <img
-            src="../images/feature-segmentation.png"
-            alt="Segmentation UI showing audience attributes like country, age, acquisition channel"
-            width="620"
-            height="400"
-          >
+          <video
+            src="https://framerusercontent.com/assets/IJyscqkkVt6nIwANKOgcqsUB4.mp4"
+            autoplay loop muted playsinline
+          ></video>
         </div>
         <div class="feature-section__copy">
-          <span class="badge">
-            <span class="material-symbols-rounded">filter_alt</span>
-            Precise targeting
-          </span>
-          <h2 class="feature-section__headline">Show onboarding only to users who <span class="accent">need it</span></h2>
-          <p class="feature-section__body">Target first-time users specifically. Don't bother power users with beginner content — Coolstory's segmentation ensures every story reaches exactly the right audience at the right moment.</p>
-          <a href="https://calendly.com/imalchenko/chat-with-igor" class="feature-section__link" target="_blank" rel="noopener">
-            Book a demo <span class="material-symbols-rounded">arrow_forward</span>
+          <span class="badge badge--dark">Software products</span>
+          <h2 class="feature-section__headline"><span class="accent">Show</span>, don't tell</h2>
+          <p class="feature-section__body">Use short, visual videos to walk users through core features — no text walls or click-through tours</p>
+          <a href="https://app.coolstory.me/signup" class="feature-section__link">
+            Learn More <span class="material-symbols-rounded">arrow_forward</span>
           </a>
         </div>
       </div>
@@ -142,28 +164,23 @@
   </section>
 
   <!-- ============================================================
-       FEATURE: SCHEDULING
+       FEATURE: HIGHLIGHT KEY ACTIONS
        ============================================================ -->
   <section style="background: var(--section-bg-2); padding: var(--section-py) 0;">
     <div class="container">
       <div class="feature-section feature-section--reversed">
         <div class="feature-section__media">
-          <img
-            src="../images/feature-scheduling.png"
-            alt="Scheduling calendar UI for story publishing"
-            width="620"
-            height="400"
-          >
+          <video
+            src="https://framerusercontent.com/assets/2A68BJollM6HTvTzDPykvrdJp0.mp4"
+            autoplay loop muted playsinline
+          ></video>
         </div>
         <div class="feature-section__copy">
-          <span class="badge">
-            <span class="material-symbols-rounded">calendar_today</span>
-            Smart timing
-          </span>
-          <h2 class="feature-section__headline">The right story at <span class="accent">the right moment</span></h2>
-          <p class="feature-section__body">Schedule onboarding stories to appear on day 1, then follow up with a feature deep-dive on day 3, and a tips story on day 7. Guide users through a structured journey — automatically.</p>
-          <a href="https://calendly.com/imalchenko/chat-with-igor" class="feature-section__link" target="_blank" rel="noopener">
-            Book a demo <span class="material-symbols-rounded">arrow_forward</span>
+          <span class="badge badge--dark">Software products</span>
+          <h2 class="feature-section__headline">Highlight <span class="accent">key actions</span></h2>
+          <p class="feature-section__body">Guide users toward the high-value moments that drive activation and product success</p>
+          <a href="https://app.coolstory.me/signup" class="feature-section__link">
+            Learn More <span class="material-symbols-rounded">arrow_forward</span>
           </a>
         </div>
       </div>
@@ -171,28 +188,23 @@
   </section>
 
   <!-- ============================================================
-       FEATURE: ANALYTICS
+       FEATURE: BUILD EARLY TRUST
        ============================================================ -->
   <section style="background: var(--section-bg-1); padding: var(--section-py) 0;">
     <div class="container">
       <div class="feature-section">
         <div class="feature-section__media">
-          <img
-            src="../images/feature-analytics.png"
-            alt="Analytics chart showing story views and completion rates per month"
-            width="620"
-            height="400"
-          >
+          <video
+            src="https://framerusercontent.com/assets/3O1wgOUVj0OIWEacsNPiAap8i28.mp4"
+            autoplay loop muted playsinline
+          ></video>
         </div>
         <div class="feature-section__copy">
-          <span class="badge">
-            <span class="material-symbols-rounded">bar_chart</span>
-            Real-time insights
-          </span>
-          <h2 class="feature-section__headline">Know exactly where users <span class="accent">drop off</span></h2>
-          <p class="feature-section__body">Track views, completion rates, and click-throughs for every onboarding story. Identify which steps lose users and fix them fast — with data, not guesswork.</p>
-          <a href="https://calendly.com/imalchenko/chat-with-igor" class="feature-section__link" target="_blank" rel="noopener">
-            Book a demo <span class="material-symbols-rounded">arrow_forward</span>
+          <span class="badge badge--dark">Software products</span>
+          <h2 class="feature-section__headline">Build early <span class="accent">trust</span></h2>
+          <p class="feature-section__body">Make onboarding feel personal and helpful with approachable, human-first guidance</p>
+          <a href="https://app.coolstory.me/signup" class="feature-section__link">
+            Learn More <span class="material-symbols-rounded">arrow_forward</span>
           </a>
         </div>
       </div>
