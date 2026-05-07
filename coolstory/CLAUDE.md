@@ -16,12 +16,12 @@ Read `design-system.html`. All rules, components, tokens, and conventions live t
 ## Workflow
 
 1. **Edit** source files in `/Users/igor/Documents/GitHub/igormalchenko.github.io/coolstory/`
-2. **Copy to worktree** after every change:
+2. **Preview** at `http://localhost:8799/` — server runs via:
    ```
-   cp <source> /Users/igor/Documents/GitHub/igormalchenko.github.io/.claude/worktrees/practical-volhard-cd9207/coolstory/<same-path>
+   npx serve -p 8799 /Users/igor/Documents/GitHub/igormalchenko.github.io/coolstory
    ```
-3. **Preview** at `http://localhost:8799/` (restart with `npx serve -p 8799` from worktree if needed)
-4. **Commit and push** to deploy to GitHub Pages
+   Restart if needed. No copy step — edits are live immediately.
+3. **Commit and push** to deploy to GitHub Pages
 
 ---
 
