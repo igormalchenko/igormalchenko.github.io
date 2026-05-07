@@ -240,23 +240,37 @@
     </section>
 
     ────────────────────────────────────────────────────────────────────────
+    COMPONENT SELECTION GUIDE  ← pick from this table, no guessing
+    ────────────────────────────────────────────────────────────────────────
+    What you're building                          Component          Grid
+    ─────────────────────────────────────────── ─────────────────  ───────
+    "Who's it for" / audience / sector list       stat-card emoji   grid-4
+    Metrics / social proof numbers (40%, 2×)      stat-card number  grid-4
+    Use cases / product features (homepage)       .card + --color   grid-3
+    Pricing tiers                                 .pricing-card     grid-3
+    Integrations / SDK / platform tiles           .integration      grid-3
+    Social proof / testimonials                   .testimonial-card marquee
+    Two-column feature layout (image + copy)      .feature-section  —
+    Full-width stacked list (blog, docs)          .stack            —
+    Document / policy page                        .container--narrow —
+
+    STAT-CARD EMOJI RULE: emoji icons always come from the live page verbatim.
+    Never substitute Material Symbols for emoji. Never invent emoji.
+
+    .CARD RULE: only for use-case / product feature sections with gradient
+    backgrounds and Material Symbols icons. Never for audience lists.
+
+    ────────────────────────────────────────────────────────────────────────
     GRID SELECTION GUIDE
     ────────────────────────────────────────────────────────────────────────
-    · .grid-4  — icon-heavy cards with short text (integration tiles, small feature pills)
-    · .grid-3  — standard feature or use-case cards (default choice for cards)
+    · .grid-4  — stat-cards (emoji or number variant)
+    · .grid-3  — .card components (use cases, features, integrations)
     · .grid-2  — two-column content splits (collapses to 1-col at tablet)
     · .stack   — full-width stacked items (blog post list, document sections)
     · .container--narrow inside .container — document/policy pages (max 860px)
     · Do NOT use .grid-3--2-mobile on text-heavy cards (cards become too narrow at mobile).
 
-    ────────────────────────────────────────────────────────────────────────
-    COMPONENT SELECTION GUIDE
-    ────────────────────────────────────────────────────────────────────────
-    Use cases / feature overview  →  .card  (pick a --color modifier)
-    Pricing tiers                 →  .pricing-card  (.pricing-card--pro for recommended)
-    Integrations / partners       →  .integration
-    Social proof                  →  .testimonial-card  + .testimonials-marquee
-    Footer nav                    →  .footer  (copy verbatim — never modify structure)
+    Footer nav  →  .footer  (copy verbatim — never modify structure)
     Long-form text page           →  .document-page  + .container--narrow
     Blog article list             →  .stack  of  .featured-article__card  items
     Inline links in body text     →  .link
@@ -1130,9 +1144,12 @@
     COMPONENT: Stat Card
     Structure: <div class="stat-card"> <p class="stat-card__value">…</p> <p class="stat-card__label">…</p> <p class="stat-card__description">…</p> </div>
     Two variants (same class, different content):
-      Number variant: __value = "40%", "2×", etc. For metrics / social proof sections.
-      Emoji variant:  __value = single emoji. For audience segments / use-case types.
-    GRID: .grid-4
+      Number variant: __value = "40%", "2×", etc.
+        → USE FOR: metrics, stats, social proof numbers
+      Emoji variant:  __value = single emoji from the live page.
+        → USE FOR: "Who's it for", audience segments, sector lists, use-case types
+        → EMOJI: always copy from the live page. Never use Material Symbols. Never invent.
+    GRID: .grid-4 always. Never grid-3.
     Do NOT mix number and emoji variants in the same grid.
     __description is optional but recommended for context.
   -->
@@ -1141,7 +1158,7 @@
        ================================================ -->
   <div class="ds-section">
     <p class="ds-section-label">Stat Cards — number variant</p>
-    <p class="ds-note"><strong>Number variant</strong> (40%, 2×) → metrics/social proof · <strong>Emoji variant</strong> (🚀) → audience segments/use-cases. Same <code>.stat-card</code> class. Grid: <code>.grid-4</code>. Never mix variants in one grid.</p>
+    <p class="ds-note"><strong>Number variant</strong> (40%, 2×) → metrics &amp; social proof · <strong>Emoji variant</strong> → "Who's it for" / audience / sector lists. Grid: <code>.grid-4</code> always. Never <code>.grid-3</code>. Never mix variants in one grid. Emoji must come from the live page — never substitute Material Symbols.</p>
     <div class="grid-4">
       <div class="stat-card">
         <p class="stat-card__value">40%</p>
