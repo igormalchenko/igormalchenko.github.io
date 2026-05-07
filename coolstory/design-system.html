@@ -257,6 +257,27 @@
     STAT-CARD EMOJI RULE: emoji icons always come from the live page verbatim.
     Never substitute Material Symbols for emoji. Never invent emoji.
 
+    ────────────────────────────────────────────────────────────────────────
+    SHARED SECTIONS — copy HTML verbatim, never rebuild
+    ────────────────────────────────────────────────────────────────────────
+    These sections are identical across all pages. Do NOT rebuild them.
+    Copy the entire HTML block from the source page listed below.
+
+    Section              Copy from          Notes
+    ─────────────────    ───────────────    ────────────────────────────────
+    <nav>                index.html         Every page. Never modify.
+    <footer>             index.html         Every page. Never modify.
+    Integration          index.html         Full .integration__grid block
+    Featured article     index.html         Full .featured-article__card block
+    Core features        index.html         .core-features block (4 big cards
+                                            + 4 text items below — always together)
+    Pricing              index.html         Full pricing section with all tiers
+    Privacy              privacy/index.html Full privacy policy content block
+
+    THREE-SOURCE RULE EXCEPTION: shared sections are copied from an existing
+    page's HTML, not rebuilt from the live URL. The live URL still governs
+    copy for all NON-shared sections.
+
     .CARD RULE: only for use-case / product feature sections with gradient
     backgrounds and Material Symbols icons. Never for audience lists.
 
@@ -361,6 +382,7 @@
             <p style="font-size: 12px; color: var(--c-dark); margin: 0; line-height: 1.6;"><strong>Live page URL</strong> → every word of copy (verbatim) + section order &amp; structure for that specific page</p>
           </div>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Write, invent, or rephrase any copy — always take it verbatim from the live page URL</p>
+          <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5; font-weight: 600;">✗ Rebuild shared sections — nav, footer, integration, featured article, core features, pricing, privacy must be copied verbatim from an existing page's HTML</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Write new CSS or create new class names</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use inline styles (except <code style="font-family: var(--font-mono); font-size: 11px; background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px;">background/padding</code> on &lt;section&gt; shells)</p>
           <p style="font-size: 13px; color: var(--c-dark); margin: 0; line-height: 1.5;">✗ Use hex colors anywhere in HTML</p>
