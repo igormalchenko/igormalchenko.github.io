@@ -514,7 +514,9 @@
     USAGE:
       Default (centered): most content sections — use cases, pricing, integrations, how-it-works.
       .section__header--left: sections whose content is left-aligned (feature lists with inline links).
-      Structure: <div class="section__header [section__header--left]"> <h2>…</h2> <p>…</p> </div>
+      .section__header--spaced: adds margin-top: var(--space-xl) — use when a second header appears
+        inside the same section (e.g. two stat-card grids separated by a sub-heading).
+      Structure: <div class="section__header [section__header--left] [section__header--spaced]"> <h2>…</h2> <p>…</p> </div>
       The <p> subtitle is optional. Use it when the heading alone needs context.
     NEVER center-align a section header that sits above a left-aligned list.
   -->
@@ -1654,8 +1656,8 @@
        DOCUMENT PAGE
        ================================================ -->
   <div class="ds-section">
-    <p class="ds-section-label">Document Page (privacy policy, terms, legal)</p>
-    <p class="ds-note">Wrapper: <code>.container--narrow</code> (860px max-width). h1/h2/h3 are scoped smaller inside <code>.document-page</code> — 56px / 32px / 22px. Use <code>.document-page__meta</code> for date, <code>.document-page__divider</code> for the hr. Body text and lists styled automatically. Never use <code>.container</code> — always <code>.container--narrow</code> here.</p>
+    <p class="ds-section-label">Document Page (privacy policy, terms, blog articles)</p>
+    <p class="ds-note">Wrapper: <code>.container--narrow</code> (860px max-width). h1/h2/h3 are scoped smaller inside <code>.document-page</code> — 56px / 32px / 22px. Use <code>.document-page__meta</code> for date/byline, <code>.document-page__divider</code> for the hr. Body text and lists styled automatically. Inline images and video: wrap in <code>&lt;figure&gt;</code> — full width, rounded corners, auto margin. Blockquotes: <code>&lt;blockquote&gt;</code> — blue left border, tinted bg. Never use <code>.container</code> — always <code>.container--narrow</code> here.</p>
     <div class="document-page" style="border: 1px solid var(--c-border); border-radius: var(--radius-card); padding: 60px 80px;">
       <h1>Privacy Policy</h1>
       <p class="document-page__meta">Last updated: January 1, 2026</p>
@@ -1668,6 +1670,12 @@
         <li>The term "Service" refers to the Coolstory platform and all associated products.</li>
         <li>The term "User" refers to any individual or entity accessing the Service.</li>
       </ol>
+      <figure>
+        <img src="images/readdle-article.png" alt="Example inline image">
+      </figure>
+      <blockquote>
+        <p>This is a pull quote or highlighted insight. Styled with a blue left border and subtle background.</p>
+      </blockquote>
     </div>
   </div>
 
@@ -1698,7 +1706,7 @@
             </a>
           </div>
           <div class="hero__video-wrap">
-            <video src="https://framerusercontent.com/assets/0hZS7B7HzHm2AZJnvMfk5oPu6U.mp4" autoplay loop muted playsinline class="hero__video"></video>
+            <video src="../images/videos/0hZS7B7HzHm2AZJnvMfk5oPu6U.mp4" autoplay loop muted playsinline class="hero__video"></video>
           </div>
         </div>
       </div>
