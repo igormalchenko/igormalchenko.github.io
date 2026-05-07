@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation | Coolstory</title>
+  <meta name="description" content="Easily integrate the Coolstory widget into static sites, React apps, and more. Get started with just a few lines of code and boost engagement today!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700;900&family=Inter:wght@400;500;600;700&family=Fragment+Mono&display=swap&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VDESPWXSDF');
+  </script>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAV
+       ============================================================ -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="../" class="nav__logo">
+        <img src="../images/Coolstory long logo.png" alt="Coolstory">
+      </a>
+      <nav class="nav__links">
+        <a href="../">Home</a>
+        <a href="../#usecases">Use cases</a>
+        <a href="../#priceless">Pricing</a>
+        <a href="../#faq">FAQ</a>
+        <a href="../blog">Blog</a>
+      </nav>
+      <div class="nav__actions">
+        <a href="https://app.coolstory.me/signup" class="btn btn-primary">Sign Up</a>
+        <a href="https://app.coolstory.me/login" class="btn btn-secondary">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       DOCUMENT
+       ============================================================ -->
+  <div class="document-page">
+    <div class="container--narrow">
+      <h1>Coolstory Docs</h1>
+      <hr class="document-page__divider">
+
+      <!-- ── Static pages ───────────────────────────────────────── -->
+      <h2>Static pages</h2>
+      <p>Let's start with integrating the widget into static pages. This is the easiest method with the fewest steps — copy and paste, add your <strong>user ID</strong>, and you're all set!</p>
+      <p>Add this snippet inside the <strong>&lt;head&gt;</strong> element of your HTML page:</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code"><span class="tok-tag">&lt;script</span> <span class="tok-attr">type</span><span class="tok-equals">=</span><span class="tok-string">"module"</span>
+  <span class="tok-attr">src</span><span class="tok-equals">=</span><span class="tok-string">"https://app.coolstory.me/widget/widget.js?id=Your user ID"</span>
+<span class="tok-tag">&gt;&lt;/script&gt;</span></pre>
+      </div>
+
+      <p>And place this part anywhere in your HTML page's body to render the story widget:</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code"><span class="tok-tag">&lt;div</span> <span class="tok-attr">data-coolstory-id</span><span class="tok-equals">=</span><span class="tok-string">"Your widget ID"</span><span class="tok-tag">&gt;&lt;/div&gt;</span></pre>
+      </div>
+
+      <p>That's it! Visit your page and check out your stories!</p>
+
+      <!-- ── React projects ──────────────────────────────────────── -->
+      <h2>React projects</h2>
+      <p>This setup is slightly more complex than the previous one, but don't worry - we've got you covered. Here's how to integrate the widget into your React project:</p>
+      <p>This part should look familiar! Just like before, insert this snippet inside the <strong>&lt;head&gt;</strong> element of your <strong>index.html</strong> file:</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code"><span class="tok-tag">&lt;script</span> <span class="tok-attr">type</span><span class="tok-equals">=</span><span class="tok-string">"module"</span>
+  <span class="tok-attr">src</span><span class="tok-equals">=</span><span class="tok-string">"https://app.coolstory.me/widget/widget.js?id=Your user ID"</span>
+<span class="tok-tag">&gt;&lt;/script&gt;</span></pre>
+      </div>
+
+      <p>And here's a simple React example:</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code"><span class="tok-kw">import</span> { useEffect, useRef } <span class="tok-kw">from</span> <span class="tok-string">"react"</span>;
+
+<span class="tok-kw">function</span> App() {
+  <span class="tok-kw">const</span> containerRef = useRef&lt;HTMLDivElement&gt;(<span class="tok-null">null</span>);
+
+  useEffect(() =&gt; {
+    <span class="tok-kw">const</span> widgetContainer = containerRef.current;
+    widgetRef.current = window.coolstory?.embedWidget({
+      uid: <span class="tok-string">"Your user ID"</span>,
+      wid: <span class="tok-string">"Your widget ID"</span>,
+      container: widgetContainer,
+    });
+  }, []);
+
+  <span class="tok-kw">return</span> (
+    &lt;&gt;
+      <span class="tok-tag">&lt;div</span> <span class="tok-attr">ref</span>={containerRef}<span class="tok-tag">&gt;&lt;/div&gt;</span>
+    &lt;/&gt;
+  );
+}
+
+<span class="tok-kw">export default</span> App;</pre>
+      </div>
+
+      <p>That's it — your Coolstory widget is now in place!</p>
+
+      <!-- ── Types ───────────────────────────────────────────────── -->
+      <h2>Types</h2>
+      <p>For TypeScript users, we also provide typings for our API object in window:</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code"><span class="tok-kw">type</span> CoolstoryAPI = {
+  <span class="tok-comment">/**
+   * Displays a specific story by its ID.
+   * @param storyId - The unique ID of the story to display.
+   */</span>
+  showStory: (storyId: <span class="tok-kw">string</span>) =&gt; <span class="tok-kw">void</span>;
+};
+
+<span class="tok-kw">declare global</span> {
+  <span class="tok-kw">interface</span> Window {
+    coolstory: {
+      <span class="tok-comment">/**
+       * Embeds a Coolstory widget into a container element.
+       * @param options - Configuration options for the widget.
+       * @returns An API object for interacting with the widget.
+       */</span>
+      embedWidget: (options: {
+        uid: <span class="tok-kw">string</span>;           <span class="tok-comment">// The unique user ID.</span>
+        wid?: <span class="tok-kw">string</span>;          <span class="tok-comment">// (Optional) The widget ID.</span>
+        customTriggered?: <span class="tok-kw">boolean</span>; <span class="tok-comment">// (Optional) Whether the widget is triggered manually.</span>
+        container: HTMLElement; <span class="tok-comment">// The DOM container where the widget is embedded.</span>
+      }) =&gt; CoolstoryAPI;
+      <span class="tok-comment">/**
+       * Method specifically designed to provide us with your current widget user
+       * data for applying segmentation to widget's displayed stories list.
+       * Takes fetcher function as an argument.
+       */</span>
+      fetchUserData: (
+        fetchMetadata: () =&gt; SegmentFilters | Promise&lt;SegmentFilters&gt;
+      ) =&gt; <span class="tok-kw">void</span>;
+    };
+  }
+}</pre>
+      </div>
+
+      <!-- ── Custom trigger ──────────────────────────────────────── -->
+      <h2>Custom trigger</h2>
+      <p>You may have already noticed the dedicated <code>showStory</code> method. This allows you to trigger the widget and display a story with a specific ID - provided that the story is part of the widget's story list. This can be useful, for example, if you want to show a story as soon as the page loads. Additionally, you can hide the widget and its story list from the page by passing a <code>customTriggered</code> argument. Here's an example of how to use it:</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code"><span class="tok-kw">import</span> { useEffect, useRef } <span class="tok-kw">from</span> <span class="tok-string">"react"</span>;
+
+<span class="tok-kw">function</span> App() {
+  <span class="tok-kw">const</span> containerRef = useRef&lt;HTMLDivElement&gt;(<span class="tok-null">null</span>);
+  <span class="tok-kw">const</span> widgetRef = useRef(<span class="tok-null">null</span>);
+
+  <span class="tok-kw">const</span> handleClick = () =&gt; {
+    widgetRef.current?.showStory(<span class="tok-string">"Your story ID"</span>);
+  };
+
+  useEffect(() =&gt; {
+    <span class="tok-kw">const</span> widgetContainer = containerRef.current;
+    widgetRef.current = window.coolstory?.embedWidget({
+      uid: <span class="tok-string">"Your user ID"</span>,
+      wid: <span class="tok-string">"Your widget ID"</span>,
+      container: widgetContainer,
+    });
+  }, []);
+
+  <span class="tok-kw">return</span> (
+    &lt;&gt;
+      <span class="tok-tag">&lt;div</span> <span class="tok-attr">ref</span>={containerRef}<span class="tok-tag">&gt;&lt;/div&gt;</span>
+      <span class="tok-tag">&lt;button</span> <span class="tok-attr">onClick</span>={handleClick}<span class="tok-tag">&gt;</span>Show Story<span class="tok-tag">&lt;/button&gt;</span>
+    &lt;/&gt;
+  );
+}
+
+<span class="tok-kw">export default</span> App;</pre>
+      </div>
+
+      <!-- ── Segmentation ────────────────────────────────────────── -->
+      <h2>Segmentation</h2>
+      <p>By default, all stories are visible to all users. Segmentation rules can be applied to individual stories to control visibility.</p>
+      <p>A story with no segmentation rule is always visible to everyone. A story with a segmentation rule is only visible to users whose segmentation profile matches that rule.</p>
+      <p>Users with no segmentation profile will only see stories that have no segmentation rules applied.</p>
+      <p>To apply segmentation to your stories, you can pass a <code>getSegmentationConfig</code> function in the <code>embedWidget</code> options. This function should return an object containing the current user data that will be used to filter stories.</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code">window.coolstory.embedWidget({
+  uid: <span class="tok-string">"Your ID"</span>,
+  wid: <span class="tok-string">"Your widget ID"</span>,
+  container: document.getElementById(<span class="tok-string">"widget-container"</span>),
+  getSegmentationConfig: () =&gt; ({
+    <span class="tok-comment">// Your user data here</span>
+    user_role: <span class="tok-string">"admin"</span>
+  })
+});</pre>
+      </div>
+
+      <p>After that, the story list in the widget will be customized for each user based on their data and the configured segmentation settings for the widget.</p>
+
+      <!-- ── Event tracking ──────────────────────────────────────── -->
+      <h2>Event tracking</h2>
+      <p>If you would like to track widget interactions, you can enable Event Tracking in the story options. Once enabled, the widget will begin sending the following events to the data layer: <code>story_clicked</code>, <code>story_viewed</code>, <code>story_closed</code>, <code>finished_viewing</code> and <code>cta_pressed</code>. The data layer is an array of event objects stored within <code>window</code> and can be accessed via <code>window.dataLayer</code>. Event objects follow this structure:</p>
+
+      <div class="how-it-works__code-card">
+        <pre class="how-it-works__code">{
+  event:       Event name,
+  story_id:    ID of the story where the event occurred,
+  story_name:  Name of the story where the event occurred,
+  widget_id:   Widget from which the event was emitted,
+}</pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <!-- Brand -->
+        <div>
+          <div class="footer__brand">
+            <img src="../images/Coolstory long logo.png" alt="Coolstory">
+          </div>
+        </div>
+        <!-- Coolstory links -->
+        <div>
+          <p class="footer__col-title">Coolstory</p>
+          <ul class="footer__links">
+            <li><a href="../">Homepage</a></li>
+            <li><a href="https://calendly.com/imalchenko/chat-with-igor" target="_blank" rel="noopener">Book a demo</a></li>
+            <li><a href="../#usecases">Features</a></li>
+            <li><a href="../docs">Docs</a></li>
+            <li><a href="../blog">Blog</a></li>
+          </ul>
+        </div>
+        <!-- Use cases -->
+        <div>
+          <p class="footer__col-title">Use cases</p>
+          <ul class="footer__links">
+            <li><a href="../user-onboarding">User onboarding</a></li>
+            <li><a href="../">Feature discovery</a></li>
+            <li><a href="../product-updates">Product updates</a></li>
+            <li><a href="../shoppable-stories">Shoppable stories</a></li>
+            <li><a href="../">User feedback</a></li>
+            <li><a href="../">Upsells</a></li>
+          </ul>
+        </div>
+        <!-- Legal -->
+        <div>
+          <p class="footer__col-title">Legal</p>
+          <ul class="footer__links">
+            <li><a href="../terms">Terms &amp; Conditions</a></li>
+            <li><a href="../privacy">Privacy policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2026 Coolstory</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

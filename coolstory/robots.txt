@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /design-system.html
+Disallow: /CLAUDE.md
+
+Sitemap: https://coolstory.me/sitemap.xml
