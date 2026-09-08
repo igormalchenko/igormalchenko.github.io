@@ -1,2 +1,3 @@
 User-agent: *
-Disallow: /coolstory/
+Allow: /$
+Disallow: /
