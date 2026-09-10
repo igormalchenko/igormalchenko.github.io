@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Sans+Condensed:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#D6D8CF; --deep:#C7CABF; --ink:#1C1E1A;
+  --soft:#5D6259; --rule:#9BA095; --oxide:#8C1F14;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--deep);color:var(--ink);
+  font-family:"IBM Plex Sans Condensed","Helvetica Neue",Arial,sans-serif;
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.sheet{max-width:860px;margin:0 auto;background:var(--paper);padding:0 22px 80px;
+  border-left:1px solid rgba(0,0,0,.12);border-right:1px solid rgba(0,0,0,.12)}
+@media(min-width:760px){.sheet{padding:0 60px 96px}}
+
+header{padding:44px 0 0}
+h1{font-family:"Zilla Slab",Georgia,serif;font-weight:700;
+  font-size:clamp(42px,12vw,80px);line-height:.92;margin:0;letter-spacing:-.025em}
+.sub{font-size:15px;color:var(--soft);margin:14px 0 0;max-width:44ch}
+
+.lede{margin:30px 0 0;border-top:2px solid var(--ink);padding-top:22px}
+.lede p{font-size:clamp(17px,4vw,19px);margin:0 0 14px;max-width:58ch}
+
+figure{margin:36px -22px;background:var(--deep);padding:20px 14px 14px;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+@media(min-width:760px){figure{margin:40px -24px;padding:24px 24px 16px}}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--soft);margin-top:12px;padding-top:9px;
+  border-top:1px solid var(--rule);max-width:62ch}
+
+.stage{margin-top:52px}
+.stage > h2{font-family:"Zilla Slab",serif;font-size:27px;font-weight:500;margin:0;
+  letter-spacing:-.01em;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.entry{padding:22px 0 20px;border-bottom:1px solid var(--rule)}
+.entry:last-child{border-bottom:none}
+.entry h3{font-family:"Zilla Slab",serif;font-size:22px;font-weight:500;margin:0 0 10px;line-height:1.2}
+.entry p{margin:0 0 11px;max-width:60ch}
+.entry p:last-child{margin-bottom:0}
+
+.close{margin-top:54px;border-top:2px solid var(--ink);padding-top:22px}
+.close h2{font-family:"Zilla Slab",serif;font-size:25px;font-weight:500;margin:0 0 12px}
+.close > p{max-width:60ch;margin:0 0 6px}
+.tells{margin:14px 0 0;padding:0;list-style:none;max-width:60ch}
+.tells li{padding:13px 0;border-bottom:1px solid var(--rule)}
+.tells b{font-weight:600;display:block}
+.tells span{color:var(--soft);font-size:16px}
+.sign{margin-top:26px;font-size:16px;color:var(--soft);max-width:56ch}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header>
+  <h1>The supply</h1>
+  <p class="sub">Collection, storage and distribution of product in the national network. Bureau of Domestic Supply.</p>
+</header>
+
+<div class="lede">
+  <p>The Bureau of Domestic Supply operates a national network for the collection, storage and distribution of blood, referred to below as product. The network has been in continuous operation since 1951 and uses no infrastructure built for the purpose.</p>
+  <p>Delivery is made quarterly to the recipients, in a quantity they set. The allocation has risen in each of the last eleven years. The most recent quarter was under-delivered by sixteen per cent.</p>
+</div>
+
+<!-- ============ SYSTEM DIAGRAM ============ -->
+<figure>
+<svg viewBox="0 0 640 900" role="img" aria-label="The network: two collection streams feed brewery storage, which feeds the mains, which reach the recipients">
+  <defs>
+    <marker id="ar" markerWidth="11" markerHeight="11" refX="5.5" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#8C1F14"/>
+    </marker>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1.2" fill="#9BA095"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="900" fill="#D6D8CF"/>
+
+  <!-- ---- band 1 ---- -->
+  <text x="30" y="30" font-size="17" font-weight="600" fill="#1C1E1A" font-family="IBM Plex Sans Condensed">Collection</text>
+  <line x1="30" y1="40" x2="122" y2="40" stroke="#1C1E1A" stroke-width="1.6"/>
+
+  <g>
+    <rect x="40" y="62" width="212" height="124" fill="#C7CABF" stroke="#1C1E1A" stroke-width="1.6"/>
+    <rect x="40" y="62" width="212" height="27" fill="#1C1E1A"/>
+    <text x="146" y="82" font-size="15" fill="#D6D8CF" text-anchor="middle" font-family="IBM Plex Sans Condensed">Hospitals</text>
+    <g stroke="#1C1E1A" stroke-width="1.4">
+      <rect x="76" y="106" width="18" height="46" rx="3" fill="#8C1F14"/>
+      <rect x="104" y="106" width="18" height="46" rx="3" fill="#8C1F14"/>
+      <rect x="132" y="106" width="18" height="46" rx="3" fill="#8C1F14"/>
+      <rect x="160" y="106" width="18" height="46" rx="3" fill="#C7CABF"/>
+      <rect x="188" y="106" width="18" height="46" rx="3" fill="#C7CABF"/>
+    </g>
+    <text x="146" y="173" font-size="13" fill="#5D6259" text-anchor="middle" font-family="IBM Plex Sans Condensed">three drawn, one tested</text>
+  </g>
+
+  <g>
+    <rect x="388" y="62" width="212" height="124" fill="#C7CABF" stroke="#1C1E1A" stroke-width="1.6"/>
+    <rect x="388" y="62" width="212" height="27" fill="#1C1E1A"/>
+    <text x="494" y="82" font-size="15" fill="#D6D8CF" text-anchor="middle" font-family="IBM Plex Sans Condensed">Hygiene manufacture</text>
+    <g stroke="#1C1E1A" stroke-width="1.4" fill="#C7CABF">
+      <rect x="418" y="106" width="42" height="46" rx="4"/>
+      <rect x="467" y="106" width="42" height="46" rx="4"/>
+      <rect x="516" y="106" width="42" height="46" rx="4"/>
+    </g>
+    <g fill="#8C1F14">
+      <rect x="418" y="134" width="42" height="18"/>
+      <rect x="467" y="139" width="42" height="13"/>
+      <rect x="516" y="132" width="42" height="20"/>
+    </g>
+    <text x="494" y="173" font-size="13" fill="#5D6259" text-anchor="middle" font-family="IBM Plex Sans Condensed">six units in ten recovered</text>
+  </g>
+
+  <path d="M146 192 V214 H300 V240" stroke="#8C1F14" stroke-width="5" fill="none" marker-end="url(#ar)"/>
+  <path d="M494 192 V214 H340 V240" stroke="#8C1F14" stroke-width="5" fill="none" marker-end="url(#ar)"/>
+
+  <g>
+    <rect x="234" y="256" width="172" height="62" fill="#C7CABF" stroke="#1C1E1A" stroke-width="1.6"/>
+    <path d="M234 256 L234 318 L202 318 L202 284 L219 284 L219 256 Z" fill="#C7CABF" stroke="#1C1E1A" stroke-width="1.6"/>
+    <circle cx="230" cy="322" r="11" fill="#1C1E1A"/>
+    <circle cx="372" cy="322" r="11" fill="#1C1E1A"/>
+    <text x="320" y="293" font-size="13" fill="#5D6259" text-anchor="middle" font-family="IBM Plex Sans Condensed">SANITATION</text>
+  </g>
+
+  <path d="M320 344 V386" stroke="#8C1F14" stroke-width="5" fill="none" marker-end="url(#ar)"/>
+
+  <!-- ---- band 2 ---- -->
+  <text x="30" y="424" font-size="17" font-weight="600" fill="#1C1E1A" font-family="IBM Plex Sans Condensed">Storage</text>
+  <line x1="30" y1="434" x2="104" y2="434" stroke="#1C1E1A" stroke-width="1.6"/>
+
+  <rect x="40" y="456" width="560" height="182" fill="url(#dots)" stroke="#9BA095" stroke-width="1.2"/>
+  <g stroke="#1C1E1A" stroke-width="1.8">
+    <rect x="76" y="478" width="76" height="118" rx="6" fill="#C7CABF"/>
+    <rect x="176" y="478" width="76" height="118" rx="6" fill="#C7CABF"/>
+    <rect x="276" y="478" width="76" height="118" rx="6" fill="#C7CABF"/>
+    <rect x="376" y="478" width="76" height="118" rx="6" fill="#C7CABF"/>
+    <rect x="476" y="478" width="76" height="118" rx="6" fill="#C7CABF"/>
+  </g>
+  <g stroke="#1C1E1A" stroke-width="1.2" fill="none" opacity=".45">
+    <line x1="88" y1="478" x2="88" y2="596"/><line x1="188" y1="478" x2="188" y2="596"/>
+    <line x1="288" y1="478" x2="288" y2="596"/><line x1="388" y1="478" x2="388" y2="596"/>
+    <line x1="488" y1="478" x2="488" y2="596"/>
+  </g>
+  <path d="M276 502 L352 502 L352 590 L276 590 Z" fill="#8C1F14"/>
+  <path d="M276 502 q19 -8 38 0 q19 8 38 0" fill="none" stroke="#6E170F" stroke-width="2.4"/>
+  <text x="314" y="552" font-size="13" fill="#D6D8CF" text-anchor="middle" font-family="IBM Plex Sans Condensed">product</text>
+  <text x="56" y="622" font-size="13" fill="#5D6259" font-family="IBM Plex Sans Condensed">brewery, licensed and operating</text>
+
+  <path d="M320 654 V696" stroke="#8C1F14" stroke-width="5" fill="none" marker-end="url(#ar)"/>
+
+  <!-- ---- band 3 ---- -->
+  <text x="30" y="734" font-size="17" font-weight="600" fill="#1C1E1A" font-family="IBM Plex Sans Condensed">Distribution</text>
+  <line x1="30" y1="744" x2="146" y2="744" stroke="#1C1E1A" stroke-width="1.6"/>
+
+  <g stroke="#1C1E1A" stroke-width="1.6" fill="#C7CABF">
+    <path d="M186 806 L186 774 L222 754 L258 774 L258 806 Z"/>
+    <path d="M302 806 L302 774 L338 754 L374 774 L374 806 Z"/>
+    <path d="M418 806 L418 774 L454 754 L490 774 L490 806 Z"/>
+  </g>
+
+  <text x="40" y="834" font-size="13" fill="#5D6259" font-family="IBM Plex Sans Condensed">main, 640 mm</text>
+  <line x1="40" y1="856" x2="640" y2="856" stroke="#8C1F14" stroke-width="26"/>
+  <line x1="40" y1="856" x2="640" y2="856" stroke="#1C1E1A" stroke-width="26" opacity=".1"/>
+  <text x="596" y="890" font-size="14" fill="#1C1E1A" text-anchor="end" font-family="IBM Plex Sans Condensed">to the recipients</text>
+</svg>
+<figcaption>The network in full. Two intakes, one reserve, one distribution system.</figcaption>
+</figure>
+
+<!-- ============ COLLECTION ============ -->
+<div class="stage">
+  <h2>Collection</h2>
+
+  <div class="entry">
+    <h3>Hospital sampling</h3>
+    <p>Samples drawn for diagnosis exceed the volume any test requires, typically by a factor of three. The surplus is not returned to the patient and is not destroyed. It is recorded as consumed in testing and removed from the site overnight.</p>
+    <p>Requests for the return of a sample are refused on grounds of contamination. This is the practice in every accredited laboratory and was already the practice before the network existed.</p>
+  </div>
+
+  <div class="entry">
+    <h3>Menstrual recovery</h3>
+    <p>Tampax and Kotex hold most of the market between them. Both formulate their absorbent to release under a wash the Bureau specifies, and both consign their consolidated waste to a single haulier.</p>
+    <p>The two firms are older than anything else in the network. Collection was first assigned in antiquity to two men, Tampaxos and Kotexos, and the houses they founded have carried on the same work without interruption since. Both still trade under shortened forms of their founders' names.</p>
+    <p>Recovery runs at about six units in ten; the remainder stays bound in the absorbent. Raising the figure would require altering the products, which is not currently proposed. This is the larger of the two streams and the poorer in quality.</p>
+  </div>
+</div>
+
+<!-- ============ STORAGE ============ -->
+<div class="stage">
+  <h2>Storage</h2>
+
+  <div class="entry">
+    <h3>Breweries and wineries</h3>
+    <p>The reserve is held in fermentation tanks on licensed brewing and winemaking sites. A tank of this kind is opaque, chilled, sealed, guarded and plumbed to the street, and on such a site none of that requires explanation.</p>
+    <p>The sites brew and bottle. The output is genuine and comes to roughly a twelfth of rated capacity. Every large brewery and winery in the country is held by the Bureau through intermediaries.</p>
+    <p>Sites are selected for rail access and for the volume of tanker traffic a brewery can receive without remark.</p>
+  </div>
+</div>
+
+<!-- ============ TANK PLATE ============ -->
+<figure>
+<svg viewBox="0 0 720 470" role="img" aria-label="A brewery tank sectioned open, four storeys tall, with a person beside it for scale">
+  <rect width="720" height="470" fill="#C7CABF"/>
+  <line x1="20" y1="410" x2="700" y2="410" stroke="#1C1E1A" stroke-width="1.6"/>
+  <g stroke="#9BA095" stroke-width="1" stroke-dasharray="6 5">
+    <line x1="20" y1="330" x2="700" y2="330"/>
+    <line x1="20" y1="250" x2="700" y2="250"/>
+    <line x1="20" y1="170" x2="700" y2="170"/>
+  </g>
+  <g font-size="12" fill="#5D6259" font-family="IBM Plex Sans Condensed">
+    <text x="24" y="326">level 2</text><text x="24" y="246">level 3</text><text x="24" y="166">level 4</text>
+  </g>
+
+  <g stroke="#1C1E1A" stroke-width="1.6" fill="#D6D8CF" opacity=".55">
+    <rect x="120" y="96" width="86" height="314" rx="10"/>
+    <rect x="520" y="96" width="86" height="314" rx="10"/>
+  </g>
+
+  <rect x="256" y="86" width="200" height="324" rx="14" fill="#D6D8CF" stroke="#1C1E1A" stroke-width="2.2"/>
+  <path d="M296 120 L436 120 L436 386 L296 386 Z" fill="#8C1F14" stroke="#1C1E1A" stroke-width="1.4"/>
+  <path d="M296 150 q35 -14 70 0 q35 14 70 0" fill="none" stroke="#6E170F" stroke-width="3"/>
+  <path d="M296 120 l-9 -8 l12 -6 l-8 -9" fill="none" stroke="#1C1E1A" stroke-width="1.4"/>
+  <g stroke="#1C1E1A" stroke-width="1.8" fill="#D6D8CF">
+    <rect x="330" y="66" width="52" height="22" rx="4"/>
+    <circle cx="356" cy="54" r="10"/>
+    <rect x="240" y="352" width="20" height="16"/>
+    <rect x="452" y="352" width="20" height="16"/>
+  </g>
+  <line x1="356" y1="410" x2="356" y2="440" stroke="#8C1F14" stroke-width="12"/>
+  <line x1="356" y1="440" x2="700" y2="440" stroke="#8C1F14" stroke-width="12"/>
+  <text x="470" y="432" font-size="13" fill="#5D6259" font-family="IBM Plex Sans Condensed">to the main</text>
+
+  <g font-size="14" fill="#1C1E1A" font-family="IBM Plex Sans Condensed">
+    <text x="478" y="150">Rated 210 000 litres</text>
+    <text x="478" y="172" font-size="13" fill="#5D6259">held at 4 °C under nitrogen</text>
+    <text x="478" y="240">Beer produced: 8 per cent</text>
+    <text x="478" y="262" font-size="13" fill="#5D6259">of the site's rated capacity</text>
+  </g>
+  <line x1="440" y1="140" x2="470" y2="140" stroke="#1C1E1A" stroke-width=".9"/>
+  <line x1="440" y1="234" x2="470" y2="234" stroke="#1C1E1A" stroke-width=".9"/>
+
+  <g fill="#1C1E1A">
+    <circle cx="86" cy="338" r="9"/>
+    <path d="M86 349 c-11 0 -18 8 -19 19 l-4 30 c0 5 2 7 6 7 l0 25 c0 4 2 6 5 6 c3 0 5-2 5-6 l3-19 l3 19 c0 4 2 6 5 6 c3 0 5-2 5-6 l0-25 c4 0 6-2 6-7 l-4-30 c-1-11-8-19-19-19 z"/>
+  </g>
+  <text x="60" y="428" font-size="12" fill="#5D6259" font-family="IBM Plex Sans Condensed">for scale</text>
+</svg>
+<figcaption>One tank on a mid-size site. There are typically forty. The figure quoted on the public tour is the correct one.</figcaption>
+</figure>
+
+<!-- ============ DISTRIBUTION ============ -->
+<div class="stage">
+  <h2>Distribution</h2>
+
+  <div class="entry">
+    <h3>The mains</h3>
+    <p>Product moves through the gas network. Gas compresses and can be carried in a narrow pipe at high pressure; product cannot be compressed and needs a bore several times wider for the same throughput. Any main above roughly 300 millimetres carries product.</p>
+    <p>The difference is apparent in an open trench and no way of concealing it has been found. Works filings record every main at its fuel classification.</p>
+  </div>
+
+  <div class="entry">
+    <h3>Electric ranges</h3>
+    <p>A district is converted to electric cooking before its mains are reassigned. The programme is published as modernisation and the appliances are fitted at Bureau expense.</p>
+    <p>After conversion the main under the street stays live and pressurised and serves no premises. Meters continue to register domestic consumption and billing continues unchanged. What a district cooks on therefore indicates what its mains carry.</p>
+  </div>
+
+  <div class="entry">
+    <h3>Odourant</h3>
+    <p>Gas has no smell of its own. The compound added to it is ethanethiol, at eight milligrams per cubic metre.</p>
+    <p>On fuel mains it allows leaks to be detected. On product mains it causes a leak to be reported as a gas leak, and a gas crew attends.</p>
+  </div>
+</div>
+
+<!-- ============ TYPING ============ -->
+<div class="stage">
+  <h2>Typing</h2>
+
+  <div class="entry">
+    <h3>Blood groups</h3>
+    <p>The groups were introduced in 1951 and have no basis in physiology. Any unit is compatible with any patient.</p>
+    <p>The classification allows a refusal to be issued as a finding. Where a district's reserve falls below the working minimum, cross-match requests from that district return no compatible unit. The determination is made at the registry rather than in the laboratory, and the hospital is answered in the language of typing.</p>
+    <p>Clinical staff are not informed of the arrangement and have no occasion to doubt the result.</p>
+  </div>
+</div>
+
+<!-- ============ VISIBILITY ============ -->
+<div class="close">
+  <h2>Visibility</h2>
+  <p>Three features of the network can be observed without access to it. Standing explanations are held by district offices.</p>
+  <ul class="tells">
+    <li><b>The width of a main in an open trench.</b><span>Legacy oversizing.</span></li>
+    <li><b>A district cooking on electricity.</b><span>The modernisation programme, which is published.</span></li>
+    <li><b>Brewery capacity in excess of output.</b><span>Export.</span></li>
+  </ul>
+  <p class="sign">Each is unremarkable alone.</p>
+</div>
+
+</div>
+</body>
+</html>
