@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Who's who around the safety master file</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F3F5F6; --paper:#FFFFFF; --ink:#1D2830; --muted:#5A6873; --line:#D5DCE1;
+  --zone-src:#F9EDE2; --zone-co:#E6EEF5; --zone-chk:#E4F1E6; --zone-help:#EEE8F6;
+  --node:#FFFFFF; --node-stroke:#8595A0;
+  --file:#0F5F5B; --file-ink:#FFFFFF; --qppv:#1D2830; --qppv-ink:#FFFFFF;
+  --c-report:#C2410C; --c-input:#2463A6; --c-output:#2E7D3A; --c-oversight:#7157A0;
+  --seg:#1D2830; --seg-ink:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12181C; --paper:#1A2227; --ink:#E4EAEE; --muted:#9AA8B2; --line:#2F3A41;
+    --zone-src:#2B2119; --zone-co:#1A2733; --zone-chk:#1A2B1F; --zone-help:#251F31;
+    --node:#2A3640; --node-stroke:#7A8C98;
+    --file:#2BA59D; --file-ink:#07201E; --qppv:#E4EAEE; --qppv-ink:#12181C;
+    --c-report:#F08A50; --c-input:#6FA8E8; --c-output:#6CC47A; --c-oversight:#B39BE0;
+    --seg:#E4EAEE; --seg-ink:#12181C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12181C; --paper:#1A2227; --ink:#E4EAEE; --muted:#9AA8B2; --line:#2F3A41;
+  --zone-src:#2B2119; --zone-co:#1A2733; --zone-chk:#1A2B1F; --zone-help:#251F31;
+  --node:#2A3640; --node-stroke:#7A8C98;
+  --file:#2BA59D; --file-ink:#07201E; --qppv:#E4EAEE; --qppv-ink:#12181C;
+  --c-report:#F08A50; --c-input:#6FA8E8; --c-output:#6CC47A; --c-oversight:#B39BE0;
+  --seg:#E4EAEE; --seg-ink:#12181C;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit}
+button:focus-visible,.node:focus-visible{outline:2px solid var(--c-input);outline-offset:2px}
+.top{max-width:1400px;margin:0 auto;padding:18px 20px 10px;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+h1{font-family:"Source Serif 4",Georgia,serif;font-weight:650;font-size:clamp(1.3rem,2.4vw,1.75rem);line-height:1.2;margin:0}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;background:var(--paper);padding:3px}
+.seg button{border:0;background:transparent;padding:5px 14px;border-radius:999px;cursor:pointer;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--seg);color:var(--seg-ink)}
+.pill{border:1px solid var(--line);background:var(--paper);padding:6px 14px;border-radius:999px;cursor:pointer;font-size:14px}
+.pill[aria-pressed="true"]{background:var(--seg);color:var(--seg-ink);border-color:var(--seg)}
+.layout{max-width:1400px;margin:0 auto;padding:0 20px 28px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.layout.open{grid-template-columns:minmax(0,1fr) 340px}
+@media (max-width:960px){.layout.open{grid-template-columns:1fr}}
+.mapwrap{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:10px;height:max(460px,calc(100vh - 110px));overflow:hidden}
+svg{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+svg.dragging{cursor:grabbing}
+.zoom{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.zoom button{border:0;background:transparent;width:38px;height:36px;cursor:pointer;font-size:18px;line-height:1}
+.zoom button+button{border-top:1px solid var(--line)}
+.zoom button.fit{font-size:12px}
+.zone rect{stroke:none}
+.zone text{font-family:"Source Serif 4",Georgia,serif;font-size:26px;font-weight:650;fill:var(--muted)}
+.edge{fill:none;stroke-width:2.6;opacity:.75;transition:opacity .15s}
+.edge.report{stroke:var(--c-report)} .edge.input{stroke:var(--c-input)} .edge.output{stroke:var(--c-output);stroke-width:3.4} .edge.oversight{stroke:var(--c-oversight);stroke-dasharray:10 7}
+.elabel{pointer-events:none;display:none}
+.elabel rect{fill:var(--paper);stroke-width:1.6}
+.elabel text{font-size:18px;font-weight:500;fill:var(--ink)}
+svg.showlabels .elabel{display:block}
+svg.sel .elabel.on{display:block}
+svg.sel.showlabels .elabel:not(.on){display:none}
+svg.sel .edge{opacity:.08} svg.sel .edge.on{opacity:1;stroke-width:3.6}
+svg.sel .node{opacity:.3} svg.sel .node.on{opacity:1}
+.hidden{display:none!important}
+.node{cursor:pointer;transition:opacity .15s}
+.node rect{fill:var(--node);stroke:var(--node-stroke);stroke-width:1.6}
+.node text{font-size:21px;font-weight:500;fill:var(--ink);pointer-events:none}
+.node.file rect{fill:var(--file);stroke:none}
+.node.file text{fill:var(--file-ink);font-family:"Source Serif 4",Georgia,serif;font-size:27px;font-weight:650}
+.node.qppv rect{fill:var(--qppv);stroke:none}
+.node.qppv text{fill:var(--qppv-ink);font-weight:600}
+.node.active rect{stroke:var(--c-input);stroke-width:4}
+.node:hover rect{stroke-width:2.8}
+aside{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px;position:sticky;top:calc(12px + env(safe-area-inset-top,0px));max-height:max(460px,calc(100vh - 110px));overflow:auto}
+aside[hidden]{display:none}
+@media (max-width:960px){aside{position:static;max-height:none}}
+.phead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+aside h2{font-family:"Source Serif 4",Georgia,serif;font-weight:650;font-size:1.35rem;line-height:1.2;margin:0 0 4px}
+.close{border:1px solid var(--line);background:transparent;border-radius:6px;width:30px;height:30px;cursor:pointer;flex:none}
+aside .group{color:var(--muted);font-size:13px;margin:0 0 12px}
+aside h3{font-size:13.5px;font-weight:700;margin:14px 0 2px}
+aside p{margin:0}
+aside ul{margin:4px 0 0;padding-left:18px}
+aside li{margin:2px 0;font-size:14px}
+.t{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.about{max-width:1400px;margin:0 auto;padding:8px 20px 56px}
+.about h2{font-family:"Source Serif 4",Georgia,serif;font-weight:650;font-size:1.3rem;margin:0 0 6px}
+.about>p{color:var(--muted);max-width:72ch;margin:0 0 18px}
+.key{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.key button{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:13.5px}
+.key button[aria-pressed="false"]{opacity:.45}
+.sw{width:22px;height:0;border-top:3px solid}
+.sw.dash{border-top-style:dashed}
+.ekey{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 22px;padding:0;list-style:none}
+.ekey li{font-size:14.5px}
+.ekey span{font-size:18px;margin-right:6px}
+.about h3.sub{font-size:14px;font-weight:700;margin:0 0 8px}
+.flows{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.flows div{border-left:3px solid;padding:2px 0 2px 14px}
+.flows h3{font-family:"Source Serif 4",Georgia,serif;font-size:1.05rem;margin:0 0 4px}
+.flows p{margin:0;color:var(--muted);max-width:60ch}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1 data-t="title"></h1>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Language">
+      <button id="langP" aria-pressed="true">Plain language</button>
+      <button id="langI" aria-pressed="false">Industry terms</button>
+    </div>
+    <button class="pill" id="labelsBtn" aria-pressed="false" data-t="labelsBtn"></button>
+  </div>
+</div>
+
+<div class="layout" id="layout">
+  <div class="mapwrap">
+    <svg id="map" viewBox="0 0 2000 1340" role="img" aria-label="Stakeholder map">
+      <defs id="defs"></defs>
+      <g id="zones"></g><g id="edges"></g><g id="elabels"></g><g id="nodes"></g>
+    </svg>
+    <div class="zoom">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">−</button>
+      <button id="zfit" class="fit" aria-label="Reset view">Fit</button>
+    </div>
+  </div>
+  <aside id="panel" aria-live="polite" hidden></aside>
+</div>
+
+<section class="about">
+  <h2 data-t="aboutTitle"></h2>
+  <p data-t="aboutText"></p>
+  <h3 class="sub" data-t="keyLines"></h3>
+  <div class="key" id="key" role="group" aria-label="Show or hide connection types"></div>
+  <div class="flows" id="flows"></div>
+</section>
+
+<script>
+const UI = {
+  p:{title:"Who's who around the safety master file",labelsBtn:"Connection labels",aboutTitle:"How to read this map",
+     aboutText:"Select any box to see who they are, what they want, what they need and how they connect. Drag to move around, scroll or pinch to zoom, and select empty space to clear. Switch to industry terms at the top to see the same map in the vocabulary professionals use. The buttons below hide or show one kind of connection at a time.",
+     heads:["Who or what","What they want","What they need","How they connect","Connections on the map"],to:"to",from:"from",keyEnt:"Kinds of entities",keyLines:"Kinds of connections"},
+  i:{title:"PSMF stakeholder map",labelsBtn:"Connection labels",aboutTitle:"How to read this map",
+     aboutText:"Select any node for its role, interests, requirements and interfaces. Drag to pan, scroll or pinch to zoom, select empty space to clear. Switch back to plain language at the top for the same content without jargon. The buttons below filter connections by type.",
+     heads:["Role","Interests","Requirements","Interfaces","Connections on the map"],to:"to",from:"from",keyEnt:"Entity types",keyLines:"Connection types"}
+};
+const TYPES = {
+  report:{p:"Side-effect reports",i:"Adverse event / ICSR flow",
+    fp:["Safety information flows in","Side-effect reports arrive from patients, professionals, journals, websites, staff, partners and vendors. All of it lands with the safety team, and urgent cases go on to regulators within strict deadlines."],
+    fi:["Case intake and submission","AEs are received from spontaneous, literature, digital, affiliate, partner and vendor sources into the safety database, assessed, and submitted as ICSRs to EudraVigilance within 15 days (serious) or 90 days (non-serious)."]},
+  input:{p:"Information into the file",i:"PSMF content and annex inputs",
+    fp:["Facts about the system flow into the file","Almost every department holds a piece of the truth the file must describe: products, contracts, procedures, audits, training, software. When any of those change and nobody tells the file's owner, the file becomes wrong."],
+    fi:["PSMF maintenance inputs","Product list, contracts and SDEAs, SOP index, audit schedule and CAPAs, training records, computerised system validation, and compliance KPIs feed the PSMF body and annexes; significant changes are recorded in the logbook."]},
+  output:{p:"File handed over or registered",i:"PSMF provision and registration",
+    fp:["The file flows out on demand","It isn't sent routinely. It's registered, kept ready, and handed to inspectors within seven days of a request, or shown to buyers checking what they'd inherit."],
+    fi:["PSMF provision","The PSMF location and number are registered in the Article 57 database and the Summary of the PV System is included in the MAA. The full PSMF is provided to competent authorities within 7 days of request."]},
+  oversight:{p:"Oversight and contracts",i:"Oversight and contractual arrangements",
+    fp:["Accountability holds it together","The responsible person oversees the safety work, including everything outsourced. Contracts define who handles what. Regulators hold the company, and that person, to account."],
+    fi:["Oversight model","The QPPV oversees in-house PV and vendor performance, PV agreements and SDEAs define responsibilities with third parties, and competent authorities supervise the MAH through GVP inspections."]}
+};
+const KINDS = {
+  person:{e:"👤",p:"The one accountable person",i:"QPPV"},
+  people:{e:"👥",p:"People outside the company",i:"External reporters"},
+  channel:{e:"📡",p:"Information channels",i:"AE data sources"},
+  team:{e:"🏢",p:"Teams inside the company",i:"MAH functions"},
+  vendor:{e:"🏭",p:"Outside companies relied on",i:"Third parties"},
+  regulator:{e:"🏛️",p:"Regulators",i:"Competent authorities"},
+  reader:{e:"🔍",p:"Outside readers",i:"Due diligence reviewers"},
+  file:{e:"📘",p:"The master file",i:"PSMF"}
+};
+const ZONES = [
+  {x:30,y:120,w:330,h:840,fill:"var(--zone-src)",p:"Where reports come from",i:"Adverse event sources"},
+  {x:380,y:120,w:1190,h:840,fill:"var(--zone-co)",p:"The licence holder",i:"Marketing authorisation holder (MAH)"},
+  {x:1600,y:120,w:370,h:840,fill:"var(--zone-chk)",p:"Regulators & outside readers",i:"Competent authorities & reviewers"},
+  {x:380,y:1070,w:1190,h:240,fill:"var(--zone-help)",p:"Outside companies relied on",i:"Third parties & vendors"}
+];
+const NODES = {
+  patients:{x:195,y:240,w:250,h:90,emo:"🙋",kind:"people",z:0,
+    p:{label:"Patients &\nfamilies",who:"People taking the medicine, or those caring for them.",want:"To be listened to, and for their medicine to be safe.",need:"An easy way to report a problem: a phone line, a website form, a pharmacist.",how:"Report problems to the company or straight to the regulator. The company must capture a report no matter which channel it arrives through."},
+    i:{label:"Consumers\n(spontaneous AEs)",who:"Non-healthcare-professional reporters of spontaneous adverse events (AEs).",want:"Safe products and a responsive reporting route.",need:"Accessible intake channels such as medical information lines, web forms and pharmacy reporting.",how:"Submit spontaneous AE reports to the MAH or directly to the national competent authority. Every valid case must be captured as an ICSR regardless of intake channel."}},
+  doctors:{x:195,y:440,w:250,h:90,emo:"🩺",kind:"people",z:0,
+    p:{label:"Doctors, nurses\n& pharmacists",who:"Healthcare professionals who notice something unusual in a patient.",want:"Accurate, current safety information so they can prescribe safely.",need:"Simple ways to report, and quick answers to medical questions.",how:"Report cases to the company or regulator. Receive safety letters and updated prescribing information when new risks are confirmed."},
+    i:{label:"Healthcare\nprofessionals (HCPs)",who:"HCP reporters of spontaneous AEs and adverse drug reactions (ADRs).",want:"A current, accurate SmPC and prompt safety communication.",need:"Efficient reporting routes and medical information support.",how:"Report AEs to the MAH or competent authority. Receive DHPCs and SmPC updates following signal confirmation and label changes."}},
+  literature:{x:195,y:640,w:250,h:90,emo:"📚",kind:"channel",z:0,
+    p:{label:"Medical\njournals",who:"Published research, case descriptions and conference papers.",want:"Not applicable: this is a source, not a person.",need:"Someone at the company to search it regularly.",how:"The company must search the literature on a fixed schedule. Any article describing a side effect in a patient taking its product counts as a report."},
+    i:{label:"Scientific\nliterature",who:"Global and local medical literature, including case reports and abstracts.",want:"Not applicable.",need:"Documented literature screening process, at least weekly for global databases.",how:"Screened per SOP. Articles meeting minimum case criteria are processed as literature ICSRs. EMA's medical literature monitoring covers certain substances."}},
+  social:{x:195,y:840,w:250,h:90,emo:"💬",kind:"channel",z:0,
+    p:{label:"Company websites\n& social media",who:"Channels the company runs: its pages, apps, patient programmes and market research.",want:"Not applicable: this is a source, not a person.",need:"Monitoring, so that a comment mentioning a side effect is noticed.",how:"Anything posted on channels the company controls must be screened for side effects and treated as a report."},
+    i:{label:"Digital media &\nsolicited sources",who:"MAH-sponsored websites and social media, plus solicited sources such as patient support programmes (PSPs) and market research programmes (MRPs).",want:"Not applicable.",need:"Defined screening frequency for MAH-controlled digital channels and AE capture clauses in PSP/MRP vendor contracts.",how:"AEs from MAH-controlled digital media are processed as ICSRs; solicited reports are handled as solicited cases per GVP Module VI."}},
+  safety:{x:570,y:440,w:240,h:90,emo:"🛡️",kind:"team",z:1,
+    p:{label:"Drug safety\nteam",who:"Doctors, pharmacists, scientists and case handlers who run the daily safety work.",want:"A steady flow of complete reports, clear procedures and manageable workload.",need:"Good data, reliable software, and other departments telling them things in time.",how:"Receive and assess every report, send urgent ones to regulators, look for patterns, write periodic safety reports. They supply most of the file's description of how the work is actually done, plus performance figures."},
+    i:{label:"PV department",who:"Pharmacovigilance function: case processing, medical review, signal management, aggregate reporting and risk management.",want:"Complete, timely case intake, clear SOPs and sustainable case volumes.",need:"Data quality, a validated safety database, and timely interfaces with other functions.",how:"Performs case intake, triage, MedDRA coding, causality and expectedness assessment, expedited ICSR submission, signal detection, PSUR/PBRER and RMP authoring. Owns PSMF process descriptions and compliance KPIs."}},
+  qppv:{x:1000,y:240,w:280,h:96,emo:"🧑‍💼",kind:"person",z:1,cls:"qppv",
+    p:{label:"Responsible person\n+ deputy",who:"The single named individual legally accountable for the whole safety system. Must live and work in the EU or wider European area, and has a deputy for cover.",want:"Confidence that the system works and that the file tells the truth.",need:"Visibility into everything that affects safety, including outsourced work and new deals, and the authority to fix problems.",how:"Oversees the safety team and vendors, owns and signs off the file, and is the regulators' contact day and night."},
+    i:{label:"QPPV +\ndeputy QPPV",who:"Qualified Person Responsible for Pharmacovigilance, residing and operating in the EU/EEA, with a back-up (deputy) QPPV.",want:"Assurance of PV system compliance and an accurate PSMF.",need:"Oversight of PV system performance, notification of all changes affecting the PSMF, and sufficient authority to drive compliance.",how:"Maintains oversight of the PV system including vendors, has authority over PSMF content, and acts as the 24/7 single point of contact for competent authorities."}},
+  regaff:{x:1250,y:350,w:230,h:90,emo:"📜",kind:"team",z:1,
+    p:{label:"Regulatory\naffairs",who:"The team that obtains and maintains the licences to sell each medicine.",want:"Licences approved on time and kept valid.",need:"Accurate facts about the safety system for each application.",how:"Supplies the product list for the file, submits the short summary of the safety system with each application, and registers where the file lives and its reference number in the EU product database."},
+    i:{label:"Regulatory\naffairs",who:"Function managing marketing authorisation applications (MAAs), variations and renewals.",want:"Timely approvals and maintained marketing authorisations.",need:"A current Summary of the PV System and PSMF details.",how:"Provides the PSMF product annex, includes the Summary of the PV System (Module 1.8.1) in the MAA, and maintains PSMF location and number in the Article 57 / xEVMPD database."}},
+  sales:{x:570,y:240,w:240,h:90,emo:"💼",kind:"team",z:1,
+    p:{label:"Sales & medical\nstaff",who:"Employees who talk to doctors, pharmacists and patients.",want:"To do their job without getting tangled in safety paperwork.",need:"Training and a dead-simple way to pass things on.",how:"Must forward any side effect they hear about to the safety team, usually within about a day. Often the weakest link, which is why training records matter."},
+    i:{label:"Field force &\nmedical affairs",who:"Sales representatives, MSLs and medical information staff with HCP and patient contact.",want:"Minimal administrative burden.",need:"AE awareness training and a simple forwarding process.",how:"Forward AEs to PV within a defined timeframe, typically 24 hours per SOP. Training completion is a common inspection focus."}},
+  legal:{x:1450,y:860,w:200,h:90,emo:"⚖️",kind:"team",z:1,
+    p:{label:"Legal &\nbusiness dev.",who:"The people who sign deals with distributors, licensing partners and vendors.",want:"Deals closed on good terms.",need:"To remember that every deal touching a product needs a written agreement on who handles safety reports.",how:"Supplies the list of contracts for the file. Deals signed without telling the safety team are a classic reason files go out of date."},
+    i:{label:"Legal &\nBD / alliances",who:"Functions executing licensing, distribution, co-marketing and vendor agreements.",want:"Commercially favourable deals.",need:"PV clauses and safety data exchange agreements (SDEAs) in all product-related contracts.",how:"Provides the contracts and SDEA list for the PSMF annex. Missing or unnotified SDEAs are a frequent inspection finding."}},
+  file:{x:1000,y:560,w:300,h:110,emo:"📘",kind:"file",z:1,cls:"file",
+    p:{label:"The master file",who:"The living description of the whole safety system: people, organisation, sources of reports, software, procedures, performance and quality controls.",want:"Not applicable: it's a document. What it must be is current, controlled and truthful.",need:"A constant flow of updates from every contributor, version control, and a log of every significant change.",how:"Kept where the main safety work happens or where the responsible person works. Not sent routinely. Handed to regulators within seven days of a request."},
+    i:{label:"PSMF",who:"Pharmacovigilance System Master File: description of the PV system per GVP Module II, covering the QPPV, organisational structure, safety data sources, computerised systems, PV processes, system performance and quality system, plus annexes.",want:"Not applicable.",need:"Controlled maintenance, version control and a logbook of significant changes.",how:"Located at the EU site where main PV activities are performed or where the QPPV operates. Provided to competent authorities within 7 days of request."}},
+  local:{x:760,y:700,w:220,h:90,emo:"🌍",kind:"team",z:1,
+    p:{label:"Local country\noffices",who:"The company's branches in individual countries.",want:"To follow both European and local rules without duplicate work.",need:"Clear division of duties with the central safety team.",how:"Collect local reports, handle local contacts and rules, and supply details of local arrangements for the file."},
+    i:{label:"Affiliates /\nlocal PV",who:"Country affiliates with local PV responsibilities, often with a local contact person for PV (LCPPV).",want:"Compliance with EU and national requirements without duplication.",need:"Defined global-to-local responsibilities.",how:"Perform local case intake, local literature screening and national authority interactions; provide local PV arrangements for the PSMF."}},
+  qa:{x:1030,y:860,w:200,h:90,emo:"✅",kind:"team",z:1,
+    p:{label:"Quality\nassurance",who:"The team that owns written procedures, runs audits and tracks fixes.",want:"No surprises in inspections.",need:"Honest audit results and people who actually close the problems found.",how:"Supplies the procedure list, audit schedule, audit findings and progress on fixes for the file."},
+    i:{label:"PV quality\nassurance",who:"Function managing the PV quality system, SOPs, audits and CAPAs.",want:"Inspection readiness.",need:"A risk-based audit programme and timely CAPA closure.",how:"Provides the SOP index, audit schedule, significant audit findings and CAPA status for the PSMF."}},
+  hr:{x:820,y:860,w:200,h:90,emo:"🎓",kind:"team",z:1,
+    p:{label:"HR & training",who:"The people who manage staff records and training.",want:"Accurate records with little effort.",need:"To know that safety training is mandatory for almost everyone, not just the safety team.",how:"Supplies training records, organisation charts and staff changes, including when the responsible person or key staff leave."},
+    i:{label:"HR & training",who:"Function maintaining training records and organisational data.",want:"Efficient record keeping.",need:"PV training requirements for all relevant staff.",how:"Provides training records, organograms and personnel changes, including QPPV or deputy changes, for the PSMF."}},
+  it:{x:1240,y:860,w:200,h:90,emo:"💻",kind:"team",z:1,
+    p:{label:"IT",who:"The team running the software, including the safety database.",want:"Stable systems and fewer urgent requests.",need:"To prove each system works as intended, which inspectors expect to see.",how:"Supplies the list of systems and evidence they've been tested and controlled. Manages the software vendors."},
+    i:{label:"IT / systems",who:"Function operating computerised systems including the safety database.",want:"Stable, supportable systems.",need:"Computerised system validation (CSV) evidence and change control.",how:"Provides the computerised systems description and validation status for the PSMF; manages vendor qualification."}},
+  service:{x:500,y:1200,w:240,h:90,emo:"🏭",kind:"vendor",z:3,
+    p:{label:"Outsourced safety\nproviders",who:"Firms that process reports, run call centres, do literature searches, or even supply the responsible person and maintain the file for small clients.",want:"Clear contracts, steady work, and clients who pass inspections.",need:"Timely information from the client and clean handovers.",how:"Do safety work on the company's behalf. The company stays fully accountable, so each provider must be listed in the file and overseen."},
+    i:{label:"PV service\nproviders / CROs",who:"Vendors providing outsourced case processing, medical information, literature screening, contract QPPV services and PSMF maintenance.",want:"Defined scope, stable volumes, and clients with clean inspection outcomes.",need:"Timely client input and clear PV agreements.",how:"Perform delegated PV activities. The MAH retains accountability, so vendors are listed in the PSMF annex and subject to QPPV oversight and audit."}},
+  partners:{x:780,y:1200,w:240,h:90,emo:"🚚",kind:"vendor",z:3,
+    p:{label:"Business partners\n& distributors",who:"Companies that sell or co-market the product in some countries.",want:"To sell the product with minimal safety burden.",need:"A written safety agreement spelling out who does what.",how:"Forward the side-effect reports they receive to the licence holder. Listed in the file with their agreements."},
+    i:{label:"Licensing partners\n& distributors",who:"Co-marketing, licensing and distribution partners.",want:"Minimal PV burden.",need:"An executed SDEA defining exchange timelines and responsibilities.",how:"Exchange safety data with the MAH per SDEA timelines. Listed in the PSMF contracts annex."}},
+  software:{x:1240,y:1200,w:220,h:90,emo:"🗄️",kind:"vendor",z:3,
+    p:{label:"Software\nvendors",who:"Makers of safety databases, document systems, and sometimes tools for the file itself.",want:"Long contracts with regulated customers.",need:"To deliver systems that can be proven to work, with full audit trails.",how:"Sell to IT and the safety team. Their products appear in the file's list of systems."},
+    i:{label:"Safety system\nvendors",who:"Vendors of safety databases, regulatory document management systems and PSMF tools.",want:"Long-term regulated customers.",need:"Validation-ready, audit-trailed, GxP-compliant systems.",how:"Qualified by IT and QA; their systems are described in the PSMF computerised systems section."}},
+  ema:{x:1785,y:440,w:300,h:90,emo:"🇪🇺",kind:"regulator",z:2,
+    p:{label:"European Medicines\nAgency",who:"The EU body coordinating medicine safety across member states.",want:"A consistent, well-run safety net across Europe.",need:"Reliable reports and accurate product records from every company.",how:"Runs the EU safety report database and the product database where each file's location is registered. Publishes the guidance on what the file must contain."},
+    i:{label:"EMA",who:"European Medicines Agency, with its safety committee (PRAC).",want:"Harmonised EU pharmacovigilance.",need:"Compliant ICSR submissions and accurate product data.",how:"Operates EudraVigilance and the Article 57 database, coordinates GVP inspections for centrally authorised products, and publishes GVP guidance."}},
+  national:{x:1785,y:240,w:300,h:90,emo:"🏛️",kind:"regulator",z:2,
+    p:{label:"National regulators\n& inspectors (EU)",who:"Each country's medicines agency, such as Germany's, France's or the Netherlands'. They do the actual inspections.",want:"Evidence the company can spot risks and act on them.",need:"An accurate, complete file delivered fast, and reality that matches it.",how:"Request the file, study it before inspecting, compare the description with reality, grade what they find, demand fixes and can escalate to penalties."},
+    i:{label:"National competent\nauthorities (NCAs)",who:"Member state competent authorities and their GVP inspectorates.",want:"Assurance of MAH PV system compliance.",need:"An accurate PSMF within 7 days, and consistency between PSMF and practice.",how:"Request the PSMF for inspection planning, conduct routine and triggered GVP inspections, grade findings as critical, major or minor, require CAPAs, and may escalate to enforcement."}},
+  uk:{x:1785,y:640,w:300,h:90,emo:"🇬🇧",kind:"regulator",z:2,
+    p:{label:"UK\nregulator",who:"Britain's medicines agency, separate from the EU since Brexit.",want:"The same safety assurance for UK patients.",need:"A UK-specific file and UK-based safety arrangements.",how:"Requests and inspects the UK version of the file. Companies selling in both places often maintain two nearly identical files."},
+    i:{label:"MHRA",who:"UK Medicines and Healthcare products Regulatory Agency.",want:"UK PV compliance.",need:"A UK PSMF located in the UK and UK QPPV arrangements per MHRA guidance.",how:"Requests and inspects the UK PSMF. Many MAHs maintain parallel EU and UK PSMFs."}},
+  dd:{x:1785,y:840,w:300,h:90,emo:"🔍",kind:"reader",z:2,
+    p:{label:"Buyers & partners\nchecking a deal",who:"Companies acquiring products or whole companies, or signing licensing deals.",want:"To know what safety risks and problems they'd be inheriting.",need:"A file they can trust as a picture of the real system.",how:"Review the seller's file during deals. A messy file lowers confidence in the whole business."},
+    i:{label:"Due diligence\nreviewers",who:"Acquirers and licensing partners in M&A and in-licensing transactions.",want:"Visibility of PV compliance risk and liabilities.",need:"A reliable PSMF and inspection history.",how:"Conduct PV due diligence on the PSMF, inspection findings and CAPAs. PSMF quality informs deal risk."}}
+};
+const EDGES = [
+  ["patients","safety","report","report a side effect","spontaneous AE report",null,null,0.35],
+  ["doctors","safety","report","report cases","HCP AE report"],
+  ["literature","safety","report","found by regular searches","literature screening"],
+  ["social","safety","report","screened for side effects","digital / solicited AEs",null,null,0.55],
+  ["sales","safety","report","pass on what they hear","AE forwarding within 24h"],
+  ["local","safety","report","forward local reports","affiliate case transmission"],
+  ["partners","safety","report","forward reports from their markets","SDEA case exchange",null,null,0.3],
+  ["service","safety","report","process reports on the company's behalf","outsourced case processing",null,true],
+  ["safety","ema","report","urgent cases within deadlines","ICSR submission to EudraVigilance",null,null,.25],
+  ["regaff","file","input","product list","product annex",null,null,0.15],
+  ["legal","file","input","contracts & partners","contracts & SDEA annex",null,null,.3],
+  ["qa","file","input","procedures, audits, fixes","SOPs, audits, CAPAs",null,null,.3],
+  ["hr","file","input","training & staff changes","training records, organogram",[920,730],null,0.15],
+  ["it","file","input","systems & testing evidence","computerised systems & CSV",null,null,.45],
+  ["safety","file","input","how work is done, performance","PV processes & KPIs"],
+  ["local","file","input","local arrangements","affiliate PV arrangements"],
+  ["qppv","file","input","owns & signs off","PSMF oversight & approval"],
+  ["file","national","output","handed over within 7 days","PSMF within 7 days of request",null,null,0.2],
+  ["file","uk","output","UK version on request","UK PSMF"],
+  ["file","dd","output","reviewed during deals","PV due diligence"],
+  ["regaff","ema","output","registers file, submits summary","Article 57 registration, Summary of PV System",null,null,0.55],
+  ["qppv","safety","oversight","oversees","QPPV oversight"],
+  ["qppv","service","oversight","oversees outsourced work","vendor oversight",[520,720],null,0.7],
+  ["legal","service","oversight","service contracts","PV service agreement",[1000,1060],null,0.6],
+  ["legal","partners","oversight","safety agreements","SDEA",[1120,1050]],
+  ["it","software","oversight","buys & validates","vendor qualification & validation",null,null,0.3],
+  ["ema","national","oversight","coordinates","inspection coordination"],
+  ["national","qppv","oversight","inspects, can call day or night","GVP inspection, 24/7 QPPV contact"]
+];
+
+let lang="p", selected=null;
+const NS="http://www.w3.org/2000/svg";
+const svg=document.getElementById("map");
+const el=(t,a={},p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+const defs=document.getElementById("defs");
+Object.keys(TYPES).forEach(t=>{
+  const m=el("marker",{id:"arr-"+t,viewBox:"0 0 10 10",refX:"9",refY:"5",markerWidth:"7",markerHeight:"7",orient:"auto-start-reverse"},defs);
+  el("path",{d:"M0,0 L10,5 L0,10 z",style:`fill:var(--c-${t})`},m);
+});
+const zoneTexts=[];
+ZONES.forEach(z=>{const g=el("g",{class:"zone"},document.getElementById("zones"));el("rect",{x:z.x,y:z.y,width:z.w,height:z.h,rx:12,style:`fill:${z.fill}`},g);zoneTexts.push(el("text",{x:z.x+16,y:z.y-16},g));});
+
+const mctx=document.createElement("canvas").getContext("2d");
+function textW(str){mctx.font='500 18px "Public Sans", system-ui, sans-serif';return mctx.measureText(str).width;}
+function exitPt(n,tx,ty){const dx=tx-n.x,dy=ty-n.y;const hw=n.w/2+6,hh=n.h/2+6;const s=Math.min(dx?hw/Math.abs(dx):Infinity,dy?hh/Math.abs(dy):Infinity);return [n.x+dx*s,n.y+dy*s];}
+const edgeEls=[];
+EDGES.forEach(([a,b,type,lp,li,ctrl,both,lt])=>{
+  const T=lt||.5;
+  const A=NODES[a],B=NODES[b];let d,lx,ly;
+  if(ctrl){const [cx,cy]=ctrl;const s=exitPt(A,cx,cy),e=exitPt(B,cx,cy);d=`M${s[0]},${s[1]} Q${cx},${cy} ${e[0]},${e[1]}`;lx=(1-T)*(1-T)*s[0]+2*T*(1-T)*cx+T*T*e[0];ly=(1-T)*(1-T)*s[1]+2*T*(1-T)*cy+T*T*e[1];}
+  else{const s=exitPt(A,B.x,B.y),e=exitPt(B,A.x,A.y);d=`M${s[0]},${s[1]} L${e[0]},${e[1]}`;lx=s[0]+(e[0]-s[0])*T;ly=s[1]+(e[1]-s[1])*T;}
+  const p=el("path",{d,class:"edge "+type,"marker-end":`url(#arr-${type})`},document.getElementById("edges"));
+  if(both)p.setAttribute("marker-start",`url(#arr-${type})`);
+  const t=el("g",{class:"elabel"},document.getElementById("elabels"));
+  const r=el("rect",{rx:8,style:`stroke:var(--c-${type})`},t);
+  const tx=el("text",{x:lx,y:ly+6,"text-anchor":"middle"},t);
+  edgeEls.push({a,b,type,lp,li,p,t,r,tx,lx,ly});
+});
+const nodeEls={};
+Object.entries(NODES).forEach(([id,n])=>{
+  const g=el("g",{class:"node "+(n.cls||""),tabindex:"0",role:"button","data-id":id},document.getElementById("nodes"));
+  el("rect",{x:n.x-n.w/2,y:n.y-n.h/2,width:n.w,height:n.h,rx:n.cls==="file"?10:7},g);
+  g.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();select(id);}});
+  nodeEls[id]=g;
+});
+function drawNodeText(id){
+  const n=NODES[id],g=nodeEls[id];g.querySelectorAll("text").forEach(t=>t.remove());
+  const lines=n[lang].label.split("\n");lines[0]=n.emo+" "+lines[0];const lh=n.cls==="file"?32:26;
+  lines.forEach((ln,i)=>{const t=el("text",{x:n.x,y:n.y+(i-(lines.length-1)/2)*lh+7,"text-anchor":"middle"},g);t.textContent=ln;});
+  g.setAttribute("aria-label",n[lang].label.replace("\n"," "));
+}
+
+const keyEl=document.getElementById("key"), flowsEl=document.getElementById("flows");
+Object.keys(TYPES).forEach(t=>{
+  const b=document.createElement("button");b.dataset.type=t;b.setAttribute("aria-pressed","true");
+  b.innerHTML=`<span class="sw${t==="oversight"?" dash":""}" style="border-color:var(--c-${t})"></span><span class="lbl"></span>`;
+  b.addEventListener("click",()=>{const on=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",on);edgeEls.filter(e=>e.type===t).forEach(e=>{e.p.classList.toggle("hidden",!on);e.t.classList.toggle("hidden",!on);});if(selected)select(selected);});
+  keyEl.appendChild(b);
+  const d=document.createElement("div");d.style.borderColor=`var(--c-${t})`;d.dataset.type=t;d.innerHTML="<h3></h3><p></p>";flowsEl.appendChild(d);
+});
+
+function render(){
+  document.querySelectorAll("[data-t]").forEach(e=>e.textContent=UI[lang][e.dataset.t]);
+  document.title=UI[lang].title;
+  ZONES.forEach((z,i)=>zoneTexts[i].textContent=z[lang]);
+  Object.keys(NODES).forEach(drawNodeText);
+  edgeEls.forEach(e=>{const str=lang==="p"?e.lp:e.li;e.tx.textContent=str;const w=textW(str)+22;e.r.setAttribute("x",e.lx-w/2);e.r.setAttribute("y",e.ly-15);e.r.setAttribute("width",w);e.r.setAttribute("height",30);});
+  keyEl.querySelectorAll("button").forEach(b=>b.querySelector(".lbl").textContent=TYPES[b.dataset.type][lang]);
+  flowsEl.querySelectorAll("div").forEach(d=>{const f=TYPES[d.dataset.type][lang==="p"?"fp":"fi"];d.querySelector("h3").textContent=f[0];d.querySelector("p").textContent=f[1];});
+  if(selected)select(selected);
+}
+
+const panel=document.getElementById("panel"), layout=document.getElementById("layout");
+function select(id){
+  selected=id;
+  if(!id){svg.classList.remove("sel");Object.values(nodeEls).forEach(g=>g.classList.remove("on","active"));edgeEls.forEach(e=>{e.p.classList.remove("on");e.t.classList.remove("on");});panel.hidden=true;layout.classList.remove("open");return;}
+  svg.classList.add("sel");
+  const on=new Set([id]),conns=[];
+  edgeEls.forEach(e=>{const hit=(e.a===id||e.b===id)&&!e.p.classList.contains("hidden");e.p.classList.toggle("on",hit);e.t.classList.toggle("on",hit);if(hit){on.add(e.a);on.add(e.b);conns.push(e);}});
+  Object.entries(nodeEls).forEach(([k,g])=>{g.classList.toggle("on",on.has(k));g.classList.toggle("active",k===id);});
+  const n=NODES[id],c=n[lang],SE=["🪪","🎯","🧰","🔗","🗺️"],H=UI[lang].heads.map((h,i)=>SE[i]+" "+h);
+  const list=conns.map(e=>{const o=NODES[e.a===id?e.b:e.a][lang].label.replace("\n"," ");const dir=e.a===id?UI[lang].to:UI[lang].from;return `<li><span class="t" style="background:var(--c-${e.type})"></span>${esc(lang==="p"?e.lp:e.li)} <span style="color:var(--muted)">(${dir} ${esc(o)})</span></li>`;}).join("");
+  panel.innerHTML=`<div class="phead"><h2>${n.emo} ${esc(c.label.replace("\n"," "))}</h2><button class="close" aria-label="Close">×</button></div><p class="group">${esc(ZONES[n.z][lang])}</p><h3>${H[0]}</h3><p>${esc(c.who)}</p><h3>${H[1]}</h3><p>${esc(c.want)}</p><h3>${H[2]}</h3><p>${esc(c.need)}</p><h3>${H[3]}</h3><p>${esc(c.how)}</p>${list?`<h3>${H[4]}</h3><ul>${list}</ul>`:""}`;
+  panel.querySelector(".close").addEventListener("click",()=>select(null));
+  panel.hidden=false;layout.classList.add("open");
+}
+
+const langP=document.getElementById("langP"),langI=document.getElementById("langI");
+function setLang(l){lang=l;langP.setAttribute("aria-pressed",l==="p");langI.setAttribute("aria-pressed",l==="i");render();}
+langP.addEventListener("click",()=>setLang("p"));langI.addEventListener("click",()=>setLang("i"));
+const lb=document.getElementById("labelsBtn");
+lb.addEventListener("click",()=>{const on=lb.getAttribute("aria-pressed")!=="true";lb.setAttribute("aria-pressed",on);svg.classList.toggle("showlabels",on);});
+
+/* zoom & pan */
+const HOME={x:0,y:0,w:2000,h:1340};let vb={...HOME};
+function applyVB(){svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);}
+function toSvg(cx,cy){const pt=svg.createSVGPoint();pt.x=cx;pt.y=cy;return pt.matrixTransform(svg.getScreenCTM().inverse());}
+function zoomAt(f,px,py){const nw=Math.min(4000,Math.max(300,vb.w*f));const k=nw/vb.w;vb.x=px-(px-vb.x)*k;vb.y=py-(py-vb.y)*k;vb.w=nw;vb.h=vb.h*k;applyVB();}
+function zoomCenter(f){zoomAt(f,vb.x+vb.w/2,vb.y+vb.h/2);}
+document.getElementById("zin").addEventListener("click",()=>zoomCenter(0.8));
+document.getElementById("zout").addEventListener("click",()=>zoomCenter(1.25));
+document.getElementById("zfit").addEventListener("click",()=>{vb={...HOME};applyVB();});
+svg.addEventListener("wheel",e=>{e.preventDefault();const p=toSvg(e.clientX,e.clientY);zoomAt(Math.exp(e.deltaY*0.0015),p.x,p.y);},{passive:false});
+
+const ptrs=new Map();let down=null,moved=false,pinch=null;
+svg.addEventListener("pointerdown",e=>{
+  svg.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===1){down={x:e.clientX,y:e.clientY,target:e.target};moved=false;}
+  if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)};moved=true;}
+});
+svg.addEventListener("pointermove",e=>{
+  if(!ptrs.has(e.pointerId))return;
+  const prev=ptrs.get(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===2&&pinch){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const m=toSvg((a.x+b.x)/2,(a.y+b.y)/2);zoomAt(pinch.d/d,m.x,m.y);pinch.d=d;return;}
+  if(ptrs.size===1&&down){
+    if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>5){moved=true;svg.classList.add("dragging");}
+    if(moved){const s=1/svg.getScreenCTM().a;vb.x-=(e.clientX-prev.x)*s;vb.y-=(e.clientY-prev.y)*s;applyVB();}
+  }
+});
+function endPtr(e){
+  if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);
+  if(ptrs.size<2)pinch=null;
+  if(ptrs.size===0){
+    svg.classList.remove("dragging");
+    if(down&&!moved&&e.type==="pointerup"){const n=down.target.closest&&down.target.closest(".node");select(n?n.dataset.id:null);}
+    down=null;
+  }
+}
+svg.addEventListener("pointerup",endPtr);svg.addEventListener("pointercancel",endPtr);
+
+render();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>render());
+</script>
+</body>
+</html>
