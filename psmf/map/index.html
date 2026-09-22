@@ -53,7 +53,7 @@ h1{font-family:"Source Serif 4",Georgia,serif;font-weight:650;font-size:clamp(1.
 .layout{max-width:1400px;margin:0 auto;padding:0 20px 28px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 .layout.open{grid-template-columns:minmax(0,1fr) 340px}
 @media (max-width:960px){.layout.open{grid-template-columns:1fr}}
-.mapwrap{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:10px;height:max(460px,calc(100vh - 110px));overflow:hidden}
+.mapwrap{position:relative;margin-bottom:20px;background:var(--paper);border:1px solid var(--line);border-radius:10px;height:max(460px,calc(100vh - 110px));overflow:hidden}
 svg{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
 svg.dragging{cursor:grabbing}
 .zoom{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden}
@@ -139,13 +139,6 @@ aside li{margin:2px 0;font-size:14px}
   <aside id="panel" aria-live="polite" hidden></aside>
 </div>
 
-<section class="about">
-  <h2 data-t="aboutTitle"></h2>
-  <p data-t="aboutText"></p>
-  <h3 class="sub" data-t="keyLines"></h3>
-  <div class="key" id="key" role="group" aria-label="Show or hide connection types"></div>
-  <div class="flows" id="flows"></div>
-</section>
 
 <script>
 const UI = {
@@ -326,23 +319,12 @@ function drawNodeText(id){
   g.setAttribute("aria-label",n[lang].label.replace("\n"," "));
 }
 
-const keyEl=document.getElementById("key"), flowsEl=document.getElementById("flows");
-Object.keys(TYPES).forEach(t=>{
-  const b=document.createElement("button");b.dataset.type=t;b.setAttribute("aria-pressed","true");
-  b.innerHTML=`<span class="sw${t==="oversight"?" dash":""}" style="border-color:var(--c-${t})"></span><span class="lbl"></span>`;
-  b.addEventListener("click",()=>{const on=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",on);edgeEls.filter(e=>e.type===t).forEach(e=>{e.p.classList.toggle("hidden",!on);e.t.classList.toggle("hidden",!on);});if(selected)select(selected);});
-  keyEl.appendChild(b);
-  const d=document.createElement("div");d.style.borderColor=`var(--c-${t})`;d.dataset.type=t;d.innerHTML="<h3></h3><p></p>";flowsEl.appendChild(d);
-});
-
 function render(){
   document.querySelectorAll("[data-t]").forEach(e=>e.textContent=UI[lang][e.dataset.t]);
   document.title=UI[lang].title;
   ZONES.forEach((z,i)=>zoneTexts[i].textContent=z[lang]);
   Object.keys(NODES).forEach(drawNodeText);
   edgeEls.forEach(e=>{const str=lang==="p"?e.lp:e.li;e.tx.textContent=str;const w=textW(str)+22;e.r.setAttribute("x",e.lx-w/2);e.r.setAttribute("y",e.ly-15);e.r.setAttribute("width",w);e.r.setAttribute("height",30);});
-  keyEl.querySelectorAll("button").forEach(b=>b.querySelector(".lbl").textContent=TYPES[b.dataset.type][lang]);
-  flowsEl.querySelectorAll("div").forEach(d=>{const f=TYPES[d.dataset.type][lang==="p"?"fp":"fi"];d.querySelector("h3").textContent=f[0];d.querySelector("p").textContent=f[1];});
   if(selected)select(selected);
 }
 
