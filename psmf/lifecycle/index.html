@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How the master file changes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#F1F3F4;--paper:#FFF;--ink:#1D2830;--muted:#5A6873;--line:#D5DCE1;--soft:#F6F8F9;--bar:#1D2830;--bar-ink:#FFF;
+--clash:#D2452B;--clash-bg:#FDECE8;--accent:#0F5F5B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181C;--paper:#1A2227;--ink:#E4EAEE;--muted:#9AA8B2;--line:#2F3A41;--soft:#20292F;--bar:#E4EAEE;--bar-ink:#12181C;--clash:#F27A5E;--clash-bg:#3A1F19;--accent:#2BA59D}}
+:root[data-theme="dark"]{--bg:#12181C;--paper:#1A2227;--ink:#E4EAEE;--muted:#9AA8B2;--line:#2F3A41;--soft:#20292F;--bar:#E4EAEE;--bar-ink:#12181C;--clash:#F27A5E;--clash-bg:#3A1F19;--accent:#2BA59D}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page{max-width:1360px;margin:0 auto;padding:20px}
+h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:clamp(1.4rem,2.6vw,1.9rem);margin:0 0 16px}
+h2{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:1.2rem;margin:0 0 10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px}
+/* timeline */
+.months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px}
+@media (max-width:760px){.months{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.month{border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:6px;cursor:pointer;text-align:left;min-height:84px;display:flex;flex-direction:column;gap:4px}
+.month.sel{border-color:var(--bar);box-shadow:0 0 0 2px var(--bar) inset}
+.month .mn{font-size:12px;font-weight:700;color:var(--muted)}
+.month .mn .rel{color:var(--accent);font-weight:700}
+.dot{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;line-height:1.2}
+.dot i{width:9px;height:9px;border-radius:50%;flex:none}
+.sub{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+/* layout */
+.grid{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;margin-top:16px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.events{display:flex;flex-direction:column;gap:6px}
+.ev{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:9px 10px;cursor:pointer}
+.ev .sw{width:14px;height:14px;border-radius:4px;flex:none;margin-top:3px;border:2px solid transparent}
+.ev[aria-pressed="true"]{border-color:var(--bar);box-shadow:0 0 0 1px var(--bar) inset}
+.ev .t{font-weight:600;font-size:14px;line-height:1.3}
+.ev .w{font-size:12.5px;color:var(--muted)}
+.clear{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px;align-self:flex-start;margin-top:4px}
+/* blocks */
+.blocks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.blocks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.grp{grid-column:1/-1;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.blk{border:1.5px solid var(--line);background:var(--soft);border-radius:8px;padding:9px 10px;text-align:left;cursor:pointer;min-height:86px;display:flex;flex-direction:column;gap:3px;transition:opacity .15s}
+.blk .id{font-size:11px;color:var(--muted);font-weight:600}
+.blk .nm{font-weight:600;font-size:14px;line-height:1.25}
+.blk .h{font-size:12px;color:var(--muted);line-height:1.3}
+.blk .dots{display:flex;gap:3px;margin-top:auto;flex-wrap:wrap}
+.blk .dots i{width:10px;height:10px;border-radius:50%}
+.blk.dim{opacity:.35}
+.blk.hit{background:var(--paper);border-color:var(--bar)}
+.blk.clash{border-color:var(--clash);background:var(--clash-bg);border-width:2.5px}
+.blk.focus{box-shadow:0 0 0 3px var(--accent)}
+.blk .ct{font-size:11.5px;font-weight:700;color:var(--clash)}
+/* stories */
+.stories{display:grid;gap:12px;margin-top:16px}
+.story{border-left:5px solid;padding:14px 16px}
+.story h3{margin:0 0 8px;font-size:16px}
+.facts{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:14px;margin:0 0 12px}
+.facts dt{color:var(--muted);font-weight:600}
+.facts dd{margin:0}
+.edits{display:grid;gap:6px}
+.edit{display:grid;grid-template-columns:150px 110px minmax(0,1fr);gap:10px;align-items:start;font-size:13.5px;padding:7px 0;border-top:1px solid var(--line)}
+@media (max-width:700px){.edit{grid-template-columns:1fr}}
+.chip{display:inline-block;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:5px;padding:1px 7px;background:var(--soft)}
+.kind{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.ba{font-size:13px}
+.ba del{color:var(--muted)}
+.ba ins{text-decoration:none;font-weight:600}
+.clashes{margin-top:16px}
+.cl{border-left:5px solid var(--clash);padding:14px 16px;margin-bottom:10px}
+.cl h3{margin:0 0 6px;font-size:15.5px}
+.cl .why{font-size:14px;margin:0 0 8px}
+.cl ul{margin:0;padding-left:18px;font-size:13.5px}
+.empty{color:var(--muted);font-size:14px}
+.bpanel{margin-top:10px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>How the master file changes</h1>
+
+<section class="card">
+  <h2>A year at a small client</h2>
+  <div class="months" id="months"></div>
+  <p class="sub">Select a month to load its events. In June, the changes that piled up since the last version are released together as one new version.</p>
+</section>
+
+<div class="grid">
+  <section class="card">
+    <h2>Events</h2>
+    <div class="events" id="events"></div>
+    <button class="clear" id="clear">Clear selection</button>
+  </section>
+  <section class="card">
+    <h2>The file, as blocks</h2>
+    <div class="blocks" id="blocks"></div>
+    <div class="bpanel" id="bpanel"></div>
+  </section>
+</div>
+
+<div class="clashes" id="clashes"></div>
+<div class="stories" id="stories"></div>
+</div>
+
+<script>
+const BLOCKS=[
+ {g:"Front"},
+ {id:"cover",code:"Cover",nm:"Version stamp",h:"Version number, date, who approved it"},
+ {g:"Main body: the story of the system"},
+ {id:"s1",code:"Section 1",nm:"The responsible person",h:"Names, contact details, backup person"},
+ {id:"s2",code:"Section 2",nm:"Who does what",h:"Departments, outside firms, partners, in prose"},
+ {id:"s3",code:"Section 3",nm:"Where reports come from",h:"Every channel a side-effect report can arrive through"},
+ {id:"s4",code:"Section 4",nm:"Software",h:"Safety database and tools, with versions"},
+ {id:"s5",code:"Section 5",nm:"How the work is done",h:"Process descriptions, each citing a procedure number"},
+ {id:"s6",code:"Section 6",nm:"How well it works",h:"Commentary on performance, explains any failures"},
+ {id:"s7",code:"Section 7",nm:"Quality controls",h:"Document control, training, audits, in prose"},
+ {g:"Annexes: the lists and tables"},
+ {id:"A",code:"Annex A",nm:"Responsible person details",h:"CVs, job description, delegated tasks"},
+ {id:"B",code:"Annex B",nm:"Outside firms & contracts",h:"Table: firm, service, contract number, dates"},
+ {id:"C",code:"Annex C",nm:"Report sources & partners",h:"Table: partner, territory, safety agreement"},
+ {id:"D",code:"Annex D",nm:"Systems list",h:"Table: system, version, validation proof"},
+ {id:"E",code:"Annex E",nm:"Procedures list",h:"Table: procedure number, title, version"},
+ {id:"F",code:"Annex F",nm:"Performance figures",h:"Numbers: on-time rates, counts"},
+ {id:"G",code:"Annex G",nm:"Audits & fixes",h:"Table: audits, findings, open fixes"},
+ {id:"H",code:"Annex H",nm:"Products list",h:"Table: product, substance, countries"},
+ {id:"I",code:"Annex I",nm:"Change log",h:"One line per significant change"}
+];
+const BN=Object.fromEntries(BLOCKS.filter(b=>b.id).map(b=>[b.id,b]));
+
+const KIND={add:"Add row",edit:"Edit row",replace:"Replace value",rewrite:"Rewrite text",figures:"Update numbers",log:"Add log line",bump:"Bump version"};
+
+const EVENTS=[
+ {id:"dist",c:"#E07A2E",t:"New distributor signed",who:"🤝 Business development manager, at the client",freq:"A few times a year",
+  what:"Signs a contract with a company that will sell the client's products in Norway, plus a separate safety agreement saying the distributor must pass on any side-effect reports within 1 business day.",
+  artifact:"Two signed PDFs: the distribution contract and the safety agreement.",
+  reach:"Often late. Legal files the PDFs; the file's maintainer hears about it weeks later, sometimes only when someone asks.",
+  edits:[
+   ["s2","rewrite","Products are distributed in Finland by Aalto Distribution Oy.","Products are distributed in Finland by Aalto Distribution Oy and in Norway by Fjord Pharma AS."],
+   ["s3","add","","New bullet: reports forwarded by Fjord Pharma AS under their safety agreement."],
+   ["B","add","","New row: Fjord Pharma AS · distribution · contract DA-2026-03 · effective 01 Apr 2026"],
+   ["C","add","","New row: Fjord Pharma AS · Norway · safety agreement SDEA-NO-01 · 1 business day"],
+   ["I","log","","v6.0 · Sections 2, 3, Annexes B, C · New distributor for Norway"],
+   ["cover","bump","Version 5.2","Version 6.0"]]},
+ {id:"deputy",c:"#7A5BC4",t:"Backup responsible person leaves",who:"👥 HR manager, at the client",freq:"Every year or two",
+  what:"Records that the employee acting as backup to the responsible person has resigned, and that a colleague has been appointed in their place.",
+  artifact:"A resignation letter, an appointment letter, and the new person's CV.",
+  reach:"Usually quickly, because the responsible person must always have a backup. Also has to be updated in an EU database outside the file.",
+  edits:[
+   ["s1","replace","Deputy: Anna Holm, +45 …","Deputy: Mette Sørensen, +45 …"],
+   ["A","edit","CV: Anna Holm","CV: Mette Sørensen, plus updated list of tasks she covers"],
+   ["s2","replace","PV Manager (Anna Holm)","PV Manager (Mette Sørensen)"],
+   ["I","log","","v5.2 · Section 1, 2, Annex A · Deputy changed"],
+   ["cover","bump","Version 5.1","Version 5.2"]]},
+ {id:"sop",c:"#2F8F6A",t:"Procedures reorganised",who:"✅ Quality manager, at the client",freq:"A few times a year",
+  what:"Merges two written procedures into one and renumbers it. The old numbers stop existing.",
+  artifact:"The new procedure document and an updated procedures index spreadsheet.",
+  reach:"Via a spreadsheet emailed to the maintainer. Easy to update the list and miss the places that cite the old numbers.",
+  edits:[
+   ["E","edit","SOP-PV-005 Literature screening · SOP-PV-006 Local literature","SOP-PV-012 Literature screening (global and local)"],
+   ["s5","replace","see SOP-PV-005 and SOP-PV-006","see SOP-PV-012"],
+   ["s3","replace","screened per SOP-PV-005","screened per SOP-PV-012"],
+   ["s7","rewrite","Procedures are reviewed every two years.","Procedures are reviewed every two years; literature procedures merged in 2026."],
+   ["I","log","","v6.0 · Section 3, 5, 7, Annex E · Literature procedures merged"],
+   ["cover","bump","Version 5.2","Version 6.0"]]},
+ {id:"db",c:"#2A6FB0",t:"Safety database upgraded",who:"💻 IT, with the software vendor",freq:"About once a year",
+  what:"The vendor releases a new version. IT tests it and writes a report proving it still works correctly.",
+  artifact:"A validation report and the vendor's release notes.",
+  reach:"From IT, usually after go-live.",
+  edits:[
+   ["s4","replace","SafeCase Cloud version 8.2","SafeCase Cloud version 9.0"],
+   ["D","edit","8.2 · validation report VR-2025-11","9.0 · validation report VR-2026-07"],
+   ["I","log","","v6.1 · Section 4, Annex D · Database upgraded"],
+   ["cover","bump","Version 6.0","Version 6.1"]]},
+ {id:"dict",c:"#5B8DB8",t:"Medical dictionary update",who:"🗄️ Software vendor",freq:"Twice a year, March and September",
+  what:"The standard medical vocabulary used to record side effects gets its scheduled new version, and the database is updated to it.",
+  artifact:"A short upgrade confirmation from the vendor.",
+  reach:"Predictable; it happens on a known schedule.",
+  edits:[
+   ["s4","replace","dictionary version 28.1","dictionary version 29.0"],
+   ["D","edit","version 28.1","version 29.0"]]},
+ {id:"audit",c:"#C23B6E",t:"Audit completed",who:"✅ Independent auditor, hired by the client",freq:"About once a year",
+  what:"Reviews the whole safety system for three days and writes up what's wrong: 2 major and 4 minor findings. The client commits to fixes with deadlines.",
+  artifact:"An audit report and a fix plan (a list of corrective actions with owners and dates).",
+  reach:"From the quality manager, once the report is final.",
+  edits:[
+   ["G","add","","New rows: audit Nov 2026 · 0 critical, 2 major, 4 minor · fixes CAPA-26-07, CAPA-26-08"],
+   ["s7","rewrite","The most recent audit was in Nov 2025.","The most recent audit was in Nov 2026; fixes are tracked in Annex G."],
+   ["I","log","","v6.2 · Section 7, Annex G · Audit results added"],
+   ["cover","bump","Version 6.1","Version 6.2"]]},
+ {id:"capa",c:"#9C7A1E",t:"A fix is completed",who:"✅ Quality manager, at the client",freq:"Several times a year",
+  what:"Closes one of the audit fixes: the overdue safety agreement with the Finnish distributor has been renewed.",
+  artifact:"The renewed safety agreement and a closure record.",
+  reach:"From the quality manager; the renewed agreement itself comes from legal.",
+  edits:[
+   ["G","edit","CAPA-25-08 renew Finnish agreement · open","CAPA-25-08 · closed 12 Dec"],
+   ["C","edit","SDEA-FI-01 v1 (review overdue)","SDEA-FI-01 v2 · 2 business days"],
+   ["I","log","","v6.3 · Annex C, G · Finnish agreement renewed, fix closed"],
+   ["cover","bump","Version 6.2","Version 6.3"]]},
+ {id:"product",c:"#1E8C99",t:"New product approved",who:"📜 Regulatory affairs manager, at the client",freq:"Rare for a small client",
+  what:"Receives approval from the medicines agencies to sell a new nasal spray in four countries.",
+  artifact:"Approval letters from each country's agency.",
+  reach:"From regulatory affairs, usually promptly because it's good news.",
+  edits:[
+   ["H","add","","New row: Nasivent · mometasone · DK, SE, NO, FI"],
+   ["s2","rewrite","markets two products","markets three products"],
+   ["s5","rewrite","","Periodic reporting schedule updated to include the new product"],
+   ["I","log","","v6.2 · Section 2, 5, Annex H · New product added"],
+   ["cover","bump","Version 6.1","Version 6.2"]]},
+ {id:"perf",c:"#6B7C2E",t:"Yearly performance numbers",who:"🛡️ The consultant / safety team",freq:"Once a year (some clients: quarterly)",
+  what:"Pulls last year's statistics from the safety database: how many cases were reported on time, literature searches done, and so on.",
+  artifact:"A small compliance report exported from the database.",
+  reach:"Produced by the maintainer's own side, on a fixed schedule.",
+  edits:[
+   ["F","figures","32 of 33 on time (97%)","33 of 34 on time (97.1%)"],
+   ["s6","rewrite","No late submissions in 2024.","One case was submitted a day late in 2025 because a partner forwarded it late; a fix was raised."],
+   ["I","log","","v6.0 · Section 6, Annex F · 2025 figures"],
+   ["cover","bump","Version 5.2","Version 6.0"]]},
+ {id:"late",c:"#B5532A",t:"A report was sent late",who:"🛡️ The consultant / safety team",freq:"Occasional, hopefully rare",
+  what:"Discovers that a serious side-effect report missed its legal deadline, because a partner forwarded it a week late. Opens an investigation and a fix.",
+  artifact:"A deviation record and a corrective action.",
+  reach:"Known immediately by the maintainer's side.",
+  edits:[
+   ["s6","rewrite","","New paragraph describing the late case, its cause and the fix"],
+   ["G","add","","New row: CAPA-26-09 · partner retraining · open"],
+   ["F","figures","100% on time","97% on time"],
+   ["I","log","","v6.2 · Section 6, Annex F, G · Deviation recorded"],
+   ["cover","bump","Version 6.1","Version 6.2"]]},
+ {id:"vendor",c:"#8A5A9E",t:"Outside service firm replaced",who:"🏢 Client management, with legal",freq:"Every few years",
+  what:"Switches the call centre that answers medical questions and takes side-effect reports to a new firm.",
+  artifact:"A new service contract, the new firm's procedures, and a handover plan.",
+  reach:"From management, often close to the switch date.",
+  edits:[
+   ["s2","rewrite","MedInfo Nordic ApS: medical information","Nordic Call Care AB: medical information"],
+   ["s3","rewrite","received by MedInfo Nordic ApS","received by Nordic Call Care AB"],
+   ["B","edit","MedInfo Nordic ApS · PVA-2024-02","Nordic Call Care AB · PVA-2026-05"],
+   ["D","edit","MedInfo contact log","Nordic Call Care inquiry system"],
+   ["I","log","","v6.1 · Section 2, 3, Annex B, D · Medical information provider changed"],
+   ["cover","bump","Version 6.0","Version 6.1"]]},
+ {id:"move",c:"#546E7A",t:"Client moves office",who:"🏢 Client management",freq:"Rare",
+  what:"The company relocates its headquarters, which is also where the file is officially kept.",
+  artifact:"A new address, communicated by email.",
+  reach:"Usually known, but it's easy to forget the file's registered location has to change too, in an EU database outside the file.",
+  edits:[
+   ["cover","replace","Location: Strandvejen 100, Hellerup","Location: Havnegade 41, Copenhagen"],
+   ["s2","replace","headquartered in Hellerup","headquartered in Copenhagen"],
+   ["s1","replace","Office: Strandvejen 100","Office: Havnegade 41"],
+   ["I","log","","v6.1 · Cover, Section 1, 2 · Office and file location changed"]]}
+];
+const EV=Object.fromEntries(EVENTS.map(e=>[e.id,e]));
+const MONTHS=[
+ ["Jan",["perf"]],["Feb",["vendor"]],["Mar",["dict"]],["Apr",["dist"]],["May",["sop"]],["Jun",["perf","dist","vendor","sop"],"release"],
+ ["Jul",["db"]],["Aug",[]],["Sep",["dict","deputy"]],["Oct",["product"]],["Nov",["audit","late"]],["Dec",["capa"]]
+];
+
+let sel=new Set(), focusBlock=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+function renderMonths(){
+  $("months").innerHTML="";
+  MONTHS.forEach(([m,ids,rel],i)=>{
+    const b=document.createElement("button");b.className="month";b.dataset.i=i;
+    const same=ids.length&&ids.length===sel.size&&ids.every(x=>sel.has(x));
+    if(same)b.classList.add("sel");
+    b.innerHTML=`<span class="mn">${m}${rel?' <span class="rel">· new version</span>':''}</span>`+ids.map(id=>`<span class="dot"><i style="background:${EV[id].c}"></i>${esc(EV[id].t)}</span>`).join("");
+    b.onclick=()=>{sel=new Set(ids);focusBlock=null;render();};
+    $("months").appendChild(b);
+  });
+}
+function renderEvents(){
+  $("events").innerHTML="";
+  EVENTS.forEach(e=>{
+    const b=document.createElement("button");b.className="ev";b.setAttribute("aria-pressed",sel.has(e.id));
+    b.innerHTML=`<span class="sw" style="background:${e.c}"></span><span><span class="t">${esc(e.t)}</span><br><span class="w">${esc(e.who)} · ${esc(e.freq)}</span></span>`;
+    b.onclick=()=>{sel.has(e.id)?sel.delete(e.id):sel.add(e.id);render();};
+    $("events").appendChild(b);
+  });
+}
+function touches(){
+  const m={};sel.forEach(id=>EV[id].edits.forEach(([bid,k,bf,af])=>{(m[bid]=m[bid]||[]).push({ev:EV[id],k,bf,af});}));return m;
+}
+function renderBlocks(){
+  const t=touches();$("blocks").innerHTML="";
+  BLOCKS.forEach(b=>{
+    if(b.g){const d=document.createElement("div");d.className="grp";d.textContent=b.g;$("blocks").appendChild(d);return;}
+    const list=t[b.id]||[];const evs=[...new Set(list.map(x=>x.ev.id))];
+    const el=document.createElement("button");el.className="blk";
+    if(sel.size){if(evs.length)el.classList.add("hit");else el.classList.add("dim");}
+    if(evs.length>1)el.classList.add("clash");
+    if(focusBlock===b.id)el.classList.add("focus");
+    el.innerHTML=`<span class="id">${b.code}</span><span class="nm">${esc(b.nm)}</span><span class="h">${esc(b.h)}</span>`+
+      (evs.length>1?`<span class="ct">${evs.length} changes collide here</span>`:"")+
+      `<span class="dots">${evs.map(id=>`<i style="background:${EV[id].c}"></i>`).join("")}</span>`;
+    el.onclick=()=>{focusBlock=focusBlock===b.id?null:b.id;render();};
+    $("blocks").appendChild(el);
+  });
+  // block panel
+  if(focusBlock){
+    const b=BN[focusBlock];const all=EVENTS.filter(e=>e.edits.some(x=>x[0]===focusBlock));
+    $("bpanel").innerHTML=`<strong>${b.code} · ${esc(b.nm)}</strong> changes whenever any of these happen: `+all.map(e=>`<span class="dot" style="margin-right:8px"><i style="background:${e.c}"></i>${esc(e.t)}</span>`).join("");
+  } else $("bpanel").innerHTML="";
+}
+function clashWhy(items){
+  const kinds=items.map(x=>x.k);
+  if(kinds.every(k=>k==="bump"))return "Every change needs a new version number. If two people each work on a copy, both call their copy the next version, and one of them has to renumber when the copies are combined.";
+  if(kinds.every(k=>k==="log"))return "Every significant change adds a line here. In parallel copies each person adds their own line; when copies are combined, lines get lost or end up in the wrong version.";
+  const rw=kinds.filter(k=>k==="rewrite").length;
+  if(rw>=2)return "Two people rewrite prose in the same section. This is a true conflict: someone has to read both versions and hand-merge the wording.";
+  if(rw===1)return "One person rewrites the prose while another changes a detail inside it. If they work in different copies, the rewrite can silently wipe out the other change.";
+  if(kinds.every(k=>k==="add"))return "Two new rows in the same table. Easy in principle, but when copies are combined one row is easily dropped.";
+  if(kinds.includes("figures"))return "The numbers are refreshed while something else changes the same area. Whoever finishes second must make sure the figures still match the story.";
+  return "Different edits to the same block. Harmless in one shared copy; risky across copies, because the person merging must spot every difference.";
+}
+function renderClashes(){
+  const t=touches();const blocks=Object.keys(t).filter(k=>new Set(t[k].map(x=>x.ev.id)).size>1);
+  if(!sel.size){$("clashes").innerHTML="";return;}
+  if(!blocks.length){$("clashes").innerHTML=sel.size>1?`<section class="card empty">These events don't touch the same blocks, so they can't collide.</section>`:"";return;}
+  const order=BLOCKS.filter(b=>b.id).map(b=>b.id);blocks.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+  $("clashes").innerHTML=`<h2 style="margin:6px 0 10px">Where these changes collide</h2>`+blocks.map(bid=>{
+    const items=t[bid];const b=BN[bid];
+    return `<section class="card cl"><h3>${b.code} · ${esc(b.nm)}</h3><p class="why">${esc(clashWhy(items))}</p><ul>${items.map(x=>`<li><span class="dot"><i style="background:${x.ev.c}"></i><strong>${esc(x.ev.t)}</strong></span> — ${KIND[x.k].toLowerCase()}: ${x.bf?`<del>${esc(x.bf)}</del> → `:""}${esc(x.af)}</li>`).join("")}</ul></section>`;
+  }).join("");
+}
+function renderStories(){
+  if(!sel.size){$("stories").innerHTML=`<section class="card empty">Pick one or more events, or a month, to see what happens in the real world and what changes in the file.</section>`;return;}
+  $("stories").innerHTML=`<h2 style="margin:6px 0 0">What happened, and what it changes</h2>`+[...sel].map(id=>{
+    const e=EV[id];
+    return `<section class="card story" style="border-left-color:${e.c}"><h3>${esc(e.t)}</h3>
+    <dl class="facts"><dt>Who</dt><dd>${esc(e.who)}</dd><dt>What they did</dt><dd>${esc(e.what)}</dd><dt>What they produced</dt><dd>${esc(e.artifact)}</dd><dt>How often</dt><dd>${esc(e.freq)}</dd><dt>How the file hears</dt><dd>${esc(e.reach)}</dd></dl>
+    <div class="edits">${e.edits.map(([bid,k,bf,af])=>`<div class="edit"><span><span class="chip">${BN[bid].code}</span><br><span style="font-size:12.5px;color:var(--muted)">${esc(BN[bid].nm)}</span></span><span class="kind">${KIND[k]}</span><span class="ba">${bf?`<del>${esc(bf)}</del><br>→ `:""}<ins>${esc(af)}</ins></span></div>`).join("")}</div>
+    <p class="sub">${e.edits.length} edits across ${new Set(e.edits.map(x=>x[0])).size} blocks for one real-world event.</p></section>`;
+  }).join("");
+}
+function render(){renderMonths();renderEvents();renderBlocks();renderClashes();renderStories();}
+$("clear").onclick=()=>{sel.clear();focusBlock=null;render();};
+sel=new Set(MONTHS[5][1]);render();
+</script>
+</body>
+</html>

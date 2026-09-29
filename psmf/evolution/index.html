@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The master file, step by step</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#F3F4F5;--paper:#FFF;--ink:#1D2830;--muted:#5A6873;--line:#CBD3D9;--src:#EEF0F2;--src-ink:#2C3A44;
+--me:#EEEDFE;--me-line:#534AB7;--me-ink:#3C3489;--file:#E1F5EE;--file-line:#0F6E56;--file-ink:#085041;
+--hit:#FAEEDA;--hit-line:#BA7517;--hit-ink:#633806;--bad:#E24B4A;--bad-bg:#FCEBEB;--bad-ink:#791F1F;--ok:#1D9E75;--bar:#1D2830;--bar-ink:#FFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181C;--paper:#1A2227;--ink:#E4EAEE;--muted:#9AA8B2;--line:#3A464E;--src:#232D33;--src-ink:#D6DEE3;
+--me:#26215C;--me-line:#AFA9EC;--me-ink:#EEEDFE;--file:#04342C;--file-line:#5DCAA5;--file-ink:#E1F5EE;
+--hit:#412402;--hit-line:#EF9F27;--hit-ink:#FAEEDA;--bad:#F09595;--bad-bg:#501313;--bad-ink:#FCEBEB;--ok:#5DCAA5;--bar:#E4EAEE;--bar-ink:#12181C}}
+:root[data-theme="dark"]{--bg:#12181C;--paper:#1A2227;--ink:#E4EAEE;--muted:#9AA8B2;--line:#3A464E;--src:#232D33;--src-ink:#D6DEE3;
+--me:#26215C;--me-line:#AFA9EC;--me-ink:#EEEDFE;--file:#04342C;--file-line:#5DCAA5;--file-ink:#E1F5EE;
+--hit:#412402;--hit-line:#EF9F27;--hit-ink:#FAEEDA;--bad:#F09595;--bad-bg:#501313;--bad-ink:#FCEBEB;--ok:#5DCAA5;--bar:#E4EAEE;--bar-ink:#12181C}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:2px solid var(--me-line);outline-offset:2px}
+.page{max-width:1100px;margin:0 auto;padding:18px 16px;display:flex;flex-direction:column;gap:12px;min-height:100%}
+.head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.head h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:1.35rem;margin:0;flex:1;min-width:200px}
+.nav{display:flex;align-items:center;gap:8px}
+.nav button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 16px;cursor:pointer;font-size:14px}
+.nav button.primary{background:var(--bar);color:var(--bar-ink);border-color:var(--bar)}
+.nav button:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:6px}
+.dots button{width:10px;height:10px;padding:0;border-radius:50%;border:0;background:var(--line);cursor:pointer}
+.dots button.on{background:var(--bar)}
+.cap{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.cap .n{font-size:12px;color:var(--muted);font-weight:600}
+.cap h2{margin:2px 0 4px;font-size:17px;font-weight:600}
+.cap p{margin:0;font-size:15px;line-height:1.5;color:var(--muted)}
+.stage{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+svg{display:block;width:100%;min-width:640px;height:auto}
+svg text{font-family:"Public Sans",system-ui,sans-serif}
+.fade{transition:opacity .35s}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="head">
+    <h1>The master file, step by step</h1>
+    <div class="nav">
+      <button id="prev" aria-label="Previous step">Back</button>
+      <div class="dots" id="dots"></div>
+      <button id="next" class="primary">Next</button>
+    </div>
+  </div>
+  <div class="cap" aria-live="polite"><div class="n" id="num"></div><h2 id="ttl"></h2><p id="txt"></p></div>
+  <div class="stage"><svg id="svg" viewBox="0 0 1000 620" role="img" aria-label="Diagram"></svg></div>
+</div>
+<script>
+const STEPS=[
+ ["Facts live elsewhere","The file creates no facts. Everything in it is copied from something that already exists at the client."],
+ ["How facts travel","Only the figures reach him reliably, because he fetches them. Everything else depends on someone remembering to tell him."],
+ ["The gap","Between a real change and the file's update, the file is wrong."],
+ ["One fact, many places","Inside, the file is made of parts. One new contract has to be copied into several of them."],
+ ["Two changes at once","A new contract and a procedure change arrive together. Some parts get hit by both. Red marks the collisions."],
+ ["Two people, two copies","To go faster, the work is split. Each person edits their own copy. Combining them is manual, and one edit gets lost."],
+ ["Release","The responsible person reviews and signs. The new version replaces the old one, which is kept in the archive."],
+ ["Approval is a signature","A version only counts once it's approved, usually by the responsible person. Electronically, that means a signature tied to his identity, with its meaning and time, confirmed by re-entering his password. On paper, a handwritten signature does the same job."],
+ ["Every change is recorded","The system should automatically record who changed what, when, and the old and new values. Nobody can edit or delete this record. It's separate from the change log, which is a short summary written for inspectors."],
+ ["The tool must be proven","Regulators expect systems holding safety records to be proven fit for purpose: written requirements, tests, stored evidence, and re-testing after updates. The burden sits with the company using the tool; vendors often supply a validation package. Word and email do none of this, so teams compensate with manual procedures."]
+];
+const SRC=[
+ {id:"contracts",t:"Contracts",how:"Often nobody tells him",m:"bad"},
+ {id:"people",t:"People",how:"Emailed within days",m:"told"},
+ {id:"procedures",t:"Procedures",how:"Spreadsheet, weeks",m:"told"},
+ {id:"audits",t:"Audits and fixes",how:"Emailed, weeks",m:"told"},
+ {id:"products",t:"Products",how:"Emailed within days",m:"told"},
+ {id:"figures",t:"Figures",how:"He pulls them himself",m:"pull"}
+];
+const BLK=[
+ {id:"stamp",t:"Version stamp"},
+ {id:"person",t:"Responsible person"},
+ {id:"who",t:"Who does what"},
+ {id:"where",t:"Where reports come from"},
+ {id:"partners",t:"Contracts & partners tables"},
+ {id:"procs",t:"Procedures list"},
+ {id:"audit",t:"Audits table"},
+ {id:"prod",t:"Products list"},
+ {id:"fig",t:"Figures"},
+ {id:"log",t:"Change log"}
+];
+const FEEDS={contracts:["who","where","partners","stamp","log"],procedures:["procs","where","stamp","log"]};
+let step=0;
+const $=id=>document.getElementById(id);
+const V=n=>`var(--${n})`;
+function box(x,y,w,h,fill,stroke,title,sub,ink,opts={}){
+  const sw=opts.sw||1.2, dash=opts.dash?` stroke-dasharray="${opts.dash}"`:"";
+  let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${dash}/>`;
+  if(sub){s+=`<text x="${x+w/2}" y="${y+h/2-9}" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="600" fill="${ink}">${title}</text><text x="${x+w/2}" y="${y+h/2+11}" text-anchor="middle" dominant-baseline="central" font-size="12.5" fill="${ink}" opacity=".8">${sub}</text>`;}
+  else if(opts.left) s+=`<text x="${x+14}" y="${y+h/2}" text-anchor="start" dominant-baseline="central" font-size="${opts.fs||15}" font-weight="600" fill="${ink}">${title}</text>`;
+  else s+=`<text x="${x+w/2}" y="${y+h/2}" text-anchor="middle" dominant-baseline="central" font-size="${opts.fs||15}" font-weight="600" fill="${ink}">${title}</text>`;
+  return s;
+}
+function arrow(x1,y1,x2,y2,color,opts={}){
+  const dash=opts.dash?` stroke-dasharray="${opts.dash}"`:"";
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${opts.w||1.4}"${dash} marker-end="url(#a-${opts.m||'n'})"/>`;
+}
+function render(){
+  const s=step+1; let g="";
+  g+=`<defs>${["n","bad","ok","me"].map(k=>`<marker id="a-${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="${k==="n"?V("muted"):k==="bad"?V("bad"):k==="ok"?V("ok"):V("me-line")}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>`).join("")}</defs>`;
+  const active = s===4?["contracts"]: (s>=5&&s<8)?["contracts","procedures"]:[];
+  const split = s>=6&&s<8;
+  // sources
+  if(s<9) SRC.forEach((x,i)=>{
+    const y=40+i*90, on=active.includes(x.id), dim=(active.length&&!on&&s<7)||s===8;
+    const fill=on?V("hit"):V("src"), stroke=on?V("hit-line"):V("line"), ink=on?V("hit-ink"):V("src-ink");
+    g+=`<g class="fade" opacity="${dim?.35:1}">`+box(30,y,210,62,fill,stroke,x.t,s>=2?x.how:"",ink)+`</g>`;
+  });
+  // editors
+  const ed = split?[{x:330,y:150,t:"The consultant",sub:"Copy A"},{x:330,y:390,t:"Client safety manager",sub:"Copy B"}]:[{x:330,y:262,t:"The consultant",sub:"Collects, edits"}];
+  // source -> editor arrows
+  if(s<9) SRC.forEach((x,i)=>{
+    const y=40+i*90+31, on=active.includes(x.id), dim=(active.length&&!on&&s<7)||s===8;
+    let e=ed[0];
+    if(split){ e = x.id==="contracts"||x.id==="people"||x.id==="products"? ed[1]:ed[0]; }
+    const ty=e.y+36+(i-2.5)*4;
+    let col=V("muted"),m="n",dash="6 4",w=1.4;
+    if(s>=2){ if(x.m==="pull"){col=V("ok");m="ok";dash="";w=2;} else if(x.m==="bad"){col=V("bad");m="bad";dash="3 6";w=1.8;} }
+    else dash="";
+    g+=`<g class="fade" opacity="${dim?.2:1}">`+arrow(242,y,e.x-4,ty,col,{m,dash,w})+`</g>`;
+  });
+  ed.forEach(e=>{ g+=box(e.x,e.y,215,72,V("me"),V("me-line"),e.t,e.sub,V("me-ink")); });
+  // file
+  if(s<4){
+    g+=box(700,262,260,72,V("file"),V("file-line"),"The master file","Copies the facts",V("file-ink"));
+    g+=arrow(547,298,696,298,V("muted"));
+  } else {
+    const signed=s>=7;
+    g+=`<rect x="640" y="30" width="340" height="560" rx="14" fill="none" stroke="${signed?V("ok"):V("file-line")}" stroke-width="${signed?2.5:1.2}"/>`;
+    g+=`<text x="660" y="56" font-size="15" font-weight="600" fill="${V("file-ink")}" dominant-baseline="central">The master file${signed?" · v6.0, signed":""}</text>`;
+    const hits={};active.forEach(a=>(FEEDS[a]||[]).forEach(b=>hits[b]=(hits[b]||0)+1));
+    BLK.forEach((b,i)=>{
+      const y=76+i*50, n=hits[b.id]||0, clash=n>1, on=n>0;
+      const cl=s>=9&&b.id==="log";const fill=clash?V("bad-bg"):(on||cl)?V("hit"):V("file"), stroke=clash?V("bad"):(on||cl)?V("hit-line"):V("file-line"), ink=clash?V("bad-ink"):(on||cl)?V("hit-ink"):V("file-ink");
+      g+=box(660,y,300,42,fill,stroke,b.t,"",ink,{sw:clash?2.2:1,fs:14,left:1});
+      if(s===6&&b.id==="where") g+=`<text x="952" y="${y+21}" text-anchor="end" dominant-baseline="central" font-size="12" font-weight="600" fill="${V("bad-ink")}">1 edit lost</text>`;
+      if(cl) g+=`<text x="952" y="${y+21}" text-anchor="end" dominant-baseline="central" font-size="12" font-weight="600" fill="${V("hit-ink")}">summary</text>`;
+      if(clash&&!(s===6&&b.id==="where")) g+=`<text x="952" y="${y+21}" text-anchor="end" dominant-baseline="central" font-size="12" font-weight="600" fill="${V("bad-ink")}">×${n}</text>`;
+    });
+    ed.forEach(e=>{ g+=arrow(547,e.y+36,636,e.y+36,V("me-line"),{m:"me"}); });
+  }
+  // step 3 timeline
+  if(s===3){
+    const y=520;
+    g+=`<line x1="330" y1="${y}" x2="620" y2="${y}" stroke="${V("line")}" stroke-width="2"/>`;
+    g+=`<rect x="345" y="${y-6}" width="245" height="12" rx="3" fill="${V("bad-bg")}" stroke="${V("bad")}" stroke-width="1"/>`;
+    g+=`<circle cx="345" cy="${y}" r="6" fill="${V("hit-line")}"/><circle cx="590" cy="${y}" r="6" fill="${V("ok")}"/>`;
+    g+=`<text x="345" y="${y-22}" text-anchor="middle" font-size="12.5" fill="${V("ink")}">1 Apr: contract signed</text>`;
+    g+=`<text x="590" y="${y-22}" text-anchor="middle" font-size="12.5" fill="${V("ink")}">25 May: he hears</text>`;
+    g+=`<text x="467" y="${y+28}" text-anchor="middle" font-size="13" font-weight="600" fill="${V("bad")}">File is wrong for 8 weeks</text>`;
+  }
+  // step 7 archive
+  if(s===7){
+    g+=box(330,520,215,52,V("src"),V("line"),"v5.2 archived","",V("muted"),{dash:"5 4",fs:14});
+    g+=`<path d="M638 560 L549 546" fill="none" stroke="${V("muted")}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#a-n)"/>`;
+  }
+  if(s>=8){
+    const cx=330,cy=380,cw=215;
+    g+=`<rect x="${cx}" y="${cy}" width="${cw}" height="120" rx="8" fill="${V("paper")}" stroke="${V("ok")}" stroke-width="1.6"/>`;
+    const L=["Signed: Dr E. Lindqvist","Meaning: approved","12 Jun 2026, 14:03","Password re-entered"];
+    g+=`<text x="${cx+14}" y="${cy+22}" font-size="13" font-weight="600" fill="${V("ok")}" dominant-baseline="central">Electronic signature</text>`;
+    L.forEach((t,i)=>g+=`<text x="${cx+14}" y="${cy+46+i*19}" font-size="12.5" fill="${V("ink")}" dominant-baseline="central">${t}</text>`);
+    g+=arrow(cx+cw+2,cy+60,636,560,V("ok"),{m:"ok"});
+  }
+  if(s>=9){
+    const px=30,py=30,pw=270;
+    g+=`<rect x="${px}" y="${py}" width="${pw}" height="560" rx="10" fill="${V("src")}" stroke="${V("line")}" stroke-width="1"/>`;
+    g+=`<text x="${px+14}" y="${py+24}" font-size="14" font-weight="600" fill="${V("ink")}" dominant-baseline="central">Audit trail</text>`;
+    g+=`<text x="${px+14}" y="${py+44}" font-size="12" fill="${V("muted")}" dominant-baseline="central">Automatic · cannot be edited</text>`;
+    const R=[["09:12","Copy A","Procedures list","SOP-005 → SOP-012"],["09:40","Copy B","Who does what","+ Fjord Pharma AS"],["10:05","Copy B","Where reports come from","paragraph rewritten"],["10:31","Copy A","Where reports come from","SOP-005 → SOP-012"],["11:20","Merge","Where reports come from","SOP-012 → SOP-005"],["13:50","Consultant","Change log","+ v6.0 entry"],["14:03","Consultant","Whole file","signed as v6.0"]];
+    R.forEach((r,i)=>{const y=py+78+i*66;const lost=i===4;
+      g+=`<rect x="${px+10}" y="${y}" width="${pw-20}" height="58" rx="6" fill="${lost?V("bad-bg"):V("paper")}" stroke="${lost?V("bad"):V("line")}" stroke-width="1"/>`;
+      g+=`<text x="${px+22}" y="${y+16}" font-size="12" font-weight="600" fill="${lost?V("bad-ink"):V("muted")}" dominant-baseline="central">${r[0]} · ${r[1]}</text>`;
+      g+=`<text x="${px+22}" y="${y+33}" font-size="12.5" font-weight="600" fill="${lost?V("bad-ink"):V("ink")}" dominant-baseline="central">${r[2]}</text>`;
+      g+=`<text x="${px+22}" y="${y+48}" font-size="12" fill="${lost?V("bad-ink"):V("muted")}" dominant-baseline="central">${r[3]}</text>`;});
+  }
+  if(s>=10){
+    g+=`<rect x="12" y="12" width="976" height="592" rx="16" fill="none" stroke="${V("ok")}" stroke-width="1.8" stroke-dasharray="8 6"/>`;
+    const C=["Requirements","Tests","Evidence","Re-test after updates"];let x=30;
+    g+=`<text x="30" y="628" font-size="13" font-weight="600" fill="${V("ok")}" dominant-baseline="central">Validated system:</text>`;x=178;
+    C.forEach(t=>{const w=t.length*7.6+26;g+=`<rect x="${x}" y="614" width="${w}" height="28" rx="14" fill="${V("paper")}" stroke="${V("ok")}" stroke-width="1.2"/><text x="${x+w/2}" y="628" text-anchor="middle" font-size="12.5" fill="${V("ink")}" dominant-baseline="central">✓ ${t}</text>`;x+=w+10;});
+  }
+  $("svg").setAttribute("viewBox",s>=10?"0 0 1000 660":"0 0 1000 620");
+  $("svg").innerHTML=g;
+  $("num").textContent=`Step ${s} of ${STEPS.length}`;
+  $("ttl").textContent=STEPS[step][0];$("txt").textContent=STEPS[step][1];
+  $("prev").disabled=step===0;$("next").disabled=step===STEPS.length-1;
+  [...$("dots").children].forEach((d,i)=>d.classList.toggle("on",i===step));
+}
+STEPS.forEach((_,i)=>{const d=document.createElement("button");d.setAttribute("aria-label","Step "+(i+1));d.onclick=()=>{step=i;render();};$("dots").appendChild(d);});
+$("prev").onclick=()=>{if(step>0){step--;render();}};
+$("next").onclick=()=>{if(step<STEPS.length-1){step++;render();}};
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click();});
+render();
+</script>
+</body>
+</html>

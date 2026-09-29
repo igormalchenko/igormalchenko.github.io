@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F5F6;--paper:#FFF;--ink:#1D2830;--muted:#5A6873;--line:#D5DCE1;--accent:#0F5F5B}
+@media(prefers-color-scheme:dark){:root{--bg:#12181C;--paper:#1A2227;--ink:#E4EAEE;--muted:#9AA8B2;--line:#2F3A41;--accent:#2BA59D}}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;place-items:center}
+nav{width:min(420px,calc(100vw - 40px));background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+a{display:flex;align-items:center;min-height:58px;padding:0 20px;color:var(--ink);text-decoration:none;font-size:16px;font-weight:500}
+a+a{border-top:1px solid var(--line)}
+a:hover{background:color-mix(in srgb,var(--accent) 7%,var(--paper))}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.chevron{width:22px;margin-right:8px;color:var(--muted);font-size:27px;font-weight:400;line-height:1}
+</style>
+</head>
+<body>
+<nav aria-label="Destinations">
+<a href="./evolution"><span class="chevron" aria-hidden="true">›</span>evolution</a>
+<a href="./lifecycle"><span class="chevron" aria-hidden="true">›</span>lifecycle</a>
+<a href="./manager"><span class="chevron" aria-hidden="true">›</span>manager</a>
+<a href="./map"><span class="chevron" aria-hidden="true">›</span>map</a>
+<a href="./proto"><span class="chevron" aria-hidden="true">›</span>proto</a>
+</nav>
+</body>
+</html>
