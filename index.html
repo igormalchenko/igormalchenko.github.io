@@ -2,68 +2,99 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Igor Malchenko, founder of Coolstory. Ex-product exec at PandaDoc, Reply, and Unisender." />
         <title>Igor Malchenko</title>
         <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
-        <!-- Google fonts-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;600&family=Lato:wght@900&display=swap" rel="stylesheet">
+        <style>
+            * { box-sizing: border-box; }
+            body {
+                margin: 0;
+                min-height: 100vh;
+                background: linear-gradient(90deg, #faf5ff 0%, #fff5f5 50%, #fff9f1 100%);
+                font-family: Karla, sans-serif;
+                font-weight: 300;
+            }
+            .avatar {
+                display: block;
+                width: 8rem;
+                height: 8rem;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-bottom: 2rem;
+            }
+            main {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                max-width: 75rem;
+                min-height: 100vh;
+                padding: 3rem 1rem;
+            }
+            h1 {
+                margin: 0;
+                font-family: Lato, sans-serif;
+                font-weight: 800;
+                font-size: clamp(3rem, 12vw, 6rem);
+                line-height: 1;
+                text-transform: uppercase;
+                color: #343a40;
+            }
+            h1 span { color: #fa6c8d; }
+            p {
+                margin: 3rem 0 0;
+                font-size: 1.5rem;
+                line-height: 1.5;
+                color: #000;
+            }
+            a {
+                color: #fd698b;
+                font-weight: 600;
+                text-decoration: none;
+            }
+            a:hover { color: #fa406b; }
+
+            @media (min-width: 992px) {
+                body { padding-left: 17rem; }
+                .avatar {
+                    position: fixed;
+                    top: 50%;
+                    left: 8.5rem;
+                    transform: translate(-50%, -50%);
+                    width: 10rem;
+                    height: 10rem;
+                    margin: 0;
+                    border: 0.5rem solid rgba(255, 255, 255, 0.2);
+                }
+                main { padding: 5rem 3rem; }
+            }
+        </style>
         <!-- Coolstory API -->
-        <!-- <script type="module" src="https://app.coolstory.me/widget/widget.js?id=72eab189-467b-49b2-863a-799fb86ee7bb"></script> -->
         <script type="module" src="https://app.coolstory.me/widget/widget.js?id=d85408be-5cb9-45e3-a180-d5d2b6119d55"></script>
     </head>
-    <body id="page-top" style="background: rgb(250,245,255);
-background: linear-gradient(90deg, rgba(250,245,255,1) 0%, rgba(255,245,245,1) 50%, rgba(255,249,241,1) 100%);">
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav" style="color:transparent">
-            <div class="navbar-brand js-scroll-trigger">
-                <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="assets/img/profile.jpg" alt="..." id="avatar"></span>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            </div>
-        </nav>
-        <!-- Page Content-->
-        <div class="container-fluid p-0">
-            <!-- About-->
-            <section class="resume-section" id="about">
-                <div class="resume-section-content">
-                    <h1 class="mb-0" style="font-family: Lato; font-weight: 500; font-weight: 800;">
-                        Hey, I'm 
-                        <span style="color:#fa6c8d" id="igor">Igor</span>
-                    </h1>
-                    <div data-coolstory-id="b0c72b24-496b-4dd1-88e4-83e8eeefe842"></div>
-                    <div class="mt-5 mb-5" style="font-family: Karla; font-weight:300; font-size: 24px; color: black">
-                        👔 Founder of <a href="https://coolstory.me" target="_blank" id="coolstory">Coolstory</a>
-                        <br>
-                        💼 Ex-product exec at <a href="https://pandadoc.com" target="_blank" rel="nofollow noreferrer" id="pandadoc">PandaDoc</a>, <a href="https://reply.io" target="_blank" rel="nofollow noreferrer" id="reply">Reply</a>, and <a href="https://selzy.com/" target="_blank" rel="nofollow noreferrer" id="unisender">Unisender</a>
-                        <br>
-                        🎮 Co-founder of <a href="https://gametree.me/" target="_blank" rel="nofollow noreferrer" id="gametree">GameTree</a>
-                        <br>
-                        🏃‍♂️ OCR Runner
-                        <br>
-                        🎤 Speaker
-                    </div>
-                    <div class="mt-5 mb-5" style="font-family: Karla; font-weight:300; font-size: 24px; color: black">
-                        On a mission to fix SaaS activation and adoption once and for all. <br>
-                        Want to work together? <a href="https://www.linkedin.com/in/imalchenko/" target="_blank" rel="nofollow noreferrer" id="linkedin">DM me</a>.
-                    </div>
-                     <!-- <p class="lead" style="font-family: Karla;">   
-                        <br>
-                        <br>
-                            My other stuff:
-                            <br>
-                            <a href=" https://pentagonal-cardinal-df5.notion.site/Igor-s-product-consulting-FAQ-e28b9a378d7045828bb8c67bbd39bde8" target="_blank">Product consulting</a>
-                            <br>
-                            <a href="https://producthighlights.substack.com/" target="_blank" rel="nofollow noreferrer">Product Highlights</a>
-                        <br>
-                        <br>
-                        Need help with something? Ping me <a href="https://t.me/imalchenko" target="_blank" rel="nofollow noreferrer">here</a>.
-                    </p>  -->
-                </div>
-            </section>
-        </div>
+    <body>
+        <main>
+            <img class="avatar" src="assets/img/profile.jpg" alt="Igor Malchenko" id="avatar">
+            <h1>Hey, I'm <span id="igor">Igor</span></h1>
+            <div data-coolstory-id="b0c72b24-496b-4dd1-88e4-83e8eeefe842"></div>
+            <p>
+                👔 Founder of <a href="https://coolstory.me" target="_blank" id="coolstory">Coolstory</a>
+                <br>
+                💼 Ex-product exec at <a href="https://pandadoc.com" target="_blank" rel="nofollow noreferrer" id="pandadoc">PandaDoc</a>, <a href="https://reply.io" target="_blank" rel="nofollow noreferrer" id="reply">Reply</a>, and <a href="https://selzy.com/" target="_blank" rel="nofollow noreferrer" id="unisender">Unisender</a>
+                <br>
+                🎮 Co-founder of <a href="https://gametree.me/" target="_blank" rel="nofollow noreferrer" id="gametree">GameTree</a>
+                <br>
+                🏃‍♂️ OCR Runner
+                <br>
+                🎤 Speaker
+            </p>
+            <p>
+                On a mission to fix SaaS activation and adoption once and for all.<br>
+                Want to work together? <a href="https://www.linkedin.com/in/imalchenko/" target="_blank" rel="nofollow noreferrer" id="linkedin">DM me</a>.
+            </p>
+        </main>
     </body>
 </html>
