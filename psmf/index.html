@@ -6,28 +6,42 @@
 <title>Menu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F3F5F6;--paper:#FFF;--ink:#1D2830;--muted:#5A6873;--line:#D5DCE1;--accent:#0F5F5B}
 @media(prefers-color-scheme:dark){:root{--bg:#12181C;--paper:#1A2227;--ink:#E4EAEE;--muted:#9AA8B2;--line:#2F3A41;--accent:#2BA59D}}
 *{box-sizing:border-box}
-html,body{width:100%;height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;place-items:center}
-nav{width:min(420px,calc(100vw - 40px));background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-a{display:flex;align-items:center;min-height:58px;padding:0 20px;color:var(--ink);text-decoration:none;font-size:16px;font-weight:500}
-a+a{border-top:1px solid var(--line)}
-a:hover{background:color-mix(in srgb,var(--accent) 7%,var(--paper))}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.chevron{width:22px;margin-right:8px;color:var(--muted);font-size:27px;font-weight:400;line-height:1}
+body{margin:0;min-height:100vh;padding:20px;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;place-items:center}
+nav{width:min(720px,100%);display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:600px){nav{grid-template-columns:repeat(2,1fr)}}
+a{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--paper);border:1px solid var(--line);border-radius:10px;color:var(--ink);text-decoration:none}
+a:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 5%,var(--paper))}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+svg{width:28px;height:28px;color:var(--accent);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.name{display:block;font-size:16px;font-weight:500}
+.note{display:block;margin-top:3px;font-size:13px;color:var(--muted);line-height:1.35}
 </style>
 </head>
 <body>
 <nav aria-label="Destinations">
-<a href="./evolution"><span class="chevron" aria-hidden="true">›</span>evolution</a>
-<a href="./lifecycle"><span class="chevron" aria-hidden="true">›</span>lifecycle</a>
-<a href="./manager"><span class="chevron" aria-hidden="true">›</span>manager</a>
-<a href="./map"><span class="chevron" aria-hidden="true">›</span>map</a>
-<a href="./proto"><span class="chevron" aria-hidden="true">›</span>proto</a>
+<a href="./evolution">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h5v-5h5v-5h5V5h3"/></svg>
+<span><span class="name">evolution</span><span class="note">Step-by-step problem walkthrough</span></span></a>
+<a href="./lifecycle">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+<span><span class="name">lifecycle</span><span class="note">A year of file changes</span></span></a>
+<a href="./manager">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="var(--paper)"/><circle cx="15" cy="12" r="2" fill="var(--paper)"/><circle cx="7" cy="18" r="2" fill="var(--paper)"/></svg>
+<span><span class="name">manager</span><span class="note">PSMF Manager feature breakdown</span></span></a>
+<a href="./map">
+<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M6.5 6.5l3.7 3.7M17.5 6.5l-3.7 3.7M6.5 17.5l3.7-3.7M17.5 17.5l-3.7-3.7"/></svg>
+<span><span class="name">map</span><span class="note">Stakeholder map</span></span></a>
+<a href="./proto">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M8.5 14l2.5 2.5 4.5-4.5"/></svg>
+<span><span class="name">proto</span><span class="note">Platform prototype, review-based</span></span></a>
+<a href="./proto2">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M13 10.5l-3 4h4l-3 4"/></svg>
+<span><span class="name">proto2</span><span class="note">Platform prototype, autopilot</span></span></a>
 </nav>
 </body>
 </html>
