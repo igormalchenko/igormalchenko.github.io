@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PSMF Platform: autopilot prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F1;--surface:#FFFFFF;--surface-2:#EBEEE9;--ink:#17233A;--muted:#5B6577;--rule:#D6DBD3;
+  --rail:#17233A;--rail-ink:#DCE3EC;--rail-muted:#8E9BB0;--rail-on:#24344F;
+  --btn-bg:#17233A;--btn-ink:#FFFFFF;
+  --sign:#0D6B63;--sign-bg:#DDF0EC;--fact:#1D58A6;--fact-bg:#E4EDF9;
+  --stale:#8F5406;--stale-bg:#FAEED8;--block:#AE2A21;--block-bg:#FAE4E1;
+  --ai:#6340AE;--ai-bg:#EEE8FA;--ins:#D5EEDD;--del:#F6DAD6;--spec:#A1356C;--focus:#1D58A6;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F141D;--surface:#161D29;--surface-2:#1D2533;--ink:#E4E9F0;--muted:#98A2B3;--rule:#2B3545;
+  --rail:#0A0E15;--rail-ink:#DCE3EC;--rail-muted:#7F8BA0;--rail-on:#1B2638;
+  --btn-bg:#E4E9F0;--btn-ink:#10151E;
+  --sign:#4DBFB1;--sign-bg:#123633;--fact:#86B4F2;--fact-bg:#162A49;
+  --stale:#E8AA4E;--stale-bg:#382A12;--block:#F08A80;--block-bg:#3B1B18;
+  --ai:#B79CF2;--ai-bg:#2A2046;--ins:#173B27;--del:#40201C;--spec:#E27BB0;--focus:#86B4F2;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0F141D;--surface:#161D29;--surface-2:#1D2533;--ink:#E4E9F0;--muted:#98A2B3;--rule:#2B3545;
+  --rail:#0A0E15;--rail-ink:#DCE3EC;--rail-muted:#7F8BA0;--rail-on:#1B2638;
+  --btn-bg:#E4E9F0;--btn-ink:#10151E;
+  --sign:#4DBFB1;--sign-bg:#123633;--fact:#86B4F2;--fact-bg:#162A49;
+  --stale:#E8AA4E;--stale-bg:#382A12;--block:#F08A80;--block-bg:#3B1B18;
+  --ai:#B79CF2;--ai-bg:#2A2046;--ins:#173B27;--del:#40201C;--spec:#E27BB0;--focus:#86B4F2;
+  color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+img{max-width:100%}
+h1{font-size:22px;font-weight:600;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:17px;font-weight:600;margin:0 0 10px}
+h3{font-size:14px;font-weight:600;margin:0}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all}
+
+/* Shell */
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100%}
+.rail{background:var(--rail);color:var(--rail-ink);padding:18px 12px;position:sticky;top:env(safe-area-inset-top,0px);height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto}
+.brand{padding:4px 10px 18px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px}
+.brand b{display:block;font-size:15px;font-weight:600}
+.brand span{font-size:12px;color:var(--rail-muted)}
+.navg{margin:14px 0 4px;padding:0 10px;font-size:12px;color:var(--rail-muted)}
+.nav button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;background:none;border:0;color:var(--rail-ink);padding:7px 10px;border-radius:6px;cursor:pointer}
+.nav button:hover{background:var(--rail-on)}
+.nav button.on{background:var(--rail-on);box-shadow:inset 3px 0 0 var(--sign)}
+.nav .count{font-size:11.5px;background:var(--sign);color:#fff;border-radius:9px;padding:0 7px;min-width:20px;text-align:center}
+.main{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--rule);display:flex;gap:14px;align-items:center;justify-content:space-between;padding:10px 28px;flex-wrap:wrap}
+.top .title{font-weight:600}
+.top .ctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.who{display:flex;align-items:center;gap:8px}
+.av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:600;background:var(--sign-bg);color:var(--sign)}
+.av.qppv{background:var(--fact-bg);color:var(--fact)}
+.av.deputy{background:var(--stale-bg);color:var(--stale)}
+select,input[type=text],input[type=date],input[type=password],textarea{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 9px;min-width:0}
+textarea{width:100%;resize:vertical;min-height:62px}
+label.tog{display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer}
+#view{padding:24px 28px 60px;max-width:1280px;width:100%}
+
+/* Buttons and pills */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--surface);border-radius:6px;padding:7px 13px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--btn-bg);color:var(--btn-ink);border-color:var(--btn-bg)}
+.btn.sign{background:var(--sign);color:#fff;border-color:var(--sign)}
+:root[data-theme="dark"] .btn.sign{color:#07201D}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.sign{color:#07201D}}
+.btn.danger{color:var(--block);border-color:var(--block)}
+.btn.ghost{border-color:transparent;background:none}
+.btn.sm{padding:4px 9px;font-size:12.5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;font-size:12px;line-height:1.5;padding:1px 8px;border-radius:10px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--sign-bg);color:var(--sign)}
+.pill.warn{background:var(--stale-bg);color:var(--stale)}
+.pill.bad{background:var(--block-bg);color:var(--block)}
+.pill.ai{background:var(--ai-bg);color:var(--ai)}
+.pill.fact{background:var(--fact-bg);color:var(--fact)}
+.spec{display:inline-block;font-size:11px;color:var(--spec);border:1px dashed var(--spec);border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:middle;font-weight:400;white-space:nowrap}
+.no-annot .spec,.no-annot .spec-note{display:none!important}
+.spec-note{border-left:2px dashed var(--spec);padding:6px 10px;margin:10px 0;font-size:12.5px;color:var(--muted);background:var(--surface)}
+
+/* Panels */
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:18px}
+.stack>*+*{margin-top:16px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.sticky{position:sticky;top:calc(64px + env(safe-area-inset-top,0px))}
+.banner{padding:10px 14px;border-radius:6px;background:var(--surface-2);margin-bottom:14px}
+.banner.warn{background:var(--stale-bg);color:var(--stale)}
+.banner.bad{background:var(--block-bg);color:var(--block)}
+.banner.ok{background:var(--sign-bg);color:var(--sign)}
+.banner.ai{background:var(--ai-bg);color:var(--ai)}
+.banner .btn{margin-left:8px}
+.pagehead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+dl.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0}
+dl.kv dt{color:var(--muted)}
+dl.kv dd{margin:0}
+.empty{padding:40px;text-align:center;background:var(--surface);border:1px dashed var(--rule);border-radius:8px}
+
+/* Tables */
+.scroll{overflow-x:auto}
+table.tbl{border-collapse:collapse;width:100%;background:var(--surface)}
+.tbl th{font-weight:500;color:var(--muted);text-align:left;font-size:12.5px;padding:8px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.tbl tr.sub td{border-bottom-style:dashed}
+.tbl tr.clickable{cursor:pointer}
+.tbl tr.clickable:hover td{background:var(--surface-2)}
+.tbl tr.new td{background:var(--ins)}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.docTbl{font-family:"Source Serif 4",Georgia,serif;font-size:14px}
+.docTbl th{font-family:"IBM Plex Sans",sans-serif}
+
+/* Home */
+.summary{font-size:16px;margin:0 0 18px;max-width:72ch}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.path{border-top:3px solid var(--ink);background:var(--surface);padding:16px;border-radius:0 0 8px 8px;border-left:1px solid var(--rule);border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.path.v2{border-top-color:var(--ai)}
+.path ol{padding-left:20px;margin:8px 0 14px}
+.path li{margin-bottom:4px}
+.cname{font-weight:500}
+.deleg{font-size:12px;color:var(--stale)}
+
+/* Inbox */
+.item{display:grid;grid-template-columns:8px 150px minmax(0,1fr) 150px 110px auto;gap:14px;align-items:center;background:var(--surface);border-bottom:1px solid var(--rule);padding:12px 14px}
+.item:first-child{border-radius:8px 8px 0 0}
+.item:last-child{border-radius:0 0 8px 8px;border-bottom:0}
+.urg{width:8px;height:32px;border-radius:2px;background:var(--rule)}
+.urg.high{background:var(--block)}
+.urg.normal{background:var(--fact)}
+.list{border:1px solid var(--rule);border-radius:8px}
+.filters{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+
+/* Change header and trail */
+.chg{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:16px 18px;margin-bottom:16px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:8px;font-size:13px}
+.meta span b{font-weight:500;color:var(--muted);margin-right:6px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin-bottom:16px;flex-wrap:wrap}
+.tab{border:0;background:none;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;gap:8px;align-items:center}
+.tab.on{border-bottom-color:var(--ink);font-weight:600}
+.trail{display:flex;list-style:none;padding:0;margin:0;gap:0;flex-wrap:wrap;font-size:12.5px}
+.trail li{padding:3px 12px 3px 18px;position:relative;color:var(--muted)}
+.trail li::before{content:"";position:absolute;left:5px;top:50%;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--muted);transform:translateY(-50%)}
+.trail li.done{color:var(--sign)}
+.trail li.done::before{background:var(--sign);border-color:var(--sign)}
+.trail li.cur{color:var(--ink);font-weight:600}
+.trail li.cur::before{background:var(--ink);border-color:var(--ink)}
+
+/* Locations */
+.node{margin:22px 0 8px;font-size:13px;color:var(--muted);font-weight:500}
+.loc{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--stale);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:10px}
+.loc.edited{border-left-color:var(--sign)}
+.loc.no_edit{border-left-color:var(--muted)}
+.loc-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.why{font-size:12.5px;color:var(--muted);margin-top:2px}
+.loc-state{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.toolbar{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center}
+.menu-wrap{position:relative}
+.menu{display:none;position:absolute;z-index:10;top:calc(100% + 4px);left:0;background:var(--surface);border:1px solid var(--rule);border-radius:8px;box-shadow:0 8px 24px rgba(10,20,40,.18);min-width:290px;padding:6px}
+.menu.open{display:block}
+.menu button{display:flex;justify-content:space-between;gap:10px;width:100%;border:0;background:none;padding:7px 9px;border-radius:5px;cursor:pointer;text-align:left}
+.menu button:hover{background:var(--surface-2)}
+.doc{font-family:"Source Serif 4",Georgia,serif;font-size:16px;line-height:1.65;max-width:72ch}
+.editor{border:1px solid var(--rule);border-radius:6px;padding:10px 12px;background:var(--surface)}
+.editor[contenteditable="true"]{background:var(--bg)}
+.editor[contenteditable="true"]:focus{outline:2px solid var(--focus);outline-offset:0}
+.fref{color:var(--fact);background:var(--fact-bg);border-radius:3px;padding:0 3px;border-bottom:1px dotted var(--fact);white-space:nowrap}
+.fref.new{box-shadow:inset 0 0 0 1px var(--fact)}
+.diff ins{background:var(--ins);text-decoration:none;border-radius:2px}
+.diff del{background:var(--del);border-radius:2px}
+.ba{display:grid;grid-template-columns:90px 1fr;gap:4px 12px;font-size:13.5px}
+.ba dt{color:var(--muted)}
+.ba dd{margin:0}
+.noedit{background:var(--surface-2);border-radius:6px;padding:10px 12px}
+.submitbar{position:sticky;bottom:env(safe-area-inset-bottom,0px);background:var(--bg);border-top:1px solid var(--rule);padding:12px 0;margin-top:20px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.blockers{margin:0;padding-left:18px;color:var(--stale);font-size:13px}
+
+/* Review side */
+.side h3{margin:16px 0 6px}
+.side h3:first-child{margin-top:0}
+.src{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 10px;background:var(--surface-2);border-radius:6px;margin-bottom:6px;cursor:pointer;border:0;width:100%;text-align:left}
+.radio{display:flex;gap:8px;align-items:flex-start;margin:6px 0;cursor:pointer}
+
+/* Release */
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps>li{counter-increment:s;position:relative;padding:16px 18px 16px 58px;background:var(--surface);border:1px solid var(--rule);border-radius:8px;margin-bottom:12px}
+.steps>li::before{content:counter(s);position:absolute;left:18px;top:15px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-weight:600;font-size:13px}
+.steps>li.done::before{background:var(--sign);color:#fff}
+.check{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--rule);font-size:13.5px}
+.check:last-child{border-bottom:0}
+.preview{position:relative;overflow:hidden;border:1px solid var(--rule);border-radius:6px;padding:26px 30px;background:var(--surface);margin-top:12px}
+.preview::after{content:"Draft, not approved";position:absolute;inset:0;display:grid;place-items:center;font:600 42px "IBM Plex Sans",sans-serif;color:var(--block);opacity:.08;transform:rotate(-18deg);pointer-events:none}
+.preview h4{font:600 15px "IBM Plex Sans",sans-serif;margin:18px 0 6px}
+.manifest{border:2px solid var(--sign);border-radius:8px;padding:18px 20px;background:var(--surface)}
+.manifest h2{color:var(--sign)}
+
+/* Proposal */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.srcdoc{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:26px 30px;max-height:calc(100dvh - 180px);overflow:auto}
+.srcdoc h4{font:600 17px "Source Serif 4",Georgia,serif;margin:0 0 12px}
+.srcdoc p{margin:0 0 12px}
+.srcdoc mark{background:var(--ai-bg);color:inherit;border-radius:2px;padding:0 1px}
+.srcdoc mark.active{outline:2px solid var(--ai);background:var(--ai-bg)}
+.srcdoc.plain mark{background:none;outline:none}
+.field{border-bottom:1px solid var(--rule);padding:12px 0;display:grid;grid-template-columns:1fr auto;gap:6px 12px}
+.field:last-child{border-bottom:0}
+.field input{width:100%}
+.conf{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.bar{width:70px;height:5px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sign)}
+.bar i.low{background:var(--stale)}
+.link{background:none;border:0;padding:0;color:var(--fact);cursor:pointer;text-decoration:underline;text-underline-offset:2px;font-size:12.5px}
+
+/* Modal and toast */
+.modal-back{position:fixed;inset:0;background:rgba(10,16,28,.45);display:grid;place-items:center;z-index:50;padding:20px}
+.modal{background:var(--surface);border-radius:10px;max-width:560px;width:100%;padding:22px 24px;max-height:calc(100% - 40px);overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal.wide{max-width:780px}
+.modal .fld{margin:12px 0}
+.modal .fld label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.modal .fld input{width:100%}
+.prog{list-style:none;padding:0;margin:12px 0 0}
+.prog li{padding:5px 0 5px 26px;position:relative;color:var(--muted)}
+.prog li::before{content:"";position:absolute;left:4px;top:11px;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--muted)}
+.prog li.done{color:var(--ink)}
+.prog li.done::before{background:var(--sign);border-color:var(--sign)}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--btn-bg);color:var(--btn-ink);padding:10px 16px;border-radius:8px;max-width:min(560px,90vw);z-index:60;display:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+#toast.show{display:block}
+
+/* Forms */
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.form .full{grid-column:1/-1}
+.form label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.form input,.form select{width:100%}
+.types{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:8px;max-height:calc(100dvh - 160px);overflow:auto}
+.types .g{font-size:12px;color:var(--muted);margin:10px 8px 4px}
+.types button{display:flex;gap:8px;width:100%;text-align:left;border:0;background:none;padding:6px 8px;border-radius:5px;cursor:pointer}
+.types button:hover{background:var(--surface-2)}
+.types button.on{background:var(--fact-bg);color:var(--fact)}
+.types button span{color:var(--muted);font-size:12px;min-width:40px}
+.logcols{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;align-items:start}
+
+@media (max-width:1000px){.grid2,.split,.logcols{grid-template-columns:1fr}.sticky{position:static}.srcdoc{max-height:none}.types{max-height:260px}}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .rail{position:static;height:auto;display:flex;gap:6px;overflow-x:auto;padding:10px 12px}
+  .brand,.navg{display:none}
+  .nav{display:flex;gap:4px}
+  .nav button{white-space:nowrap;width:auto}
+  #view{padding:18px 16px 60px}
+  .top{padding:10px 16px}
+  .paths,.form{grid-template-columns:1fr}
+  .item{grid-template-columns:8px 1fr;row-gap:4px}
+  .item>*:nth-child(n+3){grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<style>
+.feed{list-style:none;padding:0;margin:12px 0 0;max-height:52vh;overflow:auto}
+.feed li{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:10px;padding:7px 0;border-bottom:1px dashed var(--rule);font-size:13.5px;align-items:center}
+.feed li.hide{display:none}
+.lede{font-size:16.5px;max-width:70ch;margin:0 0 20px}
+.cols3{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:24px}
+.mini{list-style:none;padding:0;margin:0}
+.mini li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule)}
+.mini li:last-child{border-bottom:0}
+.attn{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:16px 18px;margin-bottom:14px}
+.attn.done{opacity:.6}
+.attn-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.reasons{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.evidence{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.evidence>div{background:var(--surface-2);border-radius:6px;padding:10px 12px;font-size:13.5px}
+.evidence b{display:block;font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:4px}
+.change{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:16px 18px;margin-bottom:12px}
+.change.reviewed{border-color:var(--sign)}
+.lc{margin:10px 0 0;padding-top:10px;border-top:1px dashed var(--rule)}
+.lc .where{font-size:12.5px;color:var(--muted);margin-bottom:3px}
+.rowdiff{font-family:"Source Serif 4",Georgia,serif;font-size:14.5px}
+details.group{margin:18px 0}
+details.group>summary{cursor:pointer;font-weight:600;padding:6px 0}
+.psmflist button{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;border:0;background:none;padding:9px 10px;border-radius:6px;cursor:pointer}
+.psmflist button.on{background:var(--fact-bg);color:var(--fact)}
+.psmflist button:hover{background:var(--surface-2)}
+.cov{display:flex;gap:8px;align-items:center;font-size:12.5px}
+.cov .bar{width:90px}
+.trustline{font-size:13px;color:var(--muted);margin-top:4px;max-width:80ch}
+.layout3{display:grid;grid-template-columns:230px minmax(0,1fr) 300px;gap:20px;align-items:start}
+@media (max-width:1100px){.layout3{grid-template-columns:1fr}.evidence,.cols3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail" aria-label="Main">
+    <div class="brand"><b>PSMF Platform</b><span>Meridian PV Services</span></div>
+    <div id="nav"></div>
+  </nav>
+  <div class="main">
+    <header class="top" id="top"></header>
+    <main id="view"></main>
+  </div>
+</div>
+<div id="modal"></div>
+<div id="toast" role="status"></div>
+<script>
+/* ================= Data ================= */
+const TODAY='2026-09-29', LAST_REVIEW='21 Sep';
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const USERS={qppv:{name:'Anna Weber',role:'QPPV',init:'AW'},author:{name:'Tomasz Nowak',role:'PSMF author',init:'TN'}};
+const CLIENTS0=[
+  {id:'hal',name:'Halvorsen Pharma A/S',cov:[13,15],psmfs:[{v:'EU',ver:'4.0',date:'2026-03-12'},{v:'UK',ver:'3.0',date:'2026-03-12'}]},
+  {id:'brw',name:'Brightwell Therapeutics Ltd',cov:[12,15],psmfs:[{v:'EU',ver:'7.0',date:'2026-06-30'},{v:'UK',ver:'5.0',date:'2026-06-30'}]},
+  {id:'cor',name:'Corvena Biologics GmbH',cov:[9,15],psmfs:[{v:'EU',ver:'2.0',date:'2025-11-04'}]},
+  {id:'lum',name:'Lumaris Pharma SRL',cov:[8,15],psmfs:[{v:'EU',ver:'5.0',date:'2026-08-21'}]},
+  {id:'ost',name:'Ostrava Generics s.r.o.',cov:[6,15],psmfs:[{v:'EU',ver:'3.0',date:'2026-01-15',blocking:1}]},
+  {id:'pel',name:'Pelican Health BV',cov:[10,15],psmfs:[{v:'EU',ver:'6.0',date:'2026-05-02'},{v:'UK',ver:'4.0',date:'2026-05-02'}]}
+];
+const SOURCES0=[
+  ['hal','DocuSign','Halvorsen legal: signed contracts and SDEAs','connector','Partner, SDEA, Contract','S2, S3, Annex B, C',96,25],
+  ['hal','Veeva QualityDocs','Released SOPs and their versions','connector','SOP','S5, S7, Annex E',100,61],
+  ['hal','Workday','People in PV roles, start and end dates','connector','Person-in-role','S1, Annex A',100,8],
+  ['hal','Oracle Argus Safety','Quarterly timeliness and volume export','connector','KPI','S6, Annex F',97,12],
+  ['hal','halvorsen@intake.meridianpv.eu','Anything Halvorsen staff forward','mailbox','Any','Any',88,17],
+  ['hal','EU product database extract','QPPV, deputy and PSMF location as registered','manual','Registration','Comparison only',null,0],
+  ['brw','SharePoint: PV/Quality','SOP library','connector','SOP','S5, S7, Annex E',94,38],
+  ['brw','Workday','People in PV roles','connector','Person-in-role','S1, Annex A',100,6],
+  ['brw','Oracle Argus Safety','Quarterly KPI export','connector','KPI','S6, Annex F',92,12],
+  ['brw','Oracle vendor notices','Argus and MedDRA release notices by email','mailbox','Computerised system','S4, Annex D',90,10],
+  ['brw','MHRA registration extract','UK QPPV and PSMF registration','manual','Registration','Comparison only',null,0],
+  ['cor','Veeva Vault QMS','Audits, CAPAs and deviations','connector','Audit, CAPA','S7, Annex G',97,34],
+  ['cor','Biologit','Weekly literature screening log','connector','KPI','S6, Annex F',100,40],
+  ['cor','corvena@intake.meridianpv.eu','Forwarded documents, often scans','mailbox','Any','Any',79,14],
+  ['lum','Biologit','Weekly literature screening log','connector','KPI','S6, Annex F',100,39],
+  ['lum','Check-in: Marta Rossi, HR','Quarterly question about people facts','person','Person-in-role','S1, Annex A',100,5],
+  ['lum','SharePoint: Qualità','SOP library','connector','SOP','S5, Annex E',95,21],
+  ['ost','SharePoint: Quality/SOPs','SOP library','connector','SOP','S5, S7, Annex E',93,15],
+  ['ost','ostrava@intake.meridianpv.eu','Forwarded documents','mailbox','Any','Any',64,11],
+  ['pel','MasterControl','Released SOPs and training records','connector','SOP','S5, S7, Annex E',98,44],
+  ['pel','ArisGlobal LifeSphere Safety','Quarterly KPI export','connector','KPI','S6, Annex F',95,9],
+  ['pel','Pieter de Vries, Pelican QA','Emails PDFs to the intake address, every week','person','Any','Any',71,23],
+  ['pel','SharePoint: Quality/SOPs','Draft and working SOPs','connector','SOP','Annex E',90,18]
+].map((s,i)=>({id:'SRC'+i,client:s[0],name:s[1],desc:s[2],kind:s[3],feeds:s[4],parts:s[5],earned:s[6],n:s[7],set:'system',status:'ok'}));
+SOURCES0.find(s=>s.client==='pel'&&s.name.startsWith('SharePoint')).status='broken';
+
+const FACTS={'N-B':'Annex B','N-C':'Annex C','F-P-04':'Nordica Distribution AB'};
+const fr=(label,isNew)=>`<span class="fref${isNew?' new':''}">${esc(label)}</span>`;
+const S21=f=>`Halvorsen Pharma A/S markets its products in the EEA and the United Kingdom through ${f?'four':'three'} distributors, listed in ${fr('Annex B')}. Pharmacovigilance activities are delegated to ${fr('Meridian PV Services')} under the service agreement in ${fr('Annex B')}.`;
+const S24=f=>`Every distributor has a written agreement that includes a safety data exchange agreement, listed in ${fr('Annex C')}. The current distributors are ${fr('Farmalink S.L.')}, ${fr('Baltica Pharma UAB')}${f?`, ${fr('Kestrel Medical Ltd')} and ${fr('Nordica Distribution AB',1)}`:` and ${fr('Kestrel Medical Ltd')}`}.`;
+
+const EV0=[
+ {id:'E01',day:'Mon 22 Sep',client:'hal',psmfs:['EU','UK'],source:'DocuSign',ct:'CT-01',title:'New distributor: Nordica Distribution AB',outcome:'applied',conf:.96,risk:'high',event:'2026-09-22',
+  why:'Envelope completed in DocuSign with both signatures verified. This source kept 24 of its last 25 changes unedited. Every field extracted at 0.9 or above. Nothing contradicts other facts.',
+  locs:[{where:'2.1 Overview',k:'prose',b:S21(0),a:S21(1)},{where:'2.4 Distributors and licensing partners',k:'prose',b:S24(0),a:S24(1)},
+        {where:'Annex B, contracts (new row)',k:'row',b:'',a:'Nordica Distribution AB | Distribution (Sweden, Norway, Finland) | DA-2026-03 | 22 Sep 2026'},
+        {where:'Annex C, partners and SDEAs (new row)',k:'row',b:'',a:'Nordica Distribution AB | Sweden | Distributor | SDEA-HAL-017 | 22 Sep 2026 | Quarterly'}],
+  lb:{s:'New distributor Nordica Distribution AB (Sweden) added for Halvoxin 50 mg and 100 mg tablets under SDEA-HAL-017.',r:'Distribution in Sweden, Norway and Finland moves to a new exclusive distributor, which becomes a source of adverse event reports.',sig:true}},
+ {id:'E02',day:'Mon 22 Sep',client:'hal',psmfs:['EU','UK'],source:'Veeva QualityDocs',ct:'CT-07',title:'SOP-PV-007 Signal management: version 4 effective',outcome:'applied',conf:.99,risk:'routine',event:'2026-09-22',
+  why:'Released in Veeva QualityDocs with an approval record. The version number follows the previous one. This source kept all 61 earlier changes.',
+  locs:[{where:'Annex E, SOP list',k:'row',b:'SOP-PV-007 | Signal management | Version 3 | 1 Mar 2025',a:'SOP-PV-007 | Signal management | Version 4 | 22 Sep 2026'},
+        {where:'5.4 Signal management',k:'prose',b:`Signals are detected, validated and assessed as described in ${fr('SOP-PV-007, version 3')}.`,a:`Signals are detected, validated and assessed as described in ${fr('SOP-PV-007, version 4')}.`}],
+  lb:{s:'SOP-PV-007 Signal management revised to version 4.',r:'Periodic review of the SOP; process unchanged.',sig:false}},
+ {id:'E03',day:'Tue 23 Sep',client:'brw',psmfs:['EU','UK'],source:'Oracle vendor notices',ct:'CT-10',title:'MedDRA upgraded to version 29.1',outcome:'applied',conf:.98,risk:'routine',event:'2026-09-23',
+  why:'Notice from Oracle\'s allowlisted address with DKIM verified. The version matches the September MedDRA release.',
+  locs:[{where:'4.2 Medical dictionary',k:'prose',b:'Adverse events are coded with MedDRA version 29.0.',a:'Adverse events are coded with MedDRA version 29.1.'},
+        {where:'Annex D, computerised systems',k:'row',b:'MedDRA | Coding dictionary | 29.0 | 2 Mar 2026',a:'MedDRA | Coding dictionary | 29.1 | 23 Sep 2026'}],
+  lb:{s:'MedDRA upgraded from 29.0 to 29.1.',r:'Scheduled twice-yearly dictionary release.',sig:false}},
+ {id:'E04',day:'Tue 23 Sep',client:'ost',psmfs:['EU'],source:'SharePoint: Quality/SOPs',ct:'CT-08',title:'SOP-PV-003 and SOP-PV-004 merged into SOP-PV-010',outcome:'applied',conf:.93,risk:'high',event:'2026-09-23',clears:true,
+  why:'Released in SharePoint with a "supersedes" note naming both old SOPs. The system rewrote every citation and found no other mention left. This also clears the blocking finding in 5.3.',
+  locs:[{where:'3.1 Spontaneous reports',k:'prose',b:`Reports received by sales staff are forwarded under ${fr('SOP-PV-003')} within one business day.`,a:`Reports received by sales staff are forwarded under ${fr('SOP-PV-010')} within one business day.`},
+        {where:'5.3 Case processing',k:'prose',b:`Case processing follows ${fr('SOP-PV-003')} for intake and triage and ${fr('SOP-PV-004')} for assessment and submission.`,a:`Case processing, from intake to submission, follows ${fr('SOP-PV-010')}.`},
+        {where:'7.2 Procedural documents',k:'prose',b:`${fr('SOP-PV-003')} and ${fr('SOP-PV-004')} are reviewed every two years.`,a:`${fr('SOP-PV-010')} is reviewed every two years.`},
+        {where:'Annex E, SOP list',k:'row',b:'SOP-PV-003 | Case intake and triage | Version 5 ; SOP-PV-004 | Case assessment and submission | Version 4',a:'SOP-PV-010 | Case management | Version 1 | 23 Sep 2026 (replaces SOP-PV-003 and SOP-PV-004)'}],
+  lb:{s:'SOP-PV-003 and SOP-PV-004 merged into SOP-PV-010 Case management.',r:'Case processing SOPs consolidated into one procedure; all references updated.',sig:true}},
+ {id:'E05',day:'Wed 24 Sep',client:'lum',psmfs:['EU'],source:'Check-in: Marta Rossi, HR',ct:'—',title:'People check-in answered: no change',outcome:'confirmed',conf:1,risk:'routine',event:'2026-09-24',
+  why:'QPPV, deputy and PV staff facts confirmed as of 24 Sep. Nothing to apply; the confirmation is stored as evidence.',locs:[]},
+ {id:'E06',day:'Wed 24 Sep',client:'cor',psmfs:['EU'],source:'Veeva Vault QMS',ct:'CT-13',title:'CAPA-2026-011 closed',outcome:'applied',conf:.97,risk:'routine',event:'2026-09-24',
+  why:'Closure record signed in Vault with a passed effectiveness check. This source kept 33 of its last 34 changes.',
+  locs:[{where:'Annex G, audits and CAPAs',k:'row',b:'CAPA-2026-011 | Late follow-up of literature cases | Open | due 30 Sep 2026',a:'CAPA-2026-011 | Late follow-up of literature cases | Closed 24 Sep 2026 | effectiveness check passed'}],
+  lb:{s:'CAPA-2026-011 closed after a passed effectiveness check.',r:'Corrective action for late follow-up of literature cases completed.',sig:true}},
+ {id:'E07',day:'Thu 25 Sep',client:'pel',psmfs:['EU','UK'],source:'ArisGlobal LifeSphere Safety',ct:'CT-16',title:'Q3 2026 performance figures',outcome:'applied',conf:.99,risk:'routine',event:'2026-09-25',
+  why:'Scheduled export in the same format as the last 8 quarters. Every figure is within its usual range.',
+  locs:[{where:'Annex F, performance indicators (new row)',k:'row',b:'',a:'Q3 2026 | Serious cases submitted on time | 98.6% (212 of 215)'},
+        {where:'6.1 Timeliness',k:'prose',b:'In Q2 2026, 99.1% of serious cases were submitted within 15 days.',a:'In Q3 2026, 98.6% of serious cases were submitted within 15 days.'}],
+  lb:{s:'Q3 2026 performance figures added.',r:'Quarterly update of PV system performance.',sig:true}},
+ {id:'E08',day:'Thu 25 Sep',client:'brw',psmfs:['EU','UK'],source:'Oracle Argus Safety',ct:'CT-16',title:'Q3 2026 performance figures',outcome:'escalated',conf:.98,risk:'high',event:'2026-09-25',
+  reasons:[['bad','Implausible change']],
+  explain:'The late-report rate rose from 0.2% to 1.5%. A rise this size usually comes with a deviation record, and Veeva Vault QMS has none for Q3. The figures are probably right; the missing deviation is the likely mistake.',
+  evidence:[['Q2 2026','1 of 410 serious cases late (0.2%)'],['Q3 2026 (this export)','6 of 398 serious cases late (1.5%). No Q3 deviation found in any connected source.']],
+  actions:[['ok8a','Apply figures and open a deviation','primary'],['ok8b','Apply figures only',''],['wait8','Ask the PV team','']],
+  locs:[{where:'Annex F, performance indicators (new row)',k:'row',b:'',a:'Q3 2026 | Serious cases submitted on time | 98.5% (392 of 398)'},
+        {where:'6.1 Timeliness',k:'prose',b:'In Q2 2026, 99.8% of serious cases were submitted within 15 days.',a:'In Q3 2026, 98.5% of serious cases were submitted within 15 days. The increase in late reports is described in the deviation record DEV-2026-019.'}],
+  lb:{s:'Q3 2026 performance figures added; late serious reports increased to 1.5%.',r:'Quarterly update; increase under investigation as DEV-2026-019.',sig:true}},
+ {id:'E09',day:'Fri 26 Sep',client:'pel',psmfs:['EU','UK'],source:'Pieter de Vries, Pelican QA',ct:'CT-07',title:'SOP-PV-014 version 4, sent as PDF',outcome:'escalated',conf:.95,risk:'high',event:'2026-09-15',
+  reasons:[['bad','Sources disagree'],['warn','Lower-trust source']],
+  explain:'The PDF says version 4 is effective. MasterControl, which holds Pelican\'s released SOPs, still shows version 4 in approval. Pieter often sends drafts: 7 of his 23 documents needed correction.',
+  evidence:[['PDF from Pieter de Vries, 26 Sep','SOP-PV-014 Medical information handling, version 4, effective 15 Sep 2026'],['MasterControl, checked 26 Sep','Version 3 effective since 4 Apr 2025. Version 4 in approval since 9 Sep 2026.']],
+  actions:[['wait9','Wait for MasterControl','primary'],['ok9','Apply from the PDF',''],['dis','Dismiss','ghost']],
+  waitText:'Waiting for MasterControl to show version 4 as effective. It applies automatically then.',
+  waitSim:['sim9','Simulate: version 4 approved in MasterControl'],
+  locs:[{where:'Annex E, SOP list',k:'row',b:'SOP-PV-014 | Medical information handling | Version 3 | 4 Apr 2025',a:'SOP-PV-014 | Medical information handling | Version 4 | 15 Sep 2026'}],
+  lb:{s:'SOP-PV-014 Medical information handling revised to version 4.',r:'Periodic revision.',sig:false}},
+ {id:'E10',day:'Fri 26 Sep',client:'hal',psmfs:['EU','UK'],source:'Workday',ct:'CT-05',title:'Deputy QPPV Eva Lindqvist leaves on 31 Oct',outcome:'escalated',conf:.99,risk:'high',event:'2026-09-26',
+  reasons:[['bad','Implausible result'],['fact','Registration relevant']],
+  explain:'Applying this would leave both Halvorsen PSMFs without a deputy QPPV from 1 November, which is not allowed. Workday records no successor yet.',
+  evidence:[['Workday','Eva Lindqvist, Deputy QPPV, end date 31 Oct 2026. Successor: none recorded.'],['Both PSMFs','Section 1.2 and Annex A name Eva Lindqvist as deputy. The EU product database and MHRA list her too.']],
+  actions:[['wait10','Ask Halvorsen HR who replaces her','primary'],['ok10','Record the end date now',''],['dis','Dismiss','ghost']],
+  waitText:'Check-in sent to Sofie Jensen, Halvorsen HR. Reminders at +7 and +14 days.',
+  locs:[{where:'Annex A, QPPV and deputy',k:'row',b:'Eva Lindqvist | Deputy QPPV | from 1 Feb 2024',a:'Eva Lindqvist | Deputy QPPV | 1 Feb 2024 to 31 Oct 2026'}],
+  lb:{s:'End date recorded for deputy QPPV Eva Lindqvist.',r:'Deputy leaves Halvorsen; successor to be appointed.',sig:true}},
+ {id:'E11',day:'Sat 27 Sep',client:'cor',psmfs:['EU'],source:'corvena@intake.meridianpv.eu',ct:'CT-11',title:'System audit report AUD-2026-04 (scanned)',outcome:'escalated',conf:.61,risk:'high',event:'2026-09-18',
+  reasons:[['warn','Low confidence']],
+  explain:'The report was scanned at low resolution. Three of seven fields are below the 0.7 threshold, so the system would not apply them on its own.',
+  fields:[['Audit reference','AUD-2026-04',.97],['Auditor','Kessler Audit GmbH',.92],['Audit dates','15 to 18 Sep 2026',.66],['Scope','PV system audit',.9],['Major findings','2',.58],['Minor findings','3',.81],['CAPA due date','15 Dec 2026',.52]],
+  actions:[['fields11','Check the fields','primary'],['wait11','Ask Corvena QA for the original file','']],
+  waitText:'Asked Corvena QA for the original PDF.',
+  locs:[{where:'Annex G, audits and CAPAs (new row)',k:'row',b:'',a:'AUD-2026-04 | PV system audit, Kessler Audit GmbH | 15 to 18 Sep 2026 | 2 major, 3 minor findings | CAPAs due 15 Dec 2026'},
+        {where:'7.4 Audits',k:'prose',b:'The most recent system audit was performed in September 2025.',a:'The most recent system audit was performed in September 2026 by Kessler Audit GmbH. Its findings and CAPAs are listed in Annex G.'}],
+  lb:{s:'System audit AUD-2026-04 completed with 2 major and 3 minor findings.',r:'Annual risk-based audit of the PV system.',sig:true}},
+ {id:'E12',day:'Sun 28 Sep',client:'ost',psmfs:['EU'],source:'ostrava@intake.meridianpv.eu',ct:'CT-01',title:'Unknown sender claims a new distributor in Czechia',outcome:'escalated',conf:.84,risk:'high',event:'2026-09-28',
+  reasons:[['bad','Untrusted source']],
+  explain:'The sender is not on Ostrava\'s allowlist and the message has no DKIM signature. No connected source has a matching contract.',
+  evidence:[['Message','From jonas.berg1984@gmail.com. Subject "Fwd: distributor contract". Attachment contract_scan.pdf, 2 pages.'],['Cross-check','No contract with MedTrans CZ s.r.o. in any Ostrava source. Ostrava\'s known contacts use @ostrava-generics.cz.']],
+  actions:[['rej12','Reject','primary'],['rel12','Release and process',''],['all12','Release and allowlist the sender','']],locs:[]},
+ {id:'E13',day:'Sun 28 Sep',client:'brw',psmfs:['EU','UK'],source:'Workday',ct:'CT-06',title:'QPPV phone number changed',outcome:'applied',conf:.99,risk:'routine',event:'2026-09-28',
+  why:'HR system of record; this source kept all 6 earlier changes. Registration relevant, so a manual follow-up was raised.',
+  locs:[{where:'1.1 QPPV contact details',k:'prose',b:'The QPPV can be reached 24 hours a day on +44 20 7946 0321.',a:'The QPPV can be reached 24 hours a day on +44 20 7946 0958.'},
+        {where:'Annex A, QPPV details',k:'row',b:'Dr Helen Marsh | QPPV | +44 20 7946 0321',a:'Dr Helen Marsh | QPPV | +44 20 7946 0958'}],
+  lb:{s:'QPPV telephone number updated.',r:'New 24/7 contact number.',sig:false}}
+];
+const EXTRA0=[
+ {id:'X1',client:'brw',title:'Update the QPPV phone number with regulators',reasons:[['fact','Manual step']],explain:'The PSMF now has the new number. The EU product database and the MHRA record still show the old one, and the system is not allowed to update EVWEB or MHRA.',actions:[['doneX1','Mark as updated','primary']],after:'E13'},
+ {id:'X2',client:'pel',title:'SharePoint Quality/SOPs disconnected',reasons:[['bad','Connection lost']],explain:'The access token expired on 26 Sep, so draft SOP changes there are not being picked up. MasterControl still covers released SOPs.',actions:[['reconX2','Reconnect','primary']]}
+];
+
+/* ================= State ================= */
+let S;
+function fresh(){return{role:'qppv',route:'home',annot:true,ran:false,
+  clients:JSON.parse(JSON.stringify(CLIENTS0)),sources:JSON.parse(JSON.stringify(SOURCES0)),
+  ev:EV0.map(e=>({...e,status:e.outcome,released:{},reviewed:{},edited:false,lb:e.lb?{...e.lb}:null})),
+  extra:EXTRA0.map(x=>({...x,status:'open'})),
+  sel:'hal|EU',eff:TODAY,released:{},actFilter:''};}
+S=fresh();
+
+/* ================= Helpers ================= */
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmt(d){if(!d)return'—';const[y,m,dd]=d.split('-');return`${+dd} ${MONTHS[+m-1]} ${y}`}
+function days(a,b){return Math.round((Date.parse(b)-Date.parse(a))/864e5)}
+function tag(){return`<span class="spec">${[...arguments].join(' ')}</span>`}
+function note(t){return`<div class="spec-note">${t}</div>`}
+function cl(id){return S.clients.find(c=>c.id===id)}
+function fakeHash(s){let h=2166136261,o='';for(let k=0;k<8;k++){for(const ch of s+':'+k){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0}o+=h.toString(16).padStart(8,'0')}return o}
+function nowUTC(){const d=new Date();return`${TODAY} ${String(d.getUTCHours()).padStart(2,'0')}:${String(d.getUTCMinutes()).padStart(2,'0')} UTC`}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),4500)}
+function modal(h,w){document.getElementById('modal').innerHTML=`<div class="modal-back" data-act="modalBack"><div class="modal${w?' wide':''}" role="dialog" aria-modal="true">${h}</div></div>`;const f=document.querySelector('.modal input');if(f)f.focus()}
+function closeModal(){document.getElementById('modal').innerHTML=''}
+function ev(id){return S.ev.find(e=>e.id===id)}
+const inDraft=e=>['applied','resolved'].includes(e.status);
+function pending(cid,v){return S.ev.filter(e=>e.client===cid&&e.psmfs.includes(v)&&inDraft(e)&&!e.released[v]&&e.locs.length)}
+function attention(){if(!S.ran)return[];
+  const a=S.ev.filter(e=>['escalated','waiting'].includes(e.status)).map(e=>({...e,kind:'ev'}));
+  const x=S.extra.filter(x=>x.status==='open'&&(!x.after||inDraft(ev(x.after)))).map(x=>({...x,kind:'x'}));
+  return[...a,...x];}
+function needYou(){return attention().filter(a=>a.status!=='waiting')}
+function readyList(){const r=[];S.clients.forEach(c=>c.psmfs.forEach(p=>{const n=pending(c.id,p.v).length;if(n)r.push({c,p,n})}));return r}
+function confPill(c){return`<span class="pill ${c<.7?'warn':''}">confidence ${c.toFixed(2)}</span>`}
+function outcomePill(e){
+  if(Object.keys(e.released).length)return`<span class="pill ok">Released in ${Object.entries(e.released).map(([k,v])=>k+' '+v).join(', ')}</span>`;
+  return{applied:'<span class="pill ok">Applied by system</span>',resolved:'<span class="pill fact">Applied after your decision</span>',confirmed:'<span class="pill">Confirmed, no change</span>',escalated:'<span class="pill warn">Needs you</span>',waiting:'<span class="pill">Waiting</span>',dismissed:'<span class="pill">Dismissed</span>',reverted:'<span class="pill bad">Reverted</span>',rejected:'<span class="pill">Rejected</span>'}[e.status]||''}
+function tokens(html){const d=document.createElement('div');d.innerHTML=html;const o=[];const p=t=>t.split(/(\s+)/).forEach(x=>{if(x)o.push({t:x,c:0})});d.childNodes.forEach(n=>{if(n.nodeType===3)p(n.textContent);else if(n.classList&&n.classList.contains('fref'))o.push({t:n.textContent,c:1,n:n.classList.contains('new')});else p(n.textContent||'')});return o}
+function diff(a,b){const A=tokens(a),B=tokens(b),m=A.length,n=B.length,k=x=>(x.c?'§':'')+x.t.replace(/\s+/g,' ');
+  const L=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=m-1;i>=0;i--)for(let j=n-1;j>=0;j--)L[i][j]=k(A[i])===k(B[j])?L[i+1][j+1]+1:Math.max(L[i+1][j],L[i][j+1]);
+  const r=x=>x.c?`<span class="fref${x.n?' new':''}">${esc(x.t)}</span>`:esc(x.t);let i=0,j=0,h='';
+  while(i<m&&j<n){if(k(A[i])===k(B[j])){h+=r(A[i]);i++;j++}else if(L[i+1][j]>=L[i][j+1]){h+=`<del>${r(A[i])}</del>`;i++}else{h+=`<ins>${r(B[j])}</ins>`;j++}}
+  while(i<m)h+=`<del>${r(A[i++])}</del>`;while(j<n)h+=`<ins>${r(B[j++])}</ins>`;return h}
+function locsHTML(e){return e.locs.map(l=>`<div class="lc"><div class="where">${esc(l.where)}</div><div class="${l.k==='prose'?'doc':'rowdiff'} diff">${diff(l.b,l.a)}</div></div>`).join('')}
+
+/* ================= Shell ================= */
+const NAV=[{g:'Work',items:[['home','Today'],['attention','Needs you'],['review','Review and sign']]},
+  {g:'The system',items:[['sources','Sources'],['activity','Activity'],['trust','Trust']]},
+  {g:'Reference',items:[['spec','Spec map']]}];
+const TITLES={home:'Today',attention:'Needs you',review:'Review and sign',sources:'Sources',activity:'Activity',trust:'Trust',spec:'Spec map'};
+function renderNav(){const b=S.route;const cnt={attention:needYou().length,review:readyList().length};
+  document.getElementById('nav').innerHTML=NAV.map(g=>`<div class="navg">${g.g}</div><div class="nav">${g.items.map(([r,l])=>`<button class="${b===r?'on':''}" data-act="go" data-arg="${r}"><span>${l}</span>${cnt[r]?`<span class="count">${cnt[r]}</span>`:''}</button>`).join('')}</div>`).join('')}
+function renderTop(){const u=USERS[S.role];
+  document.getElementById('top').innerHTML=`<div class="title">${TITLES[S.route]||''}</div><div class="ctl">
+  <div class="who"><span class="av ${S.role}">${u.init}</span><select data-change="role" aria-label="Acting as">${Object.entries(USERS).map(([k,v])=>`<option value="${k}" ${k===S.role?'selected':''}>${v.name}, ${v.role}</option>`).join('')}</select></div>
+  <label class="tog"><input type="checkbox" data-change="annot" ${S.annot?'checked':''}> Spec annotations</label>
+  <button class="btn sm" data-act="reset">Reset demo</button></div>`}
+const V={};
+function render(){document.body.classList.toggle('no-annot',!S.annot);renderNav();renderTop();document.getElementById('view').innerHTML=(V[S.route]||V.home)()}
+function go(r){S.route=r;render();window.scrollTo(0,0)}
+
+/* ================= Today ================= */
+V.home=()=>{
+  if(!S.ran)return`<div class="pagehead"><div><h1>Good morning, ${USERS[S.role].name.split(' ')[0]}</h1><p class="muted">Your last review was on ${LAST_REVIEW}. Since then the system has been watching ${S.sources.length} sources across 6 clients.</p></div></div>
+  <div class="panel" style="max-width:760px"><h2>See a week of autopilot</h2>
+  <p>In the product this runs continuously. Here, run the week of 22 to 28 September to watch the system read new documents, apply what it trusts, and set aside what it doesn't.</p>
+  <button class="btn primary" data-act="runWeek">Run the week</button></div>
+  ${note('Vision 3: sources connected once, changes applied to the draft automatically, the QPPV reviews exceptions and signs. Human gate = signature plus optional pre-sign review.')}
+  <h2 style="margin-top:28px">Clients</h2>${portfolio()}`;
+  const ap=S.ev.filter(e=>e.outcome==='applied').length,es=S.ev.filter(e=>e.outcome==='escalated').length;
+  const ny=needYou(),rl=readyList();
+  return`<p class="lede">Since your review on ${LAST_REVIEW}, the system handled ${S.ev.length} new documents and records across 6 clients. It applied ${ap} changes on its own, confirmed one set of facts unchanged and set aside ${es} for you. ${tag('UC-28')}</p>
+  <div class="cols3">
+   <div class="panel"><h2>Needs you ${tag('Escalation queue')}</h2>${ny.length?`<ul class="mini">${ny.slice(0,5).map(a=>`<li><div><div>${esc(a.title)}</div><div class="small muted">${esc(cl(a.client).name)}</div></div><div class="row">${a.reasons.map(r=>`<span class="pill ${r[0]}">${r[1]}</span>`).join('')}</div></li>`).join('')}</ul><button class="btn sm" style="margin-top:10px" data-act="go" data-arg="attention">Open all</button>`:'<p class="muted">Nothing. The system is confident about everything it saw.</p>'}</div>
+   <div class="panel"><h2>Ready to sign</h2>${rl.length?`<ul class="mini">${rl.map(r=>`<li><div><div>${esc(r.c.name)}, ${r.p.v}</div><div class="small muted">${r.n} change${r.n>1?'s':''} in the draft of version ${parseInt(r.p.ver)+1}.0</div></div><button class="btn sm" data-act="openReview" data-arg="${r.c.id}|${r.p.v}">Review</button></li>`).join('')}</ul>`:'<p class="muted">Every PSMF matches its last signed version.</p>'}</div>
+  </div>
+  <h2>Clients ${tag('BR-26')}</h2>${portfolio()}`;
+};
+function portfolio(){
+  const rows=S.clients.map(c=>c.psmfs.map((p,i)=>{
+    const pe=pending(c.id,p.v);const att=attention().filter(a=>a.client===c.id).length;
+    const oldest=pe.length?pe.map(e=>e.event).sort()[0]:null;
+    return`<tr class="${i<c.psmfs.length-1?'sub':''}"><td>${i===0?`<span class="cname">${esc(c.name)}</span>`:''}</td>
+    <td><span class="pill">${p.v}</span></td><td class="num">${p.ver}</td><td>${fmt(p.date)}</td>
+    <td class="num">${pe.length?`<span class="pill ok">${pe.length}</span>`:'<span class="muted">0</span>'}</td>
+    <td class="num">${i===0?(att?`<span class="pill warn">${att}</span>`:'<span class="muted">0</span>'):''}</td>
+    <td class="num">${p.blocking&&!(S.ran&&inDraft(ev('E04'))&&c.id==='ost')?`<span class="pill bad">${p.blocking}</span>`:'<span class="muted">0</span>'}</td>
+    <td>${oldest?`${fmt(oldest)}, ${days(oldest,TODAY)} d`:'<span class="muted">None</span>'}</td>
+    <td>${i===0?`<span class="cov"><span class="bar"><i class="${c.cov[0]/c.cov[1]<.6?'low':''}" style="width:${c.cov[0]/c.cov[1]*100}%"></i></span>${c.cov[0]} of ${c.cov[1]} fact types</span>`:''}</td></tr>`}).join('')).join('');
+  return`<div class="scroll"><table class="tbl"><thead><tr><th>Client</th><th>PSMF</th><th class="num">Version</th><th>Released</th><th class="num">Applied, awaiting signature</th><th class="num">Needs you</th><th class="num">Blocking findings</th><th>Oldest unsigned change</th><th>Fed by a connected source</th></tr></thead><tbody>${rows}</tbody></table></div>`}
+
+/* ================= Needs you ================= */
+V.attention=()=>{
+  if(!S.ran)return empty('Nothing yet','Run the week from Today to see what the system escalates.','home','Go to Today');
+  const all=attention();
+  const card=a=>{
+    const waiting=a.status==='waiting';
+    const ev2=a.evidence?`<div class="evidence">${a.evidence.map(([h,t])=>`<div><b>${esc(h)}</b>${esc(t)}</div>`).join('')}</div>`:'';
+    const fields=a.fields?`<div class="scroll"><table class="tbl small"><tbody>${a.fields.map(f=>`<tr><td>${f[0]}</td><td>${esc(f[1])}</td><td>${confPill(f[2])}</td></tr>`).join('')}</tbody></table></div>`:'';
+    const prev=a.locs&&a.locs.length&&a.kind==='ev'?`<details style="margin-top:8px"><summary class="small">What the system would change</summary>${locsHTML(a)}</details>`:'';
+    return`<div class="attn">
+      <div class="attn-head"><div><div class="small muted">${esc(cl(a.client).name)}${a.source?`, from ${esc(a.source)}`:''}${a.day?`, ${a.day}`:''}</div><h3 style="font-size:15px">${esc(a.title)}</h3></div>${a.conf?confPill(a.conf):''}</div>
+      <div class="reasons">${a.reasons.map(r=>`<span class="pill ${r[0]}">${r[1]}</span>`).join('')}</div>
+      <p>${esc(a.explain)}</p>${ev2}${fields}${prev}
+      ${waiting?`<div class="banner" style="margin-top:10px">${esc(a.waitText)} ${a.waitSim?`<button class="btn sm" data-act="${a.waitSim[0]}">${a.waitSim[1]}</button>`:''}</div>`:
+      `<div class="row" style="margin-top:10px">${a.actions.map(x=>`<button class="btn sm ${x[2]}" data-act="${x[0]}" data-arg="${a.id}">${x[1]}</button>`).join('')}</div>`}
+    </div>`};
+  const open=all.filter(a=>a.status!=='waiting'),wait=all.filter(a=>a.status==='waiting');
+  return`<div class="pagehead"><div><h1>Needs you ${tag('Escalations','replaces per-field review')}</h1><p class="muted">Only what the system would not apply on its own. Each item says why.</p></div></div>
+  ${open.length?open.map(card).join(''):'<div class="empty"><h2>All clear</h2><p class="muted">Nothing is waiting for a decision.</p></div>'}
+  ${wait.length?`<h2 style="margin-top:24px">Waiting on someone else</h2>${wait.map(card).join('')}`:''}
+  ${note('Escalation reasons are open-ended: untrusted source, low confidence, sources disagree, implausible change or result, manual step, connection lost. Any decision here feeds the source\'s earned trust.')}`};
+
+/* ================= Review and sign ================= */
+V.review=()=>{
+  const rl=readyList(),released=Object.keys(S.released);
+  if(!rl.length&&!S.lastRelease)return empty(S.ran?'Nothing to sign':'Nothing to sign yet',S.ran?'Every PSMF matches its last signed version.':'Run the week from Today first.','home','Go to Today');
+  const inList=rl.find(r=>`${r.c.id}|${r.p.v}`===S.sel);
+  if(!inList&&!S.lastRelease&&rl.length)S.sel=`${rl[0].c.id}|${rl[0].p.v}`;
+  const list=`<div class="panel psmflist" style="padding:8px"><div class="small muted" style="padding:6px 10px">Drafts with changes</div>${rl.map(r=>`<button class="${S.sel===r.c.id+'|'+r.p.v?'on':''}" data-act="openReview" data-arg="${r.c.id}|${r.p.v}"><span>${esc(r.c.name.split(' ')[0])} ${r.p.v}</span><span class="pill">${r.n}</span></button>`).join('')||'<p class="small muted" style="padding:6px 10px">None left.</p>'}</div>`;
+  if(S.lastRelease&&!rl.find(r=>`${r.c.id}|${r.p.v}`===S.sel))return`<div class="layout3">${list}${manifest(S.lastRelease)}<div></div></div>`;
+  const[cid,v]=S.sel.split('|');const c=cl(cid),p=c.psmfs.find(x=>x.v===v),nv=(parseInt(p.ver)+1)+'.0';
+  const pe=pending(cid,v);const look=pe.filter(e=>e.risk==='high'||e.edited||e.status==='resolved'),rout=pe.filter(e=>!look.includes(e));
+  const rv=pe.filter(e=>e.reviewed[v]).length;const att=attention().filter(a=>a.client===cid);
+  const block=e=>`<div class="change ${e.reviewed[v]?'reviewed':''}">
+    <div class="attn-head"><div><h3 style="font-size:15px">${esc(e.title)}</h3><div class="small muted">${e.day} from ${esc(e.source)}</div></div>
+      <div class="row">${e.status==='resolved'?'<span class="pill fact">Decided by you</span>':'<span class="pill ai">Applied by system</span>'}${e.edited?'<span class="pill ai">Edited by you</span>':''}${confPill(e.conf)}</div></div>
+    ${e.why?`<div class="trustline">${esc(e.why)}</div>`:''}
+    ${locsHTML(e)}
+    <div class="lc"><div class="where">Logbook entry (Annex I) ${tag('P-07')}</div>
+      <label class="radio small"><input type="checkbox" data-change="lbSig" data-id="${e.id}" ${e.lb.sig?'checked':''}> <span>Significant: appears in Annex I. The system proposed ${EV0.find(x=>x.id===e.id).lb.sig?'significant':'not significant'}.</span></label>
+      ${e.lb.sig?`<div class="doc" style="font-size:14.5px">${esc(e.lb.s)} <i>Reason:</i> ${esc(e.lb.r)}</div>`:''}</div>
+    <div class="row" style="margin-top:12px"><button class="btn sm ${e.reviewed[v]?'':'primary'}" data-act="markRev" data-arg="${e.id}">${e.reviewed[v]?'Reviewed':'Mark reviewed'}</button>
+      ${e.locs.some(l=>l.k==='prose')?`<button class="btn sm" data-act="editWording" data-arg="${e.id}">Edit wording</button>`:''}
+      <button class="btn sm ghost" data-act="revert" data-arg="${e.id}">Take out of this version</button></div></div>`;
+  const main=`<div><div class="pagehead" style="margin-bottom:12px"><div><h1>${esc(c.name)}, ${v} PSMF</h1><p class="muted">Draft of version ${nv}: ${pe.length} change${pe.length>1?'s':''} since version ${p.ver} (${fmt(p.date)}). ${tag('Final review','UC-12')}</p></div></div>
+    ${att.length?`<div class="banner warn">${att.length} item${att.length>1?'s':''} for ${esc(c.name.split(' ')[0])} still ${att.length>1?'need':'needs'} you and ${att.length>1?'are':'is'} not in this draft. Signing now leaves ${att.length>1?'them':'it'} for the next version. <button class="btn sm" data-act="go" data-arg="attention">Open</button></div>`:''}
+    ${look.length?`<h2>Worth a look</h2><p class="small muted" style="margin-top:-6px">Prose was rewritten, the change is significant, or you made a decision on it.</p>${look.map(block).join('')}`:''}
+    ${rout.length?`<details class="group" ${look.length?'':'open'}><summary>Routine (${rout.length})</summary>${rout.map(block).join('')}</details>`:''}</div>`;
+  const can=S.role==='qppv';
+  const side=`<div class="panel sticky side"><h3>Sign version ${nv}</h3>
+    <p class="small" style="margin:8px 0">You looked at <b>${rv} of ${pe.length}</b> changes. Reviewing is optional; your signature covers everything listed, and the manifest records what you opened. ${tag('D-07','BR-35')}</p>
+    <label class="small muted" for="eff">Effective date</label><input id="eff" type="date" min="${TODAY}" value="${S.eff}" data-change="eff" style="width:100%;margin:4px 0 12px">
+    <div class="small" style="margin-bottom:12px"><span class="pill ok">Checks passed</span> ${tag('UC-16')}<div class="muted" style="margin-top:4px">The system runs consistency checks after every change, so there is nothing to run here.</div></div>
+    ${can?'':'<div class="banner warn small">Only the QPPV signs.</div>'}
+    <button class="btn sign" style="width:100%;justify-content:center" data-act="signOpen" ${can?'':'disabled'}>Sign and release ${nv}</button></div>`;
+  return`<div class="layout3">${list}${main}${side}</div>`};
+function manifest(d){return`<div><div class="manifest"><h2>${esc(d.client)}, ${d.v} PSMF version ${d.ver} released</h2>
+  <dl class="kv"><dt>Signer</dt><dd>Anna Weber, QPPV</dd><dt>Meaning</dt><dd>Approved for release</dd><dt>Signed at</dt><dd>${d.at}</dd><dt>Effective</dt><dd>${fmt(d.eff)}</dd>
+  <dt>Changes included</dt><dd>${d.n}: ${d.auto} applied by the system, ${d.n-d.auto} decided by you</dd><dt>Reviewed before signing</dt><dd>${d.rv} of ${d.n}</dd>
+  <dt>Re-authentication</dt><dd>Password and authenticator code</dd><dt>Content hash</dt><dd class="mono">sha256 ${d.hash}</dd></dl>${tag('BR-35','NFR-04')}</div>
+  <p class="small muted" style="margin-top:12px">Something wrong later? Log a correcting change from Activity; it goes into the next version.</p>
+  <div class="row"><button class="btn" data-act="go" data-arg="home">Back to Today</button></div></div>`}
+
+/* ================= Sources ================= */
+V.sources=()=>{
+  const kind={connector:'<span class="pill fact">Connector</span>',mailbox:'<span class="pill">Mailbox</span>',person:'<span class="pill warn">Person</span>',manual:'<span class="pill">Manual upload</span>'};
+  return`<div class="pagehead"><div><h1>Sources ${tag('Vision 3','D-11 widened')}</h1><p class="muted">Where facts come from. Connected once, then the system reads them on its own. People who email documents count as sources too.</p></div></div>
+  ${S.clients.map(c=>{const ss=S.sources.filter(s=>s.client===c.id);return`<h2 style="margin-top:22px">${esc(c.name)} <span class="cov" style="display:inline-flex;margin-left:10px;font-weight:400"><span class="bar"><i class="${c.cov[0]/c.cov[1]<.6?'low':''}" style="width:${c.cov[0]/c.cov[1]*100}%"></i></span>${c.cov[0]} of ${c.cov[1]} fact types covered</span></h2>
+  <div class="scroll"><table class="tbl"><thead><tr><th>Source</th><th>Kind</th><th>Feeds</th><th>PSMF parts</th><th>Earned trust</th><th>Status</th></tr></thead><tbody>
+  ${ss.map(s=>`<tr><td><b style="font-weight:500">${esc(s.name)}</b><div class="small muted">${esc(s.desc)}</div></td><td>${kind[s.kind]}</td><td class="small">${esc(s.feeds)}</td><td class="small">${esc(s.parts)}</td>
+  <td>${s.earned==null?'<span class="small muted">Not automatable (A-06, A-08)</span>':`<span class="cov"><span class="bar"><i class="${s.earned<80?'low':''}" style="width:${s.earned}%"></i></span>${s.earned}% of ${s.n}</span>`}</td>
+  <td>${s.status==='broken'?'<span class="pill bad">Disconnected</span>':s.kind==='manual'?'<span class="pill">Upload when changed</span>':'<span class="pill ok">Watching</span>'}</td></tr>`).join('')}</tbody></table></div>`}).join('')}
+  ${note('Earned trust = share of the source\'s changes you kept without editing or reverting. Uncovered fact types still arrive by email or by hand; the coverage bar is the adoption metric.')}
+  <div class="row" style="margin-top:16px"><button class="btn" data-act="toastOnly" data-arg="Connecting a source: pick the product, sign in with an account that can grant read access, choose folders or record types, map them to fact types. Not built in the prototype.">Connect a source</button></div>`};
+
+/* ================= Activity ================= */
+V.activity=()=>{
+  if(!S.ran)return empty('No activity yet','Run the week from Today.','home','Go to Today');
+  const f=S.actFilter;const rows=S.ev.filter(e=>!f||(f==='auto'?e.outcome==='applied':f==='esc'?e.outcome==='escalated':true));
+  return`<div class="pagehead"><div><h1>Activity ${tag('Audit trail view','BR-50','BR-52')}</h1><p class="muted">Everything the system did, and why. Open a row for the exact edits.</p></div>
+  <select data-change="actFilter" aria-label="Filter"><option value="">Everything</option><option value="auto" ${f==='auto'?'selected':''}>Applied on its own</option><option value="esc" ${f==='esc'?'selected':''}>Escalated</option></select></div>
+  <div class="scroll"><table class="tbl"><thead><tr><th>When</th><th>Client</th><th>Source</th><th>What</th><th>Outcome</th><th class="num">Locations</th></tr></thead><tbody>
+  ${rows.map(e=>`<tr class="clickable" data-act="evDetail" data-arg="${e.id}"><td class="small">${e.day}</td><td class="small">${esc(cl(e.client).name)}<div class="muted">${e.psmfs.join(', ')}</div></td><td class="small">${esc(e.source)}</td><td>${esc(e.title)}</td><td>${outcomePill(e)}</td><td class="num">${e.locs.length}</td></tr>`).join('')}</tbody></table></div>`};
+
+/* ================= Trust ================= */
+V.trust=()=>`<div class="pagehead"><div><h1>Trust ${tag('Replaces automation levels (P-11)','UC-26')}</h1><p class="muted">The system decides what to apply. You can always overrule it for a source.</p></div></div>
+  <div class="panel" style="margin-bottom:18px;max-width:900px"><h2>How the system decides</h2>
+  <p>A change is applied on its own only when all four signals agree. Otherwise it lands in Needs you with the signal that failed named.</p>
+  <dl class="kv"><dt>Source</dt><dd>Is the sender or system known, authenticated and historically right? Earned from your past decisions, adjustable below.</dd>
+  <dt>Extraction</dt><dd>Is every required value read with enough confidence, with a passage to point to?</dd>
+  <dt>Plausibility</dt><dd>Does the result break a rule (no deputy), contradict another source or the registration, or move a figure further than usual?</dd>
+  <dt>Agreement</dt><dd>Do other sources say the same thing, or at least not the opposite?</dd></dl></div>
+  <div class="scroll"><table class="tbl"><thead><tr><th>Client</th><th>Source</th><th>Earned trust</th><th>Your setting</th></tr></thead><tbody>
+  ${S.sources.filter(s=>s.kind!=='manual').map(s=>`<tr><td class="small">${esc(cl(s.client).name)}</td><td>${esc(s.name)}</td><td><span class="cov"><span class="bar"><i class="${s.earned<80?'low':''}" style="width:${s.earned}%"></i></span>${s.earned}% of ${s.n}</span></td>
+  <td><select data-change="trustSet" data-id="${s.id}" ${S.role==='qppv'?'':'disabled'} aria-label="Setting for ${esc(s.name)}">${[['system','Let the system decide'],['ask','Always ask me'],['paused','Pause this source']].map(([k,l])=>`<option value="${k}" ${s.set===k?'selected':''}>${l}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div>`;
+
+/* ================= Spec map ================= */
+V.spec=()=>`<div class="pagehead"><div><h1>Spec map</h1><p class="muted">How this prototype departs from the estimation artifacts of 29 Sep 2026.</p></div></div>
+ <div class="scroll"><table class="tbl"><thead><tr><th>Screen</th><th>Replaces</th><th>Idea</th></tr></thead><tbody>
+ <tr><td>Today</td><td>Portfolio home (SC-02)</td><td>What the system did since your last review, then exceptions, then drafts ready to sign</td></tr>
+ <tr><td>Needs you</td><td>Inbox, intake, quarantine, AI proposal review (SC-03, SC-29, SC-30, SC-34)</td><td>Only escalations, each with a named reason and suggested resolutions</td></tr>
+ <tr><td>Review and sign</td><td>Change-set approval and release (SC-14, SC-16)</td><td>One optional review per draft, risk-ranked, then one signature</td></tr>
+ <tr><td>Sources</td><td>Connectors, contributors (SC-31, SC-33)</td><td>All sources, people included, with coverage and earned trust</td></tr>
+ <tr><td>Activity</td><td>Audit trail view (SC-23)</td><td>Every system action with its reasoning and edits</td></tr>
+ <tr><td>Trust</td><td>Automation settings (SC-35)</td><td>Four signals, earned trust, QPPV override per source</td></tr></tbody></table></div>
+ <div class="panel" style="margin-top:18px"><h2>Decisions this implies</h2><ul>
+ <li>Per-change-set approval (BR-30, BR-31) is no longer the gate into the draft; the system writes to the draft directly. The signature, plus optional review, is the human gate.</li>
+ <li>A-03 and BR-60 read as "no AI output reaches a signed version without a human signature".</li>
+ <li>Logbook significance is proposed by the system and confirmed at signing (P-07).</li>
+ <li>New entities: Source (with earned trust), Escalation (with reason codes), Auto-apply decision record linking each edit to the signals that allowed it.</li>
+ <li>Corrections after release are ordinary correcting changes.</li>
+ <li>Validation: an autonomous change path needs heavier evidence than a proposal path (GAMP 5); the evaluation set grows into a per-source regression suite.</li></ul></div>
+ <div class="panel" style="margin-top:18px"><h2>Faked here</h2><p>Connections, trust history and anomaly detection are scripted. Sign-in, rendering and persistence are not built. The week runs on a button.</p></div>`;
+
+function empty(t,d,r,l){return`<div class="empty"><h2>${t}</h2><p class="muted">${d}</p><button class="btn primary" data-act="go" data-arg="${r}">${l}</button></div>`}
+
+/* ================= Actions ================= */
+function resolve(id,status,msg){const e=ev(id);e.status=status;render();if(msg)toast(msg)}
+const ACT={
+ go:r=>go(r),toastOnly:m=>toast(m),closeModal:()=>closeModal(),
+ modalBack:(a,t,e)=>{if(e.target===t)closeModal()},
+ reset:()=>{const an=S.annot;S=fresh();S.annot=an;closeModal();go('home')},
+ runWeek:()=>{
+  const pill=e=>({applied:'<span class="pill ok">Applied</span>',confirmed:'<span class="pill">Confirmed</span>',escalated:'<span class="pill warn">Needs you</span>'}[e.outcome]);
+  modal(`<h2>The week of 22 to 28 September</h2><p class="muted small">Reading new documents and records from connected sources.</p>
+  <ul class="feed" id="feed">${S.ev.map(e=>`<li class="hide"><span class="small muted">${e.day}</span><span>${esc(e.title)}<div class="small muted">${esc(cl(e.client).name)}, from ${esc(e.source)}</div></span>${pill(e)}</li>`).join('')}</ul>
+  <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn primary" id="feedDone" data-act="weekDone" disabled>See the result</button></div>`,true);
+  const lis=document.querySelectorAll('#feed li');let i=0;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const t=setInterval(()=>{if(i<lis.length){lis[i].classList.remove('hide');lis[i].scrollIntoView({block:'nearest'});i++}else{clearInterval(t);document.getElementById('feedDone').disabled=false}},reduce?0:320)},
+ weekDone:()=>{S.ran=true;closeModal();go('home')},
+ openReview:a=>{S.sel=a;S.lastRelease=null;go('review')},
+ markRev:id=>{const v=S.sel.split('|')[1];const e=ev(id);e.reviewed[v]=!e.reviewed[v];render()},
+ revert:id=>{const e=ev(id);e.status='reverted';const s=S.sources.find(s=>s.client===e.client&&s.name===e.source);if(s){s.earned=Math.max(0,Math.round(s.earned*s.n/(s.n+1)));s.n++}
+   render();toast('Taken out of the draft. The source\'s earned trust drops a little; the change stays in Activity.')},
+ editWording:id=>{const e=ev(id);modal(`<h2>Edit wording</h2><p class="muted small">Your edits are recorded as "AI, edited by human" (BR-52).</p>
+   ${e.locs.map((l,i)=>l.k==='prose'?`<div class="fld"><label class="small muted">${esc(l.where)}</label><div class="doc editor" contenteditable="true" data-loc="${i}">${l.a}</div></div>`:'').join('')}
+   <div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Cancel</button><button class="btn primary" data-act="saveWording" data-arg="${id}">Save wording</button></div>`,true)},
+ saveWording:id=>{const e=ev(id);document.querySelectorAll('.modal [data-loc]').forEach(el=>{const l=e.locs[+el.dataset.loc];if(l.a!==el.innerHTML){l.a=el.innerHTML;e.edited=true}});closeModal();render();if(e.edited)toast('Wording saved.')},
+ signOpen:()=>{const[cid,v]=S.sel.split('|');const p=cl(cid).psmfs.find(x=>x.v===v);
+  modal(`<h2>Sign version ${parseInt(p.ver)+1}.0</h2><p class="muted">${esc(cl(cid).name)}, ${v} PSMF. Your signature binds your identity, the meaning "approved for release" and the time to the frozen content.</p>
+  <div class="fld"><label for="pw">Password</label><input id="pw" type="password"></div><div class="fld"><label for="otp">Authenticator code</label><input id="otp" type="text" inputmode="numeric" maxlength="6" placeholder="6 digits"></div>
+  <p class="small muted">Any password and any 6 digits work here.</p><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Cancel</button><button class="btn sign" data-act="sign">Sign and release</button></div>`)},
+ sign:()=>{const pw=document.getElementById('pw').value,otp=document.getElementById('otp').value.trim();if(!pw||!/^\d{6}$/.test(otp))return toast('Re-authentication failed. Nothing was released.');
+  const[cid,v]=S.sel.split('|');const c=cl(cid),p=c.psmfs.find(x=>x.v===v),nv=(parseInt(p.ver)+1)+'.0',pe=pending(cid,v);
+  const rv=pe.filter(e=>e.reviewed[v]).length,auto=pe.filter(e=>e.status==='applied').length;
+  pe.forEach(e=>e.released[v]=nv);if(cid==='ost'&&pe.some(e=>e.clears))p.blocking=0;p.ver=nv;p.date=TODAY;
+  S.lastRelease={client:c.name,v,ver:nv,at:nowUTC(),eff:S.eff,n:pe.length,auto,rv,hash:fakeHash(cid+v+nv)};closeModal();render();window.scrollTo(0,0);toast(`Version ${nv} signed and released.`)},
+ evDetail:id=>{const e=ev(id);const rel=Object.keys(e.released).length;
+  modal(`<div class="attn-head"><div><div class="small muted">${esc(cl(e.client).name)}, ${e.psmfs.join(' and ')} PSMF, ${e.day}</div><h2 style="margin:2px 0">${esc(e.title)}</h2></div><button class="btn sm" data-act="closeModal">Close</button></div>
+  <div class="row" style="margin:8px 0">${outcomePill(e)}${confPill(e.conf)}<span class="pill">${e.ct}</span></div>
+  <dl class="kv small" style="margin-bottom:8px"><dt>Source</dt><dd>${esc(e.source)}</dd><dt>Event date</dt><dd>${fmt(e.event)}</dd><dt>Picked up</dt><dd>${e.day}: ${days(e.event,'2026-'+String(MONTHS.indexOf('Sep')+1).padStart(2,'0')+'-'+e.day.split(' ')[1].padStart(2,'0'))} days later</dd></dl>
+  <p class="trustline">${esc(e.why||e.explain)}</p>${locsHTML(e)}
+  ${rel?`<div class="row" style="margin-top:14px"><button class="btn" data-act="correct" data-arg="${e.id}">Log a correcting change</button></div>`:''}`,true)},
+ correct:()=>{closeModal();toast('A correcting change was created in the draft. It goes through the same checks and appears in the next version.')},
+ ok8a:id=>resolve(id,'resolved','Figures applied. A deviation change (CT-17) was opened as a draft for the PV team.'),
+ ok8b:id=>resolve(id,'resolved','Figures applied without a deviation.'),
+ wait8:id=>{ev(id).waitText='Asked the Brightwell PV team whether a Q3 deviation exists.';resolve(id,'waiting')},
+ wait9:id=>resolve(id,'waiting','It applies automatically once MasterControl agrees.'),
+ sim9:()=>{const e=ev('E09');e.why='Applied once MasterControl showed version 4 effective, matching the PDF Pieter sent.';e.status='applied';render();toast('MasterControl now agrees. Applied to both Pelican drafts.')},
+ ok9:id=>resolve(id,'resolved','Applied from the PDF.'),
+ dis:id=>resolve(id,'dismissed','Dismissed. It stays in Activity.'),
+ wait10:id=>resolve(id,'waiting','Check-in sent to Halvorsen HR.'),
+ ok10:id=>resolve(id,'resolved','End date recorded. A consistency warning stays open until a successor is named.'),
+ fields11:id=>{const e=ev(id);modal(`<h2>Check the extracted fields</h2><p class="muted small">Correct anything that is wrong, then apply.</p>
+   ${e.fields.map((f,i)=>`<div class="fld"><label>${f[0]} ${confPill(f[2])}</label><input type="text" value="${esc(f[1])}"></div>`).join('')}
+   <div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Cancel</button><button class="btn primary" data-act="apply11">Apply</button></div>`)},
+ apply11:()=>{closeModal();const e=ev('E11');e.edited=true;resolve('E11','resolved','Applied with your corrections.')},
+ wait11:id=>resolve(id,'waiting'),
+ rej12:id=>resolve(id,'rejected','Rejected. The decision is in the audit trail.'),
+ rel12:id=>resolve(id,'dismissed','Released for processing. It now goes through the same checks as any document.'),
+ all12:id=>resolve(id,'dismissed','Released, and the sender was added to Ostrava\'s allowlist.'),
+ doneX1:id=>{S.extra.find(x=>x.id===id).status='done';render();toast('Recorded as updated today.')},
+ reconX2:id=>{S.extra.find(x=>x.id===id).status='done';S.sources.find(s=>s.client==='pel'&&s.status==='broken').status='ok';render();toast('Reconnected. The folder is being read again.')}
+};
+const CHG={
+ role:v=>{S.role=v;render()},annot:(v,el)=>{S.annot=el.checked;document.body.classList.toggle('no-annot',!S.annot)},
+ eff:v=>{if(v<TODAY){toast('The effective date cannot be before the signature date.');render();return}S.eff=v},
+ lbSig:(v,el)=>{ev(el.dataset.id).lb.sig=el.checked;render()},
+ actFilter:v=>{S.actFilter=v;render()},
+ trustSet:(v,el)=>{S.sources.find(s=>s.id===el.dataset.id).set=v;toast(v==='ask'?'Every change from this source will now come to you.':v==='paused'?'Source paused.':'Back to the system\'s judgement.')}
+};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t||t.disabled)return;const f=ACT[t.dataset.act];if(!f)return;if(t.dataset.act==='modalBack'&&e.target!==t)return;e.preventDefault();f(t.dataset.arg,t,e)});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.change&&CHG[t.dataset.change])CHG[t.dataset.change](t.value,t)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+render();
+</script>
+</body>
+</html>
