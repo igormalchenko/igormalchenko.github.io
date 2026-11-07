@@ -14,6 +14,7 @@ $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
 $('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
+$('toggle').innerHTML = ic('panel');
 $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); };
 document.querySelectorAll('.modal:not(.sticky)').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.p));
@@ -36,13 +37,13 @@ $('gCells').addEventListener('mousemove', e => {
   const inc = S.sumInc(S.regionIncome(r));
   const rank = S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1;
   const war = S.warOf(c);
-  tip.innerHTML = `<div class="hd"><span class="fl" style="background:${c.color}"></span><b>${c.name}</b><span class="muted" style="margin-left:auto">#${rank} · ${ic('gold')}${fmt(S.score(c))}/yr</span></div>
+  tip.innerHTML = `<div class="hd"><span class="fl" style="background:${c.color}"></span><b>${c.name}</b><span class="muted" style="margin-left:auto">#${rank} · ${ic('goldYear')}${fmt(S.score(c))} a year</span></div>
     <div class="tipr">${ic('ruler')}${c.ruler.name}${c.ruler.trait ? ` ${emblem(c.ruler.trait)}<span class="muted">${S.TRAITS[c.ruler.trait].label}</span>` : ''}</div>
-    ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? '<div style="color:#b9a3d6">Civil war</div>' : ''}
+    ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div style="color:#b9a3d6">${ic('civilWar')}${nm('civilWar')}</div>` : ''}
     <hr><b>${r.name}</b> <span class="muted">${r.culture}</span><br>
-    ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('gold')}${(inc * 4).toFixed(1)} gold/yr<br>
-    <span style="color:${r.unrest >= 65 ? '#e0453a' : r.unrest >= 40 ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}Unrest ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">integrated ${Math.round(r.integ * 100)}%</span>` : ''}
-    ${r.occ ? `<br><span style="color:var(--war)">Occupied by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
+    ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('goldYear')}${(inc * 4).toFixed(1)} gold a year<br>
+    <span style="color:${r.unrest >= 65 ? '#e0453a' : r.unrest >= 40 ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}${nm('unrest')} ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">${nm('settle')} ${Math.round(r.integ * 100)}%</span>` : ''}
+    ${r.occ ? `<br><span style="color:var(--war)">${ic('occupied')}${nm('occupied')} by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
   const box = $('mapwrap').getBoundingClientRect();
   let x = e.clientX - box.left + 14, y = e.clientY - box.top + 14;
   if (x > box.width - 265) x -= 280; if (y > box.height - 200) y -= 200;
@@ -52,7 +53,7 @@ $('gCells').addEventListener('mouseleave', () => tip.style.display = 'none');
 $('gCells').addEventListener('click', e => { const p = e.target.closest('.cell'); if (p) selectProvince(+p.dataset.i); });
 // click the sea (or anything that isn't a province) to clear the selection; Escape does the same
 function deselect(){ if (selected == null && selProv == null) return; selected = null; selProv = null; tip.style.display = 'none';
-  $('nation').innerHTML = '<div class="empty">Click a province or a country\'s name to see its ruler, budget and forecasts.</div>';
+  $('nation').innerHTML = NATION_EMPTY;
   const on = document.querySelector('.pane.on').id; if (on === 'nation' || on === 'province') showTab('chron'); else render(); }
 $('map').addEventListener('click', e => { if (!e.target.closest('.cell')) deselect(); });
 
@@ -79,21 +80,24 @@ document.addEventListener('mousemove', e => {
 document.addEventListener('mouseleave', () => qtip.style.display = 'none');
 document.addEventListener('mousedown', () => qtip.style.display = 'none');
 
-// legend in the help panel, drawn with the same glyphs as the map
+// the map key, drawn from the registry exactly as the map draws it
 (function legend(){
-  const sv = (inner, w = 22) => `<svg width="${w}" height="18" viewBox="${-w / 2} -9 ${w} 18">${inner}</svg>`;
+  const sv = inner => `<svg width="22" height="18" viewBox="-11 -9 22 18">${inner}</svg>`;
   const items = [
-    [sv(G.factory + `<text x="5" y="3" font-size="7.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">3</text>`), 'Factories (number = how many)'],
-    [sv(G.fort), 'Fortress'], [sv(G.build), 'Being built'],
-    [sv(G.flame('#e3933c')), 'Unrest (40+)'], [sv(G.flame('#e0453a')), 'Close to revolt (65+)'],
-    [sv(G.battle), 'Battle this season'], [sv(G.revolt), 'Uprising'], [sv(G.boom), 'Coal or railway boom'],
-    [sv(G.coup), 'Coup or civil war'], [sv(G.crown), 'Leading nation / dream fulfilled'], [sv(G.ruin), 'Factory or fortress destroyed'],
-    [sv(`<path d="M-9 0H9" stroke="#ff5a48" stroke-width="3" stroke-dasharray="4 2"/>`), 'Front line'],
-    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#settle)"/>`), 'Newly conquered: pays little until integrated'],
-    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="none" stroke="#d65a4d" stroke-width="1.6" stroke-dasharray="4 2"/>`), 'War goal'],
-    [sv(`<line x1="-9" y1="0" x2="9" y2="0" stroke="#9fb1c2" stroke-dasharray="2 3"/>`), 'Sea crossing'],
+    [sv(glyph('factory') + `<text x="5" y="3" font-size="7.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">3</text>`), `${nm('factory')} (number = how many)`],
+    [sv(glyph('fort')), nm('fort')], [sv(glyph('buildFactory')), nm('buildFactory')], [sv(glyph('buildFort')), nm('buildFort')],
+    [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} 40+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} 65+: close to an uprising`],
+    [sv(glyph('battle')), `${nm('battle')} this season`], [sv(glyph('uprising')), nm('uprising')], [sv(glyph('boom')), `${nm('boom')}: coal or railway`],
+    [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('dream')), `${nm('dream')} fulfilled`], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
+    [sv(REG.capital.draw), nm('capital')],
+    [sv(`<rect x="-10" y="-7" width="20" height="14" rx="3" fill="rgba(20,24,30,.92)" stroke="#c9a45c" stroke-width="1.2"/><g transform="translate(-4.5,0)">${glyph('army')}</g><text x="1" y="3" font-size="7" font-family="IBM Plex Mono" fill="${INK}">80</text>`), `${nm('army')} in thousands, at the capital in wartime`],
+    [sv(REG.front.draw), nm('front')],
+    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#settle)"/>`), `Not yet ${nm('settle').toLowerCase()}: pays little`],
+    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#occ-key)"/>`), `${nm('occupied')}: striped in the occupier's colour`],
+    [sv(REG.goal.draw), nm('goal')],
+    [sv(REG.sea.draw), nm('sea')],
   ];
-  const names = Object.entries(TRAITS).map(([k, t]) => [sv(`<circle r="6.3" fill="#1a1f26" stroke="#c9a45c"/>` + EMB[k]), `${t.label}: ${t.desc.toLowerCase()}`]);
+  const names = Object.entries(TRAITS).map(([k, t]) => [sv(EMB_BADGE + EMB[k]), `${t.label}: ${t.desc.toLowerCase()}`]);
   $('legend').innerHTML = items.concat(names).map(([g, t]) => `<div>${g}<span>${t}</span></div>`).join('');
 })();
 

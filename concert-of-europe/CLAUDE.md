@@ -37,7 +37,10 @@ Card ideas that fit (not built yet):
 
 ## Interface rules
 
-- Every concept has one icon in `src/ui/icons.js`, used everywhere, with a hover name in `IC_NAME`. Add new concepts there, never ad hoc.
+- **The registry (`src/ui/registry.js`) is the single source for every concept the player sees**: one name, one line of description, one drawing, and the words to `avoid`. The map, panel, map key and tooltips all draw from it (`ic`, `glyph`, `nm`). Concepts with no icon (like Nation) live in `WORDS`. Add new concepts there, never ad hoc.
+- One icon means one thing. Two different concepts never share an icon, and a label beside an icon uses the icon's own name.
+- `npm run build` runs `tools/check.js` first and fails on an unknown icon, a shape drawn outside the registry, or an avoided word in visible text (UI strings, the HTML template and chronicle lines in `sim.js`). Fix the text, or change the registry on purpose; never weaken the check to get a build through.
+- Settled words: Gold (money held), Gold a year (the score), Army, Fortress, Uprising, Integrated, Nation, Ruler.
 - Plain, short labels. If a label needs explaining, rename it (for example "Gold a year", not "Yields").
 - The map stays mostly clean: ruler quirks belong in the panel, not on country labels.
 - Clicking the sea or pressing Escape clears the selection.

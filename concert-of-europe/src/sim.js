@@ -21,9 +21,9 @@ const TRAITS = {
   builder: { label: 'Builder', epi: 'the Builder', desc: 'Factories cost him 30% less' },
   paranoid: { label: 'Paranoid', epi: 'the Suspicious', desc: 'Sees every threat as nearly twice as large' },
   revanchist: { label: 'Revanchist', epi: 'the Avenger', desc: 'Values winning back lost provinces double' },
-  spendthrift: { label: 'Spendthrift', epi: 'the Magnificent', desc: 'Wastes 15% of every season\'s income on the court' },
+  spendthrift: { label: 'Spendthrift', epi: 'the Magnificent', desc: 'Wastes 15% of every season\'s gold on the court' },
   reformer: { label: 'Reformer', epi: 'the Liberal', desc: 'Reforms cost half and calm more unrest' },
-  incompetent: { label: 'Incompetent', epi: 'the Unready', desc: 'The whole country earns 12% less' },
+  incompetent: { label: 'Incompetent', epi: 'the Unready', desc: 'The whole nation earns 12% less' },
 };
 const TRAIT_KEYS = Object.keys(TRAITS);
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
@@ -294,7 +294,7 @@ function createSim(seed, geo, opts = {}){
     w.att.forEach(t => w.def.forEach(u => addRel(t, u, -30)));
     let txt = opts.text;
     if (!txt) {
-      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would settle quickly` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
+      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would integrate quickly` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
       const mis = opts.pTrue != null && opts.p - opts.pTrue > 0.08 ? `, though his generals privately think ${Math.round(opts.pTrue * 100)}%` : '';
       txt = `${N(a)} invades ${N(d)} ${why}. ${a.ruler.name.charAt(0).toUpperCase() + a.ruler.name.slice(1)} rates the odds at ${Math.round(opts.p * 100)}%${mis}. The <em>${w.name}</em> begins.`;
     }
@@ -413,7 +413,7 @@ function createSim(seed, geo, opts = {}){
     const baseRisk = riskOf(c);
     const gv = goldValue(c);
     const add = o => { o.ev = Math.round(o.ev); out.push(o); };
-    add({ type: 'save', ev: 0, label: 'Save money', why: 'Nothing else is expected to pay off' });
+    add({ type: 'save', ev: 0, label: 'Save gold', why: 'Nothing else is expected to pay off' });
 
     // factory: pays back over the horizon
     const leaderFac = Math.max(0.5, ...alive().map(facAvg));
@@ -446,12 +446,12 @@ function createSim(seed, geo, opts = {}){
     let bestA = null;
     [step, step * 2.5].forEach(st => { if (T < st * 3 + 5) return;
       const ev = armyEV(st) + (war ? 30 + st : 0);
-      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Recruit ${Math.round(st)}k soldiers`,
-        why: war ? 'At war: every soldier counts' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(st * 0.16).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
+      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Grow the army by ${Math.round(st)}k`,
+        why: war ? 'At war: the army needs every man' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(st * 0.16).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
     if (bestA) add(bestA);
     if (!war && c.army - step >= popOf(c) * 0.8) {
       const ev = armyEV(-step);
-      add({ type: 'demob', amt: step, ev, label: `Send ${Math.round(step)}k soldiers home`, why: `Workers back in factories and fields; risk rises by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
+      add({ type: 'demob', amt: step, ev, label: `Shrink the army by ${Math.round(step)}k`, why: `Workers back in factories and fields; risk rises by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
     }
 
     // fortress facing the most dangerous neighbour
@@ -467,7 +467,7 @@ function createSim(seed, geo, opts = {}){
       let gain = 0;
       mine.forEach(r => { const now = sumInc(regionIncome(r, c)), calm = sumInc(regionIncome(r, c, { unrest: Math.max(0, r.unrest - 18) }));
         gain += (calm - now) * 4 * 1.6; if (r.unrest > 55) gain += 0.35 * provYearly(r, c) * Math.min(H, 12); });
-      if (gain > 1) add({ type: 'reform', ev: gain - (has(c, 'reformer') ? 10 : 20) * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off revolts` });
+      if (gain > 1) add({ type: 'reform', ev: gain - (has(c, 'reformer') ? 10 : 20) * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
     }
 
     // diplomacy: alliances lower risk; courting makes them possible
@@ -503,7 +503,7 @@ function createSim(seed, geo, opts = {}){
         if (!o.alive) return;
         const e = warEval(c, o, r); if (!e || e.p < 0.55) return;
         if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invade ${o.name} for ${r.name}`,
-          why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inDream(c, r) ? `; part of the dream of ${dreamsOf(c).find(d => d.pset.has(r.id)).title}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once settled${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
+          why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inDream(c, r) ? `; part of the dream of ${dreamsOf(c).find(d => d.pset.has(r.id)).title}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once integrated${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
       });
       if (best) add(best);
     }
@@ -553,7 +553,7 @@ function createSim(seed, geo, opts = {}){
       if (r.battle > 0) r.battle--;
       if (r.flash > 0) r.flash--;
       if (r.integ < 1 && !r.occ) { const o = S.C[r.owner]; r.integ = Math.min(1, r.integ + ((isAccepted(o, r.culture) || r.core === o.tag) ? 0.08 : 0.028));
-        if (r.integ >= 1) L('econ', `${Rn(r)} is now fully part of ${N(o)}.`); }
+        if (r.integ >= 1) L('econ', `${Rn(r)} is now fully integrated into ${N(o)}.`); }
       if (!r.build || r.occ) return;
       if (--r.build.left > 0) return;
       const o = S.C[r.owner];
@@ -579,7 +579,7 @@ function createSim(seed, geo, opts = {}){
       S.stats.revolts++; r.flash = 3; mark(r.i, 'revolt');
       const rebels = r.pop * 2.2 * rand(0.5, 1.6) * (1 + (S.year - 1836) / 80) * (1 + (S.awake[r.culture] || 0) / 10);
       const garrison = o.army * quality(o) * (warOf(o) ? 0.6 : 2.2) / Math.max(1, regionsOf(o).length) * (inCrisis(o) ? 0.5 : 1) * rand(0.6, 1.3) * (r.fort ? 1.6 : 1);
-      if (rebels < garrison) { r.unrest = 35; o.army *= 0.96; L('revolt', `Riots in ${Rn(r)} are put down by ${o.adj} troops.`); return; }
+      if (rebels < garrison) { r.unrest = 35; o.army *= 0.96; L('revolt', `Riots in ${Rn(r)} are put down by the ${o.adj} army.`); return; }
       if (isAccepted(o, r.culture)) {
         o.treasury *= 0.5; regionsOf(o).forEach(x => x.unrest = Math.max(15, x.unrest - 30)); o.army *= 0.85;
         const old = o.ruler.name; newRuler(o); S.stats.rulers++;
@@ -654,7 +654,7 @@ function createSim(seed, geo, opts = {}){
     () => { if (S.year >= 1845 && S.year <= 1849 && !S.flags.famine && Q(0.35)) { S.flags.famine = 1; const r = RB.ire; r.pop *= 0.75; r.unrest = Math.min(100, r.unrest + 30); L('event', `The Great Famine devastates ${Rn(r)}: a quarter of its people die or emigrate.`); } },
     () => { if (Q(0.06)) { const vs = alive().sort(() => rng() - 0.5).slice(0, 3); vs.forEach(c => regionsOf(c).forEach(r => { r.pop *= 0.95; r.unrest += 8; })); L('event', `Cholera spreads through ${list(vs)}; one in twenty dies.`); } },
     () => { if (S.year >= 1840 && !S.flags.rail && Q(0.2)) { S.flags.rail = 1; S.railBoom = S.year + 10; L('event', 'Railway mania: for a decade, factories cost 30% less.'); } },
-    () => { if (S.year >= 1870 && S.year <= 1878 && !S.flags.dep && Q(0.3)) { S.flags.dep = 1; alive().forEach(c => c.treasury *= 0.5); S.depression = S.t + 12; S.regions.forEach(r => r.unrest += 10); L('event', '<strong>The Panic.</strong> Banks fail across Europe: treasuries are halved and all income falls by a fifth for three years.'); } },
+    () => { if (S.year >= 1870 && S.year <= 1878 && !S.flags.dep && Q(0.3)) { S.flags.dep = 1; alive().forEach(c => c.treasury *= 0.5); S.depression = S.t + 12; S.regions.forEach(r => r.unrest += 10); L('event', '<strong>The Panic.</strong> Banks fail across Europe: every nation loses half its gold and earns a fifth less for three years.'); } },
     () => { const a = S.C.AUS; if (a.alive && !S.flags.ausg && S.year >= 1860 && RB.hun.owner === 'AUS' && RB.hun.unrest > 40 && Q(0.4)) {
       S.flags.ausg = 1; a.acc.add('Hungarian'); a.name = 'Austria-Hungary'; a.adj = 'Austro-Hungarian'; RB.hun.unrest = 15; L('event', `The Compromise: ${N(a)} becomes a dual monarchy, and Hungary is calmed.`); } },
     () => { const r = S.C.RUS; if (r.alive && !S.flags.serf && S.year >= 1855 && Q(0.15)) { S.flags.serf = 1; ['mos', 'spb'].forEach(id => { if (RB[id].owner === 'RUS') RB[id].fac = RB[id].fac + 1; }); L('event', `${N(r)} frees the serfs; workers pour into the factories of Moscow and St Petersburg.`); } },
@@ -774,7 +774,7 @@ function createSim(seed, geo, opts = {}){
 
   alive().forEach(pickRival);
   S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
-  L('event', '<strong>Europe, 1836.</strong> Twenty-five states, one ambition: to be the richest when the guns of the coming great war fall silent.');
+  L('event', '<strong>Europe, 1836.</strong> Twenty-four nations, one ambition: to be the richest when the guns of the coming great war fall silent.');
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
   if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true;
     // the placeholder ruler never reigned, so he doesn't count toward regnal numbers

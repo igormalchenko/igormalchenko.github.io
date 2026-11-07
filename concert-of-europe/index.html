@@ -31,6 +31,7 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .btn:hover{border-color:#46505c}
 .btn.primary{background:var(--brass);color:#1a1408;border-color:var(--brass);font-weight:600;min-width:74px;justify-content:center}
 .btn.icon{width:30px;padding:0;justify-content:center;font-weight:600}
+.btn.icon svg.ic{margin:0;width:16px;height:16px;cursor:pointer}
 .btn[disabled]{opacity:.45;cursor:default}
 .speed{display:flex;align-items:center;gap:4px}
 .pips{display:flex;align-items:flex-end;gap:2px;height:30px;padding:0 3px}
@@ -215,13 +216,14 @@ th svg.ic{margin:0}
   <span class="seed" id="seed"></span>
   <button class="btn" id="new">New world</button>
   <button class="btn icon" id="help" title="How it works" aria-label="How it works">?</button>
-  <button class="btn" id="toggle" aria-label="Show or hide the side panel">Panel</button>
+  <button class="btn icon" id="toggle" title="Show or hide the side panel"></button>
 </div>
 <div class="main">
   <aside class="side" id="side" aria-label="Nation at a glance"></aside>
   <div class="mapwrap" id="mapwrap">
     <svg id="map" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of Europe coloured by owner">
       <defs>
+        <pattern id="occ-key" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="8" fill="#c96b5f"/><rect x="4" width=".8" height="8" fill="rgba(0,0,0,.35)"/></pattern>
         <pattern id="settle" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1" fill="rgba(12,14,18,.55)"/></pattern>
         <pattern id="waves" width="14" height="8" patternUnits="userSpaceOnUse"><path d="M0 6 Q3.5 3 7 6 T14 6" fill="none" stroke="#24333f" stroke-width="1"/></pattern>
       </defs>
@@ -252,19 +254,19 @@ th svg.ic{margin:0}
   <div class="box">
     <button class="btn close" data-close>Close</button>
     <h2 id="helpTitle">How it works</h2>
-    <p><b>The goal.</b> Every nation wants the highest yearly income in Europe when the Great War ends. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first.</p>
-    <div class="formula">value = extra income × years planned − cost − expected losses</div>
-    <p>Factories pay for good but each one costs more and adds less. Soldiers deter neighbours whose own forecast says "invade", but they are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it settles, minus soldiers, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
-    <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme of provinces they want. Russia's factories run at half speed until the serfs are freed.</p>
+    <p><b>The goal.</b> Every nation wants the most gold a year in Europe when the Great War ends. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first.</p>
+    <div class="formula">value = extra gold a year × years planned − cost − expected losses</div>
+    <p>Factories pay for good but each one costs more and adds less. An army deters neighbours whose own forecast says "invade", but its men are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it is integrated, minus army losses, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
+    <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme: the provinces they were founded to win, which they treat as their own. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. If you rule a country, you choose its sovereign at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it and its nation; click the sea or press Escape to clear. If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
   </div>
 </div>
 <div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
   <div class="box">
     <h2 id="startTitle">Concert of Europe</h2>
-    <p>Europe, 1836 to 1918. Every nation chases the largest income when the Great War ends. You can watch, or rule one country: its ministers run the state, and you choose who sits on the throne.</p>
+    <p>Europe, 1836 to 1918. Every nation chases the most gold a year when the Great War ends. You can watch, or rule one nation: its ministers run the state, and you choose its ruler.</p>
     <p><button class="btn primary" id="watch">Watch Europe</button></p>
     <div id="startBody"></div>
   </div>
@@ -501,9 +503,9 @@ const TRAITS = {
   builder: { label: 'Builder', epi: 'the Builder', desc: 'Factories cost him 30% less' },
   paranoid: { label: 'Paranoid', epi: 'the Suspicious', desc: 'Sees every threat as nearly twice as large' },
   revanchist: { label: 'Revanchist', epi: 'the Avenger', desc: 'Values winning back lost provinces double' },
-  spendthrift: { label: 'Spendthrift', epi: 'the Magnificent', desc: 'Wastes 15% of every season\'s income on the court' },
+  spendthrift: { label: 'Spendthrift', epi: 'the Magnificent', desc: 'Wastes 15% of every season\'s gold on the court' },
   reformer: { label: 'Reformer', epi: 'the Liberal', desc: 'Reforms cost half and calm more unrest' },
-  incompetent: { label: 'Incompetent', epi: 'the Unready', desc: 'The whole country earns 12% less' },
+  incompetent: { label: 'Incompetent', epi: 'the Unready', desc: 'The whole nation earns 12% less' },
 };
 const TRAIT_KEYS = Object.keys(TRAITS);
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
@@ -774,7 +776,7 @@ function createSim(seed, geo, opts = {}){
     w.att.forEach(t => w.def.forEach(u => addRel(t, u, -30)));
     let txt = opts.text;
     if (!txt) {
-      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would settle quickly` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
+      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would integrate quickly` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
       const mis = opts.pTrue != null && opts.p - opts.pTrue > 0.08 ? `, though his generals privately think ${Math.round(opts.pTrue * 100)}%` : '';
       txt = `${N(a)} invades ${N(d)} ${why}. ${a.ruler.name.charAt(0).toUpperCase() + a.ruler.name.slice(1)} rates the odds at ${Math.round(opts.p * 100)}%${mis}. The <em>${w.name}</em> begins.`;
     }
@@ -893,7 +895,7 @@ function createSim(seed, geo, opts = {}){
     const baseRisk = riskOf(c);
     const gv = goldValue(c);
     const add = o => { o.ev = Math.round(o.ev); out.push(o); };
-    add({ type: 'save', ev: 0, label: 'Save money', why: 'Nothing else is expected to pay off' });
+    add({ type: 'save', ev: 0, label: 'Save gold', why: 'Nothing else is expected to pay off' });
 
     // factory: pays back over the horizon
     const leaderFac = Math.max(0.5, ...alive().map(facAvg));
@@ -926,12 +928,12 @@ function createSim(seed, geo, opts = {}){
     let bestA = null;
     [step, step * 2.5].forEach(st => { if (T < st * 3 + 5) return;
       const ev = armyEV(st) + (war ? 30 + st : 0);
-      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Recruit ${Math.round(st)}k soldiers`,
-        why: war ? 'At war: every soldier counts' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(st * 0.16).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
+      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Grow the army by ${Math.round(st)}k`,
+        why: war ? 'At war: the army needs every man' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(st * 0.16).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
     if (bestA) add(bestA);
     if (!war && c.army - step >= popOf(c) * 0.8) {
       const ev = armyEV(-step);
-      add({ type: 'demob', amt: step, ev, label: `Send ${Math.round(step)}k soldiers home`, why: `Workers back in factories and fields; risk rises by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
+      add({ type: 'demob', amt: step, ev, label: `Shrink the army by ${Math.round(step)}k`, why: `Workers back in factories and fields; risk rises by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
     }
 
     // fortress facing the most dangerous neighbour
@@ -947,7 +949,7 @@ function createSim(seed, geo, opts = {}){
       let gain = 0;
       mine.forEach(r => { const now = sumInc(regionIncome(r, c)), calm = sumInc(regionIncome(r, c, { unrest: Math.max(0, r.unrest - 18) }));
         gain += (calm - now) * 4 * 1.6; if (r.unrest > 55) gain += 0.35 * provYearly(r, c) * Math.min(H, 12); });
-      if (gain > 1) add({ type: 'reform', ev: gain - (has(c, 'reformer') ? 10 : 20) * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off revolts` });
+      if (gain > 1) add({ type: 'reform', ev: gain - (has(c, 'reformer') ? 10 : 20) * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
     }
 
     // diplomacy: alliances lower risk; courting makes them possible
@@ -983,7 +985,7 @@ function createSim(seed, geo, opts = {}){
         if (!o.alive) return;
         const e = warEval(c, o, r); if (!e || e.p < 0.55) return;
         if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invade ${o.name} for ${r.name}`,
-          why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inDream(c, r) ? `; part of the dream of ${dreamsOf(c).find(d => d.pset.has(r.id)).title}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once settled${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
+          why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inDream(c, r) ? `; part of the dream of ${dreamsOf(c).find(d => d.pset.has(r.id)).title}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once integrated${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
       });
       if (best) add(best);
     }
@@ -1033,7 +1035,7 @@ function createSim(seed, geo, opts = {}){
       if (r.battle > 0) r.battle--;
       if (r.flash > 0) r.flash--;
       if (r.integ < 1 && !r.occ) { const o = S.C[r.owner]; r.integ = Math.min(1, r.integ + ((isAccepted(o, r.culture) || r.core === o.tag) ? 0.08 : 0.028));
-        if (r.integ >= 1) L('econ', `${Rn(r)} is now fully part of ${N(o)}.`); }
+        if (r.integ >= 1) L('econ', `${Rn(r)} is now fully integrated into ${N(o)}.`); }
       if (!r.build || r.occ) return;
       if (--r.build.left > 0) return;
       const o = S.C[r.owner];
@@ -1059,7 +1061,7 @@ function createSim(seed, geo, opts = {}){
       S.stats.revolts++; r.flash = 3; mark(r.i, 'revolt');
       const rebels = r.pop * 2.2 * rand(0.5, 1.6) * (1 + (S.year - 1836) / 80) * (1 + (S.awake[r.culture] || 0) / 10);
       const garrison = o.army * quality(o) * (warOf(o) ? 0.6 : 2.2) / Math.max(1, regionsOf(o).length) * (inCrisis(o) ? 0.5 : 1) * rand(0.6, 1.3) * (r.fort ? 1.6 : 1);
-      if (rebels < garrison) { r.unrest = 35; o.army *= 0.96; L('revolt', `Riots in ${Rn(r)} are put down by ${o.adj} troops.`); return; }
+      if (rebels < garrison) { r.unrest = 35; o.army *= 0.96; L('revolt', `Riots in ${Rn(r)} are put down by the ${o.adj} army.`); return; }
       if (isAccepted(o, r.culture)) {
         o.treasury *= 0.5; regionsOf(o).forEach(x => x.unrest = Math.max(15, x.unrest - 30)); o.army *= 0.85;
         const old = o.ruler.name; newRuler(o); S.stats.rulers++;
@@ -1134,7 +1136,7 @@ function createSim(seed, geo, opts = {}){
     () => { if (S.year >= 1845 && S.year <= 1849 && !S.flags.famine && Q(0.35)) { S.flags.famine = 1; const r = RB.ire; r.pop *= 0.75; r.unrest = Math.min(100, r.unrest + 30); L('event', `The Great Famine devastates ${Rn(r)}: a quarter of its people die or emigrate.`); } },
     () => { if (Q(0.06)) { const vs = alive().sort(() => rng() - 0.5).slice(0, 3); vs.forEach(c => regionsOf(c).forEach(r => { r.pop *= 0.95; r.unrest += 8; })); L('event', `Cholera spreads through ${list(vs)}; one in twenty dies.`); } },
     () => { if (S.year >= 1840 && !S.flags.rail && Q(0.2)) { S.flags.rail = 1; S.railBoom = S.year + 10; L('event', 'Railway mania: for a decade, factories cost 30% less.'); } },
-    () => { if (S.year >= 1870 && S.year <= 1878 && !S.flags.dep && Q(0.3)) { S.flags.dep = 1; alive().forEach(c => c.treasury *= 0.5); S.depression = S.t + 12; S.regions.forEach(r => r.unrest += 10); L('event', '<strong>The Panic.</strong> Banks fail across Europe: treasuries are halved and all income falls by a fifth for three years.'); } },
+    () => { if (S.year >= 1870 && S.year <= 1878 && !S.flags.dep && Q(0.3)) { S.flags.dep = 1; alive().forEach(c => c.treasury *= 0.5); S.depression = S.t + 12; S.regions.forEach(r => r.unrest += 10); L('event', '<strong>The Panic.</strong> Banks fail across Europe: every nation loses half its gold and earns a fifth less for three years.'); } },
     () => { const a = S.C.AUS; if (a.alive && !S.flags.ausg && S.year >= 1860 && RB.hun.owner === 'AUS' && RB.hun.unrest > 40 && Q(0.4)) {
       S.flags.ausg = 1; a.acc.add('Hungarian'); a.name = 'Austria-Hungary'; a.adj = 'Austro-Hungarian'; RB.hun.unrest = 15; L('event', `The Compromise: ${N(a)} becomes a dual monarchy, and Hungary is calmed.`); } },
     () => { const r = S.C.RUS; if (r.alive && !S.flags.serf && S.year >= 1855 && Q(0.15)) { S.flags.serf = 1; ['mos', 'spb'].forEach(id => { if (RB[id].owner === 'RUS') RB[id].fac = RB[id].fac + 1; }); L('event', `${N(r)} frees the serfs; workers pour into the factories of Moscow and St Petersburg.`); } },
@@ -1254,7 +1256,7 @@ function createSim(seed, geo, opts = {}){
 
   alive().forEach(pickRival);
   S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
-  L('event', '<strong>Europe, 1836.</strong> Twenty-five states, one ambition: to be the richest when the guns of the coming great war fall silent.');
+  L('event', '<strong>Europe, 1836.</strong> Twenty-four nations, one ambition: to be the richest when the guns of the coming great war fall silent.');
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
   if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true;
     // the placeholder ruler never reigned, so he doesn't count toward regnal numbers
@@ -1268,86 +1270,133 @@ if (typeof module !== 'undefined') module.exports = { createSim, REGIONS, MAP_W,
 
 </script>
 <script>
-// ---------- one coloured icon per concept (16×16) ----------
-const IC = {
-  gold: '<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>',
-  income: '<ellipse cx="8" cy="12" rx="5.5" ry="2" fill="#7fbf6a" stroke="#3d6b33"/><ellipse cx="8" cy="9" rx="5.5" ry="2" fill="#8fcf79" stroke="#3d6b33"/><ellipse cx="8" cy="6" rx="5.5" ry="2" fill="#a2dd8b" stroke="#3d6b33"/><path d="M8 1v3M6.5 2.5L8 1l1.5 1.5" stroke="#3d6b33" fill="none" stroke-width="1.2"/>',
-  upkeep: '<circle cx="7" cy="8" r="5.5" fill="#d98a6a" stroke="#7a3a22" stroke-width="1.1"/><path d="M4.5 8h5" stroke="#7a3a22" stroke-width="1.6"/>',
-  army: '<g stroke-linecap="round"><path d="M2.5 13.5L12.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M12.5 3.5l2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M13.5 13.5L3.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M3.5 3.5l-2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M4.2 11.8l1.6 1.6M11.8 11.8l-1.6 1.6" stroke="#4a3018" stroke-width="1.6"/></g>',
-  factory: '<path d="M1.5 14V8l3.5-2.2V8l3.5-2.2V8l3-2V2h2.5v12z" fill="#c9ced6" stroke="#41474f" stroke-width="1.1" stroke-linejoin="round"/><path d="M11.8 1.5c1-1 2.2-.2 3-.8" stroke="#8a919b" fill="none"/>',
-  pop: '<circle cx="8" cy="4.6" r="2.8" fill="#e8d3b3" stroke="#6b5537"/><path d="M2.8 14.5c0-3.6 2.3-6 5.2-6s5.2 2.4 5.2 6z" fill="#d7b98d" stroke="#6b5537"/>',
-  unrest: '<rect x="6" y="10" width="4.6" height="5.2" rx="1" fill="#c9443a" stroke="#5e1a12" stroke-width=".9"/><rect x="3.6" y="2.3" width="9" height="8.2" rx="2.6" fill="#e0503f" stroke="#5e1a12" stroke-width="1"/><path d="M6.4 2.6v3.6M8.6 2.4v3.8M10.7 2.6v3.6" stroke="#5e1a12" stroke-width=".8"/><path d="M3.7 6.9h4.1a1.35 1.35 0 010 2.7H4.4" fill="#e0503f" stroke="#5e1a12" stroke-width=".9" stroke-linejoin="round"/>',
-  province: '<path d="M2 4.5L6 2l4.5 1.5L14 2.5v9.5L10 14l-4.5-1.5L2 14z" fill="#8fb36b" stroke="#3d5a26" stroke-width="1" stroke-linejoin="round"/><path d="M6 2v10.5M10.5 3.5V14M2 8.5l4-1 4.5 1L14 7.5" fill="none" stroke="#3d5a26" stroke-width=".8"/>',
-  fort: '<path d="M3 15V6H1.8V2.5h2.4v1.5H6V2.5h4v1.5h1.8V2.5h2.4V6H13v9z" fill="#9aa3ad" stroke="#3a4048" stroke-width="1.1" stroke-linejoin="round"/><path d="M6.5 15v-3.5a1.5 1.5 0 013 0V15" fill="#3a4048"/>',
-  trade: '<circle cx="8" cy="3.2" r="1.7" fill="none" stroke="#6fa8dc" stroke-width="1.3"/><path d="M8 5v9.5M5 7.5h6M2.5 10c0 2.6 2.5 4.5 5.5 4.5s5.5-1.9 5.5-4.5" fill="none" stroke="#6fa8dc" stroke-width="1.4" stroke-linecap="round"/>',
-  reform: '<path d="M3 2.5h8.5a1.5 1.5 0 011.5 1.5v10H4.5A1.5 1.5 0 013 12.5z" fill="#efe2bf" stroke="#7a6a3c"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke="#7a6a3c"/>',
-  ally: '<path d="M1 8.5l3-3 3 1.5 2-1.5 3 1.5 3 3-3.5 3.5-2-1-2 1z" fill="#8bb6e0" stroke="#2f557e" stroke-width="1" stroke-linejoin="round"/>',
-  rival: '<circle cx="8" cy="8" r="6.3" fill="#f2ece6" stroke="#8a2a20" stroke-width="1"/><circle cx="8" cy="8" r="4.2" fill="#d65a4d"/><circle cx="8" cy="8" r="2.2" fill="#f2ece6"/><circle cx="8" cy="8" r=".9" fill="#8a2a20"/>',
-  war: '<path d="M13.5 2.5L5 11" stroke="#e0e3e8" stroke-width="2.2" stroke-linecap="round"/><path d="M3 9.5l3.5 3.5M2 14l2.3-2.3" stroke="#d65a4d" stroke-width="2" stroke-linecap="round"/>',
-  peace: '<path d="M2 9c2-4 6-5 9-3.5L14.5 4 13 7.5c.5 3-2 6-6 6-2 0-4-1.5-5-4.5z" fill="#f2f4f2" stroke="#4f7a4b" stroke-width="1"/><circle cx="11.8" cy="6.4" r=".7" fill="#4f7a4b"/>',
-  ruler: '<path d="M2 12.5L1.5 4l3.3 3L8 2l3.2 5 3.3-3-.5 8.5z" fill="#b9a3d6" stroke="#4e3f66" stroke-width="1.1" stroke-linejoin="round"/><path d="M2 12.5h12v1.8H2z" fill="#8f78ad" stroke="#4e3f66"/>',
-  patience: '<path d="M4 1.5h8M4 14.5h8M5 1.5c0 4 6 4.5 6 6.5s-6 2.5-6 6.5M11 1.5c0 4-6 4.5-6 6.5s6 2.5 6 6.5" fill="none" stroke="#c9a45c" stroke-width="1.3"/><path d="M6.5 13.5c.5-1.5 2.5-1.5 3 0z" fill="#c9a45c"/>',
-  risk: '<rect x="2" y="2" width="12" height="12" rx="2.5" fill="#f2f0ea" stroke="#5a5650" stroke-width="1.1"/><circle cx="5.3" cy="5.3" r="1.2" fill="#5a5650"/><circle cx="8" cy="8" r="1.2" fill="#5a5650"/><circle cx="10.7" cy="10.7" r="1.2" fill="#5a5650"/>',
-  judgment: '<path d="M1 8Q8 1.5 15 8Q8 14.5 1 8z" fill="#e6eef6" stroke="#3f6a94" stroke-width="1.1"/><circle cx="8" cy="8" r="2.6" fill="#3f6a94"/><circle cx="8.8" cy="7.2" r=".8" fill="#fff"/>',
-  score: '<path d="M8 14C4 12 2 8 3 3.5M8 14c4-2 6-6 5-10.5" fill="none" stroke="#c9a45c" stroke-width="1.4"/><path d="M3.2 6.5l2 .5M3.6 9.5l2 .2M5.2 12l1.6-.6M12.8 6.5l-2 .5M12.4 9.5l-2 .2M10.8 12l-1.6-.6" stroke="#c9a45c" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="5.5" r="2" fill="#e9c35a"/>',
-  settle: '<circle cx="8" cy="8" r="6.3" fill="#3a4048" stroke="#a8c7a0" stroke-width="1.3"/><path d="M8 8V1.7A6.3 6.3 0 0114.1 9.6z" fill="#a8c7a0"/>',
-  culture: '<path d="M2 3h12v8H7l-3.5 3v-3H2z" fill="#a8c7a0" stroke="#3f5e3a" stroke-linejoin="round"/><path d="M4.5 6h7M4.5 8.5h5" stroke="#3f5e3a"/>',
-  build: '<path d="M3 15V5M3 5h10M3 5l4 0M13 5v4" stroke="#e9c35a" stroke-width="1.5" fill="none"/><path d="M11.5 9h3v2.5h-3z" fill="#e9c35a"/><path d="M1.5 15h4" stroke="#e9c35a" stroke-width="1.5"/><path d="M3 5L7 1.5" stroke="#e9c35a" stroke-width="1.2"/>',
-  dream: '<path d="M8 1.2l2 4.6 5 .4-3.8 3.2 1.2 4.9L8 11.7l-4.4 2.6 1.2-4.9L1 6.2l5-.4z" fill="#e9c35a" stroke="#8a6a1c" stroke-linejoin="round"/>',
-  event: '<path d="M8 1.5l6.8 12.5H1.2z" fill="#9aa3ad" stroke="#3a4048" stroke-linejoin="round"/><path d="M8 6v4" stroke="#1a1d22" stroke-width="1.6"/><circle cx="8" cy="12" r=".9" fill="#1a1d22"/>',
-  revolt: '<path d="M8 1L9.8 5.6 14.8 5.8 10.9 8.9 12.3 13.8 8 11 3.7 13.8 5.1 8.9 1.2 5.8 6.2 5.6z" fill="#e0453a" stroke="#6b1a14" stroke-linejoin="round"/>',
-  dead: '<path d="M3 7a5 5 0 0110 0v3l-1.5 1v2.5h-7V11L3 10z" fill="#d9dbe0" stroke="#4a4e55"/><circle cx="6" cy="7.6" r="1.4" fill="#2a2d32"/><circle cx="10" cy="7.6" r="1.4" fill="#2a2d32"/><path d="M7 13.5v-1.5M9 13.5v-1.5" stroke="#4a4e55"/>',
-  occupied: '<rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#c96b5f"/><path d="M1.5 9L9 1.5M1.5 14.5L14.5 1.5M7 14.5L14.5 7" stroke="#5e221c" stroke-width="1.6"/>',
-  save: '<path d="M2.5 6.5h11v7.5h-11z" fill="#b08a4a" stroke="#5c4320"/><path d="M2 6.5L8 2l6 4.5" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><circle cx="8" cy="10" r="1.6" fill="#e9c35a" stroke="#5c4320" stroke-width=".8"/>',
-  sea: '<path d="M1 6c2-2 3.5-2 5 0s3 2 5 0 3.5-2 4 0M1 11c2-2 3.5-2 5 0s3 2 5 0 3.5-2 4 0" stroke="#6fa8dc" stroke-width="1.5" fill="none" stroke-linecap="round"/>',
-  waste: '<path d="M4 4h8l-1 10.5H5z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M3 4h10M6.5 2h3" stroke="#5c4320" stroke-width="1.3"/>',
-  ruin: '<path d="M1.5 14V9l3.5-2v2l2-1.2L8.5 12l2-4.5 1 1.5V3h2.5v11z" fill="#8a8f99" stroke="#3a4048" stroke-linejoin="round"/><path d="M9 3l1.5 2-2 1.5" stroke="#e0453a" stroke-width="1.2" fill="none"/>',
-};
-const IC_NAME = { gold: 'Gold', income: 'Income', upkeep: 'Army upkeep', army: 'Army', factory: 'Factories', pop: 'People', unrest: 'Unrest', province: 'Provinces',
-  fort: 'Fortress', trade: 'Sea trade', reform: 'Reforms', ally: 'Alliance', rival: 'Threat', war: 'War', peace: 'Peace', ruler: 'Ruler', patience: 'Patience',
-  risk: 'Risk', judgment: 'Judgment', score: 'Score (gold a year)', settle: 'Integration', culture: 'Nationality', build: 'Construction', dream: 'National dream',
-  event: 'Event', revolt: 'Uprising', dead: 'Dead', occupied: 'Occupied', save: 'Savings', sea: 'Sea crossing', waste: 'Court extravagance', ruin: 'Ruin' };
-// every panel icon names itself on hover
-const ic = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 16 16" role="img" aria-label="${IC_NAME[name] || name}"><title>${IC_NAME[name] || name}</title>${IC[name] || IC.event}</svg>`;
-const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'revolt', unify: 'dream', ruler: 'ruler', event: 'event', econ: 'factory' };
-const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'pop', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'dream', war: 'war' };
-// sprinkle icons into chronicle text: numbers of gold, soldiers, fortresses, factories
-const decorate = h => h
-  .replace(/(\d[\d,]*) gold/g, (m, n) => `${ic('gold')}${n} gold`)
-  .replace(/(\d[\d,]*)k soldiers/g, (m, n) => `${ic('army')}${n}k soldiers`)
-  .replace(/\bfortress\b/g, `${ic('fort')}fortress`)
-  .replace(/\b(factory|factories)\b/g, m => `${ic('factory')}${m}`);
-
-const $ = id => document.getElementById(id);
-const svgNS = 'http://www.w3.org/2000/svg';
-let S, timer = null, selected = null;
-const FILTERS = { war:{on:1,label:'Wars',icon:'war',types:['war','peace']}, diplo:{on:1,label:'Diplomacy',icon:'ally',types:['diplo']},
-  nations:{on:1,label:'Revolts & dreams',icon:'revolt',types:['unify','revolt']}, rulers:{on:1,label:'Rulers',icon:'ruler',types:['ruler']},
-  event:{on:1,label:'Events',icon:'event',types:['event']}, econ:{on:0,label:'Construction',icon:'factory',types:['econ']} };
-let selProv = null;
-function el(tag, attrs, parent){ const e = document.createElementNS(svgNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
-const fmt = v => Math.round(v).toLocaleString('en');
-const A = i => [GEO.regions[i].ax, GEO.regions[i].ay];
-const nameSpan = t => { const c = S.C[t]; return `<b class="cn" data-tag="${t}" style="--c:${c.color}">${c.name}</b>`; };
-const dur = q => q < 4 ? `${q} season${q === 1 ? '' : 's'}` : `${(q / 4).toFixed(q % 4 ? 1 : 0)} yr`;
-
-// ---------- glyphs (SVG strings centred on 0,0) ----------
+// ---------- the registry: every concept the player sees, once ----------
+// Each entry is one thing in the game with one name, one line of description and one drawing.
+// The panel, the map, the map key and every tooltip draw from here; `npm run build` refuses
+// drawings made anywhere else and the words listed under `avoid` in any visible text.
+//   name   the one word the interface uses for it (labels and hover names match it exactly)
+//   desc   one plain line: what it is and what it does
+//   draw   SVG centred on 0,0
+//   box    half the width of the square the drawing fills (panel icons are scaled to fit it)
+//   map    scale when drawn on the map (only for things the map shows)
+//   avoid  other words for the same thing that must not appear in visible text
 const INK = '#f3efe4', DARK = '#111';
-const G = {
-  factory: `<path d="M-4.5 3.5V-.5l2.6-1.6V-.5l2.6-1.6V-.5V-4.5h1.8v8z" fill="${INK}" stroke="${DARK}" stroke-width=".7" stroke-linejoin="round"/>`,
-  build: `<path d="M-4.5 3.5V-.5l2.6-1.6V-.5l2.6-1.6V-.5V-4.5h1.8v8z" fill="none" stroke="${INK}" stroke-width=".8" stroke-dasharray="1.4 1"/>`,
-  fort: `<path d="M-3.5 3.5V-1.5h-1v-3h2v1.2h1.5v-1.2h2v1.2h1.5v-1.2h2v3h-1v5z" fill="#2a2f36" stroke="${INK}" stroke-width=".8" stroke-linejoin="round"/>`,
-  buildfort: `<path d="M-3.5 3.5V-1.5h-1v-3h2v1.2h1.5v-1.2h2v1.2h1.5v-1.2h2v3h-1v5z" fill="none" stroke="${INK}" stroke-width=".8" stroke-dasharray="1.4 1"/>`,
-  flame: c => `<path d="M-3.2 .6V-2.4a.9.9 0 011.8 0v-.9a.9.9 0 011.8 0v.3a.9.9 0 011.8 0v.8a.9.9 0 011.7.3V1c0 1.7-1.2 2.7-2.9 2.7h-.4v1.4h-2.4V3.2c-.7-.5-1.4-1.4-1.4-2.6z" fill="${c}" stroke="${DARK}" stroke-width=".7" stroke-linejoin="round"/>`,
-  battle: `<g stroke-linecap="round"><path d="M-5 -5L5 5M5 -5L-5 5" stroke="${DARK}" stroke-width="4"/><path d="M-5 -5L5 5M5 -5L-5 5" stroke="#fff" stroke-width="1.8"/></g>`,
-  revolt: `<path d="M0 -7L1.8 -2.4 6.6 -2.2 2.8 .9 4.2 5.6 0 2.9 -4.2 5.6 -2.8 .9 -6.6 -2.2 -1.8 -2.4z" fill="#e0453a" stroke="${DARK}" stroke-width=".8"/>`,
-  boom: `<path d="M0 -6L4 0L0 6L-4 0z" fill="#f2c94c" stroke="${DARK}" stroke-width=".8"/><path d="M0 -3.4L2.2 0L0 3.4L-2.2 0z" fill="#fff6c9"/>`,
-  crown: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#c9a45c" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>`,
-  coup: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M-7 4L7 -5" stroke="${DARK}" stroke-width="2.2"/><path d="M-7 4L7 -5" stroke="#e0453a" stroke-width="1.2"/>`,
+const P = s => `<g transform="translate(-8 -8)">${s}</g>`; // drawings made on a 0..16 grid
+const REG = {
+  // ----- money -----
+  gold: { name: 'Gold', desc: 'Money in the bank. Pays for factories, fortresses, recruits and reforms.', avoid: ['treasury', 'treasuries', 'savings'],
+    draw: P('<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>') },
+  goldYear: { name: 'Gold a year', desc: 'Taxes, factory output and sea trade over a year. The nation with the most in autumn 1918 wins.', avoid: ['income', 'score', '/yr'],
+    draw: P('<path d="M8 14C4 12 2 8 3 3.5M8 14c4-2 6-6 5-10.5" fill="none" stroke="#c9a45c" stroke-width="1.4"/><path d="M3.2 6.5l2 .5M3.6 9.5l2 .2M5.2 12l1.6-.6M12.8 6.5l-2 .5M12.4 9.5l-2 .2M10.8 12l-1.6-.6" stroke="#c9a45c" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="5.5" r="2" fill="#e9c35a"/>') },
+  taxes: { name: 'Taxes', desc: 'Gold the people pay. Falls with unrest, occupation and every man in the army.',
+    draw: P('<path d="M5.2 2.2h5.6L9.6 5c3 1 4.6 4 4.2 7-.2 1.6-1.6 2.5-3.2 2.5H5.4c-1.6 0-3-.9-3.2-2.5-.4-3 1.2-6 4.2-7z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M6.4 5h3.2" stroke="#5c4320" stroke-width="1.2"/><path d="M8 7.6v5M6.6 8.8h2.1a.9.9 0 010 1.8H7.3a.9.9 0 000 1.8h2.1" fill="none" stroke="#5c4320" stroke-width=".9"/>') },
+  upkeep: { name: 'Army upkeep', desc: 'Gold the army costs every season.',
+    draw: P('<circle cx="7" cy="8" r="5.5" fill="#d98a6a" stroke="#7a3a22" stroke-width="1.1"/><path d="M4.5 8h5" stroke="#7a3a22" stroke-width="1.6"/>') },
+  trade: { name: 'Sea trade', desc: 'Gold from coastal provinces. Lost while the nation is at war.',
+    draw: P('<circle cx="8" cy="3.2" r="1.7" fill="none" stroke="#6fa8dc" stroke-width="1.3"/><path d="M8 5v9.5M5 7.5h6M2.5 10c0 2.6 2.5 4.5 5.5 4.5s5.5-1.9 5.5-4.5" fill="none" stroke="#6fa8dc" stroke-width="1.4" stroke-linecap="round"/>') },
+  waste: { name: 'Court extravagance', desc: 'Gold a spendthrift ruler wastes on the court.',
+    draw: P('<path d="M4 4h8l-1 10.5H5z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M3 4h10M6.5 2h3" stroke="#5c4320" stroke-width="1.3"/>') },
+  save: { name: 'Save gold', desc: 'The ministers keep the gold when nothing else is expected to pay.',
+    draw: P('<path d="M2.5 6.5h11v7.5h-11z" fill="#b08a4a" stroke="#5c4320"/><path d="M2 6.5L8 2l6 4.5" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><circle cx="8" cy="10" r="1.6" fill="#e9c35a" stroke="#5c4320" stroke-width=".8"/>') },
+
+  // ----- land and people -----
+  province: { name: 'Provinces', desc: 'Land a nation holds. Each one costs a little to run.',
+    draw: P('<path d="M2 4.5L6 2l4.5 1.5L14 2.5v9.5L10 14l-4.5-1.5L2 14z" fill="#8fb36b" stroke="#3d5a26" stroke-width="1" stroke-linejoin="round"/><path d="M6 2v10.5M10.5 3.5V14M2 8.5l4-1 4.5 1L14 7.5" fill="none" stroke="#3d5a26" stroke-width=".8"/>') },
+  capital: { name: 'Capital', desc: 'Where a nation is ruled from. Its army size shows here in wartime.', box: 4,
+    draw: `<circle r="2.6" fill="${INK}" stroke="${DARK}" stroke-width="1.1"/>` },
+  pop: { name: 'People', desc: 'How many live in a province or nation, in millions.',
+    draw: P('<circle cx="8" cy="4.6" r="2.8" fill="#e8d3b3" stroke="#6b5537"/><path d="M2.8 14.5c0-3.6 2.3-6 5.2-6s5.2 2.4 5.2 6z" fill="#d7b98d" stroke="#6b5537"/>') },
+  culture: { name: 'Nationality', desc: 'The people of a province. Under a ruler of another nationality they grow restless.',
+    draw: P('<path d="M2 3h12v8H7l-3.5 3v-3H2z" fill="#a8c7a0" stroke="#3f5e3a" stroke-linejoin="round"/><path d="M4.5 6h7M4.5 8.5h5" stroke="#3f5e3a"/>') },
+  settle: { name: 'Integrated', desc: 'How far a conquered province has become part of its new nation. It pays little until fully integrated.', avoid: ['settles', 'settled', 'integration'],
+    draw: P('<circle cx="8" cy="8" r="6.3" fill="#3a4048" stroke="#a8c7a0" stroke-width="1.3"/><path d="M8 8V1.7A6.3 6.3 0 0114.1 9.6z" fill="#a8c7a0"/>') },
+  occupied: { name: 'Occupied', desc: 'Held by an enemy army. Pays its owner nothing until freed.',
+    draw: P('<rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#c96b5f"/><path d="M1.5 9L9 1.5M1.5 14.5L14.5 1.5M7 14.5L14.5 7" stroke="#5e221c" stroke-width="1.6"/>') },
+  sea: { name: 'Sea crossing', desc: 'Two coastal provinces close enough to invade across the water.', box: 9,
+    draw: `<line x1="-9" y1="0" x2="9" y2="0" stroke="#9fb1c2" stroke-width="1.4" stroke-dasharray="2 3"/>` },
+  claim: { name: 'Claims', desc: 'Nations that want a province: its old owner, its own people, a dream or a programme.',
+    draw: `<path d="M-4.5 7V-7" stroke="#c9ced6" stroke-width="1.6" stroke-linecap="round"/><path d="M-3.8 -6.6h9l-2.3 3.2 2.3 3.2h-9z" fill="#d65a4d" stroke="#5e221c" stroke-width=".9" stroke-linejoin="round"/>` },
+  programme: { name: 'Programme', desc: 'The provinces a new nation is founded to win. They count as its own when it weighs a war.',
+    draw: P('<path d="M3.5 1.5h7l2.5 2.5v10.5h-9.5z" fill="#efe2bf" stroke="#7a6a3c" stroke-linejoin="round"/><path d="M6 6h5M6 8.5h5M6 11h3" stroke="#7a6a3c"/><path d="M10.5 1.5V4H13" fill="none" stroke="#7a6a3c"/>') },
+
+  // ----- building -----
+  factory: { name: 'Factories', desc: 'Produce gold every season. Each new one costs more and adds less.', box: 5.5, map: 1,
+    draw: `<path d="M-4.5 3.5V-.5l2.6-1.6V-.5l2.6-1.6V-.5V-4.5h1.8v8z" fill="${INK}" stroke="${DARK}" stroke-width=".7" stroke-linejoin="round"/>` },
+  fort: { name: 'Fortress', desc: 'Stops a share of enemy advances into the province. Razed if the province falls.', box: 5.5, map: 1, avoid: ['forts', 'fort'],
+    draw: `<path d="M-3.5 3.5V-1.5h-1v-3h2v1.2h1.5v-1.2h2v1.2h1.5v-1.2h2v3h-1v5z" fill="#2a2f36" stroke="${INK}" stroke-width=".8" stroke-linejoin="round"/>` },
+  buildFactory: { name: 'Factory being built', desc: 'A factory under construction. Takes four seasons.', box: 5.5, map: 1,
+    draw: `<path d="M-4.5 3.5V-.5l2.6-1.6V-.5l2.6-1.6V-.5V-4.5h1.8v8z" fill="none" stroke="${INK}" stroke-width=".8" stroke-dasharray="1.4 1"/>` },
+  buildFort: { name: 'Fortress being built', desc: 'A fortress under construction. Takes three seasons.', box: 5.5, map: 1,
+    draw: `<path d="M-3.5 3.5V-1.5h-1v-3h2v1.2h1.5v-1.2h2v1.2h1.5v-1.2h2v3h-1v5z" fill="none" stroke="${INK}" stroke-width=".8" stroke-dasharray="1.4 1"/>` },
+  build: { name: 'Construction', desc: 'Gold spent this season on factories and fortresses.',
+    draw: P('<path d="M3 15V5M3 5h10M3 5l4 0M13 5v4" stroke="#e9c35a" stroke-width="1.5" fill="none"/><path d="M11.5 9h3v2.5h-3z" fill="#e9c35a"/><path d="M1.5 15h4" stroke="#e9c35a" stroke-width="1.5"/><path d="M3 5L7 1.5" stroke="#e9c35a" stroke-width="1.2"/>') },
+  ruin: { name: 'Ruin', desc: 'A factory or fortress destroyed in war.', box: 6, map: 1,
+    draw: `<path d="M-5 4V0l2.6-1.5V0l1.8-1 1.2 3.5 1.6-3.8.8 1.2V-4.5h2V4z" fill="#8a8f99" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M1 -5l1.4 1.8-1.6 1.2" stroke="#e0453a" stroke-width="1.1" fill="none"/>` },
+  boom: { name: 'Boom', desc: 'Coal is found or a railway arrives: the province suddenly pays more.', box: 7, map: 1,
+    draw: `<path d="M0 -6L4 0L0 6L-4 0z" fill="#f2c94c" stroke="${DARK}" stroke-width=".8"/><path d="M0 -3.4L2.2 0L0 3.4L-2.2 0z" fill="#fff6c9"/>` },
+  reform: { name: 'Reforms', desc: 'Laws that calm unrest for a while. Cost gold.',
+    draw: P('<path d="M3 2.5h8.5a1.5 1.5 0 011.5 1.5v10H4.5A1.5 1.5 0 013 12.5z" fill="#efe2bf" stroke="#7a6a3c"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke="#7a6a3c"/>') },
+
+  // ----- unrest -----
+  unrest: { name: 'Unrest', desc: 'Anger in a province ruled by another nationality. Cuts taxes; at 65 or more it is close to an uprising.', map: .62, avoid: ['restlessness'],
+    draw: `<g style="fill:var(--uc,#e0503f)" stroke="${DARK}" stroke-width="1" stroke-linejoin="round"><path d="M-2.6 1.8V7.2h5.2V1.8z"/><rect x="-4.8" y="-6.4" width="9.6" height="9" rx="2.6"/><path d="M-1.6 -6.4v3.2M1.6 -6.4v3.2" fill="none"/><path d="M-4.8 -1.4h5a1.5 1.5 0 0 1 0 3h-4.2"/></g>` },
+  uprising: { name: 'Uprising', desc: 'A province rises against its ruler and may break away or join its own people.', map: .85, avoid: ['revolt', 'revolts', 'rebellion'],
+    draw: `<path d="M0 -7.2C2.6 -4.2 5.2 -2 5.2 1.8A5.2 5.2 0 0 1 -5.2 1.8C-5.2 -1 -3.2 -2.6 -2.6 -4.8C-1.2 -3.2 -.6 -2.2 0 -7.2z" fill="#e0453a" stroke="${DARK}" stroke-width=".9" stroke-linejoin="round"/><path d="M0 -.8C1.4 .9 2.3 1.9 2.3 3.2A2.3 2.3 0 0 1 -2.3 3.2C-2.3 1.9 -1.1 .9 0 -.8z" fill="#f2c94c"/>` },
+
+  // ----- war -----
+  army: { name: 'Army', desc: 'Soldiers under arms, in thousands. Deter attack, win wars, but every man is a worker lost.', map: .62, avoid: ['soldiers', 'troops'],
+    draw: P('<g stroke-linecap="round"><path d="M2.5 13.5L12.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M12.5 3.5l2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M13.5 13.5L3.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M3.5 3.5l-2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M4.2 11.8l1.6 1.6M11.8 11.8l-1.6 1.6" stroke="#4a3018" stroke-width="1.6"/></g>') },
+  war: { name: 'War', desc: 'Nations fighting over a province. Ends when one side wins or both are exhausted.',
+    draw: P('<path d="M13.5 2.5L5 11" stroke="#e0e3e8" stroke-width="2.2" stroke-linecap="round"/><path d="M3 9.5l3.5 3.5M2 14l2.3-2.3" stroke="#d65a4d" stroke-width="2" stroke-linecap="round"/>') },
+  battle: { name: 'Battle', desc: 'Fighting in a province this season.', box: 6.5, map: 1,
+    draw: `<g stroke-linecap="round"><path d="M-5 -5L5 5M5 -5L-5 5" stroke="${DARK}" stroke-width="4"/><path d="M-5 -5L5 5M5 -5L-5 5" stroke="#fff" stroke-width="1.8"/></g>` },
+  front: { name: 'Front line', desc: 'Where the two sides of a war hold land face to face.', box: 9,
+    draw: `<path d="M-9 0H9" stroke="#ff5a48" stroke-width="3" stroke-dasharray="4 2"/>` },
+  goal: { name: 'War goal', desc: 'The province a war is being fought for.', box: 9,
+    draw: `<rect x="-8" y="-5.5" width="16" height="11" fill="none" stroke="#d65a4d" stroke-width="1.6" stroke-dasharray="4 2"/>` },
+  peace: { name: 'Peace', desc: 'A war ends and land or gold changes hands.',
+    draw: P('<path d="M2 9c2-4 6-5 9-3.5L14.5 4 13 7.5c.5 3-2 6-6 6-2 0-4-1.5-5-4.5z" fill="#f2f4f2" stroke="#4f7a4b" stroke-width="1"/><circle cx="11.8" cy="6.4" r=".7" fill="#4f7a4b"/>') },
+  dead: { name: 'Dead', desc: 'Lives lost in the fighting, in millions.',
+    draw: P('<path d="M3 7a5 5 0 0110 0v3l-1.5 1v2.5h-7V11L3 10z" fill="#d9dbe0" stroke="#4a4e55"/><circle cx="6" cy="7.6" r="1.4" fill="#2a2d32"/><circle cx="10" cy="7.6" r="1.4" fill="#2a2d32"/><path d="M7 13.5v-1.5M9 13.5v-1.5" stroke="#4a4e55"/>') },
+
+  // ----- diplomacy -----
+  ally: { name: 'Alliance', desc: 'Nations bound to join each other\'s defensive wars.',
+    draw: P('<path d="M1 8.5l3-3 3 1.5 2-1.5 3 1.5 3 3-3.5 3.5-2-1-2 1z" fill="#8bb6e0" stroke="#2f557e" stroke-width="1" stroke-linejoin="round"/>') },
+  rival: { name: 'Biggest threat', desc: 'The neighbour a nation fears most. It arms and allies against it.',
+    draw: P('<circle cx="8" cy="8" r="6.3" fill="#f2ece6" stroke="#8a2a20" stroke-width="1"/><circle cx="8" cy="8" r="4.2" fill="#d65a4d"/><circle cx="8" cy="8" r="2.2" fill="#f2ece6"/><circle cx="8" cy="8" r=".9" fill="#8a2a20"/>') },
+  dream: { name: 'National dream', desc: 'A people divided among several nations hoping to unite, like Germany or Italy.', map: .85,
+    draw: P('<path d="M8 1.2l2 4.6 5 .4-3.8 3.2 1.2 4.9L8 11.7l-4.4 2.6 1.2-4.9L1 6.2l5-.4z" fill="#e9c35a" stroke="#8a6a1c" stroke-linejoin="round"/>') },
+  leader: { name: 'Leading nation', desc: 'The nation with the most gold a year right now.', box: 7.5, map: 1,
+    draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#c9a45c" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
+
+  // ----- rulers -----
+  ruler: { name: 'Ruler', desc: 'Who decides for the nation, with his own patience, nerve and quirks.', avoid: ['sovereign'],
+    draw: `<ellipse rx="6.2" ry="7.3" fill="#b9a3d6" stroke="#4e3f66" stroke-width="1"/><path d="M-4.2 6.2C-4 3.2 -2.6 2 -1.1 1.5C-2.3 .6 -2.8 -.9 -2.6 -2.3C-2.3 -4.3 -.8 -5.2 .6 -5C2.1 -4.8 2.9 -3.5 2.8 -2.1L3.7 -.9 2.8 -.5C2.8 .5 2.2 1.1 1.3 1.5C2.8 2 4 3.2 4.2 6.2C2.9 6.9 1.5 7.3 0 7.3S-2.9 6.9 -4.2 6.2Z" fill="#4e3f66"/>` },
+  patience: { name: 'Patience', desc: 'How many years ahead a ruler counts gains and costs.',
+    draw: P('<path d="M4 1.5h8M4 14.5h8M5 1.5c0 4 6 4.5 6 6.5s-6 2.5-6 6.5M11 1.5c0 4-6 4.5-6 6.5s6 2.5 6 6.5" fill="none" stroke="#c9a45c" stroke-width="1.3"/><path d="M6.5 13.5c.5-1.5 2.5-1.5 3 0z" fill="#c9a45c"/>') },
+  risk: { name: 'Risk', desc: 'How much a possible loss scares a ruler.',
+    draw: P('<rect x="2" y="2" width="12" height="12" rx="2.5" fill="#f2f0ea" stroke="#5a5650" stroke-width="1.1"/><circle cx="5.3" cy="5.3" r="1.2" fill="#5a5650"/><circle cx="8" cy="8" r="1.2" fill="#5a5650"/><circle cx="10.7" cy="10.7" r="1.2" fill="#5a5650"/>') },
+  judgment: { name: 'Judgment', desc: 'Whether a ruler sees his odds in war as better or worse than they are.',
+    draw: P('<path d="M1 8Q8 1.5 15 8Q8 14.5 1 8z" fill="#e6eef6" stroke="#3f6a94" stroke-width="1.1"/><circle cx="8" cy="8" r="2.6" fill="#3f6a94"/><circle cx="8.8" cy="7.2" r=".8" fill="#fff"/>') },
+  forecast: { name: 'Forecasts', desc: 'What each option is worth in gold over the ruler\'s horizon. Positive ones are done, best first.',
+    draw: P('<path d="M2 13.5h12" stroke="#97a0aa" stroke-width="1.2"/><path d="M2.5 11l3.5-3.5 2.5 2 5-5.5" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5h3v3" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>') },
+  civilWar: { name: 'Civil war', desc: 'A disputed succession: rival claimants split the army, which fights at half strength.', box: 7.5, map: 1,
+    draw: `<path d="M-7 3L-7.4 -3.5L-4 -.5L-1.6 -4.6L-.4 -2.2L-1.4 -.4L-.4 1.2L-1 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M1 3L1.6 1.2L.6 -.4L1.6 -2.2L2.4 -4.6L4.6 -.5L7.4 -3.5L7 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
+  coup: { name: 'Coup', desc: 'The army deposes the ruler of a restless nation.', box: 7.5, map: 1,
+    draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M-7 4L7 -5" stroke="${DARK}" stroke-width="2.2"/><path d="M-7 4L7 -5" stroke="#e0453a" stroke-width="1.2"/>` },
+
+  // ----- the chronicle and the interface -----
+  event: { name: 'Event', desc: 'Famines, epidemics, panics, booms and other turns of fortune.',
+    draw: P('<path d="M8 1.5l6.8 12.5H1.2z" fill="#9aa3ad" stroke="#3a4048" stroke-linejoin="round"/><path d="M8 6v4" stroke="#1a1d22" stroke-width="1.6"/><circle cx="8" cy="12" r=".9" fill="#1a1d22"/>') },
+  panel: { name: 'Side panel', desc: 'Shows or hides the chronicle, rankings and details on the right.',
+    draw: `<rect x="-6.5" y="-5.5" width="13" height="11" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="1.5" y="-5.5" width="5" height="11" fill="currentColor" opacity=".45"/><path d="M1.5 -5.5v11" stroke="currentColor" stroke-width="1.3"/>` },
 };
-G.crisis = G.coup;
-G.ruin = `<path d="M-5 4V0l2.6-1.5V0l1.8-1 1.2 3.5 1.6-3.8.8 1.2V-4.5h2V4z" fill="#8a8f99" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M1 -5l1.4 1.8-1.6 1.2" stroke="#e0453a" stroke-width="1.1" fill="none"/>`;
-const EMB = { // ruler quirk emblems, drawn inside a badge
+// concepts that are only words, with no icon of their own
+const WORDS = {
+  nation: { name: 'Nation', desc: 'One of the states on the map, with its own ruler, gold and army.', avoid: ['country', 'countries', 'states'] },
+};
+// ruler quirk emblems, drawn inside a round badge (names and descriptions come from TRAITS in sim.js)
+const EMB = {
   warmonger: `<path d="M-2.6 2.6L2.8 -2.8M-2.4 -.2L.2 2.4M-3.2 3.2l1-1" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/>`,
   builder: `<path d="M-2.6 2.8L.8 -.6" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/><path d="M-.6 -2.8l2.2 -.6 1.6 1.6-.6 2.2z" fill="${INK}"/>`,
   paranoid: `<path d="M-3.4 0Q0 -3 3.4 0Q0 3 -3.4 0z" fill="none" stroke="${INK}" stroke-width="1"/><circle r="1.1" fill="${INK}"/>`,
@@ -1356,6 +1405,41 @@ const EMB = { // ruler quirk emblems, drawn inside a badge
   reformer: `<path d="M-2.4 -3h4.8v6h-4.8z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-1.4 -1.2h2.8M-1.4 .4h2.8M-1.4 2h1.8" stroke="${INK}" stroke-width=".7"/>`,
   incompetent: `<text y="2.6" text-anchor="middle" font-size="7" font-family="IBM Plex Mono" fill="${INK}">?</text>`,
 };
+const EMB_BADGE = `<circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>`;
+
+// the name of a concept, for labels
+const nm = k => REG[k].name;
+// a panel icon that names itself on hover; `style` can set --uc for unrest colour
+const ic = (k, cls = '', style = '') => { const e = REG[k], b = e.box || 8;
+  return `<svg class="ic ${cls}" viewBox="${-b} ${-b} ${2 * b} ${2 * b}" role="img" aria-label="${e.name}"${style ? ` style="${style}"` : ''}><title>${e.name}</title>${e.draw}</svg>`; };
+// the same drawing for the map, centred on 0,0 at the map's scale
+const glyph = (k, style = '') => { const e = REG[k], s = e.map || .55;
+  return `<g transform="scale(${s})"${style ? ` style="${style}"` : ''}>${e.draw}</g>`; };
+const UNREST_HOT = '--uc:#e0453a', UNREST_WARM = '--uc:#e3933c';
+const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'uprising', unify: 'dream', ruler: 'ruler', event: 'event', econ: 'build' };
+const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'army', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'dream', war: 'war' };
+// map markers left by the simulation, by its own type names
+const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'dream', coup: 'coup', crisis: 'civilWar' };
+// sprinkle icons into chronicle text: amounts of gold, fortresses, factories
+const decorate = h => h
+  .replace(/(\d[\d,]*) gold\b(?! a year)/g, (m, n) => `${ic('gold')}${n} gold`)
+  .replace(/\bfortress\b/g, `${ic('fort')}fortress`)
+  .replace(/\b(factory|factories)\b/g, m => `${ic('factory')}${m}`);
+
+const $ = id => document.getElementById(id);
+const svgNS = 'http://www.w3.org/2000/svg';
+let S, timer = null, selected = null;
+const FILTERS = { war:{on:1,label:'Wars',icon:'war',types:['war','peace']}, diplo:{on:1,label:'Diplomacy',icon:'ally',types:['diplo']},
+  nations:{on:1,label:'Uprisings & dreams',icon:'uprising',types:['unify','revolt']}, rulers:{on:1,label:'Rulers',icon:'ruler',types:['ruler']},
+  event:{on:1,label:'Events',icon:'event',types:['event']}, econ:{on:0,label:'Construction',icon:'build',types:['econ']} };
+let selProv = null;
+function el(tag, attrs, parent){ const e = document.createElementNS(svgNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const fmt = v => Math.round(v).toLocaleString('en');
+const A = i => [GEO.regions[i].ax, GEO.regions[i].ay];
+const nameSpan = t => { const c = S.C[t]; return `<b class="cn" data-tag="${t}" style="--c:${c.color}">${c.name}</b>`; };
+const NATION_EMPTY = '<div class="empty">Click a province or a nation\'s name to see its ruler, budget and forecasts.</div>';
+const dur = q => q < 4 ? `${q} season${q === 1 ? '' : 's'}` : `${(q / 4).toFixed(q % 4 ? 1 : 0)} yr`;
+
 // position on the outer group, animate the inner one (animating the outer would override its position)
 const at = (x, y, inner, extra = '', fresh = false) => `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})" ${extra}>${fresh ? `<g class="fresh">${inner}</g>` : inner}</g>`;
 
@@ -1381,7 +1465,7 @@ function newWorld(seed, player){
   selected = player || null;
   $('seed').textContent = 'World #' + seed;
   selProv = null;
-  $('nation').innerHTML = '<div class="empty">Click a country\'s name anywhere, or a province on the map, to see its ruler, budget and forecasts.</div>';
+  $('nation').innerHTML = NATION_EMPTY;
   $('endModal').classList.remove('on');
   render(); checkPending();
 }
@@ -1402,14 +1486,14 @@ function renderMap(){
     if (r.occ) occ += `<path class="occ" d="${GEO.regions[i].d}" fill="${occPattern(r.occ)}" opacity=".9"/>`;
   });
   S.wars.forEach(w => { goals += `<path class="goal" d="${GEO.regions[S.RB[w.goal].i].d}"/>`; });
-  // province icons: chimney with count, tower, construction, unrest flame
+  // province icons: factories with count, fortress, construction, unrest
   S.regions.forEach(r => {
     const [cx, cy] = A(r.i);
     const items = [];
-    if (r.fac) items.push({ g: G.factory, n: r.fac, w: r.fac > 1 ? 15 : 10 });
-    if (r.build) items.push({ g: r.build.type === 'factory' ? G.build : G.buildfort, w: 10 });
-    if (r.fort) items.push({ g: G.fort, w: 10 });
-    if (r.unrest >= 40) items.push({ g: G.flame(r.unrest >= 65 ? '#e0453a' : '#e3933c'), w: 9, hot: r.unrest >= 65 });
+    if (r.fac) items.push({ g: glyph('factory'), n: r.fac, w: r.fac > 1 ? 15 : 10 });
+    if (r.build) items.push({ g: glyph(r.build.type === 'factory' ? 'buildFactory' : 'buildFort'), w: 10 });
+    if (r.fort) items.push({ g: glyph('fort'), w: 10 });
+    if (r.unrest >= 40) items.push({ g: glyph('unrest', r.unrest >= 65 ? UNREST_HOT : UNREST_WARM), w: 9, hot: r.unrest >= 65 });
     let x = cx - items.reduce((s, it) => s + it.w, 0) / 2;
     const y = cy + 7;
     items.forEach(it => {
@@ -1420,24 +1504,24 @@ function renderMap(){
   });
   // event markers that fade over a few seasons
   const shown = new Set();
-  S.regions.forEach(r => { if (r.battle > 0) { const [cx, cy] = A(r.i); marks += at(cx, cy - 6, G.battle, '', r.battle === 2); shown.add(r.i); } });
+  S.regions.forEach(r => { if (r.battle > 0) { const [cx, cy] = A(r.i); marks += at(cx, cy - 6, glyph('battle'), '', r.battle === 2); shown.add(r.i); } });
   S.marks.filter(m => S.t - m.t <= 4).forEach(m => {
     const [cx, cy] = A(m.i); const age = S.t - m.t; const off = shown.has(m.i) ? 12 : 0; shown.add(m.i);
-    marks += at(cx + off, cy - 8, G[m.type] || G.boom, `opacity="${(1 - age / 5).toFixed(2)}"`, age === 0);
+    marks += at(cx + off, cy - 8, glyph(MARK_IC[m.type] || 'event'), `opacity="${(1 - age / 5).toFixed(2)}"`, age === 0);
   });
   // front lines: borders where the two sides of a war hold land face to face
   let fronts = '';
   S.wars.forEach(w => { const side = r => { const h = r.occ || r.owner; return w.att.includes(h) ? 1 : w.def.includes(h) ? 2 : 0; };
     GEO.borders.forEach(b => { const sa = side(S.regions[b.a]), sb = side(S.regions[b.b]); if (sa && sb && sa !== sb) fronts += `<path class="front" d="${b.d}"/>`; }); });
-  // army badges at the capitals of countries at war
+  // army badges at the capitals of nations at war
   S.alive().filter(c => S.warOf(c)).forEach(c => { const cap = S.capitalOf(c); if (!cap) return; const [cx, cy] = A(cap.i);
     const t = fmt(c.army) + 'k'; const w = 13 + t.length * 5;
-    marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5) scale(.62)">${'<path d="M-5.5 2.5C-5.5 -2.5 -3 -5 0 -5s5.5 2.5 5.5 7.5z" fill="#c9675c" stroke="#5e221c"/><path d="M-6.5 2.5h13v2h-13z" fill="#9c4a41"/>'}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}">${t}</text></g>`; });
+    marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5)">${glyph('army')}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}">${t}</text></g>`; });
   // capitals, names, ruler emblems, leader crown
   S.alive().forEach(c => {
     const rs = S.regionsOf(c); if (!rs.length) return;
     const cap = S.capitalOf(c);
-    icons += `<circle cx="${A(cap.i)[0]}" cy="${A(cap.i)[1]}" r="2.6" fill="${INK}" stroke="${DARK}" stroke-width="1.1"/>`;
+    icons += at(A(cap.i)[0], A(cap.i)[1], REG.capital.draw);
     let x = 0, y = 0, w = 0;
     rs.forEach(r => { const k = Math.sqrt(GEO.regions[r.i].area); x += A(r.i)[0] * k; y += A(r.i)[1] * k; w += k; });
     x /= w; y /= w;
@@ -1448,8 +1532,8 @@ function renderMap(){
     const ly = y - (n === 1 ? 9 : 13);
     labels += `<text class="lbl" x="${x.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs.toFixed(1)}">${name}</text>`;
     const half = name.length * fs * 0.27;
-    if (S.inCrisis(c)) labels += at(x - half - 9, ly - 1, G.coup);
-    if (S.leader === c.tag) labels += at(x, ly - fs * 0.62 - 5, G.crown);
+    if (S.inCrisis(c)) labels += at(x - half - 9, ly - 1, glyph('civilWar'));
+    if (S.leader === c.tag) labels += at(x, ly - fs * 0.62 - 5, glyph('leader'));
   });
   $('gFront').innerHTML = fronts; $('gOcc').innerHTML = occ; $('gSettle').innerHTML = settle; $('gGoals').innerHTML = goals; $('gIcons').innerHTML = icons; $('gMarks').innerHTML = marks; $('gLabels').innerHTML = labels;
 }
@@ -1459,18 +1543,18 @@ function globalChips(){
   const e = S.era, d = Math.round((e.def - 1) * 100);
   const battle = d > 0 ? `Defenders ${d}% stronger` : d < 0 ? `Attackers ${-d}% stronger` : 'Even battles';
   const chip = (k, name, fx) => `<div class="chip2"><span class="k">${k}</span>${name}<div class="fx">${fx}</div></div>`;
-  let h = chip('Warfare', e.name, `${ic('war')}${battle} · ${ic('fort')}Forts stop ${Math.round(e.fort * 100)}% of advances`);
+  let h = chip('Warfare', e.name, `${ic('war')}${battle} · ${ic('fort')}Fortresses stop ${Math.round(e.fort * 100)}% of advances`);
   if (S.railBoom > S.year) h += chip('Boom', 'Railway mania', `${ic('factory')}Factories 30% cheaper · until ${S.railBoom}`);
-  if (S.depression > S.t) h += chip('Crisis', 'The Panic', `${ic('income')}All income down 20% · ${dur(S.depression - S.t)} left`);
+  if (S.depression > S.t) h += chip('Crisis', 'The Panic', `${ic('goldYear')}Gold a year down 20% · ${dur(S.depression - S.t)} left`);
   return h;
 }
 function renderOverlays(){
   const lead = S.leader && S.C[S.leader];
   // the left strip already shows the leader when nothing is selected
   const leadShown = getComputedStyle($('side')).display !== 'none' && !S.player && !(S.C[selected] && S.C[selected].alive);
-  $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
+  $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">${ic('leader')}Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">${nm('goldYear').toLowerCase()}</span></div>` : '')
     + globalChips();
-  const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
+  const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">${ic('civilWar')}Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
   const wars = S.wars.map(w => {
     const s = w.score, left = s >= 0 ? 50 : 50 + s / 2, wid = Math.abs(s) / 2;
     const col = s >= 0 ? S.C[w.att[0]].color : S.C[w.def[0]].color;
@@ -1520,8 +1604,8 @@ function renderLog(){
   const allowed = new Set(Object.values(FILTERS).filter(f => f.on).flatMap(f => f.types));
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
-const statTile = (icon, label, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${label}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
-const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}"><title>${TRAITS[t].label}</title><circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>${EMB[t]}</svg>` : '';
+const statTile = (icon, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${nm(icon)}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
+const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}"><title>${TRAITS[t].label}</title>${EMB_BADGE}${EMB[t]}</svg>` : '';
 
 // ---------- the player's choices ----------
 // one line of character per heir, then what it does in the game
@@ -1546,7 +1630,7 @@ function showHeir(){
       <div class="tags"><span>${ic('patience')}plans ${yrs} years ahead</span><span>${ic('risk')}${r.risk > 0.6 ? 'gambler' : r.risk < 0.4 ? 'cautious' : 'measured'}</span></div>
     </button>`; };
   $('heirTitle').innerHTML = p.opening ? `Who rules ${c.name} in 1836?` : `${p.old} is dead`;
-  $('heirSub').textContent = p.opening ? 'Pick your sovereign. The ministers run everything else.' : 'Who takes the crown?';
+  $('heirSub').textContent = p.opening ? 'Pick your ruler. The ministers run everything else.' : 'Who rules next?';
   $('heirCards').innerHTML = p.options.map(card).join('');
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
@@ -1556,7 +1640,7 @@ function showStart(){
   const big = ['GBR', 'FRA', 'PRU', 'AUS', 'RUS', 'TUR'];
   const btn = c => `<button class="pick" data-play="${c.tag}"><span class="fl" style="background:${c.color}"></span>${c.name}</button>`;
   $('startBody').innerHTML = `<h3>Great powers</h3><div class="picks">${cs.filter(c => big.includes(c.tag)).map(btn).join('')}</div>
-    <h3>Smaller states <span class="muted" style="font:12px var(--body)">harder</span></h3><div class="picks">${cs.filter(c => !big.includes(c.tag)).map(btn).join('')}</div>`;
+    <h3>Smaller nations <span class="muted" style="font:12px var(--body)">harder</span></h3><div class="picks">${cs.filter(c => !big.includes(c.tag)).map(btn).join('')}</div>`;
   $('startModal').classList.add('on');
 }
 
@@ -1569,22 +1653,22 @@ function renderSide(){
   const W = 180, Hh = 38, mx = Math.max(...vals), mn = Math.min(...vals), span = Math.max(1, mx - mn);
   const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
   const war = S.warOf(c), u = S.unrestOf(c);
-  const row = (icon, k, v, color) => `<div class="row"><span>${ic(icon)}${k}</span><span${color ? ` style="color:${color}"` : ''}>${v}</span></div>`;
+  const row = (icon, v, color) => `<div class="row"><span>${ic(icon)}${nm(icon)}</span><span${color ? ` style="color:${color}"` : ''}>${v}</span></div>`;
   const d = ago != null ? Math.round(now - ago) : 0;
   $('side').innerHTML = `
     <div><div class="who">${S.player ? (c.alive ? 'You' : 'You · gone from the map') : c.tag === selected ? 'Selected' : 'Leading'}</div>
       <div class="nm"><span class="fl" style="background:${c.color}"></span>${nameSpan(c.tag)}</div>
       <div class="rl">${ic('ruler')}${c.ruler.name} ${emblem(c.ruler.trait)}</div></div>
-    <div class="inc"><b>${fmt(now)}</b><span>gold a year</span>
+    <div class="inc"><b>${fmt(now)}</b><span>${nm('goldYear').toLowerCase()}</span>
       <div class="sub"><span>#${rank} of ${ranked.length}</span><span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? '#e08070' : 'inherit'}">${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year</span></div>
       <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
     ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}
     <div class="rows">
-      ${row('gold', 'Treasury', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
-      ${row('army', 'Army', fmt(c.army) + 'k')}
-      ${row('factory', 'Factories', S.facOf(c))}
-      ${row('province', 'Provinces', S.regionsOf(c).length)}
-      ${u >= 30 ? row('unrest', 'Unrest', Math.round(u), u >= 65 ? '#e0453a' : '#e3933c') : ''}
+      ${row('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
+      ${row('army', fmt(c.army) + 'k')}
+      ${row('factory', S.facOf(c))}
+      ${row('province', S.regionsOf(c).length)}
+      ${u >= 30 ? row('unrest', Math.round(u), u >= 65 ? '#e0453a' : '#e3933c') : ''}
     </div>`;
 }
 
@@ -1593,11 +1677,11 @@ function renderPowers(){
   const lead = cs[0];
   const board = (icon, title, val, f) => { const top = cs.slice().sort((a, b) => val(b) - val(a)).slice(0, 3);
     return `<div class="board"><small>${ic(icon)}${title}</small>${top.map((c, i) => `<div><span>${i + 1}. ${nameSpan(c.tag)}</span><span>${f(val(c))}</span></div>`).join('')}</div>`; };
-  const boards = `<div class="leader">${ic('score', 'lg')}<div>Leading: ${nameSpan(lead.tag)}<br><span>${fmt(S.score(lead))} gold a year</span></div></div><div class="boards">
+  const boards = `<div class="leader">${ic('leader', 'lg')}<div>Leading: ${nameSpan(lead.tag)}<br><span>${fmt(S.score(lead))} gold a year</span></div></div><div class="boards">
     ${board('army', 'Largest army', c => c.army, v => fmt(v) + 'k')}
     ${board('factory', 'Most factories', c => S.facOf(c), v => v)}
     ${board('province', 'Most provinces', c => S.regionsOf(c).length, v => v)}
-    ${board('gold', 'Fullest treasury', c => c.treasury, v => fmt(v))}</div>`;
+    ${board('gold', 'Most gold', c => c.treasury, v => fmt(v))}</div>`;
   const uni = S.unifyProgress().map(u => {
     const pct = u.done ? 100 : Math.min(100, u.n / u.need * 100);
     const who = u.done ? `${nameSpan(u.done.tag)} proclaimed` : u.lead ? `${nameSpan(u.lead.tag)} holds ${u.n} of ${u.need} needed` : `<span class="muted">no ${u.cul} state to lead it</span>`;
@@ -1619,9 +1703,9 @@ function renderPowers(){
   const rows = cs.map((c, i) => `<tr class="click" data-tag="${c.tag}"><td>${i + 1}</td><td><span class="sw" style="background:${c.color};margin-right:6px"></span>${c.name}</td>
     <td><b>${fmt(S.score(c))}</b></td><td>${S.regionsOf(c).length}</td><td>${S.facOf(c)}</td><td>${fmt(c.army)}</td><td style="color:${S.unrestOf(c) >= 40 ? 'var(--revolt)' : 'inherit'}">${Math.round(S.unrestOf(c))}</td></tr>`).join('');
   $('powers').innerHTML = `${boards}
-    <h3>${ic('score')}Score: income per year</h3><div class="muted" style="font-size:12px">The race every nation is running. Today's top eight.</div>${svg}
-    <table><thead><tr><th>#</th><th>Nation</th><th title="Score: gold a year">${ic('score')}</th><th title="Provinces">${ic('province')}</th><th title="Factories">${ic('factory')}</th><th title="Army (thousands)">${ic('army')}</th><th title="Unrest">${ic('unrest')}</th></tr></thead><tbody>${rows}</tbody></table>
-    <h3 style="margin-top:14px">${ic('dream')}National dreams</h3>${uni}`;
+    <h3>${ic('goldYear')}${nm('goldYear')}</h3><div class="muted" style="font-size:12px">The race every nation is running. Today's top eight.</div>${svg}
+    <table><thead><tr><th>#</th><th>Nation</th><th>${ic('goldYear')}</th><th>${ic('province')}</th><th>${ic('factory')}</th><th>${ic('army')}</th><th>${ic('unrest')}</th></tr></thead><tbody>${rows}</tbody></table>
+    <h3 style="margin-top:14px">${ic('dream')}${nm('dream')}s</h3>${uni}`;
 }
 
 function renderNation(){
@@ -1641,36 +1725,36 @@ function renderNation(){
       <span>${r.fac ? `${ic('factory')}${r.fac}` : ''}${r.fort ? ic('fort') : ''}${r.build ? ic('build') : ''}</span><span class="un" style="color:${u >= 65 ? '#e0453a' : u >= 40 ? '#e3933c' : 'var(--muted)'}">${u >= 40 ? ic('unrest') : ''}${u}</span></div>`; };
   box.innerHTML = `
     <div class="nation-head"><div class="flag" style="background:${c.color}"></div><div><h2>${c.name}</h2>
-      <div class="muted" style="font-size:12px">${c.alive ? `${ic('score')}${fmt(S.score(c))} a year · rank ${S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1} of ${S.alive().length}` : 'Gone from the map'}${war ? ` · ${ic('war')}<em>${war.name}</em>` : ''}</div></div></div>
-    <div class="rulercard"><div class="rname">${ic('ruler', 'lg')}<div><small>Ruler since ${c.ruler.since}</small><b>${c.ruler.name}</b></div>${emblem(c.ruler.trait)}</div>
+      <div class="muted" style="font-size:12px">${c.alive ? `${ic('goldYear')}${fmt(S.score(c))} gold a year · rank ${S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1} of ${S.alive().length}` : 'Gone from the map'}${war ? ` · ${ic('war')}<em>${war.name}</em>` : ''}</div></div></div>
+    <div class="rulercard"><div class="rname">${ic('ruler', 'lg')}<div><small>${nm('ruler')} since ${c.ruler.since}</small><b>${c.ruler.name}</b></div>${emblem(c.ruler.trait)}</div>
       ${c.ruler.trait ? `<div class="trait"><b>${S.TRAITS[c.ruler.trait].label}.</b> ${S.TRAITS[c.ruler.trait].desc}.</div>` : ''}
       <div class="pers">
-        <span title="How many years ahead this ruler counts gains and costs">${ic('patience')}Patience</span><div class="barx"><i style="width:${Math.round(c.ruler.pat * 100)}%"></i></div><span class="muted">${H} yrs</span>
-        <span title="How much a possible loss scares this ruler">${ic('risk')}Risk</span><div class="barx"><i style="width:${Math.round(c.ruler.risk * 100)}%"></i></div><span class="muted">${c.ruler.risk > 0.6 ? 'gambler' : c.ruler.risk < 0.4 ? 'cautious' : 'measured'}</span>
-        <span title="Whether this ruler sees his odds of winning a war as better or worse than they are">${ic('judgment')}Judgment</span><div class="barx mid"><i style="left:${50 + Math.min(0, c.ruler.bias) * 50}%;width:${Math.abs(c.ruler.bias) * 50}%"></i></div><span class="muted">${c.ruler.bias > 0.15 ? 'overconfident' : c.ruler.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span>
-      </div>${S.inCrisis(c) ? `<div class="trait" style="color:#c9b3e6">${ic('revolt')}Civil war: the army fights at half strength.</div>` : ''}</div>
+        <span title="${REG.patience.desc}">${ic('patience')}${nm('patience')}</span><div class="barx"><i style="width:${Math.round(c.ruler.pat * 100)}%"></i></div><span class="muted">${H} yrs</span>
+        <span title="${REG.risk.desc}">${ic('risk')}${nm('risk')}</span><div class="barx"><i style="width:${Math.round(c.ruler.risk * 100)}%"></i></div><span class="muted">${c.ruler.risk > 0.6 ? 'gambler' : c.ruler.risk < 0.4 ? 'cautious' : 'measured'}</span>
+        <span title="${REG.judgment.desc}">${ic('judgment')}${nm('judgment')}</span><div class="barx mid"><i style="left:${50 + Math.min(0, c.ruler.bias) * 50}%;width:${Math.abs(c.ruler.bias) * 50}%"></i></div><span class="muted">${c.ruler.bias > 0.15 ? 'overconfident' : c.ruler.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span>
+      </div>${S.inCrisis(c) ? `<div class="trait" style="color:#c9b3e6">${ic('civilWar')}${nm('civilWar')}: the army fights at half strength.</div>` : ''}</div>
     <div class="stats">
-      ${statTile('gold', 'Treasury', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
-      ${statTile('army', 'Army', fmt(c.army) + 'k')}
-      ${statTile('factory', 'Factories', S.facOf(c))}
-      ${statTile('pop', 'People', S.popOf(c).toFixed(1) + 'm')}
-      ${statTile('unrest', 'Unrest', Math.round(S.unrestOf(c)), S.unrestOf(c) >= 40 ? 'var(--revolt)' : '')}
-      ${statTile('province', 'Provinces', rs.length)}
+      ${statTile('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
+      ${statTile('army', fmt(c.army) + 'k')}
+      ${statTile('factory', S.facOf(c))}
+      ${statTile('pop', S.popOf(c).toFixed(1) + 'm')}
+      ${statTile('unrest', Math.round(S.unrestOf(c)), S.unrestOf(c) >= 40 ? 'var(--revolt)' : '')}
+      ${statTile('province', rs.length)}
     </div>
     ${dreams.length ? `<div class="dreamline">${ic('dream')}Dreams of <b>${dreams.map(d => d.title).join('</b> and <b>')}</b></div>` : ''}
     <h3>${ic('gold')}Last season's budget</h3>
     <div class="ledger">
-      ${line('pop', 'Taxes', lg.tax)}${line('factory', 'Factory output', lg.fac)}${line('trade', war ? 'Sea trade (blockaded)' : 'Sea trade', lg.trade)}${line('upkeep', 'Army upkeep', -lg.upkeep)}
-      ${lg.waste ? line('waste', 'Court extravagance', -lg.waste) : ''}${sp.build ? line('build', 'Construction', -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', 'Reforms', -sp.reform) : ''}
+      ${line('taxes', nm('taxes'), lg.tax)}${line('factory', 'Factory output', lg.fac)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
+      ${lg.waste ? line('waste', nm('waste'), -lg.waste) : ''}${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
       ${line('gold', 'Net', net, 'net')}
-      <div class="lgnote">Taxes and output above are already reduced by ${ic('army')}${lg.lostWork.toFixed(1)} (soldiers aren't working) and ${ic('province')}${lg.lostAdmin.toFixed(1)} (running ${rs.length} provinces).</div>
+      <div class="lgnote">Taxes and output above are already reduced by ${ic('army')}${lg.lostWork.toFixed(1)} (men in the army aren't working) and ${ic('province')}${lg.lostAdmin.toFixed(1)} (running ${rs.length} provinces).</div>
     </div>
-    <h3>${ic('judgment')}Forecasts${c.thoughtsWhen ? ` <span class="muted" style="font:12px var(--body)">${c.thoughtsWhen}, gold over ${H} years</span>` : ''}</h3>
-    <div class="think">${(c.thoughts || []).length ? c.thoughts.map(t => `<div class="th ${t.chosen ? 'chosen' : ''}"><div class="row"><b>${ic(OPT_IC[t.type])}${t.label}${t.chosen ? '<span class="tag">DONE</span>' : ''}</b><span style="color:${t.ev > 0 ? 'var(--peace)' : t.ev < 0 ? '#e08070' : 'var(--muted)'}">${t.ev > 0 ? '+' : ''}${t.ev}</span></div><div class="why">${t.why}</div><div class="barx"><i style="width:${Math.abs(t.ev) / maxEv * 100}%;background:${t.ev >= 0 ? 'var(--peace)' : '#c0675b'}"></i></div></div>`).join('')
+    <h3>${ic('forecast')}${nm('forecast')}${c.thoughtsWhen ? ` <span class="muted" style="font:12px var(--body)">${c.thoughtsWhen}, gold over ${H} years</span>` : ''}</h3>
+    <div class="think">${(c.thoughts || []).length ? c.thoughts.map(t => `<div class="th ${t.chosen ? 'chosen' : ''}"><div class="row"><b>${ic(OPT_IC[t.type])}${t.label}${t.chosen ? '<span class="tag">Done</span>' : ''}</b><span style="color:${t.ev > 0 ? 'var(--peace)' : t.ev < 0 ? '#e08070' : 'var(--muted)'}">${t.ev > 0 ? '+' : ''}${t.ev}</span></div><div class="why">${t.why}</div><div class="barx"><i style="width:${Math.abs(t.ev) / maxEv * 100}%;background:${t.ev >= 0 ? 'var(--peace)' : '#c0675b'}"></i></div></div>`).join('')
       : '<div class="muted">No decisions yet. Advance a season.</div>'}</div>
     <h3>${ic('province')}Provinces</h3><div class="provs"><div class="prov head"><span>Province</span><span>Buildings</span><span>Unrest</span></div>${rs.map(prov).join('') || '<span class="muted">none</span>'}</div>
     <h3>${ic('ally')}Friends and enemies</h3>
-    <div style="font-size:12.5px;margin-bottom:8px">${ic('rival')}Biggest threat: ${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}<br>${ic('ally')}Allies: ${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}${c.guarantee && S.year < c.guarantee.until ? ` <span class="muted">(${S.C[c.guarantee.by].name} guarantees its independence)</span>` : ''}</div>
+    <div style="font-size:12.5px;margin-bottom:8px">${ic('rival')}${nm('rival')}: ${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}<br>${ic('ally')}Allies: ${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}${c.guarantee && S.year < c.guarantee.until ? ` <span class="muted">(${S.C[c.guarantee.by].name} guarantees its independence)</span>` : ''}</div>
     <div class="rels"><div class="muted">Friendliest</div><div class="muted">Most hostile</div>
       ${rel.slice(0, 4).map((x, i) => relRow(x) + (rel[rel.length - 1 - i] ? relRow(rel[rel.length - 1 - i]) : '<div></div>')).join('')}</div>`;
 }
@@ -1682,7 +1766,7 @@ function renderProvince(){
   const inc = S.regionIncome(r), yr = S.sumInc(inc) * 4;
   const u = Math.round(r.unrest);
   const claims = S.alive().filter(o => o !== c && S.claim(o, r) > 0).map(o => {
-    const why = r.core === o.tag ? 'lost province' : o.culture === r.culture || o.acc.has(r.culture) ? `same people (${r.culture})` : S.dreamsOf(o).some(d => d.pset.has(r.id)) ? `dream of ${S.dreamsOf(o).find(d => d.pset.has(r.id)).title}` : 'national programme';
+    const why = r.core === o.tag ? 'lost province' : o.culture === r.culture || o.acc.has(r.culture) ? `same people (${r.culture})` : S.dreamsOf(o).some(d => d.pset.has(r.id)) ? `dream of ${S.dreamsOf(o).find(d => d.pset.has(r.id)).title}` : `${ic('programme')}national programme`;
     return `<div>${nameSpan(o.tag)} <span class="muted">${why}</span></div>`; }).join('');
   const nb = r.nb.map(j => { const x = S.regions[j]; const sea = GEO.naval.some(([a, b]) => (a === r.i && b === j) || (b === r.i && a === j));
     return `<span class="nbx click" data-prov="${j}">${sea ? ic('sea') : ''}${x.name} <span class="sw" style="background:${S.C[x.owner].color}"></span></span>`; }).join('');
@@ -1693,21 +1777,21 @@ function renderProvince(){
     <div class="nation-head"><div class="flag" style="background:${c.color}"></div><div><h2>${r.name}</h2>
       <div class="muted" style="font-size:12px">Held by ${nameSpan(c.tag)}${r.coast ? ` · ${ic('trade')}seaport` : ''}</div></div></div>
     <div class="stats">
-      ${statTile('pop', 'People', r.pop.toFixed(1) + 'm')}
-      ${statTile('factory', 'Factories', r.fac + (r.build && r.build.type === 'factory' ? ' +1' : ''))}
-      ${statTile('fort', 'Fortress', r.fort ? 'yes' : r.build && r.build.type === 'fort' ? 'building' : 'no')}
-      ${statTile('gold', 'Gold a year', yr.toFixed(1), r.occ ? 'var(--war)' : '')}
-      ${statTile('unrest', 'Unrest', u, u >= 65 ? '#e0453a' : u >= 40 ? '#e3933c' : '')}
-      ${statTile('settle', 'Integrated', Math.round(r.integ * 100) + '%', r.integ < 1 ? 'var(--revolt)' : '')}
+      ${statTile('pop', r.pop.toFixed(1) + 'm')}
+      ${statTile('factory', r.fac + (r.build && r.build.type === 'factory' ? ' +1' : ''))}
+      ${statTile('fort', r.fort ? 'yes' : r.build && r.build.type === 'fort' ? 'building' : 'no')}
+      ${statTile('goldYear', yr.toFixed(1), r.occ ? 'var(--war)' : '')}
+      ${statTile('unrest', u, u >= 65 ? '#e0453a' : u >= 40 ? '#e3933c' : '')}
+      ${statTile('settle', Math.round(r.integ * 100) + '%', r.integ < 1 ? 'var(--revolt)' : '')}
     </div>
     <h3>${ic('gold')}Where its gold comes from</h3>
     <div class="ledger">
-      <div class="lg"><span>${ic('pop')}Taxes</span><span>${(inc.tax * 4).toFixed(1)}</span></div>
+      <div class="lg"><span>${ic('taxes')}${nm('taxes')}</span><span>${(inc.tax * 4).toFixed(1)}</span></div>
       <div class="lg"><span>${ic('factory')}Factory output</span><span>${(inc.fac * 4).toFixed(1)}</span></div>
-      <div class="lg"><span>${ic('trade')}Sea trade</span><span>${(inc.trade * 4).toFixed(1)}</span></div>
+      <div class="lg"><span>${ic('trade')}${nm('trade')}</span><span>${(inc.trade * 4).toFixed(1)}</span></div>
       <div class="lgnote">${r.integ < 1 ? `${ic('settle')}Newly conquered: pays ${Math.round((0.1 + 0.9 * r.integ) * 100)}% until fully integrated. ` : ''}${ic('culture')}${r.culture}-speaking${foreign ? `, a restless minority under ${c.name}` : `, content under ${c.name}`}.${r.occ ? ` ${ic('occupied')}<span style="color:var(--war)">Occupied by ${S.C[r.occ].name}: pays nothing until freed (normally ${(S.sumInc(S.regionIncome(r, c, { ignoreOcc: true })) * 4).toFixed(1)} a year).</span>` : ''}${r.build ? ` ${ic('build')}Building a ${r.build.type === 'factory' ? 'factory' : 'fortress'}, ${r.build.left} season${r.build.left > 1 ? 's' : ''} left.` : ''}</div>
     </div>
-    <h3>${ic('rival')}Who wants it</h3><div class="claims">${claims || '<span class="muted">No one has a claim.</span>'}</div>
+    <h3>${ic('claim')}${nm('claim')}</h3><div class="claims">${claims || '<span class="muted">No one has a claim.</span>'}</div>
     <h3>${ic('province')}Neighbours</h3><div class="nbs">${nb}</div>
     <h3>${ic('event')}What happened here</h3>${hist || '<div class="muted">Nothing yet.</div>'}`;
 }
@@ -1721,10 +1805,10 @@ function showEnd(){
     return `<tr><td>${i + 1}</td><td>${nameSpan(c.tag)}</td><td><b>${fmt(S.score(c))}</b></td><td>${S.regionsOf(c).length} <span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? 'var(--war)' : 'var(--muted)'}">(${d > 0 ? '+' : ''}${d})</span></td><td>${S.facOf(c)}</td><td>${fmt(c.army)}</td></tr>`; }).join('');
   const me = S.player && S.C[S.player], myRank = me ? cs.indexOf(me) + 1 : 0;
   $('endTitle').innerHTML = me ? (myRank === 1 ? `${me.name} wins` : `${cs[0].name} wins; you finish ${myRank ? '#' + myRank : 'gone from the map'}`) : `${cs[0].name} wins`;
-  $('endBody').innerHTML = `<p>The armistice of ${S.year}. ${nameSpan(cs[0].tag)} ends the age with the largest income in Europe, ${ic('score')}${fmt(S.score(cs[0]))} gold a year, under ${cs[0].ruler.name}.</p>
-    <table><thead><tr><th>#</th><th>Nation</th><th>${ic('score')}</th><th>${ic('province')}</th><th>${ic('factory')}</th><th>${ic('army')}</th></tr></thead><tbody>${rows}</tbody></table>
-    <p style="margin-top:12px">${ic('war')}${S.stats.wars} wars · ${ic('rival')}${S.stats.battles} battles · ${ic('revolt')}${S.stats.revolts} uprisings · ${ic('dead')}${Math.round(S.stats.dead || 0)} million dead in the fighting · ${ic('ruler')}${S.stats.rulers} changes of ruler</p>
-    <p>${S.DREAMS.filter(d => d.done).length ? `${ic('dream')}Dreams fulfilled: ${S.DREAMS.filter(d => d.done).map(d => d.title).join(', ')}. ` : ''}${born.length ? `Born in revolution: ${born.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${restored.length ? `Restored by revolution: ${restored.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${dead.length ? `Gone from the map: ${dead.map(c => c.name).join(', ')}.` : ''}</p>`;
+  $('endBody').innerHTML = `<p>The armistice of ${S.year}. ${nameSpan(cs[0].tag)} ends the age with the most gold a year in Europe, ${ic('goldYear')}${fmt(S.score(cs[0]))} gold a year, under ${cs[0].ruler.name}.</p>
+    <table><thead><tr><th>#</th><th>Nation</th><th>${ic('goldYear')}</th><th>${ic('province')}</th><th>${ic('factory')}</th><th>${ic('army')}</th></tr></thead><tbody>${rows}</tbody></table>
+    <p style="margin-top:12px">${ic('war')}${S.stats.wars} wars · ${ic('war')}${S.stats.battles} battles · ${ic('uprising')}${S.stats.revolts} uprisings · ${ic('dead')}${Math.round(S.stats.dead || 0)} million dead in the fighting · ${ic('ruler')}${S.stats.rulers} changes of ruler</p>
+    <p>${S.DREAMS.filter(d => d.done).length ? `${ic('dream')}Dreams fulfilled: ${S.DREAMS.filter(d => d.done).map(d => d.title).join(', ')}. ` : ''}${born.length ? `Born in an uprising: ${born.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${restored.length ? `Restored by an uprising: ${restored.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${dead.length ? `Gone from the map: ${dead.map(c => c.name).join(', ')}.` : ''}</p>`;
   $('endModal').classList.add('on');
 }
 
@@ -1744,6 +1828,7 @@ $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
 $('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
+$('toggle').innerHTML = ic('panel');
 $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); };
 document.querySelectorAll('.modal:not(.sticky)').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.p));
@@ -1766,13 +1851,13 @@ $('gCells').addEventListener('mousemove', e => {
   const inc = S.sumInc(S.regionIncome(r));
   const rank = S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1;
   const war = S.warOf(c);
-  tip.innerHTML = `<div class="hd"><span class="fl" style="background:${c.color}"></span><b>${c.name}</b><span class="muted" style="margin-left:auto">#${rank} · ${ic('gold')}${fmt(S.score(c))}/yr</span></div>
+  tip.innerHTML = `<div class="hd"><span class="fl" style="background:${c.color}"></span><b>${c.name}</b><span class="muted" style="margin-left:auto">#${rank} · ${ic('goldYear')}${fmt(S.score(c))} a year</span></div>
     <div class="tipr">${ic('ruler')}${c.ruler.name}${c.ruler.trait ? ` ${emblem(c.ruler.trait)}<span class="muted">${S.TRAITS[c.ruler.trait].label}</span>` : ''}</div>
-    ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? '<div style="color:#b9a3d6">Civil war</div>' : ''}
+    ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div style="color:#b9a3d6">${ic('civilWar')}${nm('civilWar')}</div>` : ''}
     <hr><b>${r.name}</b> <span class="muted">${r.culture}</span><br>
-    ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('gold')}${(inc * 4).toFixed(1)} gold/yr<br>
-    <span style="color:${r.unrest >= 65 ? '#e0453a' : r.unrest >= 40 ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}Unrest ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">integrated ${Math.round(r.integ * 100)}%</span>` : ''}
-    ${r.occ ? `<br><span style="color:var(--war)">Occupied by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
+    ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('goldYear')}${(inc * 4).toFixed(1)} gold a year<br>
+    <span style="color:${r.unrest >= 65 ? '#e0453a' : r.unrest >= 40 ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}${nm('unrest')} ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">${nm('settle')} ${Math.round(r.integ * 100)}%</span>` : ''}
+    ${r.occ ? `<br><span style="color:var(--war)">${ic('occupied')}${nm('occupied')} by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
   const box = $('mapwrap').getBoundingClientRect();
   let x = e.clientX - box.left + 14, y = e.clientY - box.top + 14;
   if (x > box.width - 265) x -= 280; if (y > box.height - 200) y -= 200;
@@ -1782,7 +1867,7 @@ $('gCells').addEventListener('mouseleave', () => tip.style.display = 'none');
 $('gCells').addEventListener('click', e => { const p = e.target.closest('.cell'); if (p) selectProvince(+p.dataset.i); });
 // click the sea (or anything that isn't a province) to clear the selection; Escape does the same
 function deselect(){ if (selected == null && selProv == null) return; selected = null; selProv = null; tip.style.display = 'none';
-  $('nation').innerHTML = '<div class="empty">Click a province or a country\'s name to see its ruler, budget and forecasts.</div>';
+  $('nation').innerHTML = NATION_EMPTY;
   const on = document.querySelector('.pane.on').id; if (on === 'nation' || on === 'province') showTab('chron'); else render(); }
 $('map').addEventListener('click', e => { if (!e.target.closest('.cell')) deselect(); });
 
@@ -1809,21 +1894,24 @@ document.addEventListener('mousemove', e => {
 document.addEventListener('mouseleave', () => qtip.style.display = 'none');
 document.addEventListener('mousedown', () => qtip.style.display = 'none');
 
-// legend in the help panel, drawn with the same glyphs as the map
+// the map key, drawn from the registry exactly as the map draws it
 (function legend(){
-  const sv = (inner, w = 22) => `<svg width="${w}" height="18" viewBox="${-w / 2} -9 ${w} 18">${inner}</svg>`;
+  const sv = inner => `<svg width="22" height="18" viewBox="-11 -9 22 18">${inner}</svg>`;
   const items = [
-    [sv(G.factory + `<text x="5" y="3" font-size="7.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">3</text>`), 'Factories (number = how many)'],
-    [sv(G.fort), 'Fortress'], [sv(G.build), 'Being built'],
-    [sv(G.flame('#e3933c')), 'Unrest (40+)'], [sv(G.flame('#e0453a')), 'Close to revolt (65+)'],
-    [sv(G.battle), 'Battle this season'], [sv(G.revolt), 'Uprising'], [sv(G.boom), 'Coal or railway boom'],
-    [sv(G.coup), 'Coup or civil war'], [sv(G.crown), 'Leading nation / dream fulfilled'], [sv(G.ruin), 'Factory or fortress destroyed'],
-    [sv(`<path d="M-9 0H9" stroke="#ff5a48" stroke-width="3" stroke-dasharray="4 2"/>`), 'Front line'],
-    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#settle)"/>`), 'Newly conquered: pays little until integrated'],
-    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="none" stroke="#d65a4d" stroke-width="1.6" stroke-dasharray="4 2"/>`), 'War goal'],
-    [sv(`<line x1="-9" y1="0" x2="9" y2="0" stroke="#9fb1c2" stroke-dasharray="2 3"/>`), 'Sea crossing'],
+    [sv(glyph('factory') + `<text x="5" y="3" font-size="7.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">3</text>`), `${nm('factory')} (number = how many)`],
+    [sv(glyph('fort')), nm('fort')], [sv(glyph('buildFactory')), nm('buildFactory')], [sv(glyph('buildFort')), nm('buildFort')],
+    [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} 40+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} 65+: close to an uprising`],
+    [sv(glyph('battle')), `${nm('battle')} this season`], [sv(glyph('uprising')), nm('uprising')], [sv(glyph('boom')), `${nm('boom')}: coal or railway`],
+    [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('dream')), `${nm('dream')} fulfilled`], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
+    [sv(REG.capital.draw), nm('capital')],
+    [sv(`<rect x="-10" y="-7" width="20" height="14" rx="3" fill="rgba(20,24,30,.92)" stroke="#c9a45c" stroke-width="1.2"/><g transform="translate(-4.5,0)">${glyph('army')}</g><text x="1" y="3" font-size="7" font-family="IBM Plex Mono" fill="${INK}">80</text>`), `${nm('army')} in thousands, at the capital in wartime`],
+    [sv(REG.front.draw), nm('front')],
+    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#settle)"/>`), `Not yet ${nm('settle').toLowerCase()}: pays little`],
+    [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#occ-key)"/>`), `${nm('occupied')}: striped in the occupier's colour`],
+    [sv(REG.goal.draw), nm('goal')],
+    [sv(REG.sea.draw), nm('sea')],
   ];
-  const names = Object.entries(TRAITS).map(([k, t]) => [sv(`<circle r="6.3" fill="#1a1f26" stroke="#c9a45c"/>` + EMB[k]), `${t.label}: ${t.desc.toLowerCase()}`]);
+  const names = Object.entries(TRAITS).map(([k, t]) => [sv(EMB_BADGE + EMB[k]), `${t.label}: ${t.desc.toLowerCase()}`]);
   $('legend').innerHTML = items.concat(names).map(([g, t]) => `<div>${g}<span>${t}</span></div>`).join('');
 })();
 

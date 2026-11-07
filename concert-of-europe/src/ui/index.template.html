@@ -31,6 +31,7 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .btn:hover{border-color:#46505c}
 .btn.primary{background:var(--brass);color:#1a1408;border-color:var(--brass);font-weight:600;min-width:74px;justify-content:center}
 .btn.icon{width:30px;padding:0;justify-content:center;font-weight:600}
+.btn.icon svg.ic{margin:0;width:16px;height:16px;cursor:pointer}
 .btn[disabled]{opacity:.45;cursor:default}
 .speed{display:flex;align-items:center;gap:4px}
 .pips{display:flex;align-items:flex-end;gap:2px;height:30px;padding:0 3px}
@@ -215,13 +216,14 @@ th svg.ic{margin:0}
   <span class="seed" id="seed"></span>
   <button class="btn" id="new">New world</button>
   <button class="btn icon" id="help" title="How it works" aria-label="How it works">?</button>
-  <button class="btn" id="toggle" aria-label="Show or hide the side panel">Panel</button>
+  <button class="btn icon" id="toggle" title="Show or hide the side panel"></button>
 </div>
 <div class="main">
   <aside class="side" id="side" aria-label="Nation at a glance"></aside>
   <div class="mapwrap" id="mapwrap">
     <svg id="map" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of Europe coloured by owner">
       <defs>
+        <pattern id="occ-key" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="8" fill="#c96b5f"/><rect x="4" width=".8" height="8" fill="rgba(0,0,0,.35)"/></pattern>
         <pattern id="settle" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1" fill="rgba(12,14,18,.55)"/></pattern>
         <pattern id="waves" width="14" height="8" patternUnits="userSpaceOnUse"><path d="M0 6 Q3.5 3 7 6 T14 6" fill="none" stroke="#24333f" stroke-width="1"/></pattern>
       </defs>
@@ -252,19 +254,19 @@ th svg.ic{margin:0}
   <div class="box">
     <button class="btn close" data-close>Close</button>
     <h2 id="helpTitle">How it works</h2>
-    <p><b>The goal.</b> Every nation wants the highest yearly income in Europe when the Great War ends. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first.</p>
-    <div class="formula">value = extra income × years planned − cost − expected losses</div>
-    <p>Factories pay for good but each one costs more and adds less. Soldiers deter neighbours whose own forecast says "invade", but they are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it settles, minus soldiers, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
-    <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme of provinces they want. Russia's factories run at half speed until the serfs are freed.</p>
+    <p><b>The goal.</b> Every nation wants the most gold a year in Europe when the Great War ends. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first.</p>
+    <div class="formula">value = extra gold a year × years planned − cost − expected losses</div>
+    <p>Factories pay for good but each one costs more and adds less. An army deters neighbours whose own forecast says "invade", but its men are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it is integrated, minus army losses, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
+    <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme: the provinces they were founded to win, which they treat as their own. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. If you rule a country, you choose its sovereign at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it and its nation; click the sea or press Escape to clear. If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
   </div>
 </div>
 <div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
   <div class="box">
     <h2 id="startTitle">Concert of Europe</h2>
-    <p>Europe, 1836 to 1918. Every nation chases the largest income when the Great War ends. You can watch, or rule one country: its ministers run the state, and you choose who sits on the throne.</p>
+    <p>Europe, 1836 to 1918. Every nation chases the most gold a year when the Great War ends. You can watch, or rule one nation: its ministers run the state, and you choose its ruler.</p>
     <p><button class="btn primary" id="watch">Watch Europe</button></p>
     <div id="startBody"></div>
   </div>

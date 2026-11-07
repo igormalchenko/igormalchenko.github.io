@@ -53,7 +53,8 @@ npm run map          # regenerate map/geo.json from the coastline data, then bui
 ```
 src/data.js            provinces, countries, cultures, breakaway nations, map anchors
 src/sim.js             the whole simulation: economy, AI, wars, unrest, rulers, events, dreams
-src/ui/icons.js        one coloured icon per concept, with hover names
+src/ui/registry.js     every concept once: name, description, icon, words to avoid
+tools/check.js         consistency check run by npm run build
 src/ui/map.js          map rendering: provinces, icons, markers, front lines, overlays
 src/ui/panel.js        side panel: Chronicle, Powers, Nation and Province tabs, end screen
 src/ui/main.js         controls, hover card, selection, map key
