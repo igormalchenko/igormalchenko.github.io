@@ -38,4 +38,5 @@ Read README.md first for what this is and why. This file holds the design rules 
 - Provinces: `tickProvinces` (construction, integration), `tickUnrest`, `revolts`.
 - Rulers and chaos: `newRuler`, `TRAITS`, `successions`, `EVENTS`.
 - Dreams: `DREAMS`, `dreamsOf`, `unification`.
+- Player: `createSim(seed, geo, { player })`; `heirCard` builds a choice of three heirs and parks it in `S.pending` (which halts `step()`), `chooseHeir(i)` resolves it. AI countries still get `newRuler` exactly as before, so watch-mode sweeps are unchanged.
 - End: the armistice block at the end of `step()`.

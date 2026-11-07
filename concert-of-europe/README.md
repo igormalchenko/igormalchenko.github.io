@@ -30,6 +30,8 @@ Around that loop: wars are fought province by province (occupation, front lines,
 
 Click any province or country to see its ruler, budget, forecasts and history.
 
+You can watch, or rule one country. A ruling player makes no day-to-day decisions: the country's ministers (the same AI as everyone else) run the state, and the player chooses its sovereign from three very different heirs in 1836 and at every succession. The game pauses for each choice.
+
 ## Running it
 
 The game is one self-contained HTML file. Open `index.html` in a browser (it is also what GitHub Pages serves); it needs no server and no install.

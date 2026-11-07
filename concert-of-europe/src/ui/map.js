@@ -55,19 +55,19 @@ function occPattern(tag){
   return `url(#${id})`;
 }
 
-function newWorld(seed){
+function newWorld(seed, player){
   stopAuto();
-  S = createSim(seed, GEO);
-  selected = null;
+  S = createSim(seed, GEO, { player });
+  selected = player || null;
   $('seed').textContent = 'World #' + seed;
   selProv = null;
   $('nation').innerHTML = '<div class="empty">Click a country\'s name anywhere, or a province on the map, to see its ruler, budget and forecasts.</div>';
   $('endModal').classList.remove('on');
-  render();
+  render(); checkPending();
 }
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
-  ['next', 'auto'].forEach(id => $(id).disabled = S.over);
+  ['next', 'auto'].forEach(id => $(id).disabled = S.over || !!S.pending);
   renderMap(); renderOverlays(); renderSide();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
     if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else if (on === 'nation') { if (selected) renderNation(); } else renderProvince(); }
@@ -147,7 +147,7 @@ function globalChips(){
 function renderOverlays(){
   const lead = S.leader && S.C[S.leader];
   // the left strip already shows the leader when nothing is selected
-  const leadShown = getComputedStyle($('side')).display !== 'none' && !(S.C[selected] && S.C[selected].alive);
+  const leadShown = getComputedStyle($('side')).display !== 'none' && !S.player && !(S.C[selected] && S.C[selected].alive);
   $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
     + globalChips();
   const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
@@ -171,13 +171,15 @@ function showTab(id){
 }
 function select(tag){ selected = tag; showTab('nation'); }
 function selectProvince(i){ selProv = i; selected = S.regions[i].owner; showTab('province'); }
-function step(n = 1){ for (let i = 0; i < n && !S.over; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } }
+function step(n = 1){ for (let i = 0; i < n && !S.over && !S.pending; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } checkPending(); }
+// a choice for the player stops the clock until it is made
+function checkPending(){ if (!S.pending) return; stopAuto(); if (S.pending.type === 'heir') showHeir(); }
 // speeds: seconds a season, slowest first; changing speed keeps the time already waited
 const SPEEDS = [3000, 1500, 700, 250, 40]; let speed = 1, lastTick = 0;
 function stopAuto(){ if (timer) clearTimeout(timer); timer = null; $('auto').textContent = 'Play'; }
 function schedule(){ clearTimeout(timer); timer = setTimeout(tick, Math.max(0, SPEEDS[speed] - (performance.now() - lastTick))); }
 function tick(){ lastTick = performance.now(); step(1); if (timer && !S.over) schedule(); }
-function startAuto(){ stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }
+function startAuto(){ if (S.pending || S.over) return; stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }
 function setSpeed(i){ speed = Math.max(0, Math.min(SPEEDS.length - 1, i));
   document.querySelectorAll('.pip').forEach((p, k) => { p.classList.toggle('on', k <= speed); p.setAttribute('aria-pressed', k === speed); });
   if (timer) schedule(); }

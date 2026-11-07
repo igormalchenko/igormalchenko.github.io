@@ -17,9 +17,46 @@ function renderLog(){
 const statTile = (icon, label, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${label}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
 const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}"><title>${TRAITS[t].label}</title><circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>${EMB[t]}</svg>` : '';
 
+// ---------- the player's choices ----------
+// one line of character per heir, then what it does in the game
+const HEIR_VIBE = {
+  warmonger: 'Wants to bathe in the blood of his enemies.',
+  builder: 'Talks of nothing but coal, iron and railways.',
+  paranoid: 'Sleeps with a pistol and trusts no neighbour.',
+  revanchist: 'Has sworn to take back every acre ever lost.',
+  spendthrift: 'Wants wine, opera and a new palace every spring.',
+  reformer: 'Reads the liberal papers, and agrees with them.',
+  prudent: 'Patient and careful; rules for his grandchildren.',
+  bold: 'A gambler at cards, in love and in war.',
+};
+const HEIR_FX = { prudent: 'Counts gains far ahead and shies away from risky wars', bold: 'Wants results fast and fears no loss' };
+function showHeir(){
+  const p = S.pending, c = S.C[p.tag];
+  const card = (r, i) => { const yrs = Math.round(8 + r.pat * 22);
+    return `<button class="heir" data-i="${i}">
+      <div class="hh">${r.trait ? emblem(r.trait) : ic('ruler', 'lg')}<b>${r.name}</b></div>
+      <p class="vibe">${HEIR_VIBE[r.slot]}</p>
+      <p class="fx">${r.trait ? S.TRAITS[r.trait].desc : HEIR_FX[r.slot]}.</p>
+      <div class="tags"><span>${ic('patience')}plans ${yrs} years ahead</span><span>${ic('risk')}${r.risk > 0.6 ? 'gambler' : r.risk < 0.4 ? 'cautious' : 'measured'}</span></div>
+    </button>`; };
+  $('heirTitle').innerHTML = p.opening ? `Who rules ${c.name} in 1836?` : `${p.old} is dead`;
+  $('heirSub').textContent = p.opening ? 'Pick your sovereign. The ministers run everything else.' : 'Who takes the crown?';
+  $('heirCards').innerHTML = p.options.map(card).join('');
+  $('heirModal').classList.add('on');
+  $('heirCards').querySelector('.heir').focus();
+}
+function showStart(){
+  const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
+  const big = ['GBR', 'FRA', 'PRU', 'AUS', 'RUS', 'TUR'];
+  const btn = c => `<button class="pick" data-play="${c.tag}"><span class="fl" style="background:${c.color}"></span>${c.name}</button>`;
+  $('startBody').innerHTML = `<h3>Great powers</h3><div class="picks">${cs.filter(c => big.includes(c.tag)).map(btn).join('')}</div>
+    <h3>Smaller states <span class="muted" style="font:12px var(--body)">harder</span></h3><div class="picks">${cs.filter(c => !big.includes(c.tag)).map(btn).join('')}</div>`;
+  $('startModal').classList.add('on');
+}
+
 // left strip: one nation at a glance (the selected one, else the leader)
 function renderSide(){
-  const c = S.C[selected] && S.C[selected].alive ? S.C[selected] : S.C[S.leader] || S.alive()[0]; if (!c) return;
+  const c = S.player ? S.C[S.player] : S.C[selected] && S.C[selected].alive ? S.C[selected] : S.C[S.leader] || S.alive()[0]; if (!c) return;
   const ranked = S.alive().sort((a, b) => S.score(b) - S.score(a)), rank = ranked.indexOf(c) + 1;
   const now = S.score(c), H = S.history, ago = H.length > 1 ? H[H.length - 2].p[c.tag] : null;
   const vals = H.map(h => h.p[c.tag]).filter(v => v != null).concat(now);
@@ -29,7 +66,7 @@ function renderSide(){
   const row = (icon, k, v, color) => `<div class="row"><span>${ic(icon)}${k}</span><span${color ? ` style="color:${color}"` : ''}>${v}</span></div>`;
   const d = ago != null ? Math.round(now - ago) : 0;
   $('side').innerHTML = `
-    <div><div class="who">${c.tag === selected ? 'Selected' : 'Leading'}</div>
+    <div><div class="who">${S.player ? (c.alive ? 'You' : 'You · gone from the map') : c.tag === selected ? 'Selected' : 'Leading'}</div>
       <div class="nm"><span class="fl" style="background:${c.color}"></span>${nameSpan(c.tag)}</div>
       <div class="rl">${ic('ruler')}${c.ruler.name} ${emblem(c.ruler.trait)}</div></div>
     <div class="inc"><b>${fmt(now)}</b><span>gold a year</span>
@@ -176,7 +213,8 @@ function showEnd(){
   const dead = Object.values(S.C).filter(c => !c.alive);
   const rows = cs.slice(0, 8).map((c, i) => { const d = S.regionsOf(c).length - c.startRegions;
     return `<tr><td>${i + 1}</td><td>${nameSpan(c.tag)}</td><td><b>${fmt(S.score(c))}</b></td><td>${S.regionsOf(c).length} <span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? 'var(--war)' : 'var(--muted)'}">(${d > 0 ? '+' : ''}${d})</span></td><td>${S.facOf(c)}</td><td>${fmt(c.army)}</td></tr>`; }).join('');
-  $('endTitle').innerHTML = `${cs[0].name} wins`;
+  const me = S.player && S.C[S.player], myRank = me ? cs.indexOf(me) + 1 : 0;
+  $('endTitle').innerHTML = me ? (myRank === 1 ? `${me.name} wins` : `${cs[0].name} wins; you finish ${myRank ? '#' + myRank : 'gone from the map'}`) : `${cs[0].name} wins`;
   $('endBody').innerHTML = `<p>The armistice of ${S.year}. ${nameSpan(cs[0].tag)} ends the age with the largest income in Europe, ${ic('score')}${fmt(S.score(cs[0]))} gold a year, under ${cs[0].ruler.name}.</p>
     <table><thead><tr><th>#</th><th>Nation</th><th>${ic('score')}</th><th>${ic('province')}</th><th>${ic('factory')}</th><th>${ic('army')}</th></tr></thead><tbody>${rows}</tbody></table>
     <p style="margin-top:12px">${ic('war')}${S.stats.wars} wars · ${ic('rival')}${S.stats.battles} battles · ${ic('revolt')}${S.stats.revolts} uprisings · ${ic('dead')}${Math.round(S.stats.dead || 0)} million dead in the fighting · ${ic('ruler')}${S.stats.rulers} changes of ruler</p>

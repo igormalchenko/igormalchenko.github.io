@@ -29,7 +29,7 @@ const TRAIT_KEYS = Object.keys(TRAITS);
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
 const COASTAL = new Set('sco nth lon ire par bri aqu lan pro cat and gal por hol bel jut sch sve got nor pom epr han ven cro pie tus rom nap sic spb don cau cri bes kie lit liv fin con ana bul mac alb the ath'.split(' '));
 
-function createSim(seed, geo){
+function createSim(seed, geo, opts = {}){
   const rng = mulberry32(seed);
   const rand = (a = 0, b = 1) => a + (b - a) * rng();
   const chance = p => rng() < p;
@@ -48,18 +48,49 @@ function createSim(seed, geo){
 
   // ---------- rulers ----------
   const regnal = {};
-  function newRuler(c, base){
+  // makeRuler draws a ruler without crowning him; `want` fixes the name, quirk or temperament (used for the player's heir cards)
+  function makeRuler(c, base, want){
     const pool = c.tag === 'PAP' ? ['Gregory', 'Pius', 'Leo'] : c.tag === 'SWI' ? null : (NAMES[c.culture] || NAMES.German);
-    if (!pool) { const b0 = c.lean || { pat: 0.5, risk: 0.5 }; c.ruler = { name: 'the Federal Council', pat: clamp(b0.pat + rand(-0.2, 0.2), 0.05, 0.95), risk: clamp(b0.risk + rand(-0.2, 0.2), 0.05, 0.95), trait: null, bias: rand(-0.15, 0.15), since: S.year, until: S.t + Math.floor(rand(56, 150)) }; return c.ruler; }
-    const nm = pick(pool);
-    const k = c.tag + nm; regnal[k] = (regnal[k] || 0) + 1;
+    if (!pool) { const b0 = c.lean || { pat: 0.5, risk: 0.5 }; return { name: 'the Federal Council', pat: clamp(b0.pat + rand(-0.2, 0.2), 0.05, 0.95), risk: clamp(b0.risk + rand(-0.2, 0.2), 0.05, 0.95), trait: null, bias: rand(-0.15, 0.15), since: S.year, until: S.t + Math.floor(rand(56, 150)) }; }
+    const nm = want && want.nm || pick(pool);
+    const k = c.tag + nm, num = (regnal[k] || 0) + 1;
     const b = base || c.lean || { pat: 0.5, risk: 0.5 };
-    const pat = clamp(b.pat + rand(-0.35, 0.35), 0.05, 0.95), risk = clamp(b.risk + rand(-0.35, 0.35), 0.05, 0.95);
-    const trait = chance(0.65) ? pick(TRAIT_KEYS) : null;
+    let pat = clamp(b.pat + rand(-0.35, 0.35), 0.05, 0.95), risk = clamp(b.risk + rand(-0.35, 0.35), 0.05, 0.95);
+    if (want && want.pat != null) pat = want.pat;
+    if (want && want.risk != null) risk = want.risk;
+    const trait = want && 'trait' in want ? want.trait : chance(0.65) ? pick(TRAIT_KEYS) : null;
     const epi = trait ? TRAITS[trait].epi : pat > 0.6 && risk < 0.45 ? 'the Prudent' : pat < 0.4 && risk > 0.55 ? 'the Bold' : pat > 0.6 && risk > 0.55 ? 'the Great' : pat < 0.4 && risk < 0.45 ? 'the Timid' : risk > 0.7 ? 'the Reckless' : pat > 0.75 ? 'the Builder' : '';
-    const name = `${nm} ${ROMAN[regnal[k]] || regnal[k]}${epi ? ' ' + epi : ''}`;
-    c.ruler = { name, pat, risk, trait, bias: (risk - 0.5) * 0.9 + rand(-0.3, 0.3), since: S.year, until: S.t + Math.floor(rand(56, 150)) };
-    return c.ruler;
+    const name = `${nm} ${ROMAN[num] || num}${epi ? ' ' + epi : ''}`;
+    return { name, k, pat, risk, trait, bias: (risk - 0.5) * 0.9 + rand(-0.3, 0.3), since: S.year, until: S.t + Math.floor(rand(56, 150)) };
+  }
+  function crown(c, r){ if (r.k) regnal[r.k] = (regnal[r.k] || 0) + 1; r.since = S.year; c.ruler = r; return r; }
+  function newRuler(c, base){ return crown(c, makeRuler(c, base)); }
+  // the player's heir card: three candidates with clearly different characters
+  function heirCard(c, opening){
+    const shuffle = a => a.map(x => [rng(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
+    const pool = c.tag === 'PAP' ? ['Gregory', 'Pius', 'Leo'] : (NAMES[c.culture] || NAMES.German);
+    const names = shuffle(pool.slice());
+    const slots = shuffle(TRAIT_KEYS.filter(t => t !== 'incompetent').concat(['prudent', 'bold'])).slice(0, 3);
+    const options = slots.map((sl, i) => {
+      const want = { nm: names[i % names.length] };
+      if (sl === 'prudent') Object.assign(want, { trait: null, pat: 0.85, risk: 0.2 });
+      else if (sl === 'bold') Object.assign(want, { trait: null, pat: 0.25, risk: 0.9 });
+      else want.trait = sl;
+      return Object.assign(makeRuler(c, null, want), { slot: sl });
+    });
+    return { type: 'heir', tag: c.tag, opening, options, old: c.ruler.name, crisis: !opening && chance(0.18) };
+  }
+  function chooseHeir(i){
+    const p = S.pending; if (!p || p.type !== 'heir') return;
+    const c = S.C[p.tag], nr = p.options[i]; S.pending = null;
+    crown(c, nr);
+    if (p.opening) { L('ruler', `${nr.name} takes the throne of ${N(c)}.`); return; }
+    S.stats.rulers++;
+    if (p.crisis) {
+      c.crisis = { until: S.t + Math.floor(rand(4, 9)), winner: nr.name };
+      regionsOf(c).forEach(r => r.unrest = Math.min(100, r.unrest + 25)); mark(capitalOf(c).i, 'crisis');
+      L('ruler', `<strong>Succession crisis in ${N(c)}.</strong> ${p.old} dies and rival claimants raise armies against ${nr.name}. The army is split and unrest soars.`);
+    } else L('ruler', `${p.old} of ${N(c)} dies. ${nr.name} succeeds.${nr.trait ? ` ${TRAITS[nr.trait].desc}.` : ''}`);
   }
   const horizon = c => Math.round(8 + c.ruler.pat * 22);
   // Gold only matters for what it can buy: a country with a full treasury treats spending as cheap.
@@ -659,6 +690,7 @@ function createSim(seed, geo){
   ];
   function successions(){
     alive().forEach(c => { if (S.t < c.ruler.until) return;
+      if (c.player && c.tag !== 'SWI') { if (!S.pending) S.pending = heirCard(c, false); return; }
       const old = c.ruler; const nr = newRuler(c); S.stats.rulers++;
       const shift = nr.pat - old.pat > 0.25 ? 'who plans further ahead' : old.pat - nr.pat > 0.25 ? 'who wants results quickly' : nr.risk - old.risk > 0.25 ? 'a gambler' : old.risk - nr.risk > 0.25 ? 'more cautious' : 'of similar mind';
       const tr = nr.trait ? ` ${TRAITS[nr.trait].desc}.` : '';
@@ -696,7 +728,7 @@ function createSim(seed, geo){
 
   // ---------- one season ----------
   function step(){
-    if (S.over) return;
+    if (S.over || S.pending) return;
     const cs = alive();
     cs.forEach(c => {
       let tax = 0, fac = 0, trade = 0; regionsOf(c).forEach(r => { const x = regionIncome(r, c); tax += x.tax; fac += x.fac; trade += x.trade; });
@@ -743,7 +775,12 @@ function createSim(seed, geo){
   alive().forEach(pickRival);
   S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
   L('event', '<strong>Europe, 1836.</strong> Twenty-five states, one ambition: to be the richest when the guns of the coming great war fall silent.');
-  Object.assign(S, { step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, capitalOf, landNeighbors });
+  // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
+  if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true;
+    // the placeholder ruler never reigned, so he doesn't count toward regnal numbers
+    // vary the draw by country, so two countries in the same world are not offered the same three characters
+    if (pc.tag !== 'SWI') { if (pc.ruler.k) regnal[pc.ruler.k]--; for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng(); S.pending = heirCard(pc, true); } }
+  Object.assign(S, { chooseHeir, step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, capitalOf, landNeighbors });
   return S;
 }
 

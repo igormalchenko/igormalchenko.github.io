@@ -188,6 +188,17 @@ th svg.ic{margin:0}
 .modal h2{font:400 26px var(--display);margin:0 0 8px;color:var(--brass);text-wrap:balance}
 .modal p,.modal li{max-width:65ch}
 .modal .close{float:right}
+.modal .box.wide{max-width:860px}
+.picks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.pick{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.pick:hover{border-color:var(--brass)}.pick .fl{width:14px;height:10px;border-radius:2px}
+.heirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:6px}
+.heir{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.heir:hover,.heir:focus-visible{border-color:var(--brass);background:#262d36}
+.heir .hh{display:flex;align-items:center;gap:8px}.heir .hh b{font:400 19px/1.15 var(--display)}.heir .hh svg.emb{width:26px;height:26px;flex:none}
+.heir .vibe{margin:2px 0 0;font-size:15px;font-style:italic}
+.heir .fx{margin:0;color:var(--muted);font-size:12.5px}
+.heir .tags{display:flex;flex-wrap:wrap;gap:10px;color:var(--muted);font-size:12px;margin-top:auto;padding-top:4px}
 .formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--mono);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
 .legend div{display:flex;align-items:center;gap:8px}
@@ -247,7 +258,22 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme of provinces they want. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. If you rule a country, you choose its sovereign at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
+  </div>
+</div>
+<div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+  <div class="box">
+    <h2 id="startTitle">Concert of Europe</h2>
+    <p>Europe, 1836 to 1918. Every nation chases the largest income when the Great War ends. You can watch, or rule one country: its ministers run the state, and you choose who sits on the throne.</p>
+    <p><button class="btn primary" id="watch">Watch Europe</button></p>
+    <div id="startBody"></div>
+  </div>
+</div>
+<div class="modal sticky" id="heirModal" role="dialog" aria-modal="true" aria-labelledby="heirTitle">
+  <div class="box wide">
+    <h2 id="heirTitle"></h2>
+    <p class="muted" id="heirSub"></p>
+    <div class="heirs" id="heirCards"></div>
   </div>
 </div>
 <div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">
@@ -483,7 +509,7 @@ const TRAIT_KEYS = Object.keys(TRAITS);
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
 const COASTAL = new Set('sco nth lon ire par bri aqu lan pro cat and gal por hol bel jut sch sve got nor pom epr han ven cro pie tus rom nap sic spb don cau cri bes kie lit liv fin con ana bul mac alb the ath'.split(' '));
 
-function createSim(seed, geo){
+function createSim(seed, geo, opts = {}){
   const rng = mulberry32(seed);
   const rand = (a = 0, b = 1) => a + (b - a) * rng();
   const chance = p => rng() < p;
@@ -502,18 +528,49 @@ function createSim(seed, geo){
 
   // ---------- rulers ----------
   const regnal = {};
-  function newRuler(c, base){
+  // makeRuler draws a ruler without crowning him; `want` fixes the name, quirk or temperament (used for the player's heir cards)
+  function makeRuler(c, base, want){
     const pool = c.tag === 'PAP' ? ['Gregory', 'Pius', 'Leo'] : c.tag === 'SWI' ? null : (NAMES[c.culture] || NAMES.German);
-    if (!pool) { const b0 = c.lean || { pat: 0.5, risk: 0.5 }; c.ruler = { name: 'the Federal Council', pat: clamp(b0.pat + rand(-0.2, 0.2), 0.05, 0.95), risk: clamp(b0.risk + rand(-0.2, 0.2), 0.05, 0.95), trait: null, bias: rand(-0.15, 0.15), since: S.year, until: S.t + Math.floor(rand(56, 150)) }; return c.ruler; }
-    const nm = pick(pool);
-    const k = c.tag + nm; regnal[k] = (regnal[k] || 0) + 1;
+    if (!pool) { const b0 = c.lean || { pat: 0.5, risk: 0.5 }; return { name: 'the Federal Council', pat: clamp(b0.pat + rand(-0.2, 0.2), 0.05, 0.95), risk: clamp(b0.risk + rand(-0.2, 0.2), 0.05, 0.95), trait: null, bias: rand(-0.15, 0.15), since: S.year, until: S.t + Math.floor(rand(56, 150)) }; }
+    const nm = want && want.nm || pick(pool);
+    const k = c.tag + nm, num = (regnal[k] || 0) + 1;
     const b = base || c.lean || { pat: 0.5, risk: 0.5 };
-    const pat = clamp(b.pat + rand(-0.35, 0.35), 0.05, 0.95), risk = clamp(b.risk + rand(-0.35, 0.35), 0.05, 0.95);
-    const trait = chance(0.65) ? pick(TRAIT_KEYS) : null;
+    let pat = clamp(b.pat + rand(-0.35, 0.35), 0.05, 0.95), risk = clamp(b.risk + rand(-0.35, 0.35), 0.05, 0.95);
+    if (want && want.pat != null) pat = want.pat;
+    if (want && want.risk != null) risk = want.risk;
+    const trait = want && 'trait' in want ? want.trait : chance(0.65) ? pick(TRAIT_KEYS) : null;
     const epi = trait ? TRAITS[trait].epi : pat > 0.6 && risk < 0.45 ? 'the Prudent' : pat < 0.4 && risk > 0.55 ? 'the Bold' : pat > 0.6 && risk > 0.55 ? 'the Great' : pat < 0.4 && risk < 0.45 ? 'the Timid' : risk > 0.7 ? 'the Reckless' : pat > 0.75 ? 'the Builder' : '';
-    const name = `${nm} ${ROMAN[regnal[k]] || regnal[k]}${epi ? ' ' + epi : ''}`;
-    c.ruler = { name, pat, risk, trait, bias: (risk - 0.5) * 0.9 + rand(-0.3, 0.3), since: S.year, until: S.t + Math.floor(rand(56, 150)) };
-    return c.ruler;
+    const name = `${nm} ${ROMAN[num] || num}${epi ? ' ' + epi : ''}`;
+    return { name, k, pat, risk, trait, bias: (risk - 0.5) * 0.9 + rand(-0.3, 0.3), since: S.year, until: S.t + Math.floor(rand(56, 150)) };
+  }
+  function crown(c, r){ if (r.k) regnal[r.k] = (regnal[r.k] || 0) + 1; r.since = S.year; c.ruler = r; return r; }
+  function newRuler(c, base){ return crown(c, makeRuler(c, base)); }
+  // the player's heir card: three candidates with clearly different characters
+  function heirCard(c, opening){
+    const shuffle = a => a.map(x => [rng(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
+    const pool = c.tag === 'PAP' ? ['Gregory', 'Pius', 'Leo'] : (NAMES[c.culture] || NAMES.German);
+    const names = shuffle(pool.slice());
+    const slots = shuffle(TRAIT_KEYS.filter(t => t !== 'incompetent').concat(['prudent', 'bold'])).slice(0, 3);
+    const options = slots.map((sl, i) => {
+      const want = { nm: names[i % names.length] };
+      if (sl === 'prudent') Object.assign(want, { trait: null, pat: 0.85, risk: 0.2 });
+      else if (sl === 'bold') Object.assign(want, { trait: null, pat: 0.25, risk: 0.9 });
+      else want.trait = sl;
+      return Object.assign(makeRuler(c, null, want), { slot: sl });
+    });
+    return { type: 'heir', tag: c.tag, opening, options, old: c.ruler.name, crisis: !opening && chance(0.18) };
+  }
+  function chooseHeir(i){
+    const p = S.pending; if (!p || p.type !== 'heir') return;
+    const c = S.C[p.tag], nr = p.options[i]; S.pending = null;
+    crown(c, nr);
+    if (p.opening) { L('ruler', `${nr.name} takes the throne of ${N(c)}.`); return; }
+    S.stats.rulers++;
+    if (p.crisis) {
+      c.crisis = { until: S.t + Math.floor(rand(4, 9)), winner: nr.name };
+      regionsOf(c).forEach(r => r.unrest = Math.min(100, r.unrest + 25)); mark(capitalOf(c).i, 'crisis');
+      L('ruler', `<strong>Succession crisis in ${N(c)}.</strong> ${p.old} dies and rival claimants raise armies against ${nr.name}. The army is split and unrest soars.`);
+    } else L('ruler', `${p.old} of ${N(c)} dies. ${nr.name} succeeds.${nr.trait ? ` ${TRAITS[nr.trait].desc}.` : ''}`);
   }
   const horizon = c => Math.round(8 + c.ruler.pat * 22);
   // Gold only matters for what it can buy: a country with a full treasury treats spending as cheap.
@@ -1113,6 +1170,7 @@ function createSim(seed, geo){
   ];
   function successions(){
     alive().forEach(c => { if (S.t < c.ruler.until) return;
+      if (c.player && c.tag !== 'SWI') { if (!S.pending) S.pending = heirCard(c, false); return; }
       const old = c.ruler; const nr = newRuler(c); S.stats.rulers++;
       const shift = nr.pat - old.pat > 0.25 ? 'who plans further ahead' : old.pat - nr.pat > 0.25 ? 'who wants results quickly' : nr.risk - old.risk > 0.25 ? 'a gambler' : old.risk - nr.risk > 0.25 ? 'more cautious' : 'of similar mind';
       const tr = nr.trait ? ` ${TRAITS[nr.trait].desc}.` : '';
@@ -1150,7 +1208,7 @@ function createSim(seed, geo){
 
   // ---------- one season ----------
   function step(){
-    if (S.over) return;
+    if (S.over || S.pending) return;
     const cs = alive();
     cs.forEach(c => {
       let tax = 0, fac = 0, trade = 0; regionsOf(c).forEach(r => { const x = regionIncome(r, c); tax += x.tax; fac += x.fac; trade += x.trade; });
@@ -1197,7 +1255,12 @@ function createSim(seed, geo){
   alive().forEach(pickRival);
   S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
   L('event', '<strong>Europe, 1836.</strong> Twenty-five states, one ambition: to be the richest when the guns of the coming great war fall silent.');
-  Object.assign(S, { step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, capitalOf, landNeighbors });
+  // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
+  if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true;
+    // the placeholder ruler never reigned, so he doesn't count toward regnal numbers
+    // vary the draw by country, so two countries in the same world are not offered the same three characters
+    if (pc.tag !== 'SWI') { if (pc.ruler.k) regnal[pc.ruler.k]--; for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng(); S.pending = heirCard(pc, true); } }
+  Object.assign(S, { chooseHeir, step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, capitalOf, landNeighbors });
   return S;
 }
 
@@ -1312,19 +1375,19 @@ function occPattern(tag){
   return `url(#${id})`;
 }
 
-function newWorld(seed){
+function newWorld(seed, player){
   stopAuto();
-  S = createSim(seed, GEO);
-  selected = null;
+  S = createSim(seed, GEO, { player });
+  selected = player || null;
   $('seed').textContent = 'World #' + seed;
   selProv = null;
   $('nation').innerHTML = '<div class="empty">Click a country\'s name anywhere, or a province on the map, to see its ruler, budget and forecasts.</div>';
   $('endModal').classList.remove('on');
-  render();
+  render(); checkPending();
 }
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
-  ['next', 'auto'].forEach(id => $(id).disabled = S.over);
+  ['next', 'auto'].forEach(id => $(id).disabled = S.over || !!S.pending);
   renderMap(); renderOverlays(); renderSide();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
     if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else if (on === 'nation') { if (selected) renderNation(); } else renderProvince(); }
@@ -1404,7 +1467,7 @@ function globalChips(){
 function renderOverlays(){
   const lead = S.leader && S.C[S.leader];
   // the left strip already shows the leader when nothing is selected
-  const leadShown = getComputedStyle($('side')).display !== 'none' && !(S.C[selected] && S.C[selected].alive);
+  const leadShown = getComputedStyle($('side')).display !== 'none' && !S.player && !(S.C[selected] && S.C[selected].alive);
   $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
     + globalChips();
   const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
@@ -1428,13 +1491,15 @@ function showTab(id){
 }
 function select(tag){ selected = tag; showTab('nation'); }
 function selectProvince(i){ selProv = i; selected = S.regions[i].owner; showTab('province'); }
-function step(n = 1){ for (let i = 0; i < n && !S.over; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } }
+function step(n = 1){ for (let i = 0; i < n && !S.over && !S.pending; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } checkPending(); }
+// a choice for the player stops the clock until it is made
+function checkPending(){ if (!S.pending) return; stopAuto(); if (S.pending.type === 'heir') showHeir(); }
 // speeds: seconds a season, slowest first; changing speed keeps the time already waited
 const SPEEDS = [3000, 1500, 700, 250, 40]; let speed = 1, lastTick = 0;
 function stopAuto(){ if (timer) clearTimeout(timer); timer = null; $('auto').textContent = 'Play'; }
 function schedule(){ clearTimeout(timer); timer = setTimeout(tick, Math.max(0, SPEEDS[speed] - (performance.now() - lastTick))); }
 function tick(){ lastTick = performance.now(); step(1); if (timer && !S.over) schedule(); }
-function startAuto(){ stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }
+function startAuto(){ if (S.pending || S.over) return; stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }
 function setSpeed(i){ speed = Math.max(0, Math.min(SPEEDS.length - 1, i));
   document.querySelectorAll('.pip').forEach((p, k) => { p.classList.toggle('on', k <= speed); p.setAttribute('aria-pressed', k === speed); });
   if (timer) schedule(); }
@@ -1458,9 +1523,46 @@ function renderLog(){
 const statTile = (icon, label, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${label}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
 const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}"><title>${TRAITS[t].label}</title><circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>${EMB[t]}</svg>` : '';
 
+// ---------- the player's choices ----------
+// one line of character per heir, then what it does in the game
+const HEIR_VIBE = {
+  warmonger: 'Wants to bathe in the blood of his enemies.',
+  builder: 'Talks of nothing but coal, iron and railways.',
+  paranoid: 'Sleeps with a pistol and trusts no neighbour.',
+  revanchist: 'Has sworn to take back every acre ever lost.',
+  spendthrift: 'Wants wine, opera and a new palace every spring.',
+  reformer: 'Reads the liberal papers, and agrees with them.',
+  prudent: 'Patient and careful; rules for his grandchildren.',
+  bold: 'A gambler at cards, in love and in war.',
+};
+const HEIR_FX = { prudent: 'Counts gains far ahead and shies away from risky wars', bold: 'Wants results fast and fears no loss' };
+function showHeir(){
+  const p = S.pending, c = S.C[p.tag];
+  const card = (r, i) => { const yrs = Math.round(8 + r.pat * 22);
+    return `<button class="heir" data-i="${i}">
+      <div class="hh">${r.trait ? emblem(r.trait) : ic('ruler', 'lg')}<b>${r.name}</b></div>
+      <p class="vibe">${HEIR_VIBE[r.slot]}</p>
+      <p class="fx">${r.trait ? S.TRAITS[r.trait].desc : HEIR_FX[r.slot]}.</p>
+      <div class="tags"><span>${ic('patience')}plans ${yrs} years ahead</span><span>${ic('risk')}${r.risk > 0.6 ? 'gambler' : r.risk < 0.4 ? 'cautious' : 'measured'}</span></div>
+    </button>`; };
+  $('heirTitle').innerHTML = p.opening ? `Who rules ${c.name} in 1836?` : `${p.old} is dead`;
+  $('heirSub').textContent = p.opening ? 'Pick your sovereign. The ministers run everything else.' : 'Who takes the crown?';
+  $('heirCards').innerHTML = p.options.map(card).join('');
+  $('heirModal').classList.add('on');
+  $('heirCards').querySelector('.heir').focus();
+}
+function showStart(){
+  const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
+  const big = ['GBR', 'FRA', 'PRU', 'AUS', 'RUS', 'TUR'];
+  const btn = c => `<button class="pick" data-play="${c.tag}"><span class="fl" style="background:${c.color}"></span>${c.name}</button>`;
+  $('startBody').innerHTML = `<h3>Great powers</h3><div class="picks">${cs.filter(c => big.includes(c.tag)).map(btn).join('')}</div>
+    <h3>Smaller states <span class="muted" style="font:12px var(--body)">harder</span></h3><div class="picks">${cs.filter(c => !big.includes(c.tag)).map(btn).join('')}</div>`;
+  $('startModal').classList.add('on');
+}
+
 // left strip: one nation at a glance (the selected one, else the leader)
 function renderSide(){
-  const c = S.C[selected] && S.C[selected].alive ? S.C[selected] : S.C[S.leader] || S.alive()[0]; if (!c) return;
+  const c = S.player ? S.C[S.player] : S.C[selected] && S.C[selected].alive ? S.C[selected] : S.C[S.leader] || S.alive()[0]; if (!c) return;
   const ranked = S.alive().sort((a, b) => S.score(b) - S.score(a)), rank = ranked.indexOf(c) + 1;
   const now = S.score(c), H = S.history, ago = H.length > 1 ? H[H.length - 2].p[c.tag] : null;
   const vals = H.map(h => h.p[c.tag]).filter(v => v != null).concat(now);
@@ -1470,7 +1572,7 @@ function renderSide(){
   const row = (icon, k, v, color) => `<div class="row"><span>${ic(icon)}${k}</span><span${color ? ` style="color:${color}"` : ''}>${v}</span></div>`;
   const d = ago != null ? Math.round(now - ago) : 0;
   $('side').innerHTML = `
-    <div><div class="who">${c.tag === selected ? 'Selected' : 'Leading'}</div>
+    <div><div class="who">${S.player ? (c.alive ? 'You' : 'You · gone from the map') : c.tag === selected ? 'Selected' : 'Leading'}</div>
       <div class="nm"><span class="fl" style="background:${c.color}"></span>${nameSpan(c.tag)}</div>
       <div class="rl">${ic('ruler')}${c.ruler.name} ${emblem(c.ruler.trait)}</div></div>
     <div class="inc"><b>${fmt(now)}</b><span>gold a year</span>
@@ -1617,7 +1719,8 @@ function showEnd(){
   const dead = Object.values(S.C).filter(c => !c.alive);
   const rows = cs.slice(0, 8).map((c, i) => { const d = S.regionsOf(c).length - c.startRegions;
     return `<tr><td>${i + 1}</td><td>${nameSpan(c.tag)}</td><td><b>${fmt(S.score(c))}</b></td><td>${S.regionsOf(c).length} <span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? 'var(--war)' : 'var(--muted)'}">(${d > 0 ? '+' : ''}${d})</span></td><td>${S.facOf(c)}</td><td>${fmt(c.army)}</td></tr>`; }).join('');
-  $('endTitle').innerHTML = `${cs[0].name} wins`;
+  const me = S.player && S.C[S.player], myRank = me ? cs.indexOf(me) + 1 : 0;
+  $('endTitle').innerHTML = me ? (myRank === 1 ? `${me.name} wins` : `${cs[0].name} wins; you finish ${myRank ? '#' + myRank : 'gone from the map'}`) : `${cs[0].name} wins`;
   $('endBody').innerHTML = `<p>The armistice of ${S.year}. ${nameSpan(cs[0].tag)} ends the age with the largest income in Europe, ${ic('score')}${fmt(S.score(cs[0]))} gold a year, under ${cs[0].ruler.name}.</p>
     <table><thead><tr><th>#</th><th>Nation</th><th>${ic('score')}</th><th>${ic('province')}</th><th>${ic('factory')}</th><th>${ic('army')}</th></tr></thead><tbody>${rows}</tbody></table>
     <p style="margin-top:12px">${ic('war')}${S.stats.wars} wars · ${ic('rival')}${S.stats.battles} battles · ${ic('revolt')}${S.stats.revolts} uprisings · ${ic('dead')}${Math.round(S.stats.dead || 0)} million dead in the fighting · ${ic('ruler')}${S.stats.rulers} changes of ruler</p>
@@ -1634,21 +1737,26 @@ $('pips').onclick = e => { const p = e.target.closest('.pip'); if (p) setSpeed(+
 $('slower').onclick = () => setSpeed(speed - 1);
 $('faster').onclick = () => setSpeed(speed + 1);
 setSpeed(speed);
-$('new').onclick = () => newWorld(Math.floor(Math.random() * 99999));
-$('again').onclick = () => newWorld(Math.floor(Math.random() * 99999));
+const freshWorld = () => { newWorld(Math.floor(Math.random() * 99999)); showStart(); };
+$('new').onclick = freshWorld;
+$('again').onclick = freshWorld;
+$('watch').onclick = () => $('startModal').classList.remove('on');
+$('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
+$('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
 $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); };
-document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
+document.querySelectorAll('.modal:not(.sticky)').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.p));
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FILTERS[b.dataset.f].on ^= 1; renderChips(); renderLog(); });
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
+  if (S.pending) return;
   if (e.key === 'n' || e.key === ' ') { e.preventDefault(); if (!S.over) step(1); }
   if (e.key === 'p') { timer ? stopAuto() : startAuto(); }
   if (e.key === '+' || e.key === '=') setSpeed(speed + 1);
   if (e.key === '-' || e.key === '_') setSpeed(speed - 1);
-  if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }
+  if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on:not(.sticky)')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }
 });
 // hover: province plus a card for its country
 const tip = $('tip');
@@ -1721,6 +1829,7 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
 
 renderChips();
 newWorld(1848);
+showStart();
 
 </script>
 </body>

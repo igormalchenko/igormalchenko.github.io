@@ -7,21 +7,26 @@ $('pips').onclick = e => { const p = e.target.closest('.pip'); if (p) setSpeed(+
 $('slower').onclick = () => setSpeed(speed - 1);
 $('faster').onclick = () => setSpeed(speed + 1);
 setSpeed(speed);
-$('new').onclick = () => newWorld(Math.floor(Math.random() * 99999));
-$('again').onclick = () => newWorld(Math.floor(Math.random() * 99999));
+const freshWorld = () => { newWorld(Math.floor(Math.random() * 99999)); showStart(); };
+$('new').onclick = freshWorld;
+$('again').onclick = freshWorld;
+$('watch').onclick = () => $('startModal').classList.remove('on');
+$('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
+$('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
 $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); };
-document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
+document.querySelectorAll('.modal:not(.sticky)').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.p));
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FILTERS[b.dataset.f].on ^= 1; renderChips(); renderLog(); });
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
+  if (S.pending) return;
   if (e.key === 'n' || e.key === ' ') { e.preventDefault(); if (!S.over) step(1); }
   if (e.key === 'p') { timer ? stopAuto() : startAuto(); }
   if (e.key === '+' || e.key === '=') setSpeed(speed + 1);
   if (e.key === '-' || e.key === '_') setSpeed(speed - 1);
-  if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }
+  if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on:not(.sticky)')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }
 });
 // hover: province plus a card for its country
 const tip = $('tip');
@@ -94,3 +99,4 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
 
 renderChips();
 newWorld(1848);
+showStart();
