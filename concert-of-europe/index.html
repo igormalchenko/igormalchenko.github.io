@@ -1046,13 +1046,19 @@ function createSim(seed, geo, opts = {}){
       const kin = r.nb.map(j => S.C[S.regions[j].owner]).find(k => k.alive && k.culture === r.culture && k !== o && !warOf(k));
       const spread = () => regionsOf(o).forEach(x => { if (!isAccepted(o, x.culture) && x.core !== o.tag) x.unrest = Math.min(100, x.unrest + 15); });
       if (kin) { L('revolt', `${Rn(r)} rises against ${N(o)} and declares for ${N(kin)}.`); transfer(r, kin, o, 'treaty'); r.core = kin.tag; r.unrest = 20; spread(); return; }
-      const t = TEMPLATES[r.culture]; if (!t) { r.unrest = 40; return; }
-      const tag = t.tag; if (S.C[tag] && S.C[tag].alive) { r.unrest = 40; return; }
-      const restored = !!S.C[tag];
-      const nc = makeCountry(tag, { name: t.name, adj: t.adj, pre: t.pre, color: t.color, culture: r.culture, p: [0.55, 0.4, 0.5], army: r.pop * 6, programme: t.programme });
-      nc.treasury = 60; nc.born = S.year; nc.restored = restored;
+      // who the rebels fight for: the province's own fallen state if it was of their people, else the template nation
+      const home = COUNTRIES[r.core] && COUNTRIES[r.core].culture === r.culture && !S.C[r.core].alive ? r.core : null;
+      const t = home ? null : TEMPLATES[r.culture];
+      const tag = home || (t && t.tag);
+      if (!tag || (S.C[tag] && S.C[tag].alive)) {
+        r.unrest = 40; o.army *= 0.93; if (o.treasury > 0) o.treasury *= 0.85;
+        L('revolt', `Rebels seize ${Rn(r)} but find no allies; ${N(o)} retakes it at a heavy cost in gold and men.`); return; }
+      const restored = !!S.C[tag], wasPlayer = restored && S.C[tag].player;
+      const nc = home ? makeCountry(tag, Object.assign({}, COUNTRIES[tag], { army: r.pop * 6 }))
+        : makeCountry(tag, { name: t.name, adj: t.adj, pre: t.pre, color: t.color, culture: r.culture, p: [0.55, 0.4, 0.5], army: r.pop * 6, programme: t.programme });
+      nc.treasury = 60; nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
       dreamsOf(nc).forEach(d => d.provinces.forEach(id => nc.programme.add(id))); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
-      const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ));
+      const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ && (!home || x.core === home)));
       invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = 15; x.build = null; x.flash = 3; x.integ = 1; });
       killIfEmpty(o);
       tags.forEach(u => u !== tag && setRel(tag, u, u === o.tag ? -60 : rand(-5, 20)));
