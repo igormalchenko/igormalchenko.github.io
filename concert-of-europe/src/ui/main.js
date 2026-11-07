@@ -107,4 +107,4 @@ if (scene.seed || scene.to) {
   while (!S.over && S.year < to) { if (S.pending) S.chooseHeir(0); S.step(); }
   if (S.pending) S.chooseHeir(0);
   $('heirModal').classList.remove('on'); render();
-} else { newWorld(1848); showStart(); }
+} else { newWorld(1 + Math.floor(Math.random() * 99999)); showStart(); }
