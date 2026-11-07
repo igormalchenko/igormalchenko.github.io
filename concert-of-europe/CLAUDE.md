@@ -14,6 +14,27 @@ Read README.md first for what this is and why. This file holds the design rules 
 8. **Unrest depends on nationality only.** A province is restless when its people are not an accepted culture of its owner. (A past bug also exempted original owners and silently removed most revolts for three versions.)
 9. **The game ends in autumn 1918.** The Great War starts summer 1914; any war still running at the armistice is settled on the current lines.
 
+## Player rules
+
+The player rules one country through rare, one-off choices. The ministers (the same AI as everyone else) run the state.
+
+- **One mandatory choice from three, every so often.** The game pauses until the player picks. Aim for a card every few dozen seasons, not every turn; heirs alone give only 3–5 a game, so more card types are planned.
+- **No managing between turns.** No policies, sliders or standing orders, and a choice can never be revisited or changed later.
+- **Distinct and readable at once.** Three options should feel like three different characters (the lecher, the drunk, the butcher), never shades of one policy ("reactionary" vs "liberal-reactionary cabinet"). One line of character plus one line of effect.
+- **No suggested pick.** Don't mark what the ministers would choose.
+- **Chill, not arcade.** Few cards per game, no stacking, levelling or evolutions, modest effects. A card should shape the nation's character (what its ministers value) more than raw power.
+- **AI countries choose too**, by their own gold forecast, so the rules stay the same for everyone (rule 3). Watch-mode results may change once AI countries pick cards; until then they must not.
+- **Every card visibly changes something** on the map or in the budget (rule 4), and the chronicle should echo it later ("the Butcher's war").
+
+Card ideas that fit (not built yet):
+
+- **The heir's marriage.** Three brides: a princess from a great power (lasting goodwill with her court, which may drag you into its wars), a rich banker's daughter (a large dowry now), a local noblewoman (calms unrest at home).
+- **A general rises.** Three commanders for the rest of his life: the Butcher (wins battles, loses many men), the Fabian (rarely loses ground, rarely gains it), the Cavalryman (fast advances, collapses when it goes wrong). Visible on the fronts.
+- **The chief minister.** Picked when a new era begins: the Iron Chancellor (values conquest), the Banker (values factories and savings), the Diplomat (values alliances and treaties).
+- **A favourite at court.** The spymaster (your ruler sees war odds truly), the mystic (wild swings: great years and terrible ones), the architect (fortresses and factories build faster).
+- **A famous exile asks for asylum.** A revolutionary, a deposed king, an inventor: each angers someone and brings something different (unrest abroad, a claim, a factory).
+- **What the age is remembered for.** Once in a ruler's reign: the Great Railway, the Fortress Line, the Grand Exhibition. A single landmark that shows on the map.
+
 ## Interface rules
 
 - Every concept has one icon in `src/ui/icons.js`, used everywhere, with a hover name in `IC_NAME`. Add new concepts there, never ad hoc.
