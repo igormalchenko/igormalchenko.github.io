@@ -134,10 +134,20 @@ function renderMap(){
   $('gFront').innerHTML = fronts; $('gOcc').innerHTML = occ; $('gSettle').innerHTML = settle; $('gGoals').innerHTML = goals; $('gIcons').innerHTML = icons; $('gMarks').innerHTML = marks; $('gLabels').innerHTML = labels;
 }
 
+// Europe-wide conditions, each with what it does in one short line
+function globalChips(){
+  const e = S.era, d = Math.round((e.def - 1) * 100);
+  const battle = d > 0 ? `Defenders ${d}% stronger` : d < 0 ? `Attackers ${-d}% stronger` : 'Even battles';
+  const chip = (k, name, fx) => `<div class="chip2"><span class="k">${k}</span>${name}<div class="fx">${fx}</div></div>`;
+  let h = chip('Warfare', e.name, `${ic('war')}${battle} · ${ic('fort')}Forts stop ${Math.round(e.fort * 100)}% of advances`);
+  if (S.railBoom > S.year) h += chip('Boom', 'Railway mania', `${ic('factory')}Factories 30% cheaper · until ${S.railBoom}`);
+  if (S.depression > S.t) h += chip('Crisis', 'The Panic', `${ic('income')}All income down 20% · ${dur(S.depression - S.t)} left`);
+  return h;
+}
 function renderOverlays(){
   const lead = S.leader && S.C[S.leader];
   $('tl').innerHTML = (lead ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
-    + `<div class="chip2"><span class="k">Warfare</span>${S.era.name}</div>`;
+    + globalChips();
   const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
   const wars = S.wars.map(w => {
     const s = w.score, left = s >= 0 ? 50 : 50 + s / 2, wid = Math.abs(s) / 2;

@@ -16,10 +16,9 @@ const bboxLL = [[[-12, 33.5], [44, 33.5], [44, 63.5], [-12, 63.5], [-12, 33.5]]]
 let landLL = pc.intersection(...(land.features || [land]).map(f => f.geometry.coordinates), bboxLL);
 // project and thin points
 function thin(ring, tol){ const out = [ring[0]]; for (let i = 1; i < ring.length; i++) { const p = ring[i], q = out[out.length - 1]; if (Math.hypot(p[0] - q[0], p[1] - q[1]) >= tol || i === ring.length - 1) out.push(p); } return out; }
-// Africa is a separate landmass inside the frame; the Levant is cut off by a box.
+// Africa is a separate landmass inside the frame. The Levant and Mesopotamia stay in and join Anatolia (see below).
 landLL = landLL.filter(poly => { const r = poly[0]; const cy = r.reduce((s, p) => s + p[1], 0) / r.length, cx = r.reduce((s, p) => s + p[0], 0) / r.length; return !(cy < 37.6 && cx < 12 && r.length > 50) && !(cy < 37.5 && cx < 11.5 && cx > -12 && cy < 37); });
 const fullLandLL = pc.intersection(...(land.features || [land]).map(f => f.geometry.coordinates), bboxLL);
-landLL = pc.difference(landLL, [[[35.6, 33], [45, 33], [45, 36.9], [35.6, 36.9], [35.6, 33]]]);
 let landXY = landLL.map(poly => poly.map(ring => thin(ring.map(([lo, la]) => proj(lo, la)), 1.1))).filter(poly => poly[0].length >= 4);
 // drop specks
 const ringArea = r => { let a = 0; for (let i = 0, n = r.length; i < n; i++) { const [x1, y1] = r[i], [x2, y2] = r[(i + 1) % n]; a += x1 * y2 - x2 * y1; } return Math.abs(a / 2); };
@@ -96,6 +95,17 @@ for (let i = 0; i < n; i++) {
   }
   // label point: area-weighted centroid of pieces
   regions.push({ d: pathOf(mp), ax: r1(anchor[0]), ay: r1(anchor[1]), area: Math.round(area), mp });
+}
+
+// ---- the Ottoman south: land south of the Caucasus goes to Anatolia, along a ragged line rather than a straight cut ----
+{
+  const ia = REGIONS.findIndex(r => r[0] === 'ana'), ic = REGIONS.findIndex(r => r[0] === 'cau');
+  const yCut = proj(0, 36.9)[1];
+  const south = [[[930, yCut], ...noisyEdge([930, yCut], [MAP_W + 5, yCut + 3]).slice(1), [MAP_W + 5, MAP_H + 5], [930, MAP_H + 5], [930, yCut]]];
+  const piece = pc.intersection(regions[ic].mp, south).filter(poly => ringArea(poly[0]) > 3);
+  regions[ic].mp = pc.difference(regions[ic].mp, south).filter(poly => ringArea(poly[0]) > 3);
+  regions[ia].mp = pc.union(regions[ia].mp, ...piece);
+  [ia, ic].forEach(i => { const r = regions[i]; r.d = pathOf(r.mp); r.area = Math.round(r.mp.reduce((s, poly) => s + ringArea(poly[0]), 0)); });
 }
 
 // ---- clean-up: detached pieces go to the province they touch; islands stay whole ----
