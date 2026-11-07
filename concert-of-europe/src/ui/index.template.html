@@ -32,6 +32,11 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .btn.primary{background:var(--brass);color:#1a1408;border-color:var(--brass);font-weight:600;min-width:74px;justify-content:center}
 .btn.icon{width:30px;padding:0;justify-content:center;font-weight:600}
 .btn[disabled]{opacity:.45;cursor:default}
+.speed{display:flex;align-items:center;gap:4px}
+.pips{display:flex;align-items:flex-end;gap:2px;height:30px;padding:0 3px}
+.pip{width:12px;height:30px;padding:0 2px;background:none;border:0;cursor:pointer;display:flex;align-items:flex-end}
+.pip i{display:block;width:100%;border-radius:2px;background:var(--line)}
+.pip.on i{background:var(--brass)}.pip:hover i{outline:1px solid #46505c}
 .seed{color:var(--muted);font:11.5px var(--mono)}
 @media (max-width:760px){.bar h1,.seed{display:none}}
 
@@ -181,7 +186,7 @@ th svg.ic{margin:0}
   <div class="date"><span id="season">Winter</span><b id="year">1836</b></div>
   <button class="btn primary" id="auto" title="Play or pause (P)">Play</button>
   <button class="btn" id="next" title="Next season (N or Space)">Next</button>
-  <select class="btn" id="speed" aria-label="Speed"><option value="700">Slow</option><option value="350" selected>Normal</option><option value="120">Fast</option><option value="40">Very fast</option></select>
+  <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" title="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" title="Faster (+)" aria-label="Faster">+</button></div>
   <div class="spacer"></div>
   <span class="seed" id="seed"></span>
   <button class="btn" id="new">New world</button>
@@ -228,7 +233,7 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme of provinces they want. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. Keys: Space or N for next season, P to play or pause.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
   </div>
 </div>
 <div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">

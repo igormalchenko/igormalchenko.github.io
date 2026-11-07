@@ -32,6 +32,11 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .btn.primary{background:var(--brass);color:#1a1408;border-color:var(--brass);font-weight:600;min-width:74px;justify-content:center}
 .btn.icon{width:30px;padding:0;justify-content:center;font-weight:600}
 .btn[disabled]{opacity:.45;cursor:default}
+.speed{display:flex;align-items:center;gap:4px}
+.pips{display:flex;align-items:flex-end;gap:2px;height:30px;padding:0 3px}
+.pip{width:12px;height:30px;padding:0 2px;background:none;border:0;cursor:pointer;display:flex;align-items:flex-end}
+.pip i{display:block;width:100%;border-radius:2px;background:var(--line)}
+.pip.on i{background:var(--brass)}.pip:hover i{outline:1px solid #46505c}
 .seed{color:var(--muted);font:11.5px var(--mono)}
 @media (max-width:760px){.bar h1,.seed{display:none}}
 
@@ -181,7 +186,7 @@ th svg.ic{margin:0}
   <div class="date"><span id="season">Winter</span><b id="year">1836</b></div>
   <button class="btn primary" id="auto" title="Play or pause (P)">Play</button>
   <button class="btn" id="next" title="Next season (N or Space)">Next</button>
-  <select class="btn" id="speed" aria-label="Speed"><option value="700">Slow</option><option value="350" selected>Normal</option><option value="120">Fast</option><option value="40">Very fast</option></select>
+  <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" title="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" title="Faster (+)" aria-label="Faster">+</button></div>
   <div class="spacer"></div>
   <span class="seed" id="seed"></span>
   <button class="btn" id="new">New world</button>
@@ -228,7 +233,7 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme of provinces they want. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. Keys: Space or N for next season, P to play or pause.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it and its country; click the sea or press Escape to clear. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
   </div>
 </div>
 <div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">
@@ -1398,10 +1403,15 @@ function showTab(id){
 function select(tag){ selected = tag; showTab('nation'); }
 function selectProvince(i){ selProv = i; selected = S.regions[i].owner; showTab('province'); }
 function step(n = 1){ for (let i = 0; i < n && !S.over; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } }
+// speeds: seconds a season, slowest first; changing speed keeps the time already waited
+const SPEEDS = [3000, 1500, 700, 250, 40]; let speed = 1, lastTick = 0;
 function stopAuto(){ if (timer) clearTimeout(timer); timer = null; $('auto').textContent = 'Play'; }
-function startAuto(){ stopAuto(); $('auto').textContent = 'Pause';
-  const tick = () => { const t0 = performance.now(); step(1); if (!S.over && $('auto').textContent === 'Pause') timer = setTimeout(tick, Math.max(0, +$('speed').value - (performance.now() - t0))); };
-  timer = setTimeout(tick, 0); }
+function schedule(){ clearTimeout(timer); timer = setTimeout(tick, Math.max(0, SPEEDS[speed] - (performance.now() - lastTick))); }
+function tick(){ lastTick = performance.now(); step(1); if (timer && !S.over) schedule(); }
+function startAuto(){ stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }
+function setSpeed(i){ speed = Math.max(0, Math.min(SPEEDS.length - 1, i));
+  document.querySelectorAll('.pip').forEach((p, k) => { p.classList.toggle('on', k <= speed); p.setAttribute('aria-pressed', k === speed); });
+  if (timer) schedule(); }
 
 function renderChips(){
   $('chips').innerHTML = Object.entries(FILTERS).map(([k, f]) => `<button class="chip ${f.on ? 'on' : ''}" data-f="${k}" aria-pressed="${!!f.on}">${ic(f.icon)}${f.label}</button>`).join('');
@@ -1565,7 +1575,11 @@ function showEnd(){
 // ---------- wiring ----------
 $('next').onclick = () => step(1);
 $('auto').onclick = () => timer ? stopAuto() : startAuto();
-$('speed').onchange = () => { if (timer) startAuto(); };
+$('pips').innerHTML = SPEEDS.map((ms, k) => `<button class="pip" data-s="${k}" title="Speed ${k + 1}: ${ms >= 1000 ? ms / 1000 + ' s' : 'under a second'} a season" aria-label="Speed ${k + 1}"><i style="height:${8 + k * 4}px"></i></button>`).join('');
+$('pips').onclick = e => { const p = e.target.closest('.pip'); if (p) setSpeed(+p.dataset.s); };
+$('slower').onclick = () => setSpeed(speed - 1);
+$('faster').onclick = () => setSpeed(speed + 1);
+setSpeed(speed);
 $('new').onclick = () => newWorld(Math.floor(Math.random() * 99999));
 $('again').onclick = () => newWorld(Math.floor(Math.random() * 99999));
 $('help').onclick = () => $('helpModal').classList.add('on');
@@ -1578,6 +1592,8 @@ document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
   if (e.key === 'n' || e.key === ' ') { e.preventDefault(); if (!S.over) step(1); }
   if (e.key === 'p') { timer ? stopAuto() : startAuto(); }
+  if (e.key === '+' || e.key === '=') setSpeed(speed + 1);
+  if (e.key === '-' || e.key === '_') setSpeed(speed - 1);
   if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }
 });
 // hover: province plus a card for its country

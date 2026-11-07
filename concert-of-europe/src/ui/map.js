@@ -160,7 +160,12 @@ function showTab(id){
 function select(tag){ selected = tag; showTab('nation'); }
 function selectProvince(i){ selProv = i; selected = S.regions[i].owner; showTab('province'); }
 function step(n = 1){ for (let i = 0; i < n && !S.over; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } }
+// speeds: seconds a season, slowest first; changing speed keeps the time already waited
+const SPEEDS = [3000, 1500, 700, 250, 40]; let speed = 1, lastTick = 0;
 function stopAuto(){ if (timer) clearTimeout(timer); timer = null; $('auto').textContent = 'Play'; }
-function startAuto(){ stopAuto(); $('auto').textContent = 'Pause';
-  const tick = () => { const t0 = performance.now(); step(1); if (!S.over && $('auto').textContent === 'Pause') timer = setTimeout(tick, Math.max(0, +$('speed').value - (performance.now() - t0))); };
-  timer = setTimeout(tick, 0); }
+function schedule(){ clearTimeout(timer); timer = setTimeout(tick, Math.max(0, SPEEDS[speed] - (performance.now() - lastTick))); }
+function tick(){ lastTick = performance.now(); step(1); if (timer && !S.over) schedule(); }
+function startAuto(){ stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }
+function setSpeed(i){ speed = Math.max(0, Math.min(SPEEDS.length - 1, i));
+  document.querySelectorAll('.pip').forEach((p, k) => { p.classList.toggle('on', k <= speed); p.setAttribute('aria-pressed', k === speed); });
+  if (timer) schedule(); }

@@ -2,7 +2,11 @@
 // ---------- wiring ----------
 $('next').onclick = () => step(1);
 $('auto').onclick = () => timer ? stopAuto() : startAuto();
-$('speed').onchange = () => { if (timer) startAuto(); };
+$('pips').innerHTML = SPEEDS.map((ms, k) => `<button class="pip" data-s="${k}" title="Speed ${k + 1}: ${ms >= 1000 ? ms / 1000 + ' s' : 'under a second'} a season" aria-label="Speed ${k + 1}"><i style="height:${8 + k * 4}px"></i></button>`).join('');
+$('pips').onclick = e => { const p = e.target.closest('.pip'); if (p) setSpeed(+p.dataset.s); };
+$('slower').onclick = () => setSpeed(speed - 1);
+$('faster').onclick = () => setSpeed(speed + 1);
+setSpeed(speed);
 $('new').onclick = () => newWorld(Math.floor(Math.random() * 99999));
 $('again').onclick = () => newWorld(Math.floor(Math.random() * 99999));
 $('help').onclick = () => $('helpModal').classList.add('on');
@@ -15,6 +19,8 @@ document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
   if (e.key === 'n' || e.key === ' ') { e.preventDefault(); if (!S.over) step(1); }
   if (e.key === 'p') { timer ? stopAuto() : startAuto(); }
+  if (e.key === '+' || e.key === '=') setSpeed(speed + 1);
+  if (e.key === '-' || e.key === '_') setSpeed(speed - 1);
   if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }
 });
 // hover: province plus a card for its country
