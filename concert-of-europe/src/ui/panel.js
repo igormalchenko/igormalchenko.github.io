@@ -17,6 +17,34 @@ function renderLog(){
 const statTile = (icon, label, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${label}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
 const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}"><title>${TRAITS[t].label}</title><circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>${EMB[t]}</svg>` : '';
 
+// left strip: one nation at a glance (the selected one, else the leader)
+function renderSide(){
+  const c = S.C[selected] && S.C[selected].alive ? S.C[selected] : S.C[S.leader] || S.alive()[0]; if (!c) return;
+  const ranked = S.alive().sort((a, b) => S.score(b) - S.score(a)), rank = ranked.indexOf(c) + 1;
+  const now = S.score(c), H = S.history, ago = H.length > 1 ? H[H.length - 2].p[c.tag] : null;
+  const vals = H.map(h => h.p[c.tag]).filter(v => v != null).concat(now);
+  const W = 180, Hh = 38, mx = Math.max(...vals), mn = Math.min(...vals), span = Math.max(1, mx - mn);
+  const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
+  const war = S.warOf(c), u = S.unrestOf(c);
+  const row = (icon, k, v, color) => `<div class="row"><span>${ic(icon)}${k}</span><span${color ? ` style="color:${color}"` : ''}>${v}</span></div>`;
+  const d = ago != null ? Math.round(now - ago) : 0;
+  $('side').innerHTML = `
+    <div><div class="who">${c.tag === selected ? 'Selected' : 'Leading'}</div>
+      <div class="nm"><span class="fl" style="background:${c.color}"></span>${nameSpan(c.tag)}</div>
+      <div class="rl">${ic('ruler')}${c.ruler.name} ${emblem(c.ruler.trait)}</div></div>
+    <div class="inc"><b>${fmt(now)}</b><span>gold a year</span>
+      <div class="sub"><span>#${rank} of ${ranked.length}</span><span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? '#e08070' : 'inherit'}">${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year</span></div>
+      <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
+    ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}
+    <div class="rows">
+      ${row('gold', 'Treasury', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
+      ${row('army', 'Army', fmt(c.army) + 'k')}
+      ${row('factory', 'Factories', S.facOf(c))}
+      ${row('province', 'Provinces', S.regionsOf(c).length)}
+      ${u >= 30 ? row('unrest', 'Unrest', Math.round(u), u >= 65 ? '#e0453a' : '#e3933c') : ''}
+    </div>`;
+}
+
 function renderPowers(){
   const cs = S.alive().sort((a, b) => S.score(b) - S.score(a));
   const lead = cs[0];

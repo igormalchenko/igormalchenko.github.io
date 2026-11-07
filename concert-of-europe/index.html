@@ -77,6 +77,18 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .tip hr{border:0;border-top:1px solid var(--line);margin:6px 0}
 .qtip{position:fixed;pointer-events:none;background:rgba(14,17,21,.96);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:12px;line-height:1.35;max-width:260px;display:none;z-index:20}
 
+.side{width:210px;flex:none;border-right:1px solid var(--line);background:var(--panel);padding:14px 14px 12px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.side .who{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.side .nm{display:flex;align-items:center;gap:8px}.side .nm .fl{width:16px;height:12px;border-radius:2px;flex:none}
+.side .nm b.cn{font:400 19px/1.15 var(--display)}
+.side .rl{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:12px;margin-top:3px}.side .rl svg.emb{width:15px;height:15px}
+.side .inc b{font:500 30px/1 var(--mono);color:var(--brass)}.side .inc span{color:var(--muted);font-size:12px;margin-left:5px}
+.side .inc .sub{display:flex;justify-content:space-between;color:var(--muted);font-size:11.5px;margin-top:4px}
+.side .spark{display:block;width:100%;height:38px;margin-top:6px}
+.side .rows{display:flex;flex-direction:column;gap:5px;border-top:1px solid var(--line);padding-top:10px}
+.side .row{display:flex;justify-content:space-between;align-items:center;font-size:13px}.side .row span:last-child{font-family:var(--mono)}
+.side .war{font-size:12px;color:var(--war);display:flex;align-items:center;gap:2px}
+@media (max-width:1100px){.side{display:none}}
 .panel{width:380px;flex:none;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0;transition:width .2s}
 .panel.closed{width:0;border-left:0;overflow:hidden}
 @media (max-width:760px){.panel{position:absolute;right:0;top:46px;bottom:0;z-index:5;width:min(92vw,380px)}}
@@ -195,6 +207,7 @@ th svg.ic{margin:0}
   <button class="btn" id="toggle" aria-label="Show or hide the side panel">Panel</button>
 </div>
 <div class="main">
+  <aside class="side" id="side" aria-label="Nation at a glance"></aside>
   <div class="mapwrap" id="mapwrap">
     <svg id="map" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of Europe coloured by owner">
       <defs>
@@ -1312,7 +1325,7 @@ function newWorld(seed){
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
   ['next', 'auto'].forEach(id => $(id).disabled = S.over);
-  renderMap(); renderOverlays();
+  renderMap(); renderOverlays(); renderSide();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
     if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else if (on === 'nation') { if (selected) renderNation(); } else renderProvince(); }
 }
@@ -1390,7 +1403,9 @@ function globalChips(){
 }
 function renderOverlays(){
   const lead = S.leader && S.C[S.leader];
-  $('tl').innerHTML = (lead ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
+  // the left strip already shows the leader when nothing is selected
+  const leadShown = getComputedStyle($('side')).display !== 'none' && !(S.C[selected] && S.C[selected].alive);
+  $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
     + globalChips();
   const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
   const wars = S.wars.map(w => {
@@ -1442,6 +1457,34 @@ function renderLog(){
 }
 const statTile = (icon, label, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${label}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
 const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}"><title>${TRAITS[t].label}</title><circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>${EMB[t]}</svg>` : '';
+
+// left strip: one nation at a glance (the selected one, else the leader)
+function renderSide(){
+  const c = S.C[selected] && S.C[selected].alive ? S.C[selected] : S.C[S.leader] || S.alive()[0]; if (!c) return;
+  const ranked = S.alive().sort((a, b) => S.score(b) - S.score(a)), rank = ranked.indexOf(c) + 1;
+  const now = S.score(c), H = S.history, ago = H.length > 1 ? H[H.length - 2].p[c.tag] : null;
+  const vals = H.map(h => h.p[c.tag]).filter(v => v != null).concat(now);
+  const W = 180, Hh = 38, mx = Math.max(...vals), mn = Math.min(...vals), span = Math.max(1, mx - mn);
+  const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
+  const war = S.warOf(c), u = S.unrestOf(c);
+  const row = (icon, k, v, color) => `<div class="row"><span>${ic(icon)}${k}</span><span${color ? ` style="color:${color}"` : ''}>${v}</span></div>`;
+  const d = ago != null ? Math.round(now - ago) : 0;
+  $('side').innerHTML = `
+    <div><div class="who">${c.tag === selected ? 'Selected' : 'Leading'}</div>
+      <div class="nm"><span class="fl" style="background:${c.color}"></span>${nameSpan(c.tag)}</div>
+      <div class="rl">${ic('ruler')}${c.ruler.name} ${emblem(c.ruler.trait)}</div></div>
+    <div class="inc"><b>${fmt(now)}</b><span>gold a year</span>
+      <div class="sub"><span>#${rank} of ${ranked.length}</span><span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? '#e08070' : 'inherit'}">${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year</span></div>
+      <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
+    ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}
+    <div class="rows">
+      ${row('gold', 'Treasury', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
+      ${row('army', 'Army', fmt(c.army) + 'k')}
+      ${row('factory', 'Factories', S.facOf(c))}
+      ${row('province', 'Provinces', S.regionsOf(c).length)}
+      ${u >= 30 ? row('unrest', 'Unrest', Math.round(u), u >= 65 ? '#e0453a' : '#e3933c') : ''}
+    </div>`;
+}
 
 function renderPowers(){
   const cs = S.alive().sort((a, b) => S.score(b) - S.score(a));

@@ -68,7 +68,7 @@ function newWorld(seed){
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
   ['next', 'auto'].forEach(id => $(id).disabled = S.over);
-  renderMap(); renderOverlays();
+  renderMap(); renderOverlays(); renderSide();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
     if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else if (on === 'nation') { if (selected) renderNation(); } else renderProvince(); }
 }
@@ -146,7 +146,9 @@ function globalChips(){
 }
 function renderOverlays(){
   const lead = S.leader && S.C[S.leader];
-  $('tl').innerHTML = (lead ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
+  // the left strip already shows the leader when nothing is selected
+  const leadShown = getComputedStyle($('side')).display !== 'none' && !(S.C[selected] && S.C[selected].alive);
+  $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">gold a year</span></div>` : '')
     + globalChips();
   const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
   const wars = S.wars.map(w => {
