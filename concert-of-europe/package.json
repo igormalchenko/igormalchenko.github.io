@@ -1,0 +1,18 @@
+{
+  "name": "concert-of-europe",
+  "version": "0.6.0",
+  "private": true,
+  "description": "A zero-player grand strategy game, 1836 to the 1918 armistice, where every nation is run by the same small forecasting AI.",
+  "scripts": {
+    "build": "node tools/build.js",
+    "map": "node map/build-map.js && node tools/build.js",
+    "sweep": "node tools/sweep.js",
+    "chronicle": "node tools/chronicle.js"
+  },
+  "devDependencies": {
+    "d3-delaunay": "^6.0.4",
+    "polygon-clipping": "^0.15.7",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
+  }
+}
