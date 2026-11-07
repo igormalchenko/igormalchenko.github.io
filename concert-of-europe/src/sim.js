@@ -165,6 +165,11 @@ function createSim(seed, geo, opts = {}){
     const options = slots.map((t, i) => makeRuler(c, null, { nm: names[i % names.length], trait: t }));
     return { type: 'heir', tag: c.tag, opening, options, old: c.ruler.name, why, crisis };
   }
+  // the player may deal a card again, three times a game; AI nations pick at random and never need to
+  function rerollHeirs(){
+    const p = S.pending; if (!p || p.type !== 'heir' || !(S.rerolls > 0)) return false;
+    S.rerolls--; S.pending = heirCard(S.C[p.tag], p.opening, p.why, p.crisis); return true;
+  }
   function chooseHeir(i){
     const p = S.pending; if (!p || p.type !== 'heir') return;
     const c = S.C[p.tag], nr = p.options[i]; S.pending = null;
@@ -939,10 +944,10 @@ function createSim(seed, geo, opts = {}){
   S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
   L('event', '<strong>Europe, 1836.</strong> Twenty-four nations, one ambition: to be the richest when the guns of the coming great war fall silent.');
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
-  if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true;
+  if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true; S.rerolls = 3;
     // vary the draw by country, so two countries in the same world are not offered the same three characters
     if (pc.tag !== 'SWI') { for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng(); S.pending = heirCard(pc, true); } }
-  Object.assign(S, { chooseHeir, step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
+  Object.assign(S, { chooseHeir, rerollHeirs, step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
   return S;
 }
 

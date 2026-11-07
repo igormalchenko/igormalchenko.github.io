@@ -12,6 +12,10 @@ $('new').onclick = freshWorld;
 $('again').onclick = freshWorld;
 $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
+$('reroll').onclick = () => {
+  if (S.rerollHeirs()) { showHeir(); return; }
+  $('reroll').disabled = true; $('rerollNote').textContent = 'Coming soon';
+};
 $('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
 $('toggle').innerHTML = ic('panel');

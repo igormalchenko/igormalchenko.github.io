@@ -194,6 +194,7 @@ th svg.ic{margin:0}
 .heir .hh{display:flex;align-items:center;gap:10px}.heir .hh b{display:block;font:400 21px/1.1 var(--display)}.heir .hh .who{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}.heir .hh svg.emb{width:34px;height:34px;flex:none}
 .heir .vibe{margin:4px 0 0;font-size:15px;font-style:italic;line-height:1.35}
 .iw{white-space:nowrap}
+.rerolls{display:flex;align-items:center;gap:10px;margin-top:12px}
 .heir .fx{margin:auto 0 0;padding-top:8px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.4}
 .formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
@@ -269,6 +270,7 @@ th svg.ic{margin:0}
     <h2 id="heirTitle"></h2>
     <p class="muted" id="heirSub"></p>
     <div class="heirs" id="heirCards"></div>
+    <div class="rerolls"><button class="btn" id="reroll"></button><span class="muted" id="rerollNote"></span></div>
   </div>
 </div>
 <div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">
@@ -639,6 +641,11 @@ function createSim(seed, geo, opts = {}){
     const slots = []; for (let k = 0; k < 3; k++) slots.push(drawQuirk(c, slots));
     const options = slots.map((t, i) => makeRuler(c, null, { nm: names[i % names.length], trait: t }));
     return { type: 'heir', tag: c.tag, opening, options, old: c.ruler.name, why, crisis };
+  }
+  // the player may deal a card again, three times a game; AI nations pick at random and never need to
+  function rerollHeirs(){
+    const p = S.pending; if (!p || p.type !== 'heir' || !(S.rerolls > 0)) return false;
+    S.rerolls--; S.pending = heirCard(S.C[p.tag], p.opening, p.why, p.crisis); return true;
   }
   function chooseHeir(i){
     const p = S.pending; if (!p || p.type !== 'heir') return;
@@ -1414,10 +1421,10 @@ function createSim(seed, geo, opts = {}){
   S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
   L('event', '<strong>Europe, 1836.</strong> Twenty-four nations, one ambition: to be the richest when the guns of the coming great war fall silent.');
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
-  if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true;
+  if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true; S.rerolls = 3;
     // vary the draw by country, so two countries in the same world are not offered the same three characters
     if (pc.tag !== 'SWI') { for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng(); S.pending = heirCard(pc, true); } }
-  Object.assign(S, { chooseHeir, step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
+  Object.assign(S, { chooseHeir, rerollHeirs, step, alive, considerations, SEASONS, riskOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
   return S;
 }
 
@@ -1551,6 +1558,7 @@ const REG = {
 // concepts that are only words, with no icon of their own
 const WORDS = {
   nation: { name: 'Nation', desc: 'A realm on the map, with its own ruler, gold and army.', avoid: ['country', 'countries', 'states'] },
+  reroll: { name: 'Reroll', desc: 'Deal three new heirs instead of these. Three free rerolls a game.' },
   rarity: { name: 'Rarity', desc: 'How rare a ruler is, from Common to Legendary. The rarer he is, the more he can change the game.' },
 };
 // ruler rarity, white to gold (the odds of each are in sim.js, TIER_ODDS)
@@ -1808,6 +1816,7 @@ const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role=
 // ---------- the player's choices ----------
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
+const nm2 = k => WORDS[k].name;
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
   const card = (r, i) => { const t = TRAITS[r.trait].tier;
@@ -1822,6 +1831,11 @@ function showHeir(){
   $('heirSub').textContent = p.opening ? 'Pick a ruler. The ministers run everything else.'
     : `${why}${p.crisis ? ' Rival claimants will fight whoever you pick.' : ''}`;
   $('heirCards').innerHTML = p.options.map(card).join('');
+  // three free rerolls a game; the fourth will be for sale (no payment yet)
+  const left = S.rerolls || 0;
+  $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $1.99`;
+  $('reroll').disabled = false; $('rerollNote').textContent = '';
+  Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
 }
@@ -1998,6 +2012,10 @@ $('new').onclick = freshWorld;
 $('again').onclick = freshWorld;
 $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
+$('reroll').onclick = () => {
+  if (S.rerollHeirs()) { showHeir(); return; }
+  $('reroll').disabled = true; $('rerollNote').textContent = 'Coming soon';
+};
 $('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
 $('toggle').innerHTML = ic('panel');

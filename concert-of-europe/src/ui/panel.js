@@ -22,6 +22,7 @@ const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role=
 // ---------- the player's choices ----------
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
+const nm2 = k => WORDS[k].name;
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
   const card = (r, i) => { const t = TRAITS[r.trait].tier;
@@ -36,6 +37,11 @@ function showHeir(){
   $('heirSub').textContent = p.opening ? 'Pick a ruler. The ministers run everything else.'
     : `${why}${p.crisis ? ' Rival claimants will fight whoever you pick.' : ''}`;
   $('heirCards').innerHTML = p.options.map(card).join('');
+  // three free rerolls a game; the fourth will be for sale (no payment yet)
+  const left = S.rerolls || 0;
+  $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $1.99`;
+  $('reroll').disabled = false; $('rerollNote').textContent = '';
+  Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
 }
