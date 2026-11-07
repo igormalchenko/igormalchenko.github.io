@@ -17,7 +17,7 @@ $('reroll').onclick = () => {
   if (S.rerollHeirs()) { showHeir(); return; }
   $('reroll').disabled = true; $('rerollNote').textContent = 'Coming soon';
 };
-$('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); });
+$('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); startAuto(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
 $('toggle').innerHTML = ic('panel');
 $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); };
