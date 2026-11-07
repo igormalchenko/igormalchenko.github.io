@@ -9,7 +9,6 @@ function el(tag, attrs, parent){ const e = document.createElementNS(svgNS, tag);
 const fmt = v => Math.round(v).toLocaleString('en');
 const A = i => [GEO.regions[i].ax, GEO.regions[i].ay];
 const nameSpan = t => { const c = S.C[t]; return `<b class="cn" data-tag="${t}" style="--c:${c.color}">${c.name}</b>`; };
-const NATION_EMPTY = '<div class="empty">Click a province or a nation\'s name to see its ruler, budget and forecasts.</div>';
 const dur = q => q < 4 ? `${q} season${q === 1 ? '' : 's'}` : `${(q / 4).toFixed(q % 4 ? 1 : 0)} yr`;
 
 // position on the outer group, animate the inner one (animating the outer would override its position)
@@ -37,16 +36,15 @@ function newWorld(seed, player){
   selected = player || null;
   $('seed').textContent = 'World #' + seed;
   selProv = null;
-  $('nation').innerHTML = NATION_EMPTY;
   $('endModal').classList.remove('on');
   render(); checkPending();
 }
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
   ['next', 'auto'].forEach(id => $(id).disabled = S.over || !!S.pending);
-  renderMap(); renderOverlays(); renderSide();
+  renderMap(); renderOverlays(); renderNation();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
-    if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else if (on === 'nation') { if (selected) renderNation(); } else renderProvince(); }
+    if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else renderProvince(); }
 }
 
 function renderMap(){
@@ -58,8 +56,11 @@ function renderMap(){
     if (r.occ) occ += `<path class="occ" d="${GEO.regions[i].d}" fill="${occPattern(r.occ)}" opacity=".9"/>`;
   });
   S.wars.forEach(w => { goals += `<path class="goal" d="${GEO.regions[S.RB[w.goal].i].d}"/>`; });
-  // province icons: factories with count, fortress, construction, unrest
+  // province icons (factories with count, fortress, construction, unrest) only on the nation you are
+  // looking at: the selected one, else your own. The rest of the map stays clean.
+  const focus = selected || S.player;
   S.regions.forEach(r => {
+    if (r.owner !== focus) return;
     const [cx, cy] = A(r.i);
     const items = [];
     if (r.fac) items.push({ g: glyph('factory'), n: r.fac, w: r.fac > 1 ? 15 : 10 });
@@ -70,7 +71,7 @@ function renderMap(){
     const y = cy + 7;
     items.forEach(it => {
       icons += at(x + 5, y, it.g, it.hot ? 'class="hot"' : '');
-      if (it.n > 1) icons += `<text x="${(x + 10.5).toFixed(1)}" y="${(y + 3).toFixed(1)}" font-size="7.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">${it.n}</text>`;
+      if (it.n > 1) icons += `<text x="${(x + 10.5).toFixed(1)}" y="${(y + 3).toFixed(1)}" font-size="7.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">${it.n}</text>`;
       x += it.w;
     });
   });
@@ -88,7 +89,7 @@ function renderMap(){
   // army badges at the capitals of nations at war
   S.alive().filter(c => S.warOf(c)).forEach(c => { const cap = S.capitalOf(c); if (!cap) return; const [cx, cy] = A(cap.i);
     const t = fmt(c.army) + 'k'; const w = 13 + t.length * 5;
-    marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5)">${glyph('army')}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}">${t}</text></g>`; });
+    marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5)">${glyph('army')}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}">${t}</text></g>`; });
   // capitals, names, ruler emblems, leader crown
   S.alive().forEach(c => {
     const rs = S.regionsOf(c); if (!rs.length) return;
@@ -110,31 +111,27 @@ function renderMap(){
   $('gFront').innerHTML = fronts; $('gOcc').innerHTML = occ; $('gSettle').innerHTML = settle; $('gGoals').innerHTML = goals; $('gIcons').innerHTML = icons; $('gMarks').innerHTML = marks; $('gLabels').innerHTML = labels;
 }
 
-// Europe-wide conditions, each with what it does in one short line
+// Europe-wide conditions: a name on the map, what it does on hover
 function globalChips(){
   const e = S.era, d = Math.round((e.def - 1) * 100);
   const battle = d > 0 ? `Defenders ${d}% stronger` : d < 0 ? `Attackers ${-d}% stronger` : 'Even battles';
-  const chip = (k, name, fx) => `<div class="chip2"><span class="k">${k}</span>${name}<div class="fx">${fx}</div></div>`;
-  let h = chip('Warfare', e.name, `${ic('war')}${battle} · ${ic('fort')}Fortresses stop ${Math.round(e.fort * 100)}% of advances`);
-  if (S.railBoom > S.year) h += chip('Boom', 'Railway mania', `${ic('factory')}Factories 30% cheaper · until ${S.railBoom}`);
-  if (S.depression > S.t) h += chip('Crisis', 'The Panic', `${ic('goldYear')}Gold a year down 20% · ${dur(S.depression - S.t)} left`);
+  const chip = (icon, name, fx) => `<div class="chip2" ${tipAttr(name, fx)}>${ic(icon)}${name}</div>`;
+  let h = chip('war', e.name, `${battle}. Fortresses stop ${Math.round(e.fort * 100)}% of advances.`);
+  if (S.railBoom > S.year) h += chip('boom', 'Railway mania', `Factories 30% cheaper until ${S.railBoom}.`);
+  if (S.depression > S.t) h += chip('event', 'The Panic', `Gold a year down 20%, ${dur(S.depression - S.t)} left.`);
   return h;
 }
 function renderOverlays(){
-  const lead = S.leader && S.C[S.leader];
-  // the left strip already shows the leader when nothing is selected
-  const leadShown = getComputedStyle($('side')).display !== 'none' && !S.player && !(S.C[selected] && S.C[selected].alive);
-  $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">${ic('leader')}Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">${nm('goldYear').toLowerCase()}</span></div>` : '')
-    + globalChips();
-  const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">${ic('civilWar')}Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
+  $('tl').innerHTML = globalChips();
+  const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis" ${tipOf('civilWar')}><div class="t">${ic('civilWar')}Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div></div>`).join('');
   const wars = S.wars.map(w => {
     const s = w.score, left = s >= 0 ? 50 : 50 + s / 2, wid = Math.abs(s) / 2;
     const col = s >= 0 ? S.C[w.att[0]].color : S.C[w.def[0]].color;
     const held = side => S.regions.filter(r => r.occ && side.includes(r.occ)).length;
-    return `<div class="wchip"><div class="t">${w.name}<span>${dur(w.quarters)}</span></div>
+    const names = side => side.map(t => S.C[t].name).join(', ');
+    return `<div class="wchip" ${tipAttr(w.name, `${names(w.att)} occupy ${held(w.att)} provinces; ${names(w.def)} occupy ${held(w.def)}. The bar leans toward whoever is winning.`)}><div class="t">${w.name}<span>${dur(w.quarters)}</span></div>
       <div class="s"><div>${w.att.map(nameSpan).join(', ')}</div><div style="text-align:right">${w.def.map(nameSpan).join(', ')}</div></div>
-      <div class="wsbar"><i style="left:${left}%;width:${wid}%;background:${col}"></i></div>
-      <div class="s"><div>occupies ${held(w.att)} prov.</div><div style="text-align:right">occupies ${held(w.def)} prov.</div></div></div>`;
+      <div class="wsbar"><i style="left:${left}%;width:${wid}%;background:${col}"></i></div></div>`;
   }).join('');
   $('bl').innerHTML = crises + wars;
 }
@@ -145,7 +142,7 @@ function showTab(id){
   document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id === id));
   render();
 }
-function select(tag){ selected = tag; showTab('nation'); }
+function select(tag){ selected = tag; render(); }
 function selectProvince(i){ selProv = i; selected = S.regions[i].owner; showTab('province'); }
 function step(n = 1){ for (let i = 0; i < n && !S.over && !S.pending; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } checkPending(); }
 // a choice for the player stops the clock until it is made

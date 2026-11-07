@@ -56,7 +56,7 @@ src/sim.js             the whole simulation: economy, AI, wars, unrest, rulers, 
 src/ui/registry.js     every concept once: name, description, icon, words to avoid
 tools/check.js         consistency check run by npm run build
 src/ui/map.js          map rendering: provinces, icons, markers, front lines, overlays
-src/ui/panel.js        side panel: Chronicle, Powers, Nation and Province tabs, end screen
+src/ui/panel.js        nation column on the left; Chronicle, Powers and Province tabs; end screen
 src/ui/main.js         controls, hover card, selection, map key
 src/ui/index.template.html   page layout and styles; build.js fills in the scripts
 map/build-map.js       generates map/geo.json (provinces, borders, coastlines, sea crossings)

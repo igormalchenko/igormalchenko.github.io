@@ -6,25 +6,25 @@
 <title>Concert of Europe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   /* A general staff's map table at night: the map is the whole screen; brass marks the controls. */
   --bg:#12161b; --panel:#191e25; --panel2:#20262e; --line:#2b323c; --ink:#e8e3d7; --muted:#97a0aa;
   --brass:#c9a45c; --sea:#1b2833; --war:#d65a4d; --peace:#7fae7a; --diplo:#7aa0c9; --revolt:#d09a4a; --unify:#c9a45c;
-  --display:"IM Fell English SC", Georgia, serif; --body:"IBM Plex Sans", system-ui, sans-serif; --mono:"IBM Plex Mono", ui-monospace, monospace;
+  --display:"IM Fell English SC", Georgia, serif; --body:"IBM Plex Sans", system-ui, sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--body);display:flex;flex-direction:column;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--body);font-variant-numeric:tabular-nums;display:flex;flex-direction:column;overflow:hidden}
 button,select{font:inherit;color:inherit}
 button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 
 .bar{height:46px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px;border-bottom:1px solid var(--line);background:#14181e}
 .bar h1{font:400 20px/1 var(--display);margin:0 6px 0 0;white-space:nowrap}
 .date{display:flex;align-items:baseline;gap:6px;min-width:120px}
-.date span{font:500 10.5px var(--body);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.date span{font-size:13px;color:var(--muted)}
 .date b{font:400 24px/1 var(--display);color:var(--brass);font-variant-numeric:tabular-nums}
 .spacer{flex:1}
 .btn{background:var(--panel2);border:1px solid var(--line);border-radius:6px;height:30px;padding:0 11px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
@@ -38,7 +38,7 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .pip{width:12px;height:30px;padding:0 2px;background:none;border:0;cursor:pointer;display:flex;align-items:flex-end}
 .pip i{display:block;width:100%;border-radius:2px;background:var(--line)}
 .pip.on i{background:var(--brass)}.pip:hover i{outline:1px solid #46505c}
-.seed{color:var(--muted);font:11.5px var(--mono)}
+.seed{color:var(--muted);font:11.5px var(--body)}
 @media (max-width:760px){.bar h1,.seed{display:none}}
 
 .main{flex:1;display:flex;min-height:0}
@@ -57,15 +57,11 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .overlay > *{pointer-events:auto}
 .tl{top:10px;left:10px;flex-direction:column;align-items:flex-start}
 .bl{bottom:10px;left:10px;right:10px;flex-wrap:wrap;align-items:flex-end}
-.chip2{background:rgba(20,24,30,.88);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12px;backdrop-filter:blur(3px);max-width:340px}
-.chip2 .k{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px}
-.chip2 .fx{color:var(--muted);font-size:11px;margin-top:2px;display:flex;align-items:center;gap:3px}
-.chip2.lead{border-color:rgba(201,164,92,.55)}
-.chip2.lead b{font-family:var(--mono);color:var(--brass);font-weight:500}
+.chip2{background:rgba(20,24,30,.88);border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:12px;backdrop-filter:blur(3px);display:flex;align-items:center;cursor:default}
 .wchip{background:rgba(20,24,30,.9);border:1px solid var(--line);border-left:3px solid var(--war);border-radius:7px;padding:5px 9px;font-size:12px;width:230px;cursor:default}
 .wchip.crisis{border-left-color:#b9a3d6}
 .wchip .t{display:flex;justify-content:space-between;gap:6px;font-weight:500}
-.wchip .t span{color:var(--muted);font:11px var(--mono)}
+.wchip .t span{color:var(--muted);font:11px var(--body)}
 .wsbar{height:5px;border-radius:3px;background:#2c333d;position:relative;overflow:hidden;margin:4px 0 2px}
 .wsbar i{position:absolute;top:0;bottom:0}
 .wsbar::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#6b7480}
@@ -79,18 +75,15 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .qtip{position:fixed;pointer-events:none;background:rgba(14,17,21,.96);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:12px;line-height:1.35;max-width:260px;display:none;z-index:20}
 .qtip b{font-weight:600}.qtip .d{color:var(--muted);margin-top:1px}
 
-.side{width:210px;flex:none;border-right:1px solid var(--line);background:var(--panel);padding:14px 14px 12px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
-.side .who{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-.side .nm{display:flex;align-items:center;gap:8px}.side .nm .fl{width:16px;height:12px;border-radius:2px;flex:none}
-.side .nm b.cn{font:400 19px/1.15 var(--display)}
-.side .rl{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:12px;margin-top:3px}.side .rl svg.emb{width:15px;height:15px}
-.side .inc b{font:500 30px/1 var(--mono);color:var(--brass)}.side .inc span{color:var(--muted);font-size:12px;margin-left:5px}
+.side{width:330px;flex:none;border-right:1px solid var(--line);background:var(--panel);padding:14px 14px 12px;overflow-y:auto}
+.side .nation-head{margin-bottom:8px}
+.side .inc{margin-bottom:12px}
+.side .inc .num{display:flex;align-items:center;gap:8px}.side .inc b{font:500 30px/1 var(--body);color:var(--brass)}.side .inc .num span{color:var(--muted);font-size:13px;margin-left:auto}.side .inc svg.ic.lg{width:26px;height:26px}
 .side .inc .sub{display:flex;justify-content:space-between;color:var(--muted);font-size:11.5px;margin-top:4px}
 .side .spark{display:block;width:100%;height:38px;margin-top:6px}
-.side .rows{display:flex;flex-direction:column;gap:5px;border-top:1px solid var(--line);padding-top:10px}
-.side .row{display:flex;justify-content:space-between;align-items:center;font-size:13px}.side .row span:last-child{font-family:var(--mono)}
-.side .war{font-size:12px;color:var(--war);display:flex;align-items:center;gap:2px}
-@media (max-width:1100px){.side{display:none}}
+.side .war{font-size:12px;color:var(--war);display:flex;align-items:center;gap:2px;margin:-4px 0 10px}
+.btn.more{width:100%;justify-content:space-between;margin:-4px 0 12px;font-size:12.5px}
+@media (max-width:900px){.side{display:none}}
 .panel{width:380px;flex:none;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0;transition:width .2s}
 .panel.closed{width:0;border-left:0;overflow:hidden}
 @media (max-width:760px){.panel{position:absolute;right:0;top:46px;bottom:0;z-index:5;width:min(92vw,380px)}}
@@ -106,29 +99,21 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .sw{width:11px;height:11px;border-radius:2px;display:inline-block;flex:none}
 .yr{font:400 18px var(--display);color:var(--brass);margin:12px 0 4px;border-bottom:1px solid var(--line);padding-bottom:2px}
 .yr:first-child{margin-top:0}
-.ev{padding:4px 0 4px 10px;border-left:2px solid var(--line);margin:4px 0;font-size:13px}
-.ev .when{display:block;font:500 10px var(--body);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:1px}
-.ev.war{border-color:var(--war)} .ev.peace{border-color:var(--peace)} .ev.diplo{border-color:var(--diplo)} .ev.ruler{border-color:#b9a3d6}
-.ev.revolt{border-color:var(--revolt)} .ev.unify{border-color:var(--unify);background:rgba(201,164,92,.06)} .ev.event{border-color:#8a8f99} .ev.econ{border-color:#5d6b5d}
+.ev{padding:3px 0;margin:2px 0;font-size:13px}
+.sea{color:var(--muted);font-size:12px;margin:8px 0 2px}.yr + .sea{margin-top:2px}
 .ev em{font-style:italic;color:#efe7d2}
 .ev i{font-style:normal;color:#d9d2c0;border-bottom:1px dotted #6b7480}
 b.cn{font-weight:600;cursor:pointer;box-shadow:inset 0 -2px 0 var(--c)}
 b.cn:hover{color:#fff}
 table{width:100%;border-collapse:collapse;font-size:12.5px}
 th{color:var(--muted);font-weight:500;text-align:right;padding:5px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:5px 4px;text-align:right;border-bottom:1px solid #222830;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px}
+td{padding:5px 4px;text-align:right;border-bottom:1px solid #222830;font-variant-numeric:tabular-nums;font-family:var(--body);font-size:12px}
 th:nth-child(2),td:nth-child(2){text-align:left;font-family:var(--body);font-size:12.5px}
 tr.click{cursor:pointer} tr.click:hover td{background:var(--panel2)}
 .chart{margin:4px 0 14px}
-.chart text{fill:var(--muted);font:10px var(--mono)}
+.chart text{fill:var(--muted);font:10px var(--body)}
 h3{font:400 17px var(--display);margin:4px 0 8px}
 .muted{color:var(--muted)}
-.boards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.board{background:var(--panel2);border-radius:8px;padding:8px 10px;font-size:12px}
-.board small{display:block;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.board div{display:flex;justify-content:space-between;gap:6px;padding:1px 0;white-space:nowrap}
-.board div span:last-child{font-family:var(--mono)}
-.board div span:first-child{overflow:hidden;text-overflow:ellipsis}
 .uni{margin-bottom:9px;font-size:12px}.uni .row{display:flex;justify-content:space-between;gap:8px;margin-bottom:3px}.uni .row b{font-weight:500}
 .barx{height:6px;background:#2c333d;border-radius:3px;overflow:hidden;position:relative}
 .barx i{display:block;height:100%;background:var(--brass)}
@@ -136,17 +121,16 @@ h3{font:400 17px var(--display);margin:4px 0 8px}
 .nation-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .nation-head .flag{width:34px;height:24px;border-radius:3px;border:1px solid rgba(255,255,255,.15)}
 .nation-head h2{font:400 24px/1.05 var(--display);margin:0}
-.rulercard{background:var(--panel2);border-radius:8px;padding:8px 10px;margin-bottom:10px}
-.rulercard small{display:block;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em}
-.rulercard b{font:400 17px var(--display)}
-.pers{display:grid;grid-template-columns:98px 1fr 96px;gap:5px 8px;align-items:center;font-size:12px;margin-top:6px}
+.pers{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted);margin:0 0 12px}.pers span{display:inline-flex;align-items:center;cursor:default}
+.rulerline{display:flex;align-items:center;gap:10px;margin:2px 0 6px}.rulerline b{font:400 20px/1.15 var(--display);cursor:default}.rulerline svg.emb{width:34px;height:34px}
+.btn.back{height:26px;font-size:12px;margin-bottom:10px;color:var(--muted)}
+.stat{cursor:default}.th .evn{cursor:default}
 .trait{font-size:12px;margin-top:6px;color:#d9d2c0}.trait b{font-weight:600;color:var(--brass)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
 .stat{background:var(--panel2);border-radius:6px;padding:6px 8px}
-.stat small{display:block;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em}
-.stat b{font:500 15px var(--mono)}
+.stat b{font:500 15px var(--body)}
 .ledger{background:var(--panel2);border-radius:8px;padding:6px 10px;margin-bottom:12px;font-size:12.5px}
-.lg{display:flex;justify-content:space-between;padding:2px 0}.lg span:last-child{font-family:var(--mono)}
+.lg{display:flex;justify-content:space-between;padding:2px 0}.lg span:last-child{font-family:var(--body)}
 .lg.net{border-top:1px solid var(--line);margin-top:3px;padding-top:4px;font-weight:600}
 .lgnote{color:var(--muted);font-size:11.5px;margin-top:5px;line-height:1.35}
 .think{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
@@ -154,17 +138,14 @@ h3{font:400 17px var(--display);margin:4px 0 8px}
 .th.chosen{border-color:var(--brass)}
 .th .row{display:flex;justify-content:space-between;gap:8px}
 .th .row b{font-weight:500}
-.th .row span{font-family:var(--mono)}
+.th .row span{font-family:var(--body)}
 .th .why{color:var(--muted);font-size:11.5px;margin-top:2px}
 .th .barx{margin-top:5px;height:4px}
 .th.chosen .tag{font-size:10px;color:#1a1408;background:var(--brass);border-radius:3px;padding:0 4px;margin-left:6px}
 .provs{margin-bottom:12px;font-size:12.5px}
 .prov{display:grid;grid-template-columns:1fr 78px 48px;gap:8px;padding:3px 0;border-bottom:1px solid #222830}
 .prov.head{color:var(--muted);font-size:11px}
-.prov .ic{letter-spacing:1px}.prov .un{text-align:right;font-family:var(--mono)}
-.rels{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:12px;margin-bottom:10px}
-.rels div{display:flex;justify-content:space-between;gap:6px}
-.rels span{font-family:var(--mono)}
+.prov .ic{letter-spacing:1px}.prov .un{text-align:right;font-family:var(--body)}
 .empty{color:var(--muted);padding:20px 4px;text-align:center}
 
 svg.ic{width:15px;height:15px;vertical-align:-3px;margin-right:4px;flex:none;cursor:help}
@@ -173,10 +154,7 @@ svg.emb{width:22px;height:22px;flex:none}
 .tipr{display:flex;align-items:center;gap:4px}.tipr svg.emb{width:15px;height:15px}
 .ev{display:flex;gap:8px}.ev .evi{flex:none;padding-top:1px}.ev .evi svg.ic{width:16px;height:16px;margin:0}
 .stat{display:flex;gap:8px;align-items:center}
-.rname{display:flex;align-items:center;gap:8px}.rname > div{flex:1}
-.leader{display:flex;gap:10px;align-items:center;background:rgba(201,164,92,.08);border:1px solid rgba(201,164,92,.35);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:13px}
-.leader span{font-family:var(--mono);color:var(--brass)}
-.stat small.inl{display:inline;text-transform:none;letter-spacing:0;font-size:11px}
+
 .dreamline{font-size:12.5px;margin:-4px 0 12px;color:#e6d8b0}
 .claims div{font-size:12.5px;padding:2px 0}
 .nbs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
@@ -201,7 +179,7 @@ th svg.ic{margin:0}
 .heir .vibe{margin:2px 0 0;font-size:15px;font-style:italic}
 .heir .fx{margin:0;color:var(--muted);font-size:12.5px}
 .heir .tags{display:flex;flex-wrap:wrap;gap:10px;color:var(--muted);font-size:12px;margin-top:auto;padding-top:4px}
-.formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--mono);margin:10px 0}
+.formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
 .legend div{display:flex;align-items:center;gap:8px}
 </style>
@@ -241,12 +219,10 @@ th svg.ic{margin:0}
     <div class="tabs" role="tablist">
       <button class="tab on" data-p="chron" role="tab">Chronicle</button>
       <button class="tab" data-p="powers" role="tab">Powers</button>
-      <button class="tab" data-p="nation" role="tab">Nation</button>
       <button class="tab" data-p="province" role="tab">Province</button>
     </div>
     <div class="pane on" id="chron"><div class="chips" id="chips"></div><div id="log"></div></div>
     <div class="pane" id="powers"></div>
-    <div class="pane" id="nation"></div>
     <div class="pane" id="province"><div class="empty">Click a province on the map.</div></div>
   </aside>
 </div>
@@ -261,7 +237,7 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme: the provinces they were founded to win, which they treat as their own. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it and its nation; click the sea or press Escape to clear. If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
   </div>
 </div>
 <div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
@@ -1404,7 +1380,7 @@ const EMB = {
   revanchist: `<path d="M0 -3.4C1.7 -1.2 2.5 0 1.8 1.7C1.3 3 -1.3 3 -1.8 1.7C-2.4 .2 -.9 -.8 0 -3.4z" fill="#e3933c"/>`,
   spendthrift: `<circle r="2.8" fill="none" stroke="#f2c94c" stroke-width="1"/><path d="M0 -1.6v3.2" stroke="#f2c94c" stroke-width="1"/>`,
   reformer: `<path d="M-2.4 -3h4.8v6h-4.8z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-1.4 -1.2h2.8M-1.4 .4h2.8M-1.4 2h1.8" stroke="${INK}" stroke-width=".7"/>`,
-  incompetent: `<text y="2.6" text-anchor="middle" font-size="7" font-family="IBM Plex Mono" fill="${INK}">?</text>`,
+  incompetent: `<text y="2.6" text-anchor="middle" font-size="7" font-family="IBM Plex Sans" fill="${INK}">?</text>`,
 };
 const EMB_BADGE = `<circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>`;
 
@@ -1425,11 +1401,6 @@ const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'uprising',
 const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'army', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'dream', war: 'war' };
 // map markers left by the simulation, by its own type names
 const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'dream', coup: 'coup', crisis: 'civilWar' };
-// sprinkle icons into chronicle text: amounts of gold, fortresses, factories
-const decorate = h => h
-  .replace(/(\d[\d,]*) gold\b(?! a year)/g, (m, n) => `${ic('gold')}${n} gold`)
-  .replace(/\bfortress\b/g, `${ic('fort')}fortress`)
-  .replace(/\b(factory|factories)\b/g, m => `${ic('factory')}${m}`);
 
 const $ = id => document.getElementById(id);
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -1442,7 +1413,6 @@ function el(tag, attrs, parent){ const e = document.createElementNS(svgNS, tag);
 const fmt = v => Math.round(v).toLocaleString('en');
 const A = i => [GEO.regions[i].ax, GEO.regions[i].ay];
 const nameSpan = t => { const c = S.C[t]; return `<b class="cn" data-tag="${t}" style="--c:${c.color}">${c.name}</b>`; };
-const NATION_EMPTY = '<div class="empty">Click a province or a nation\'s name to see its ruler, budget and forecasts.</div>';
 const dur = q => q < 4 ? `${q} season${q === 1 ? '' : 's'}` : `${(q / 4).toFixed(q % 4 ? 1 : 0)} yr`;
 
 // position on the outer group, animate the inner one (animating the outer would override its position)
@@ -1470,16 +1440,15 @@ function newWorld(seed, player){
   selected = player || null;
   $('seed').textContent = 'World #' + seed;
   selProv = null;
-  $('nation').innerHTML = NATION_EMPTY;
   $('endModal').classList.remove('on');
   render(); checkPending();
 }
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
   ['next', 'auto'].forEach(id => $(id).disabled = S.over || !!S.pending);
-  renderMap(); renderOverlays(); renderSide();
+  renderMap(); renderOverlays(); renderNation();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
-    if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else if (on === 'nation') { if (selected) renderNation(); } else renderProvince(); }
+    if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else renderProvince(); }
 }
 
 function renderMap(){
@@ -1491,8 +1460,11 @@ function renderMap(){
     if (r.occ) occ += `<path class="occ" d="${GEO.regions[i].d}" fill="${occPattern(r.occ)}" opacity=".9"/>`;
   });
   S.wars.forEach(w => { goals += `<path class="goal" d="${GEO.regions[S.RB[w.goal].i].d}"/>`; });
-  // province icons: factories with count, fortress, construction, unrest
+  // province icons (factories with count, fortress, construction, unrest) only on the nation you are
+  // looking at: the selected one, else your own. The rest of the map stays clean.
+  const focus = selected || S.player;
   S.regions.forEach(r => {
+    if (r.owner !== focus) return;
     const [cx, cy] = A(r.i);
     const items = [];
     if (r.fac) items.push({ g: glyph('factory'), n: r.fac, w: r.fac > 1 ? 15 : 10 });
@@ -1503,7 +1475,7 @@ function renderMap(){
     const y = cy + 7;
     items.forEach(it => {
       icons += at(x + 5, y, it.g, it.hot ? 'class="hot"' : '');
-      if (it.n > 1) icons += `<text x="${(x + 10.5).toFixed(1)}" y="${(y + 3).toFixed(1)}" font-size="7.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">${it.n}</text>`;
+      if (it.n > 1) icons += `<text x="${(x + 10.5).toFixed(1)}" y="${(y + 3).toFixed(1)}" font-size="7.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">${it.n}</text>`;
       x += it.w;
     });
   });
@@ -1521,7 +1493,7 @@ function renderMap(){
   // army badges at the capitals of nations at war
   S.alive().filter(c => S.warOf(c)).forEach(c => { const cap = S.capitalOf(c); if (!cap) return; const [cx, cy] = A(cap.i);
     const t = fmt(c.army) + 'k'; const w = 13 + t.length * 5;
-    marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5)">${glyph('army')}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}">${t}</text></g>`; });
+    marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5)">${glyph('army')}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}">${t}</text></g>`; });
   // capitals, names, ruler emblems, leader crown
   S.alive().forEach(c => {
     const rs = S.regionsOf(c); if (!rs.length) return;
@@ -1543,31 +1515,27 @@ function renderMap(){
   $('gFront').innerHTML = fronts; $('gOcc').innerHTML = occ; $('gSettle').innerHTML = settle; $('gGoals').innerHTML = goals; $('gIcons').innerHTML = icons; $('gMarks').innerHTML = marks; $('gLabels').innerHTML = labels;
 }
 
-// Europe-wide conditions, each with what it does in one short line
+// Europe-wide conditions: a name on the map, what it does on hover
 function globalChips(){
   const e = S.era, d = Math.round((e.def - 1) * 100);
   const battle = d > 0 ? `Defenders ${d}% stronger` : d < 0 ? `Attackers ${-d}% stronger` : 'Even battles';
-  const chip = (k, name, fx) => `<div class="chip2"><span class="k">${k}</span>${name}<div class="fx">${fx}</div></div>`;
-  let h = chip('Warfare', e.name, `${ic('war')}${battle} · ${ic('fort')}Fortresses stop ${Math.round(e.fort * 100)}% of advances`);
-  if (S.railBoom > S.year) h += chip('Boom', 'Railway mania', `${ic('factory')}Factories 30% cheaper · until ${S.railBoom}`);
-  if (S.depression > S.t) h += chip('Crisis', 'The Panic', `${ic('goldYear')}Gold a year down 20% · ${dur(S.depression - S.t)} left`);
+  const chip = (icon, name, fx) => `<div class="chip2" ${tipAttr(name, fx)}>${ic(icon)}${name}</div>`;
+  let h = chip('war', e.name, `${battle}. Fortresses stop ${Math.round(e.fort * 100)}% of advances.`);
+  if (S.railBoom > S.year) h += chip('boom', 'Railway mania', `Factories 30% cheaper until ${S.railBoom}.`);
+  if (S.depression > S.t) h += chip('event', 'The Panic', `Gold a year down 20%, ${dur(S.depression - S.t)} left.`);
   return h;
 }
 function renderOverlays(){
-  const lead = S.leader && S.C[S.leader];
-  // the left strip already shows the leader when nothing is selected
-  const leadShown = getComputedStyle($('side')).display !== 'none' && !S.player && !(S.C[selected] && S.C[selected].alive);
-  $('tl').innerHTML = (lead && !leadShown ? `<div class="chip2 lead"><span class="k">${ic('leader')}Leading</span>${nameSpan(lead.tag)} <b>${fmt(S.score(lead))}</b> <span class="muted">${nm('goldYear').toLowerCase()}</span></div>` : '')
-    + globalChips();
-  const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis"><div class="t">${ic('civilWar')}Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div><div class="s"><div>Army at half strength</div></div></div>`).join('');
+  $('tl').innerHTML = globalChips();
+  const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis" ${tipOf('civilWar')}><div class="t">${ic('civilWar')}Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div></div>`).join('');
   const wars = S.wars.map(w => {
     const s = w.score, left = s >= 0 ? 50 : 50 + s / 2, wid = Math.abs(s) / 2;
     const col = s >= 0 ? S.C[w.att[0]].color : S.C[w.def[0]].color;
     const held = side => S.regions.filter(r => r.occ && side.includes(r.occ)).length;
-    return `<div class="wchip"><div class="t">${w.name}<span>${dur(w.quarters)}</span></div>
+    const names = side => side.map(t => S.C[t].name).join(', ');
+    return `<div class="wchip" ${tipAttr(w.name, `${names(w.att)} occupy ${held(w.att)} provinces; ${names(w.def)} occupy ${held(w.def)}. The bar leans toward whoever is winning.`)}><div class="t">${w.name}<span>${dur(w.quarters)}</span></div>
       <div class="s"><div>${w.att.map(nameSpan).join(', ')}</div><div style="text-align:right">${w.def.map(nameSpan).join(', ')}</div></div>
-      <div class="wsbar"><i style="left:${left}%;width:${wid}%;background:${col}"></i></div>
-      <div class="s"><div>occupies ${held(w.att)} prov.</div><div style="text-align:right">occupies ${held(w.def)} prov.</div></div></div>`;
+      <div class="wsbar"><i style="left:${left}%;width:${wid}%;background:${col}"></i></div></div>`;
   }).join('');
   $('bl').innerHTML = crises + wars;
 }
@@ -1578,7 +1546,7 @@ function showTab(id){
   document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.id === id));
   render();
 }
-function select(tag){ selected = tag; showTab('nation'); }
+function select(tag){ selected = tag; render(); }
 function selectProvince(i){ selProv = i; selected = S.regions[i].owner; showTab('province'); }
 function step(n = 1){ for (let i = 0; i < n && !S.over && !S.pending; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } checkPending(); }
 // a choice for the player stops the clock until it is made
@@ -1597,11 +1565,12 @@ function renderChips(){
   $('chips').innerHTML = Object.entries(FILTERS).map(([k, f]) => `<button class="chip ${f.on ? 'on' : ''}" data-f="${k}" aria-pressed="${!!f.on}">${ic(f.icon)}${f.label}</button>`).join('');
 }
 function logHtml(items, limit = 400){
-  let html = '', y = null, count = 0;
+  let html = '', y = null, q = null, count = 0;
   for (let i = items.length - 1; i >= 0 && count < limit; i--, count++) {
     const l = items[i];
-    if (l.y !== y) { y = l.y; html += `<div class="yr">${y}</div>`; }
-    html += `<div class="ev ${l.t}"><span class="evi">${ic(TYPE_IC[l.t])}</span><div><span class="when">${S.SEASONS[l.q]}</span>${decorate(l.h)}</div></div>`;
+    if (l.y !== y) { y = l.y; q = null; html += `<div class="yr">${y}</div>`; }
+    if (l.q !== q) { q = l.q; html += `<div class="sea">${S.SEASONS[q]}</div>`; }
+    html += `<div class="ev ${l.t}"><span class="evi">${ic(TYPE_IC[l.t])}</span><div>${l.h}</div></div>`;
   }
   return html;
 }
@@ -1609,7 +1578,7 @@ function renderLog(){
   const allowed = new Set(Object.values(FILTERS).filter(f => f.on).flatMap(f => f.types));
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
-const statTile = (icon, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${nm(icon)}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
+const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}" ${tipAttr(TRAITS[t].label, TRAITS[t].desc + '.')}>${EMB_BADGE}${EMB[t]}</svg>` : '';
 
 // ---------- the player's choices ----------
@@ -1649,44 +1618,9 @@ function showStart(){
   $('startModal').classList.add('on');
 }
 
-// left strip: one nation at a glance (the selected one, else the leader)
-function renderSide(){
-  const c = S.player ? S.C[S.player] : S.C[selected] && S.C[selected].alive ? S.C[selected] : S.C[S.leader] || S.alive()[0]; if (!c) return;
-  const ranked = S.alive().sort((a, b) => S.score(b) - S.score(a)), rank = ranked.indexOf(c) + 1;
-  const now = S.score(c), H = S.history, ago = H.length > 1 ? H[H.length - 2].p[c.tag] : null;
-  const vals = H.map(h => h.p[c.tag]).filter(v => v != null).concat(now);
-  const W = 180, Hh = 38, mx = Math.max(...vals), mn = Math.min(...vals), span = Math.max(1, mx - mn);
-  const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
-  const war = S.warOf(c), u = S.unrestOf(c);
-  const row = (icon, v, color) => `<div class="row"><span>${ic(icon)}${nm(icon)}</span><span${color ? ` style="color:${color}"` : ''}>${v}</span></div>`;
-  const d = ago != null ? Math.round(now - ago) : 0;
-  $('side').innerHTML = `
-    <div><div class="who">${S.player ? (c.alive ? 'You' : 'You · gone from the map') : c.tag === selected ? 'Selected' : 'Leading'}</div>
-      <div class="nm"><span class="fl" style="background:${c.color}"></span>${nameSpan(c.tag)}</div>
-      <div class="rl">${ic('ruler')}${c.ruler.name} ${emblem(c.ruler.trait)}</div></div>
-    <div class="inc"><b>${fmt(now)}</b><span>${nm('goldYear').toLowerCase()}</span>
-      <div class="sub"><span>#${rank} of ${ranked.length}</span><span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? '#e08070' : 'inherit'}">${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year</span></div>
-      <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
-    ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}
-    <div class="rows">
-      ${row('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
-      ${row('army', fmt(c.army) + 'k')}
-      ${row('factory', S.facOf(c))}
-      ${row('province', S.regionsOf(c).length)}
-      ${u >= 30 ? row('unrest', Math.round(u), u >= 65 ? '#e0453a' : '#e3933c') : ''}
-    </div>`;
-}
-
 function renderPowers(){
   const cs = S.alive().sort((a, b) => S.score(b) - S.score(a));
   const lead = cs[0];
-  const board = (icon, title, val, f) => { const top = cs.slice().sort((a, b) => val(b) - val(a)).slice(0, 3);
-    return `<div class="board"><small>${ic(icon)}${title}</small>${top.map((c, i) => `<div><span>${i + 1}. ${nameSpan(c.tag)}</span><span>${f(val(c))}</span></div>`).join('')}</div>`; };
-  const boards = `<div class="leader">${ic('leader', 'lg')}<div>Leading: ${nameSpan(lead.tag)}<br><span>${fmt(S.score(lead))} gold a year</span></div></div><div class="boards">
-    ${board('army', 'Largest army', c => c.army, v => fmt(v) + 'k')}
-    ${board('factory', 'Most factories', c => S.facOf(c), v => v)}
-    ${board('province', 'Most provinces', c => S.regionsOf(c).length, v => v)}
-    ${board('gold', 'Most gold', c => c.treasury, v => fmt(v))}</div>`;
   const uni = S.unifyProgress().map(u => {
     const pct = u.done ? 100 : Math.min(100, u.n / u.need * 100);
     const who = u.done ? `${nameSpan(u.done.tag)} proclaimed` : u.lead ? `${nameSpan(u.lead.tag)} holds ${u.n} of ${u.need} needed` : `<span class="muted">no ${u.cul} state to lead it</span>`;
@@ -1707,37 +1641,51 @@ function renderPowers(){
   svg += '</svg>';
   const rows = cs.map((c, i) => `<tr class="click" data-tag="${c.tag}"><td>${i + 1}</td><td><span class="sw" style="background:${c.color};margin-right:6px"></span>${c.name}</td>
     <td><b>${fmt(S.score(c))}</b></td><td>${S.regionsOf(c).length}</td><td>${S.facOf(c)}</td><td>${fmt(c.army)}</td><td style="color:${S.unrestOf(c) >= 40 ? 'var(--revolt)' : 'inherit'}">${Math.round(S.unrestOf(c))}</td></tr>`).join('');
-  $('powers').innerHTML = `${boards}
-    <h3>${ic('goldYear')}${nm('goldYear')}</h3><div class="muted" style="font-size:12px">The race every nation is running. Today's top eight.</div>${svg}
+  $('powers').innerHTML = `<h3>${nm('goldYear')}</h3>${svg}
     <table><thead><tr><th>#</th><th>Nation</th><th>${ic('goldYear')}</th><th>${ic('province')}</th><th>${ic('factory')}</th><th>${ic('army')}</th><th>${ic('unrest')}</th></tr></thead><tbody>${rows}</tbody></table>
-    <h3 style="margin-top:14px">${ic('dream')}${nm('dream')}s</h3>${uni}`;
+    <h3 style="margin-top:14px">${nm('dream')}s</h3>${uni}`;
 }
 
+// the left column: one nation in full. The selected one, else yours, else the leader.
+let allForecasts = false, shownNation = null;
+function focusNation(){ return S.C[selected] && S.C[selected].alive ? S.C[selected] : S.player ? S.C[S.player] : S.C[S.leader] || S.alive()[0]; }
 function renderNation(){
-  const c = S.C[selected]; const box = $('nation'); if (!c) return;
+  const c = focusNation(); const box = $('side'); if (!c) return;
+  if (c.tag !== shownNation) { shownNation = c.tag; box.scrollTop = 0; }
   const rs = S.regionsOf(c), war = S.warOf(c);
+  const ranked = S.alive().sort((a, b) => S.score(b) - S.score(a)), rank = ranked.indexOf(c) + 1;
+  // gold a year and its whole history as a sparkline; rank and the change on last year on hover
+  const now = S.score(c), Hs = S.history, ago = Hs.length > 1 ? Hs[Hs.length - 2].p[c.tag] : null;
+  const vals = Hs.map(h => h.p[c.tag]).filter(v => v != null).concat(now);
+  const W = 280, Hh = 34, mx = Math.max(...vals), mn = Math.min(...vals), span = Math.max(1, mx - mn);
+  const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
+  const d = ago != null ? Math.round(now - ago) : 0;
+  const scoreTip = tipAttr(`${nm('goldYear')}: #${rank} of ${ranked.length}`, `${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year. ${REG.goldYear.desc}`);
   const lg = c.ledger || { tax: 0, fac: 0, trade: 0, upkeep: 0, lostWork: 0, lostAdmin: 0, waste: 0, spent: {} };
   const sp = lg.spent || {};
   const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (lg.waste || 0) - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0);
-  const line = (icon, k, v, cls = '') => `<div class="lg ${cls}"><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
-  const rel = S.alive().filter(o => o !== c).map(o => [o, S.rel(c.tag, o.tag)]).sort((a, b) => b[1] - a[1]);
-  const relRow = ([o, v]) => `<div>${nameSpan(o.tag)}<span style="color:${v >= 0 ? 'var(--peace)' : 'var(--war)'}">${v > 0 ? '+' : ''}${Math.round(v)}</span></div>`;
-  const maxEv = Math.max(1, ...(c.thoughts || []).map(t => Math.abs(t.ev)));
+  const lost = `Already reduced by ${lg.lostWork.toFixed(1)} for men in the army, who aren't working, and ${lg.lostAdmin.toFixed(1)} for running ${rs.length} provinces.`;
+  const line = (icon, k, v, cls = '', tip = '') => `<div class="lg ${cls}"${tip ? ' ' + tipAttr(k, tip) : ''}><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
   const H = S.horizon(c);
+  const thoughts = c.thoughts || [], done = thoughts.filter(t => t.chosen);
+  const evTip = tipAttr(nm('forecast'), `Gold over the ${H} years this ruler plans ahead, after costs.`);
+  const thought = (t, mark) => `<div class="th ${mark && t.chosen ? 'chosen' : ''}"><div class="row"><b>${ic(OPT_IC[t.type])}${t.label}</b><span class="evn" ${evTip} style="color:${t.ev > 0 ? 'var(--peace)' : t.ev < 0 ? '#e08070' : 'var(--muted)'}">${t.ev > 0 ? '+' : ''}${t.ev}</span></div><div class="why">${t.why}</div></div>`;
   const dreams = S.dreamsOf(c);
   const prov = r => { const u = Math.round(r.unrest);
     return `<div class="prov click" data-prov="${r.i}"><span>${r.name}${r.culture !== c.culture && !c.acc.has(r.culture) ? ` <span class="muted">${r.culture}</span>` : ''}${r.integ < 1 ? ` ${ic('settle')}` : ''}${r.occ ? ` ${ic('occupied')}` : ''}</span>
       <span>${r.fac ? `${ic('factory')}${r.fac}` : ''}${r.fort ? ic('fort') : ''}${r.build ? ic('build') : ''}</span><span class="un" style="color:${u >= 65 ? '#e0453a' : u >= 40 ? '#e3933c' : 'var(--muted)'}">${u >= 40 ? ic('unrest') : ''}${u}</span></div>`; };
-  box.innerHTML = `
-    <div class="nation-head"><div class="flag" style="background:${c.color}"></div><div><h2>${c.name}</h2>
-      <div class="muted" style="font-size:12px">${c.alive ? `${ic('goldYear')}${fmt(S.score(c))} gold a year · rank ${S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1} of ${S.alive().length}` : 'Gone from the map'}${war ? ` · ${ic('war')}<em>${war.name}</em>` : ''}</div></div></div>
-    <div class="rulercard"><div class="rname">${ic('ruler', 'lg')}<div><small>${nm('ruler')} since ${c.ruler.since}</small><b>${c.ruler.name}</b></div>${emblem(c.ruler.trait)}</div>
-      ${c.ruler.trait ? `<div class="trait"><b>${S.TRAITS[c.ruler.trait].label}.</b> ${S.TRAITS[c.ruler.trait].desc}.</div>` : ''}
-      <div class="pers">
-        <span ${tipOf('patience')}>${ic('patience')}${nm('patience')}</span><div class="barx"><i style="width:${Math.round(c.ruler.pat * 100)}%"></i></div><span class="muted">${H} yrs</span>
-        <span ${tipOf('risk')}>${ic('risk')}${nm('risk')}</span><div class="barx"><i style="width:${Math.round(c.ruler.risk * 100)}%"></i></div><span class="muted">${c.ruler.risk > 0.6 ? 'gambler' : c.ruler.risk < 0.4 ? 'cautious' : 'measured'}</span>
-        <span ${tipOf('judgment')}>${ic('judgment')}${nm('judgment')}</span><div class="barx mid"><i style="left:${50 + Math.min(0, c.ruler.bias) * 50}%;width:${Math.abs(c.ruler.bias) * 50}%"></i></div><span class="muted">${c.ruler.bias > 0.15 ? 'overconfident' : c.ruler.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span>
-      </div>${S.inCrisis(c) ? `<div class="trait" style="color:#c9b3e6">${ic('civilWar')}${nm('civilWar')}: the army fights at half strength.</div>` : ''}</div>
+  const r = c.ruler;
+  const back = S.player && c.tag !== S.player && S.C[S.player].alive ? `<button class="btn back" data-tag="${S.player}">← ${S.C[S.player].name}</button>` : '';
+  box.innerHTML = `${back}
+    <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leader === c.tag ? ic('leader', 'lg') : ''}</div>
+    <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
+      <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
+    ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div class="war" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}${nm('civilWar')}</div>` : ''}
+    <div class="rulerline">${r.trait ? emblem(r.trait) : ''}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${r.name}</b></div>
+    <div class="pers">
+      <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${r.pat > 0.6 ? 'far-sighted' : r.pat < 0.4 ? 'short-sighted' : 'steady'}</span>
+      <span ${tipOf('risk')}>${ic('risk')}${r.risk > 0.6 ? 'gambler' : r.risk < 0.4 ? 'cautious' : 'measured'}</span>
+      <span ${tipOf('judgment')}>${ic('judgment')}${r.bias > 0.15 ? 'overconfident' : r.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span></div>
     <div class="stats">
       ${statTile('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
       ${statTile('army', fmt(c.army) + 'k')}
@@ -1746,22 +1694,23 @@ function renderNation(){
       ${statTile('unrest', Math.round(S.unrestOf(c)), S.unrestOf(c) >= 40 ? 'var(--revolt)' : '')}
       ${statTile('province', rs.length)}
     </div>
-    ${dreams.length ? `<div class="dreamline">${ic('dream')}Dreams of <b>${dreams.map(d => d.title).join('</b> and <b>')}</b></div>` : ''}
-    <h3>${ic('gold')}Last season's budget</h3>
     <div class="ledger">
-      ${line('taxes', nm('taxes'), lg.tax)}${line('factory', 'Factory output', lg.fac)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
+      <div class="lg" ${tipOf('rival')}><span>${ic('rival')}${nm('rival')}</span><span>${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}</span></div>
+      <div class="lg" ${tipOf('ally')}><span>${ic('ally')}Allies</span><span>${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}</span></div>
+      ${c.guarantee && S.year < c.guarantee.until ? `<div class="lg"><span>Independence guaranteed by</span><span>${nameSpan(c.guarantee.by)}</span></div>` : ''}
+      ${dreams.length ? `<div class="lg" ${tipOf('dream')}><span>${ic('dream')}Dreams of</span><span>${dreams.map(d => d.title).join(', ')}</span></div>` : ''}
+    </div>
+    <h3>What the ministers did</h3>
+    <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet. Advance a season.</div>'}</div>
+    ${thoughts.length > done.length ? `<button class="btn more" id="allForecasts" aria-expanded="${allForecasts}">${allForecasts ? 'Hide forecasts' : `All ${thoughts.length} forecasts`}</button>
+      ${allForecasts ? `<div class="think">${thoughts.map(t => thought(t, true)).join('')}</div>` : ''}` : ''}
+    <h3>Budget</h3>
+    <div class="ledger">
+      ${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
       ${lg.waste ? line('waste', nm('waste'), -lg.waste) : ''}${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
       ${line('gold', 'Net', net, 'net')}
-      <div class="lgnote">Taxes and output above are already reduced by ${ic('army')}${lg.lostWork.toFixed(1)} (men in the army aren't working) and ${ic('province')}${lg.lostAdmin.toFixed(1)} (running ${rs.length} provinces).</div>
     </div>
-    <h3>${ic('forecast')}${nm('forecast')}${c.thoughtsWhen ? ` <span class="muted" style="font:12px var(--body)">${c.thoughtsWhen}, gold over ${H} years</span>` : ''}</h3>
-    <div class="think">${(c.thoughts || []).length ? c.thoughts.map(t => `<div class="th ${t.chosen ? 'chosen' : ''}"><div class="row"><b>${ic(OPT_IC[t.type])}${t.label}${t.chosen ? '<span class="tag">Done</span>' : ''}</b><span style="color:${t.ev > 0 ? 'var(--peace)' : t.ev < 0 ? '#e08070' : 'var(--muted)'}">${t.ev > 0 ? '+' : ''}${t.ev}</span></div><div class="why">${t.why}</div><div class="barx"><i style="width:${Math.abs(t.ev) / maxEv * 100}%;background:${t.ev >= 0 ? 'var(--peace)' : '#c0675b'}"></i></div></div>`).join('')
-      : '<div class="muted">No decisions yet. Advance a season.</div>'}</div>
-    <h3>${ic('province')}Provinces</h3><div class="provs"><div class="prov head"><span>Province</span><span>Buildings</span><span>Unrest</span></div>${rs.map(prov).join('') || '<span class="muted">none</span>'}</div>
-    <h3>${ic('ally')}Friends and enemies</h3>
-    <div style="font-size:12.5px;margin-bottom:8px">${ic('rival')}${nm('rival')}: ${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}<br>${ic('ally')}Allies: ${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}${c.guarantee && S.year < c.guarantee.until ? ` <span class="muted">(${S.C[c.guarantee.by].name} guarantees its independence)</span>` : ''}</div>
-    <div class="rels"><div class="muted">Friendliest</div><div class="muted">Most hostile</div>
-      ${rel.slice(0, 4).map((x, i) => relRow(x) + (rel[rel.length - 1 - i] ? relRow(rel[rel.length - 1 - i]) : '<div></div>')).join('')}</div>`;
+    <h3>Provinces</h3><div class="provs">${rs.map(prov).join('') || '<span class="muted">none</span>'}</div>`;
 }
 
 function renderProvince(){
@@ -1789,16 +1738,16 @@ function renderProvince(){
       ${statTile('unrest', u, u >= 65 ? '#e0453a' : u >= 40 ? '#e3933c' : '')}
       ${statTile('settle', Math.round(r.integ * 100) + '%', r.integ < 1 ? 'var(--revolt)' : '')}
     </div>
-    <h3>${ic('gold')}Where its gold comes from</h3>
+    <h3>Where its gold comes from</h3>
     <div class="ledger">
       <div class="lg"><span>${ic('taxes')}${nm('taxes')}</span><span>${(inc.tax * 4).toFixed(1)}</span></div>
       <div class="lg"><span>${ic('factory')}Factory output</span><span>${(inc.fac * 4).toFixed(1)}</span></div>
       <div class="lg"><span>${ic('trade')}${nm('trade')}</span><span>${(inc.trade * 4).toFixed(1)}</span></div>
-      <div class="lgnote">${r.integ < 1 ? `${ic('settle')}Newly conquered: pays ${Math.round((0.1 + 0.9 * r.integ) * 100)}% until fully integrated. ` : ''}${ic('culture')}${r.culture}-speaking${foreign ? `, a restless minority under ${c.name}` : `, content under ${c.name}`}.${r.occ ? ` ${ic('occupied')}<span style="color:var(--war)">Occupied by ${S.C[r.occ].name}: pays nothing until freed (normally ${(S.sumInc(S.regionIncome(r, c, { ignoreOcc: true })) * 4).toFixed(1)} a year).</span>` : ''}${r.build ? ` ${ic('build')}Building a ${r.build.type === 'factory' ? 'factory' : 'fortress'}, ${r.build.left} season${r.build.left > 1 ? 's' : ''} left.` : ''}</div>
+      <div class="lgnote">${r.integ < 1 ? `${ic('settle')}Newly conquered: pays ${Math.round((0.1 + 0.9 * r.integ) * 100)}% until fully integrated. ` : ''}${ic('culture')}${r.culture} · ${foreign ? 'restless minority' : 'content'}.${r.occ ? ` ${ic('occupied')}<span style="color:var(--war)">Occupied by ${S.C[r.occ].name}: pays nothing until freed (normally ${(S.sumInc(S.regionIncome(r, c, { ignoreOcc: true })) * 4).toFixed(1)} a year).</span>` : ''}${r.build ? ` ${ic('build')}Building a ${r.build.type === 'factory' ? 'factory' : 'fortress'}, ${r.build.left} season${r.build.left > 1 ? 's' : ''} left.` : ''}</div>
     </div>
-    <h3>${ic('claim')}${nm('claim')}</h3><div class="claims">${claims || '<span class="muted">No one has a claim.</span>'}</div>
-    <h3>${ic('province')}Neighbours</h3><div class="nbs">${nb}</div>
-    <h3>${ic('event')}What happened here</h3>${hist || '<div class="muted">Nothing yet.</div>'}`;
+    ${claims ? `<h3>${nm('claim')}</h3><div class="claims">${claims}</div>` : ''}
+    <h3>Neighbours</h3><div class="nbs">${nb}</div>
+    ${hist ? `<h3>What happened here</h3>${hist}` : ''}`;
 }
 
 function showEnd(){
@@ -1838,6 +1787,7 @@ $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); }
 document.querySelectorAll('.modal:not(.sticky)').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.p));
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FILTERS[b.dataset.f].on ^= 1; renderChips(); renderLog(); });
+$('side').addEventListener('click', e => { if (e.target.closest('#allForecasts')) { allForecasts = !allForecasts; renderNation(); } });
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
@@ -1872,8 +1822,7 @@ $('gCells').addEventListener('mouseleave', () => tip.style.display = 'none');
 $('gCells').addEventListener('click', e => { const p = e.target.closest('.cell'); if (p) selectProvince(+p.dataset.i); });
 // click the sea (or anything that isn't a province) to clear the selection; Escape does the same
 function deselect(){ if (selected == null && selProv == null) return; selected = null; selProv = null; tip.style.display = 'none';
-  $('nation').innerHTML = NATION_EMPTY;
-  const on = document.querySelector('.pane.on').id; if (on === 'nation' || on === 'province') showTab('chron'); else render(); }
+  const on = document.querySelector('.pane.on').id; if (on === 'province') showTab('chron'); else render(); }
 $('map').addEventListener('click', e => { if (!e.target.closest('.cell')) deselect(); });
 
 // instant tooltips from data-tip (a name) and data-desc (one line under it). The browser's own title
@@ -1900,13 +1849,13 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
 (function legend(){
   const sv = inner => `<svg width="22" height="18" viewBox="-11 -9 22 18">${inner}</svg>`;
   const items = [
-    [sv(glyph('factory') + `<text x="5" y="3" font-size="7.5" font-family="IBM Plex Mono" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">3</text>`), `${nm('factory')} (number = how many)`],
+    [sv(glyph('factory') + `<text x="5" y="3" font-size="7.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">3</text>`), `${nm('factory')} (number = how many)`],
     [sv(glyph('fort')), nm('fort')], [sv(glyph('buildFactory')), nm('buildFactory')], [sv(glyph('buildFort')), nm('buildFort')],
     [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} 40+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} 65+: close to an uprising`],
     [sv(glyph('battle')), `${nm('battle')} this season`], [sv(glyph('uprising')), nm('uprising')], [sv(glyph('boom')), `${nm('boom')}: coal or railway`],
     [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('dream')), `${nm('dream')} fulfilled`], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
     [sv(REG.capital.draw), nm('capital')],
-    [sv(`<rect x="-10" y="-7" width="20" height="14" rx="3" fill="rgba(20,24,30,.92)" stroke="#c9a45c" stroke-width="1.2"/><g transform="translate(-4.5,0)">${glyph('army')}</g><text x="1" y="3" font-size="7" font-family="IBM Plex Mono" fill="${INK}">80</text>`), `${nm('army')} in thousands, at the capital in wartime`],
+    [sv(`<rect x="-10" y="-7" width="20" height="14" rx="3" fill="rgba(20,24,30,.92)" stroke="#c9a45c" stroke-width="1.2"/><g transform="translate(-4.5,0)">${glyph('army')}</g><text x="1" y="3" font-size="7" font-family="IBM Plex Sans" fill="${INK}">80</text>`), `${nm('army')} in thousands, at the capital in wartime`],
     [sv(REG.front.draw), nm('front')],
     [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#settle)"/>`), `Not yet ${nm('settle').toLowerCase()}: pays little`],
     [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#occ-key)"/>`), `${nm('occupied')}: striped in the occupier's colour`],
@@ -1918,8 +1867,16 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
 })();
 
 renderChips();
-newWorld(1848);
-showStart();
+// a fixed scene for comparing screenshots: index.html#seed=1848&to=1884&play=FRA plays that world
+// to that year (heirs are taken first in line) and skips the start screen
+const scene = Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
+if (scene.seed || scene.to) {
+  newWorld(+scene.seed || 1848, scene.play || undefined);
+  const to = +scene.to || 1836;
+  while (!S.over && S.year < to) { if (S.pending) S.chooseHeir(0); S.step(); }
+  if (S.pending) S.chooseHeir(0);
+  $('heirModal').classList.remove('on'); render();
+} else { newWorld(1848); showStart(); }
 
 </script>
 </body>

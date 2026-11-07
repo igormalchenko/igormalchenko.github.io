@@ -131,7 +131,7 @@ const EMB = {
   revanchist: `<path d="M0 -3.4C1.7 -1.2 2.5 0 1.8 1.7C1.3 3 -1.3 3 -1.8 1.7C-2.4 .2 -.9 -.8 0 -3.4z" fill="#e3933c"/>`,
   spendthrift: `<circle r="2.8" fill="none" stroke="#f2c94c" stroke-width="1"/><path d="M0 -1.6v3.2" stroke="#f2c94c" stroke-width="1"/>`,
   reformer: `<path d="M-2.4 -3h4.8v6h-4.8z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-1.4 -1.2h2.8M-1.4 .4h2.8M-1.4 2h1.8" stroke="${INK}" stroke-width=".7"/>`,
-  incompetent: `<text y="2.6" text-anchor="middle" font-size="7" font-family="IBM Plex Mono" fill="${INK}">?</text>`,
+  incompetent: `<text y="2.6" text-anchor="middle" font-size="7" font-family="IBM Plex Sans" fill="${INK}">?</text>`,
 };
 const EMB_BADGE = `<circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>`;
 
@@ -152,8 +152,3 @@ const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'uprising',
 const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'army', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'dream', war: 'war' };
 // map markers left by the simulation, by its own type names
 const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'dream', coup: 'coup', crisis: 'civilWar' };
-// sprinkle icons into chronicle text: amounts of gold, fortresses, factories
-const decorate = h => h
-  .replace(/(\d[\d,]*) gold\b(?! a year)/g, (m, n) => `${ic('gold')}${n} gold`)
-  .replace(/\bfortress\b/g, `${ic('fort')}fortress`)
-  .replace(/\b(factory|factories)\b/g, m => `${ic('factory')}${m}`);
