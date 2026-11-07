@@ -174,7 +174,23 @@ th svg.ic{margin:0}
 .pick:hover{border-color:var(--brass)}.pick .fl{width:14px;height:10px;border-radius:2px}
 .heirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px;margin-top:6px}
 .heir{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px}
-.heir:hover,.heir:focus-visible{border-color:var(--brass);background:#262d36}
+.heir{position:relative;overflow:hidden;border-color:color-mix(in srgb,var(--tc) 45%,var(--line));border-top:3px solid var(--tc)}
+.heir:hover,.heir:focus-visible{border-color:var(--tc);background:#262d36}
+.heir .rar{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--tc);margin-bottom:-2px}
+.heir.tier3{box-shadow:0 0 10px -4px var(--tc)}
+.heir.tier4{box-shadow:0 0 16px -4px var(--tc)}
+.heir.tier5{box-shadow:0 0 22px -4px var(--tc);background:linear-gradient(160deg,color-mix(in srgb,var(--tc) 10%,var(--panel2)),var(--panel2) 60%)}
+.heir.tier5::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,transparent 60%);background-size:250% 100%;background-position:120% 0;opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #heirModal.on .heir{animation:deal .35s ease-out both}
+  #heirModal.on .heir.tier4{animation:deal .35s ease-out both,glow4 3.2s ease-in-out .4s infinite}
+  #heirModal.on .heir.tier5{animation:deal .35s ease-out both,glow5 2.6s ease-in-out .4s infinite}
+  #heirModal.on .heir.tier5::after{animation:sheen 4s ease-in-out 1s infinite}
+}
+@keyframes deal{from{opacity:0;transform:translateY(8px)}}
+@keyframes glow4{50%{box-shadow:0 0 22px -3px var(--tc)}}
+@keyframes glow5{50%{box-shadow:0 0 30px -2px var(--tc)}}
+@keyframes sheen{0%{opacity:1;background-position:120% 0}45%,100%{opacity:1;background-position:-20% 0}}
 .heir .hh{display:flex;align-items:center;gap:10px}.heir .hh b{display:block;font:400 21px/1.1 var(--display)}.heir .hh .who{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}.heir .hh svg.emb{width:34px;height:34px;flex:none}
 .heir .vibe{margin:4px 0 0;font-size:15px;font-style:italic;line-height:1.35}
 .iw{white-space:nowrap}

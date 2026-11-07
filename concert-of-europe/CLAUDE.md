@@ -23,7 +23,7 @@ Read README.md first for what this is and why. This file holds the design rules 
 - **Distinct and readable at once.** Three heirs should feel like three different characters (the lecher, the drunk, the butcher), never shades of one policy. One line of character plus one line of effect.
 - **What you see is what you get.** Every heir is shown face up; no hidden or sealed heirs.
 - **No suggested pick.** Don't mark what the ministers would choose.
-- **Chill, not arcade.** No stacking, levelling or evolutions. A ruler should shape the nation's character (what its ministers value or how they see the world) more than raw power. Legendary rulers are the one exception, and they pay for it (below).
+- **A deck with rarities.** Most heirs are flavour; a few are strong; a very few can swallow Europe. No stacking, levelling or evolutions: the thrill is the pull, not progression. The rarer the ruler, the bigger his upside and the bigger the visible price (usually paid when he dies).
 - **AI countries draw from the same pool by the same odds, and pick at random.** No forecast for heirs: a random pick gives more variety than an AI that always takes the best ruler, and the rules stay the same for everyone (rule 3). (`drawQuirk` gives one heir the odds of a random pick from a card.)
 - **Every ruler has a quirk.** No blank rulers: patience and nerve still vary per heir, but the quirk is what the card is about. The only rulers without one are councils (Switzerland's, and the regency after a Genius).
 - **Every ruler visibly changes something** on the map or in the budget (rule 4), and the chronicle should echo him later ("the Butcher's war", "the Miser's hoard").
@@ -41,39 +41,48 @@ This gives the choice stakes: pick the Conqueror, and if he loses his war he los
 
 ### The ruler pool (built)
 
-Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5).
+Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5). Every heir in Europe is rolled the same way (`TIER_ODDS` in `sim.js`): first his rarity, then a ruler of that rarity. The card shows the rarity's colour and name, and the emblem badge is ringed in it (`TIER` in `registry.js`); epic and mythic cards glow gently, the mythic one with a slow sheen.
 
-Ordinary rulers:
+**Common (white, 46%).** Flavour, mostly sideways or a mixed blessing.
+- **Drunkard.** His misjudgment is re-rolled every season.
+- **Lecher.** Charms every neighbour; at his death a bastard claims the throne (a succession crisis).
+- **Spendthrift, Paranoid.** The originals.
+- **Cautious.** Loses ground less often in war, and gains it less often.
+- **Mad.** Takes a new common or uncommon quirk every few years.
+- **Child King.** A regent with a random quirk rules until he comes of age; then he takes his own, which can be anything up to rare or, 15% of the time, Incompetent.
+- **Miser.** Values gold three times over, so the hoard grows and little gets built.
+- Never on a card: **Usurper** (only from a coup; unrest everywhere until he wins a war) and **Incompetent** (only a Child King grows up into one).
 
-- **Warmonger, Builder, Paranoid, Revanchist, Spendthrift, Reformer.** The originals.
-- **The Soldier King.** Wins battles, loses many men.
-- **The Cautious.** Rarely loses ground, rarely gains it.
-- **The Arbiter.** Values alliances and treaties; brokers peace between others for gold.
-- **The Shrewd.** Sees the odds of a war as they really are (no misjudgment).
-- **The Admirer.** Close to one great power's court; joins every war it fights. (Absorbs the Puppet idea, which was the same character.)
-- **The Tolerant.** Accepts one more culture; a restless province calms down.
-- **The Chauvinist.** His own people's provinces pay 10% more; drops an accepted culture, whose provinces turn restless.
-- **The Miser.** Values gold three times over, so the hoard grows and little gets built; the heir inherits it.
-- **The Bold.** Plans 8 years ahead and fears no loss. (Absorbs the Impatient.)
-- **The Dynast.** Plans 40 years ahead and borrows to build factories. (Replaces the old blank "prudent" heir.)
-- **The Drunk.** His misjudgment is re-rolled every season.
-- **The Mad.** Takes a new quirk every few years.
-- **The Usurper.** Only from a coup, never on a card; unrest everywhere until he wins a war.
-- **The Lecher.** Charms every neighbour; at his death a bastard claims the throne (a succession crisis).
-- **The Child King.** A regent with a random quirk rules until he comes of age; then he takes his own, which can be any ordinary quirk or, rarely, Incompetent.
-- **Incompetent.** Never on a card; only a Child King can grow up into one.
+**Uncommon (green, 30%).** A clear lean.
+- **Builder, Reformer, Revanchist, Warmonger.** The originals.
+- **Bold.** Plans 8 years ahead and fears no loss.
+- **Admirer.** Close to one great power's court; joins every war it fights.
+- **Chauvinist.** His own people's provinces pay 10% more; drops an accepted culture, whose provinces turn restless.
+- **Arbiter.** Values alliances double; is paid to broker peace between his neighbours.
 
-Legendary rulers, about 1 card in 8. A big upside paid for with an equally big visible downside, recognised by what they do (no colour tiers or rarity frames). The effect dies with them; only their landmark stays on the map.
+**Rare (blue, 15%).** Good rulers.
+- **Dynast.** Plans 40 years ahead and borrows to build factories.
+- **Shrewd.** Sees his odds in war exactly as they are.
+- **Soldier King.** His armies fight 25% harder but lose half again as many men.
+- **Tolerant.** Accepts one more people, for good.
 
-- **The Conqueror.** Armies fight far better; every neighbour distrusts him; his death brings a succession crisis.
-- **The Genius.** Factories boom; he has no heir, so a regency council follows.
-- **The Great Builder.** Five years in, raises a landmark of the age that stays on the map: the Great Railway (two factories in the capital), the Fortress Line (a fortress in every border province) or the Grand Exhibition (a factory in each of the three richest provinces). Leaves no gold when he dies.
-- **The Liberator.** Frees the serfs and accepts every culture at once, for good; the nobles plot a coup (2% a season).
-- **The Saint.** No unrest while he lives; starts no wars, sends no ultimatums and joins no ally's war. He still defends himself.
-- **The Iron King.** Crushes uprisings (triple garrison) and integrates conquests twice as fast; subject peoples rise when he dies.
-- **The Navigator.** Sea trade pays half again and invading across the sea is easy, but the fleet doubles army upkeep.
+**Epic (purple, 8%).** A big upside paid for with a big downside.
+- **Conqueror.** Armies fight 40% harder; every neighbour distrusts him; his death brings a succession crisis.
+- **Genius.** Factories cost half and go up twice as fast; no heir, so a regency council follows.
+- **Great Builder.** Five years in, raises a landmark that stays on the map: the Great Railway (two factories in the capital), the Fortress Line (a fortress in every border province) or the Grand Exhibition (a factory in each of the three richest provinces). Leaves no gold when he dies.
+- **Liberator.** Frees the serfs and accepts every culture at once, for good; the nobles plot a coup (2% a season).
+- **Saint.** No unrest while he lives; starts no wars, sends no ultimatums and joins no ally's war. He still defends himself.
+- **Iron King.** Crushes uprisings (triple garrison) and integrates conquests twice as fast; subject peoples rise when he dies.
+- **Navigator.** Sea trade pays half again and invading across the sea is easy, but the fleet doubles army upkeep.
 
-Sweep check for legendary rulers: they should often help and rarely decide the winner (`npm run sweep -- 1 13`, spread of winners).
+**Mythic (gold, 1%).** The jackpot: can swallow Europe while he lives, and his empire pays for it when he dies (a succession crisis every time). About one heir in a hundred, so roughly one player game in six offers one, and most watch-mode games crown one somewhere.
+- **Iron Chancellor (the Unifier).** Armies fight 60% harder; he fights one enemy at a time (no one comes to its aid, no great power intervenes); every victory keeps all the occupied land he can reach. When he dies, every province won in his reign rises (+40 unrest, integration back to 30%).
+- **Man of Destiny (the Lion).** Armies fight two and a half times as hard and keep all the land they win; believes in his star (overconfident). Same collapse at his death.
+- **Prophet.** Armies fight 60% harder; every people he conquers counts as his own at once. When he dies, they are foreigners again.
+- **Sun King (the Radiant).** The nation earns 60% more while he lives; when he dies, three years of gold a year turn into debt.
+- All three conquerors also raise volunteers (the army takes half as many workers) and ignore old truces.
+
+Rule 7 still holds for mythic conquerors: they keep only land they can reach.
 
 ## Interface rules
 
@@ -85,6 +94,37 @@ Sweep check for legendary rulers: they should often help and rarely decide the w
 - Plain, short labels. If a label needs explaining, rename it (for example "Gold a year", not "Yields").
 - The map stays mostly clean: ruler quirks belong in the panel, not on country labels.
 - Clicking the sea or pressing Escape clears the selection.
+
+## Required work: Risk and Judgment must be redone
+
+The ruler panel shows two war temperaments, **Risk** (gambler / measured / cautious) and **Judgment** (overconfident / clear-eyed / underconfident). In practice they are one trait, "how willing he is to fight", split into two numbers. That breaks rule 4: a player watching the map cannot tell them apart. Redo this properly; don't just patch the labels.
+
+What the code does today (`src/sim.js`):
+
+- **Judgment = `ruler.bias`.** It skews the odds a ruler believes: `warEval` computes `p = pWin(ratio * exp(bias))` next to the true `pTrue`. Every use is about war:
+  - `warEval`. Wars with believed `p < 0.5` are thrown out before scoring (`if (p < 0.5) return null`), so only an overconfident ruler ever starts a war he is likely to lose.
+  - The ultimatum event (`oFears`). Bias decides whether the target backs down.
+  - The Drunk re-rolls it each season, and the Shrewd fixes it at 0.
+- **Risk = `ruler.risk`.** It sets how much a loss hurts: `lossW = 1.6 - risk`, applied to the loss term of the war forecast, `ev = p*gain - (1-p)*lose*lossW - ...`. Every use is about war too:
+  - Your own `warEval`, through `lossW`.
+  - How scary you look to neighbours: `threatOf` (hostility) and `riskOf` (`chanceAttack`). Their army and alliance choices react to *your* risk.
+  - Dead code: `considerations` computes `λ = lossW(c)` and never uses it.
+- **They are correlated by construction.** `newRuler` sets `bias = (risk - 0.5) * 0.9 + rand(-0.3, 0.3)`, so gamblers are usually overconfident too.
+- **The overlap is mathematical.** For the go/no-go on a single war, raising `p` and lowering `lossW` both just lower the bar the war must clear. Any amount of one can be imitated by some amount of the other. The only real differences are the `p < 0.5` filter, the ultimatum, and the way neighbours read risk.
+- **Word clash.** "Risk" also names something else in visible text: expected losses to neighbours (`riskOf`, e.g. the forecast line "risk rises by N"). One word currently means two things.
+
+Contrast with Patience (`ruler.pat`, the horizon). It feeds every forecast (factories, army, alliances, war), so it reads as a real character trait. A war temperament should earn its place the same way, or be hidden.
+
+What the redo must settle:
+
+1. **How many visible war traits, and what each one visibly does.** Each must produce behaviour a player can tell apart on the map or in the budget. Example: one makes him start wars he loses; another makes him arm and ally heavily. If two can't be made distinct, show one.
+2. **Whether misjudgment stays a visible stat or becomes hidden plumbing** (rule 5's "chaotic input"). If it's hidden, the Drunk and the Shrewd describe their effect in their own card text.
+3. **Drop or justify the `bias`-from-`risk` link in `newRuler`.**
+4. **Give "Risk" a single meaning** across the registry, the panel and the forecast `why` lines. Rename one of the two.
+5. **Remove the dead `λ`** (or make it do something).
+6. **Update the registry** (`risk`, `judgment` entries), `panel.js` (the ruler tags) and the heir cards together, and make sure `npm run build`'s check passes without weakening it.
+
+Changing what is shown alone leaves sweeps identical. Changing `bias`, `lossW` or their link changes watch-mode results: run `npm run sweep -- 1 13` before and after and compare wars, winners and end year.
 
 ## Workflow
 

@@ -44,7 +44,7 @@ const REGIONS = [
   ['tyr','Tyrol',11.6,47.1,'AUS','German',1,0],
   ['boh','Bohemia',14.5,49.9,'AUS','Czech',4,1],
   ['hun','Hungary',19.4,47.3,'AUS','Hungarian',9,0],
-  ['gli','Galicia',22.6,49.9,'AUS','Polish',4.5,0],
+  ['gli','Lemberg',22.6,49.9,'AUS','Polish',4.5,0],
   ['lom','Lombardy',9.6,45.4,'AUS','Italian',2.5,1],
   ['ven','Venetia',12.2,45.7,'AUS','Italian',2,1],
   ['cro','Croatia',16.0,45.4,'AUS','Croat',1.5,0],

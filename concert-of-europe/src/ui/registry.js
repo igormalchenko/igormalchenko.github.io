@@ -13,9 +13,9 @@ const P = s => `<g transform="translate(-8 -8)">${s}</g>`; // drawings made on a
 const REG = {
   // ----- money -----
   gold: { name: 'Gold', desc: 'Money in the bank. Pays for factories, fortresses, recruits and reforms.', avoid: ['treasury', 'treasuries', 'savings'],
-    draw: P('<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>') },
+    draw: P('<circle cx="5.3" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="10.7" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="8" cy="4.6" r="2.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><path d="M3.4 8c-1.3 1.1-1.8 2.6-1.4 4 .5 1.7 2.6 2.6 6 2.6s5.5-.9 6-2.6c.4-1.4-.1-2.9-1.4-4z" fill="#4b4038" stroke="#a8957a" stroke-linejoin="round"/><path d="M2.2 7.6h11.6" stroke="#a8957a" stroke-width="1.6" stroke-linecap="round"/>') },
   goldYear: { name: 'Gold a year', desc: 'Taxes, factory output and sea trade over a year. The nation with the most in autumn 1918 wins.', avoid: ['income', 'score', '/yr'],
-    draw: P('<path d="M8 14C4 12 2 8 3 3.5M8 14c4-2 6-6 5-10.5" fill="none" stroke="#c9a45c" stroke-width="1.4"/><path d="M3.2 6.5l2 .5M3.6 9.5l2 .2M5.2 12l1.6-.6M12.8 6.5l-2 .5M12.4 9.5l-2 .2M10.8 12l-1.6-.6" stroke="#c9a45c" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="5.5" r="2" fill="#e9c35a"/>') },
+    draw: P('<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>') },
   taxes: { name: 'Taxes', desc: 'Gold the people pay. Falls with unrest, occupation and every man in the army.',
     draw: P('<path d="M5.2 2.2h5.6L9.6 5c3 1 4.6 4 4.2 7-.2 1.6-1.6 2.5-3.2 2.5H5.4c-1.6 0-3-.9-3.2-2.5-.4-3 1.2-6 4.2-7z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M6.4 5h3.2" stroke="#5c4320" stroke-width="1.2"/><path d="M8 7.6v5M6.6 8.8h2.1a.9.9 0 010 1.8H7.3a.9.9 0 000 1.8h2.1" fill="none" stroke="#5c4320" stroke-width=".9"/>') },
   upkeep: { name: 'Army upkeep', desc: 'Gold the army costs every season.',
@@ -124,7 +124,11 @@ const REG = {
 // concepts that are only words, with no icon of their own
 const WORDS = {
   nation: { name: 'Nation', desc: 'A realm on the map, with its own ruler, gold and army.', avoid: ['country', 'countries', 'states'] },
+  rarity: { name: 'Rarity', desc: 'How rare a ruler is, from Common to Mythic. The rarer he is, the more he can change the game.' },
 };
+// ruler rarity, white to gold (the odds of each are in sim.js, TIER_ODDS)
+const TIER = [null, { name: 'Common', color: '#cfd3d8' }, { name: 'Uncommon', color: '#6cc070' }, { name: 'Rare', color: '#5b9be6' },
+  { name: 'Epic', color: '#a678e8' }, { name: 'Mythic', color: '#f0c24b' }];
 // ruler quirk emblems, drawn inside a round badge (names and descriptions come from TRAITS in sim.js)
 const EMB = {
   warmonger: `<path d="M-2.6 2.6L2.8 -2.8M-2.4 -.2L.2 2.4M-3.2 3.2l1-1" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/>`,
@@ -156,9 +160,15 @@ const EMB = {
   liberator: `<rect x="-3.6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/><rect x=".6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/>`,
   saint: `<ellipse cy="-2.4" rx="2.6" ry=".9" fill="none" stroke="${INK}" stroke-width=".9"/><circle cy=".9" r="1.9" fill="${INK}"/>`,
   iron: `<path d="M-3.4 -1.6H2.2C3 -1.6 3.6 -1 3.4 -.4H1.2V.8L2 2.4H-2L-1.2 .8V-.4H-2.6C-3.2 -.4 -3.4 -1 -3.4 -1.6z" fill="${INK}"/>`,
+  // mythic
+  chancellor: `<path d="M-3.4 -2.6H3.4V-1.4H-3.4zM-2.6 -1.4V3M2.6 -1.4V3M-3.4 3H3.4" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M0 -3.6V-2.6" stroke="${INK}" stroke-width=".9"/><circle cy=".8" r="1.1" fill="${INK}"/>`,
+  destiny: `<path d="M-3.6 -3.2C-1.6 -1.6 -.6 0 -.4 3.2M3.6 -3.2C1.6 -1.6 .6 0 .4 3.2" fill="none" stroke="${INK}" stroke-width="1"/><path d="M0 -3.4L.9 -1.6L2.8 -1.4L1.4 -.2L1.8 1.6L0 .7L-1.8 1.6L-1.4 -.2L-2.8 -1.4L-.9 -1.6z" fill="${INK}"/>`,
+  prophet: `<path d="M0 -3.6V3.6M-2.4 -1.4H2.4" stroke="${INK}" stroke-width="1"/><path d="M-3.4 3.4H3.4" stroke="${INK}" stroke-width=".8"/><circle cy="-1.4" r="3.2" fill="none" stroke="${INK}" stroke-width=".5" opacity=".7"/>`,
+  sun: `<circle r="1.8" fill="${INK}"/><path d="M0 -3.6V-2.6M0 2.6V3.6M-3.6 0H-2.6M2.6 0H3.6M-2.5 -2.5L-1.8 -1.8M2.5 2.5L1.8 1.8M-2.5 2.5L-1.8 1.8M2.5 -2.5L1.8 -1.8" stroke="${INK}" stroke-width=".8" stroke-linecap="round"/>`,
   navigator: `<circle cy="-2.6" r=".8" fill="none" stroke="${INK}" stroke-width=".8"/><path d="M0 -1.8V3.2M-1.6 -.6H1.6M-3 .8C-2.6 2.6 -1.4 3.2 0 3.2C1.4 3.2 2.6 2.6 3 .8" fill="none" stroke="${INK}" stroke-width=".9" stroke-linecap="round"/>`,
 };
-const EMB_BADGE = `<circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1"/>`;
+// the round badge behind a quirk emblem, ringed in its rarity's colour
+const embBadge = tier => `<circle r="7" fill="#1a1f26" stroke="${(TIER[tier] || TIER[1]).color}" stroke-width="${tier >= 4 ? 1.4 : 1}"/>`;
 
 // the name of a concept, for labels
 const nm = k => REG[k].name;

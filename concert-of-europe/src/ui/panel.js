@@ -17,18 +17,20 @@ function renderLog(){
 }
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 // a ruler's quirk as a badge; hover names it and says what it does for this ruler
-const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(TRAITS[r.trait].label, S.traitDesc(r) + '.')}>${EMB_BADGE}${EMB[r.trait]}</svg>` : '';
+const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(TRAITS[r.trait].label, S.traitDesc(r) + '.')}>${embBadge(TRAITS[r.trait].tier)}${EMB[r.trait]}</svg>` : '';
 
 // ---------- the player's choices ----------
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
-  const card = (r, i) => `<button class="heir" data-i="${i}">
+  const card = (r, i) => { const t = TRAITS[r.trait].tier;
+    return `<button class="heir tier${t}" data-i="${i}" style="--tc:${TIER[t].color};animation-delay:${i * 90}ms">
+      <span class="rar" ${tipOf('rarity')}>${TIER[t].name}</span>
       <div class="hh">${emblem(r)}<div><b>${cap1(TRAITS[r.trait].epi)}</b><span class="who">${r.given}</span></div></div>
       <p class="vibe">${TRAITS[r.trait].vibe}</p>
       <p class="fx">${iconize(S.traitDesc(r))}.</p>
-    </button>`;
+    </button>`; };
   const why = p.why ? p.why.replace(/<[^>]*>/g, '') : '';
   $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in 1836?` : `Who rules ${c.name} now?`;
   $('heirSub').textContent = p.opening ? 'Pick a ruler. The ministers run everything else.'
