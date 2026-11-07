@@ -172,13 +172,13 @@ th svg.ic{margin:0}
 .picks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .pick{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
 .pick:hover{border-color:var(--brass)}.pick .fl{width:14px;height:10px;border-radius:2px}
-.heirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:6px}
+.heirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px;margin-top:6px}
 .heir{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px}
 .heir:hover,.heir:focus-visible{border-color:var(--brass);background:#262d36}
-.heir .hh{display:flex;align-items:center;gap:8px}.heir .hh b{font:400 19px/1.15 var(--display)}.heir .hh svg.emb{width:26px;height:26px;flex:none}
-.heir .vibe{margin:2px 0 0;font-size:15px;font-style:italic}
-.heir .fx{margin:0;color:var(--muted);font-size:12.5px}
-.heir .tags{display:flex;flex-wrap:wrap;gap:10px;color:var(--muted);font-size:12px;margin-top:auto;padding-top:4px}
+.heir .hh{display:flex;align-items:center;gap:10px}.heir .hh b{display:block;font:400 21px/1.1 var(--display)}.heir .hh .who{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}.heir .hh svg.emb{width:34px;height:34px;flex:none}
+.heir .vibe{margin:4px 0 0;font-size:15px;font-style:italic;line-height:1.35}
+.iw{white-space:nowrap}
+.heir .fx{margin:auto 0 0;padding-top:8px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.4}
 .formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
 .legend div{display:flex;align-items:center;gap:8px}
@@ -243,7 +243,7 @@ th svg.ic{margin:0}
 <div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
   <div class="box">
     <h2 id="startTitle">Concert of Europe</h2>
-    <p>Europe, 1836 to 1918. Every nation chases the most gold a year when the Great War ends. You can watch, or rule one nation: its ministers run the state, and you choose its ruler.</p>
+    <div id="startIntro"></div>
     <p><button class="btn primary" id="watch">Watch Europe</button></p>
     <div id="startBody"></div>
   </div>

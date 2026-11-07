@@ -16,37 +16,30 @@ function renderLog(){
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
-const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}" ${tipAttr(TRAITS[t].label, TRAITS[t].desc + '.')}>${EMB_BADGE}${EMB[t]}</svg>` : '';
+// a ruler's quirk as a badge; hover names it and says what it does for this ruler
+const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(TRAITS[r.trait].label, S.traitDesc(r) + '.')}>${EMB_BADGE}${EMB[r.trait]}</svg>` : '';
 
 // ---------- the player's choices ----------
-// one line of character per heir, then what it does in the game
-const HEIR_VIBE = {
-  warmonger: 'Wants to bathe in the blood of his enemies.',
-  builder: 'Talks of nothing but coal, iron and railways.',
-  paranoid: 'Sleeps with a pistol and trusts no neighbour.',
-  revanchist: 'Has sworn to take back every acre ever lost.',
-  spendthrift: 'Wants wine, opera and a new palace every spring.',
-  reformer: 'Reads the liberal papers, and agrees with them.',
-  prudent: 'Patient and careful; rules for his grandchildren.',
-  bold: 'A gambler at cards, in love and in war.',
-};
-const HEIR_FX = { prudent: 'Counts gains far ahead and shies away from risky wars', bold: 'Wants results fast and fears no loss' };
+// one heir per card: who he is (the title he will be known by), his character in a line, what he does
+const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
-  const card = (r, i) => { const yrs = Math.round(8 + r.pat * 22);
-    return `<button class="heir" data-i="${i}">
-      <div class="hh">${r.trait ? emblem(r.trait) : ic('ruler', 'lg')}<b>${r.name}</b></div>
-      <p class="vibe">${HEIR_VIBE[r.slot]}</p>
-      <p class="fx">${r.trait ? S.TRAITS[r.trait].desc : HEIR_FX[r.slot]}.</p>
-      <div class="tags"><span>${ic('patience')}plans ${yrs} years ahead</span><span>${ic('risk')}${r.risk > 0.6 ? 'gambler' : r.risk < 0.4 ? 'cautious' : 'measured'}</span></div>
-    </button>`; };
-  $('heirTitle').innerHTML = p.opening ? `Who rules ${c.name} in 1836?` : `${p.old} is dead`;
-  $('heirSub').textContent = p.opening ? 'Pick your ruler. The ministers run everything else.' : 'Who rules next?';
+  const card = (r, i) => `<button class="heir" data-i="${i}">
+      <div class="hh">${emblem(r)}<div><b>${cap1(TRAITS[r.trait].epi)}</b><span class="who">${r.given}</span></div></div>
+      <p class="vibe">${TRAITS[r.trait].vibe}</p>
+      <p class="fx">${iconize(S.traitDesc(r))}.</p>
+    </button>`;
+  const why = p.why ? p.why.replace(/<[^>]*>/g, '') : '';
+  $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in 1836?` : `Who rules ${c.name} now?`;
+  $('heirSub').textContent = p.opening ? 'Pick a ruler. The ministers run everything else.'
+    : `${why}${p.crisis ? ' Rival claimants will fight whoever you pick.' : ''}`;
   $('heirCards').innerHTML = p.options.map(card).join('');
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
 }
 function showStart(){
+  $('startIntro').innerHTML = `<p>${iconize('Europe, 1836 to 1918. Every nation is after one thing: the most gold a year when the Great War ends.')}</p>
+    <p>${iconize('Pick a nation to rule. You never give orders: each time the throne passes, you choose the next ruler from three heirs, and the ministers run the nation the way he sees the world. Choose well, and it prospers. Or just watch.')}</p>`;
   const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
   const big = ['GBR', 'FRA', 'PRU', 'AUS', 'RUS', 'TUR'];
   const btn = c => `<button class="pick" data-play="${c.tag}"><span class="fl" style="background:${c.color}"></span>${c.name}</button>`;
@@ -118,7 +111,7 @@ function renderNation(){
     <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
       <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
     ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div class="war" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}${nm('civilWar')}</div>` : ''}
-    <div class="rulerline">${r.trait ? emblem(r.trait) : ''}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${r.name}</b></div>
+    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${r.name}</b></div>
     <div class="pers">
       <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${r.pat > 0.6 ? 'far-sighted' : r.pat < 0.4 ? 'short-sighted' : 'steady'}</span>
       <span ${tipOf('risk')}>${ic('risk')}${r.risk > 0.6 ? 'gambler' : r.risk < 0.4 ? 'cautious' : 'measured'}</span>

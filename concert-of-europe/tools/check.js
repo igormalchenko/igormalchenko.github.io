@@ -7,7 +7,7 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const ctx = {}; vm.createContext(ctx);
-vm.runInContext(read('src/ui/registry.js') + '\nthis.REG = REG; this.WORDS = WORDS; this.maps = [TYPE_IC, OPT_IC, MARK_IC];', ctx);
+vm.runInContext(read('src/ui/registry.js') + '\nthis.REG = REG; this.WORDS = WORDS; this.maps = [TYPE_IC, OPT_IC, MARK_IC, WORD_IC];', ctx);
 const REG = ctx.REG, problems = [];
 const lineOf = (src, i) => src.slice(0, i).split('\n').length;
 

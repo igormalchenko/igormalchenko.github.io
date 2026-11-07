@@ -7,5 +7,5 @@ module.exports = function load(){
     + '\nthis.createSim = createSim; this.REGIONS = REGIONS;';
   vm.runInContext(code, ctx);
   const GEO = JSON.parse(fs.readFileSync(path.join(root, 'map/geo.json'), 'utf8'));
-  return { createSim: seed => ctx.createSim(seed, GEO), GEO, REGIONS: ctx.REGIONS };
+  return { createSim: (seed, opts) => ctx.createSim(seed, GEO, opts), GEO, REGIONS: ctx.REGIONS };
 };
