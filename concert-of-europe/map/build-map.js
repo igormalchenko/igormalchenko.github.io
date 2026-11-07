@@ -98,10 +98,12 @@ for (let i = 0; i < n; i++) {
 }
 
 // ---- the Ottoman south: land south of the Caucasus goes to Anatolia, along a ragged line rather than a straight cut ----
+let cutLine;
 {
   const ia = REGIONS.findIndex(r => r[0] === 'ana'), ic = REGIONS.findIndex(r => r[0] === 'cau');
   const yCut = proj(0, 36.9)[1];
-  const south = [[[930, yCut], ...noisyEdge([930, yCut], [MAP_W + 5, yCut + 3]).slice(1), [MAP_W + 5, MAP_H + 5], [930, MAP_H + 5], [930, yCut]]];
+  cutLine = noisyEdge([930, yCut], [MAP_W + 5, yCut + 3]);
+  const south = [[...cutLine, [MAP_W + 5, MAP_H + 5], [930, MAP_H + 5], [930, yCut]]];
   const piece = pc.intersection(regions[ic].mp, south).filter(poly => ringArea(poly[0]) > 3);
   regions[ic].mp = pc.difference(regions[ic].mp, south).filter(poly => ringArea(poly[0]) > 3);
   regions[ia].mp = pc.union(regions[ia].mp, ...piece);
@@ -148,28 +150,47 @@ function pointOnLand(pt){
 }
 const nb = REGIONS.map(() => new Set());
 const borders = [];
+// split a line into the stretches that run over land
+const landRuns = e => { const runs = []; let cur = []; e.forEach(p => { if (pointOnLand(p)) cur.push(p); else { if (cur.length > 1) runs.push(cur); cur = []; } }); if (cur.length > 1) runs.push(cur); return runs; };
+// drawing: look at both sides of every segment, so a line that changes neighbours partway (or stops being a border) is cut there
+function emitBorder(run){
+  const sideKey = (p, q) => { const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1;
+    const sA = provAt([mx - dy / L * 1.2, my + dx / L * 1.2]), sB = provAt([mx + dy / L * 1.2, my - dx / L * 1.2]);
+    return sA < 0 || sB < 0 || sA === sB ? null : [Math.min(sA, sB), Math.max(sA, sB)]; };
+  let cur = [run[0]], ck = undefined;
+  const flush = () => { if (!ck || cur.length < 2) return; const [a, b] = ck;
+    borders.push({ a, b, d: 'M' + cur.map(x => r1(x[0]) + ',' + r1(x[1])).join('L') }); };
+  for (let k = 0; k < run.length - 1; k++) {
+    const sk = sideKey(run[k], run[k + 1]);
+    if (ck !== undefined && String(sk) === String(ck)) { cur.push(run[k + 1]); continue; }
+    if (ck === undefined) { cur = [run[k], run[k + 1]]; ck = sk; continue; }
+    // the neighbours change somewhere between the middles of the previous and this segment: find where, to a twentieth
+    const lerp = (u, v, t) => [u[0] + (v[0] - u[0]) * t, u[1] + (v[1] - u[1]) * t];
+    const pos = t => t < 1 ? lerp(run[k - 1], run[k], t) : lerp(run[k], run[k + 1], t - 1);
+    let t = 0.5; while (t < 1.45 && String(sideKey(pos(t), pos(t + 0.05))) !== String(sk)) t += 0.05;
+    const split = pos(t);
+    if (t < 1) { cur[cur.length - 1] = split; flush(); cur = [split, run[k], run[k + 1]]; }
+    else { cur.push(split); flush(); cur = [split, run[k + 1]]; }
+    ck = sk;
+  }
+  flush();
+}
 for (let i = 0; i < n; i++) for (const j of del.neighbors(i)) {
   if (j <= i || j >= n) continue;
   const a = vor.cellPolygon(i), b = vor.cellPolygon(j);
   const bk = new Set(b.map(key)); const common = []; const seen = new Set();
   for (const p of a) { const k = key(p); if (bk.has(k) && !seen.has(k)) { seen.add(k); common.push(p); } }
   if (common.length < 2) continue;
-  const e = noisyEdge(common[0], common[1]);
-  // keep runs of the border that are on land
-  const runs = []; let cur = [];
-  e.forEach(p => { if (pointOnLand(p)) cur.push(p); else { if (cur.length > 1) runs.push(cur); cur = []; } });
-  if (cur.length > 1) runs.push(cur);
-  const landLen = runs.reduce((s, r) => s + r.length, 0);
-  runs.forEach(run => {
-    if (run.length < 3) return;
-    const m = Math.floor(run.length / 2), p = run[m], q = run[Math.min(run.length - 1, m + 1)];
-    const dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1;
-    const sA = provAt([p[0] - dy / L * 1.2, p[1] + dx / L * 1.2]), sB = provAt([p[0] + dy / L * 1.2, p[1] - dx / L * 1.2]);
-    if (sA < 0 || sB < 0 || sA === sB) return;
-    nb[sA].add(sB); nb[sB].add(sA);
-    borders.push({ a: sA, b: sB, d: 'M' + run.map(x => r1(x[0]) + ',' + r1(x[1])).join('L') });
+  landRuns(noisyEdge(common[0], common[1])).forEach(run => {
+    // adjacency: the side test at the middle of each land stretch
+    if (run.length >= 3) { const m = Math.floor(run.length / 2), p = run[m], q = run[Math.min(run.length - 1, m + 1)];
+      const dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1;
+      const sA = provAt([p[0] - dy / L * 1.2, p[1] + dx / L * 1.2]), sB = provAt([p[0] + dy / L * 1.2, p[1] - dx / L * 1.2]);
+      if (sA >= 0 && sB >= 0 && sA !== sB) { nb[sA].add(sB); nb[sB].add(sA); } }
+    emitBorder(run);
   });
 }
+landRuns(cutLine).forEach(emitBorder);
 const idx = {}; REGIONS.forEach((r, i) => idx[r[0]] = i);
 // ---- coastline from the shapes: outline points with open sea just beside them ----
 const edgeOK = p => p[0] > 4 && p[0] < MAP_W - 4 && p[1] > 4 && p[1] < MAP_H - 4;
