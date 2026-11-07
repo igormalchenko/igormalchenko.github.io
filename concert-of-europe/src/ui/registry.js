@@ -124,11 +124,11 @@ const REG = {
 // concepts that are only words, with no icon of their own
 const WORDS = {
   nation: { name: 'Nation', desc: 'A realm on the map, with its own ruler, gold and army.', avoid: ['country', 'countries', 'states'] },
-  rarity: { name: 'Rarity', desc: 'How rare a ruler is, from Common to Mythic. The rarer he is, the more he can change the game.' },
+  rarity: { name: 'Rarity', desc: 'How rare a ruler is, from Common to Legendary. The rarer he is, the more he can change the game.' },
 };
 // ruler rarity, white to gold (the odds of each are in sim.js, TIER_ODDS)
 const TIER = [null, { name: 'Common', color: '#cfd3d8' }, { name: 'Uncommon', color: '#6cc070' }, { name: 'Rare', color: '#5b9be6' },
-  { name: 'Epic', color: '#a678e8' }, { name: 'Mythic', color: '#f0c24b' }];
+  { name: 'Epic', color: '#a678e8' }, { name: 'Legendary', color: '#f0c24b' }];
 // ruler quirk emblems, drawn inside a round badge (names and descriptions come from TRAITS in sim.js)
 const EMB = {
   warmonger: `<path d="M-2.6 2.6L2.8 -2.8M-2.4 -.2L.2 2.4M-3.2 3.2l1-1" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/>`,
@@ -160,7 +160,7 @@ const EMB = {
   liberator: `<rect x="-3.6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/><rect x=".6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/>`,
   saint: `<ellipse cy="-2.4" rx="2.6" ry=".9" fill="none" stroke="${INK}" stroke-width=".9"/><circle cy=".9" r="1.9" fill="${INK}"/>`,
   iron: `<path d="M-3.4 -1.6H2.2C3 -1.6 3.6 -1 3.4 -.4H1.2V.8L2 2.4H-2L-1.2 .8V-.4H-2.6C-3.2 -.4 -3.4 -1 -3.4 -1.6z" fill="${INK}"/>`,
-  // mythic
+  // legendary
   chancellor: `<path d="M-3.4 -2.6H3.4V-1.4H-3.4zM-2.6 -1.4V3M2.6 -1.4V3M-3.4 3H3.4" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M0 -3.6V-2.6" stroke="${INK}" stroke-width=".9"/><circle cy=".8" r="1.1" fill="${INK}"/>`,
   destiny: `<path d="M-3.6 -3.2C-1.6 -1.6 -.6 0 -.4 3.2M3.6 -3.2C1.6 -1.6 .6 0 .4 3.2" fill="none" stroke="${INK}" stroke-width="1"/><path d="M0 -3.4L.9 -1.6L2.8 -1.4L1.4 -.2L1.8 1.6L0 .7L-1.8 1.6L-1.4 -.2L-2.8 -1.4L-.9 -1.6z" fill="${INK}"/>`,
   prophet: `<path d="M0 -3.6V3.6M-2.4 -1.4H2.4" stroke="${INK}" stroke-width="1"/><path d="M-3.4 3.4H3.4" stroke="${INK}" stroke-width=".8"/><circle cy="-1.4" r="3.2" fill="none" stroke="${INK}" stroke-width=".5" opacity=".7"/>`,

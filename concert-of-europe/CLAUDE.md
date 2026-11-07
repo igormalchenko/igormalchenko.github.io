@@ -41,7 +41,7 @@ This gives the choice stakes: pick the Conqueror, and if he loses his war he los
 
 ### The ruler pool (built)
 
-Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5). Every heir in Europe is rolled the same way (`TIER_ODDS` in `sim.js`): first his rarity, then a ruler of that rarity. The card shows the rarity's colour and name, and the emblem badge is ringed in it (`TIER` in `registry.js`); epic and mythic cards glow gently, the mythic one with a slow sheen.
+Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5). Every heir in Europe is rolled the same way (`TIER_ODDS` in `sim.js`): first his rarity, then a ruler of that rarity. The card shows the rarity's colour and name, and the emblem badge is ringed in it (`TIER` in `registry.js`); epic and legendary cards glow gently, the legendary one with a slow sheen.
 
 **Common (white, 46%).** Flavour, mostly sideways or a mixed blessing.
 - **Drunkard.** His misjudgment is re-rolled every season.
@@ -75,14 +75,16 @@ Each ruler changes what the forecast values, how it sees the odds, how far ahead
 - **Iron King.** Crushes uprisings (triple garrison) and integrates conquests twice as fast; subject peoples rise when he dies.
 - **Navigator.** Sea trade pays half again and invading across the sea is easy, but the fleet doubles army upkeep.
 
-**Mythic (gold, 1%).** The jackpot: can swallow Europe while he lives, and his empire pays for it when he dies (a succession crisis every time). About one heir in a hundred, so roughly one player game in six offers one, and most watch-mode games crown one somewhere.
-- **Iron Chancellor (the Unifier).** Armies fight 60% harder; he fights one enemy at a time (no one comes to its aid, no great power intervenes); every victory keeps all the occupied land he can reach. When he dies, every province won in his reign rises (+40 unrest, integration back to 30%).
-- **Man of Destiny (the Lion).** Armies fight two and a half times as hard and keep all the land they win; believes in his star (overconfident). Same collapse at his death.
-- **Prophet.** Armies fight 60% harder; every people he conquers counts as his own at once. When he dies, they are foreigners again.
+**Legendary (gold, 1%).** The jackpot: can swallow Europe while he lives, and his empire pays for it when he dies (a succession crisis every time). About one heir in a hundred, so roughly one player game in six offers one, and most watch-mode games crown one somewhere.
+- **Iron Chancellor (the Unifier).** Armies fight twice as hard; he fights one enemy at a time (no one comes to its aid, no great power intervenes); every victory keeps all the occupied land he can reach. When he dies, every province won in his reign rises (+40 unrest, integration back to 30%).
+- **Man of Destiny (the Lion).** Armies fight three times as hard and keep all the land they win; believes in his star (overconfident). Same collapse at his death.
+- **Prophet.** Armies fight two and a half times as hard; every people he conquers counts as his own at once. When he dies, they are foreigners again.
 - **Sun King (the Radiant).** The nation earns 60% more while he lives; when he dies, three years of gold a year turn into debt.
-- All three conquerors also raise volunteers (the army takes half as many workers) and ignore old truces.
+- All three conquerors raise a great army when crowned (at least 8k men per million people, or half again what he inherits), take half as many workers into it, and ignore old truces. Without the levy, a legendary ruler of a poor nation never dared a war.
 
-Rule 7 still holds for mythic conquerors: they keep only land they can reach.
+Measured (12 worlds, and forced into Sardinia, Bavaria and Spain): about half of legendary conquerors go on a run, typically 1 → 10–16 provinces, and most empires crumble within a decade of their death. One legendary Spain won its world. Small one-province nations often fizzle or are swallowed first; that's the gamble.
+
+Rule 7 still holds for legendary conquerors: they keep only land they can reach.
 
 ## Interface rules
 

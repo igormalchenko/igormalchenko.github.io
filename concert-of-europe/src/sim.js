@@ -18,7 +18,7 @@ const NAMES = {
 };
 // Every ruler is one of these. `vibe` is his character in a line, `desc` what he does in the game.
 // {friend}, {culture}, {mood} and {landmark} are filled in per ruler (traitDesc).
-//   tier    1 common (white) … 5 mythic (gold): how rare he is, and how much he can change the game
+//   tier    1 common (white) … 5 legendary (gold): how rare he is, and how much he can change the game
 //   card    false: never offered on a heir card (comes only from events or growing up)
 //   temper  fixes his patience and nerve
 const TRAITS = {
@@ -52,10 +52,10 @@ const TRAITS = {
   saint: { tier: 4, label: 'Saint', epi: 'the Saint', vibe: 'Prays for his enemies, and means it.', desc: 'No unrest while he lives, but he starts no wars and helps no ally' },
   iron: { tier: 4, label: 'Iron King', epi: 'the Iron', vibe: 'Has never pardoned anyone.', desc: 'Crushes uprisings and integrates conquests twice as fast; when he dies, his subject peoples rise' },
   navigator: { tier: 4, label: 'Navigator', epi: 'the Navigator', vibe: 'Happier on a quarterdeck than a throne.', desc: 'Sea trade pays half again and invading across the sea is easy, but the fleet doubles army upkeep' },
-  // mythic: can swallow Europe while he lives; when he dies, his empire pays for it
-  chancellor: { tier: 5, label: 'Iron Chancellor', epi: 'the Unifier', vibe: 'Decides the great questions of the day by blood and iron.', desc: 'Fights one enemy at a time, 60% harder, and keeps all the land he wins. When he dies, his conquests rise', temper: { pat: 0.8, risk: 0.75 } },
-  destiny: { tier: 5, label: 'Man of Destiny', epi: 'the Lion', vibe: 'Has never lost a battle he chose to fight.', desc: 'His armies fight two and a half times as hard and keep all the land they win. When he dies, his conquests rise', temper: { pat: 0.6, risk: 0.9 } },
-  prophet: { tier: 5, label: 'Prophet', epi: 'the Prophet', vibe: 'Thousands follow him wherever he rides.', desc: 'His armies fight 60% harder, and every people he conquers becomes his own at once. When he dies, they are foreigners again', temper: { pat: 0.7, risk: 0.8 } },
+  // legendary: can swallow Europe while he lives; when he dies, his empire pays for it
+  chancellor: { tier: 5, label: 'Iron Chancellor', epi: 'the Unifier', vibe: 'Decides the great questions of the day by blood and iron.', desc: 'Raises a great army that fights twice as hard, one enemy at a time, and keeps all the land he wins. When he dies, his conquests rise', temper: { pat: 0.8, risk: 0.75 } },
+  destiny: { tier: 5, label: 'Man of Destiny', epi: 'the Lion', vibe: 'Has never lost a battle he chose to fight.', desc: 'Raises a great army that fights three times as hard and keeps all the land it wins. When he dies, his conquests rise', temper: { pat: 0.6, risk: 0.9 } },
+  prophet: { tier: 5, label: 'Prophet', epi: 'the Prophet', vibe: 'Thousands follow him wherever he rides.', desc: 'Raises a great army that fights two and a half times as hard, and every people he conquers becomes his own at once. When he dies, they are foreigners again', temper: { pat: 0.7, risk: 0.8 } },
   sun: { tier: 5, label: 'Sun King', epi: 'the Radiant', vibe: 'The age will be named after him.', desc: 'The whole nation earns 60% more while he lives. When he dies, the bill comes: three years of gold a year in debt' },
 };
 const TRAIT_KEYS = Object.keys(TRAITS);
@@ -138,7 +138,7 @@ function createSim(seed, geo, opts = {}){
   }
   function crown(c, r, quiet){
     if (r.k) regnal[r.k] = (regnal[r.k] || 0) + 1; r.since = S.year; c.ruler = r;
-    if (TRAITS[r.trait] && TRAITS[r.trait].tier === 5) (S.stats.mythic = S.stats.mythic || []).push(`${c.tag} ${r.trait} ${S.year}`);
+    if (TRAITS[r.trait] && TRAITS[r.trait].tier === 5) (S.stats.legendary = S.stats.legendary || []).push(`${c.tag} ${r.trait} ${S.year}`);
     return reignBegins(c, r, quiet);
   }
   // what a new reign (or a child king coming of age) changes at once
@@ -151,6 +151,8 @@ function createSim(seed, geo, opts = {}){
     if (t === 'lecher') neighborsOf(c).forEach(o => addRel(c.tag, o.tag, 15));
     if (t === 'conqueror') { neighborsOf(c).forEach(o => addRel(c.tag, o.tag, -30)); c.infamy += 10; }
     if (t === 'architect') r.works = S.t + 20;
+    // volunteers flock to a legendary conqueror's banner
+    if (LEGEND_WAR.includes(t)) { c.army = Math.max(c.army * 1.5, popOf(c) * 8); say(`Volunteers flock to the banner of ${r.name}: the army of ${N(c)} swells to ${Math.round(c.army)} thousand.`); }
     return r;
   }
   function newRuler(c, base, quiet){ return crown(c, makeRuler(c, base), quiet); }
@@ -185,7 +187,7 @@ function createSim(seed, geo, opts = {}){
     const was = old.name.charAt(0).toUpperCase() + old.name.slice(1);
     if (old.trait === 'architect' && c.treasury > 0) c.treasury = 0;
     if (old.trait === 'iron') regionsOf(c).forEach(r => { if (!isAccepted(c, r.culture)) r.unrest = Math.min(100, r.unrest + 30); });
-    // a mythic reign ends: the conquered rise, a prophet's converts are foreigners again, the Sun King's bills arrive
+    // a legendary reign ends: the conquered rise, a prophet's converts are foreigners again, the Sun King's bills arrive
     if (old.trait === 'chancellor' || old.trait === 'destiny') regionsOf(c).forEach(r => { if (r.wonUnder === old) { r.unrest = Math.min(100, r.unrest + 40); r.integ = Math.min(r.integ, 0.3); } });
     if (old.trait === 'prophet') (old.added || []).forEach(cul => { if (cul !== c.culture) c.acc.delete(cul); });
     if (old.trait === 'sun') c.treasury -= income(c) * 4 * 3;
@@ -243,7 +245,7 @@ function createSim(seed, geo, opts = {}){
   const facAvg = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.fac * r.pop, 0) / p; };
   const unrestOf = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.unrest * r.pop, 0) / p; };
   // how well the armies fight: industry, and a soldier or conqueror at their head
-  const quality = c => (1 + 0.15 * facAvg(c)) * (has(c, 'destiny') ? 2.5 : has(c, 'chancellor') || has(c, 'prophet') ? 1.6 : has(c, 'conqueror') ? 1.4 : has(c, 'soldier') ? 1.25 : 1);
+  const quality = c => (1 + 0.15 * facAvg(c)) * (has(c, 'destiny') ? 3 : has(c, 'prophet') ? 2.5 : has(c, 'chancellor') ? 2 : has(c, 'conqueror') ? 1.4 : has(c, 'soldier') ? 1.25 : 1);
   const inCrisis = c => c.crisis && S.t < c.crisis.until;
   const strength = c => c.army * quality(c) * (1 - unrestOf(c) / 250) * (inCrisis(c) ? 0.5 : 1);
   const warOf = c => S.wars.find(w => w.att.includes(c.tag) || w.def.includes(c.tag));
@@ -255,9 +257,9 @@ function createSim(seed, geo, opts = {}){
   // Big states are harder to run: every province beyond six trims the yield of all of them.
   const admin = n => clamp(1 - 0.03 * Math.max(0, n - 6), 0.55, 1);
   const adminOf = c => admin(regionsOf(c).length);
-  // a mythic conqueror's volunteers take half as many workers from the fields
-  const MYTHIC_WAR = ['chancellor', 'destiny', 'prophet'];
-  const workforce = (c, army = c.army) => clamp(1 - army / (Math.max(0.5, popOf(c)) * (MYTHIC_WAR.some(t => has(c, t)) ? 90 : 45)), 0.55, 1);
+  // a legendary conqueror's volunteers take half as many workers from the fields
+  const LEGEND_WAR = ['chancellor', 'destiny', 'prophet'];
+  const workforce = (c, army = c.army) => clamp(1 - army / (Math.max(0.5, popOf(c)) * (LEGEND_WAR.some(t => has(c, t)) ? 90 : 45)), 0.55, 1);
   // income of one province in a season, broken down
   function regionIncome(r, c = S.C[r.owner], opts = {}){
     if (r.occ && !opts.ignoreOcc) return { tax: 0, fac: 0, trade: 0 };
@@ -370,7 +372,7 @@ function createSim(seed, geo, opts = {}){
   const bySeaOnly = (a, r) => !r.nb.some(j => S.regions[j].owner === a.tag && !geoNaval(j, r.i));
   function geoNaval(i, j){ return (S.navalSet || (S.navalSet = new Set((geo.naval || []).flatMap(([x, y]) => [x + '-' + y, y + '-' + x])))).has(i + '-' + j); }
   function warEval(a, d, r, dExtra = 0, dAlly = null){
-    if (a.allies.has(d.tag) || ((a.truce[d.tag] || 0) > S.year && !MYTHIC_WAR.some(t => has(a, t)))) return null;   // he ignores old truces
+    if (a.allies.has(d.tag) || ((a.truce[d.tag] || 0) > S.year && !LEGEND_WAR.some(t => has(a, t)))) return null;   // he ignores old truces
     let their = theirSide(d, a.tag) + dExtra * quality(d);
     if (warOf(d)) their *= 0.5;   // its armies are busy elsewhere
     interveners(a, d).forEach(({ m, q }) => { their += strength(m) * q * 0.45; });
