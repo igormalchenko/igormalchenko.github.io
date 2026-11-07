@@ -172,30 +172,38 @@ th svg.ic{margin:0}
 .picks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .pick{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
 .pick:hover{border-color:var(--brass)}.pick .fl{width:14px;height:10px;border-radius:2px}
-.heirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px;margin-top:6px}
-.heir{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px}
-.heir{position:relative;overflow:hidden;border-color:color-mix(in srgb,var(--tc) 45%,var(--line));border-top:3px solid var(--tc)}
-.heir:hover,.heir:focus-visible{border-color:var(--tc);background:#262d36}
-.heir .rar{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--tc);margin-bottom:-2px}
-.heir.tier3{box-shadow:0 0 10px -4px var(--tc)}
-.heir.tier4{box-shadow:0 0 16px -4px var(--tc)}
-.heir.tier5{box-shadow:0 0 22px -4px var(--tc);background:linear-gradient(160deg,color-mix(in srgb,var(--tc) 10%,var(--panel2)),var(--panel2) 60%)}
+.heirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:10px}
+.heir{position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;min-height:340px;padding:24px 18px 18px;border-radius:14px;color:var(--ink);font:inherit;
+  border:1px solid color-mix(in srgb,var(--tc) 55%,var(--line));
+  background:radial-gradient(120% 60% at 50% 0%,color-mix(in srgb,var(--tc) 14%,transparent),transparent 70%),linear-gradient(180deg,#242b34,#1a1f26);
+  box-shadow:0 8px 20px -10px rgba(0,0,0,.8);transition:transform .15s ease,border-color .15s ease}
+.heir::before{content:"";position:absolute;inset:6px;border:1px solid color-mix(in srgb,var(--tc) 24%,transparent);border-radius:10px;pointer-events:none}
+.heir:hover{transform:translateY(-4px);border-color:var(--tc)}
+.heir:focus{outline:none}.heir:focus-visible{border-color:var(--tc)}
+.heir .key{position:absolute;top:13px;left:14px;min-width:18px;font-size:11px;line-height:17px;color:var(--muted);border:1px solid var(--line);border-radius:4px}
+.heir .rar{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tc)}
+.heir svg.emb{width:68px;height:68px;margin:12px 0 8px;flex:none}
+.heir .ttl{font:400 24px/1.1 var(--display)}
+.heir .who{color:var(--muted);font-size:12.5px}
+.heir .vibe{margin:12px 2px 0;font-size:15px;font-style:italic;line-height:1.4;color:var(--muted)}
+.heir .fx{margin:auto 0 0;padding-top:12px;width:100%;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line));font-size:13.5px;line-height:1.45}
+.heir.tier3{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 12px -4px var(--tc)}
+.heir.tier4{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 18px -4px var(--tc)}
+.heir.tier5{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 24px -4px var(--tc);background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%),linear-gradient(180deg,#2a2c2b,#1d1f22)}
+@media (max-width:640px){.heirs{grid-template-columns:1fr}.heir{min-height:0}.heir svg.emb{width:48px;height:48px;margin:6px 0 4px}}
 .heir.tier5::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,transparent 60%);background-size:250% 100%;background-position:120% 0;opacity:0}
 @media (prefers-reduced-motion:no-preference){
-  #heirModal.on .heir{animation:deal .35s ease-out both}
-  #heirModal.on .heir.tier4{animation:deal .35s ease-out both,glow4 3.2s ease-in-out .4s infinite}
-  #heirModal.on .heir.tier5{animation:deal .35s ease-out both,glow5 2.6s ease-in-out .4s infinite}
+  #heirModal.on .heir{animation:deal .35s ease-out backwards}
+  #heirModal.on .heir.tier4{animation:deal .35s ease-out backwards,glow4 3.2s ease-in-out .4s infinite}
+  #heirModal.on .heir.tier5{animation:deal .35s ease-out backwards,glow5 2.6s ease-in-out .4s infinite}
   #heirModal.on .heir.tier5::after{animation:sheen 4s ease-in-out 1s infinite}
 }
 @keyframes deal{from{opacity:0;transform:translateY(8px)}}
 @keyframes glow4{50%{box-shadow:0 0 22px -3px var(--tc)}}
 @keyframes glow5{50%{box-shadow:0 0 30px -2px var(--tc)}}
 @keyframes sheen{0%{opacity:1;background-position:120% 0}45%,100%{opacity:1;background-position:-20% 0}}
-.heir .hh{display:flex;align-items:center;gap:10px}.heir .hh b{display:block;font:400 21px/1.1 var(--display)}.heir .hh .who{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}.heir .hh svg.emb{width:34px;height:34px;flex:none}
-.heir .vibe{margin:4px 0 0;font-size:15px;font-style:italic;line-height:1.35}
 .iw{white-space:nowrap}
-.rerolls{display:flex;align-items:center;gap:10px;margin-top:12px}
-.heir .fx{margin:auto 0 0;padding-top:8px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.4}
+.rerolls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
 .formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
 .legend div{display:flex;align-items:center;gap:8px}
@@ -254,7 +262,7 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme: the provinces they were founded to win, which they treat as their own. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: Space or N for next season, P to play or pause, + and − to change speed.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: 1, 2 or 3 to pick an heir, R to reroll, Space or N for next season, P to play or pause, + and − to change speed.</p>
   </div>
 </div>
 <div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">

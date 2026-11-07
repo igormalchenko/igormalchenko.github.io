@@ -27,6 +27,9 @@ $('side').addEventListener('click', e => { if (e.target.closest('#allForecasts')
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
+  // 1, 2, 3 pick the heir on that card
+  if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && /^[1-3]$/.test(e.key)) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
+  if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
   if (S.pending) return;
   if (e.key === 'n' || e.key === ' ') { e.preventDefault(); if (!S.over) step(1); }
   if (e.key === 'p') { timer ? stopAuto() : startAuto(); }

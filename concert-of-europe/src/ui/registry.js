@@ -124,7 +124,7 @@ const REG = {
 // concepts that are only words, with no icon of their own
 const WORDS = {
   nation: { name: 'Nation', desc: 'A realm on the map, with its own ruler, gold and army.', avoid: ['country', 'countries', 'states'] },
-  reroll: { name: 'Reroll', desc: 'Deal three new heirs instead of these. Three free rerolls a game.' },
+  reroll: { name: 'Reroll', desc: 'Deal three new heirs instead of these (key R). Three free rerolls a game.' },
   rarity: { name: 'Rarity', desc: 'How rare a ruler is, from Common to Legendary. The rarer he is, the more he can change the game.' },
 };
 // ruler rarity, white to gold (the odds of each are in sim.js, TIER_ODDS)

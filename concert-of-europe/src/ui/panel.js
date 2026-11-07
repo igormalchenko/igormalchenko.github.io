@@ -27,8 +27,10 @@ function showHeir(){
   const p = S.pending, c = S.C[p.tag];
   const card = (r, i) => { const t = TRAITS[r.trait].tier;
     return `<button class="heir tier${t}" data-i="${i}" style="--tc:${TIER[t].color};animation-delay:${i * 90}ms">
+      <span class="key">${i + 1}</span>
       <span class="rar" ${tipOf('rarity')}>${TIER[t].name}</span>
-      <div class="hh">${emblem(r)}<div><b>${cap1(TRAITS[r.trait].epi)}</b><span class="who">${r.given}</span></div></div>
+      ${emblem(r)}
+      <b class="ttl">${cap1(TRAITS[r.trait].epi)}</b><span class="who">${r.given}</span>
       <p class="vibe">${TRAITS[r.trait].vibe}</p>
       <p class="fx">${iconize(S.traitDesc(r))}.</p>
     </button>`; };
