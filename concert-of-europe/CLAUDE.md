@@ -16,24 +16,63 @@ Read README.md first for what this is and why. This file holds the design rules 
 
 ## Player rules
 
-The player rules one country through rare, one-off choices. The ministers (the same AI as everyone else) run the state.
+**The line of kings.** The player's only decision is who rules next. Whenever the throne passes, the player picks one of three heirs; the ministers (the same AI as everyone else) then run the state the way that ruler sees the world, until he is gone. There are no other card types: no ministers, generals, favourites or councils beside the ruler.
 
-- **One mandatory choice from three, every so often.** The game pauses until the player picks. Aim for a card every few dozen seasons, not every turn; heirs alone give only 3–5 a game, so more card types are planned.
+- **One mandatory choice from three, at each succession.** The game pauses until the player picks. Aim for 6–10 successions a game (see "How a reign ends").
 - **No managing between turns.** No policies, sliders or standing orders, and a choice can never be revisited or changed later.
-- **Distinct and readable at once.** Three options should feel like three different characters (the lecher, the drunk, the butcher), never shades of one policy ("reactionary" vs "liberal-reactionary cabinet"). One line of character plus one line of effect.
+- **Distinct and readable at once.** Three heirs should feel like three different characters (the lecher, the drunk, the butcher), never shades of one policy. One line of character plus one line of effect.
+- **What you see is what you get.** Every heir is shown face up; no hidden or sealed heirs.
 - **No suggested pick.** Don't mark what the ministers would choose.
-- **Chill, not arcade.** Few cards per game, no stacking, levelling or evolutions, modest effects. A card should shape the nation's character (what its ministers value) more than raw power.
-- **AI countries choose too**, by their own gold forecast, so the rules stay the same for everyone (rule 3). Watch-mode results may change once AI countries pick cards; until then they must not.
-- **Every card visibly changes something** on the map or in the budget (rule 4), and the chronicle should echo it later ("the Butcher's war").
+- **Chill, not arcade.** No stacking, levelling or evolutions. A ruler should shape the nation's character (what its ministers value or how they see the world) more than raw power. Legendary rulers are the one exception, and they pay for it (below).
+- **AI countries draw from the same pool by the same odds, and pick at random.** No forecast for heirs: a random pick gives more variety than an AI that always takes the best ruler, and the rules stay the same for everyone (rule 3). Watch-mode results will change once this lands; until then they must not.
+- **Every ruler visibly changes something** on the map or in the budget (rule 4), and the chronicle should echo him later ("the Butcher's war", "the Miser's hoard").
 
-Card ideas that fit (not built yet):
+### How a reign ends
 
-- **The heir's marriage.** Three brides: a princess from a great power (lasting goodwill with her court, which may drag you into its wars), a rich banker's daughter (a large dowry now), a local noblewoman (calms unrest at home).
-- **A general rises.** Three commanders for the rest of his life: the Butcher (wins battles, loses many men), the Fabian (rarely loses ground, rarely gains it), the Cavalryman (fast advances, collapses when it goes wrong). Visible on the fronts.
-- **The chief minister.** Picked when a new era begins: the Iron Chancellor (values conquest), the Banker (values factories and savings), the Diplomat (values alliances and treaties).
-- **A favourite at court.** The spymaster (your ruler sees war odds truly), the mystic (wild swings: great years and terrible ones), the architect (fortresses and factories build faster).
-- **A famous exile asks for asylum.** A revolutionary, a deposed king, an inventor: each angers someone and brings something different (unrest abroad, a claim, a factory).
-- **What the age is remembered for.** Once in a ruler's reign: the Great Railway, the Fortress Line, the Grand Exhibition. A single landmark that shows on the map.
+Death alone gives only 3–5 successions a game. A reign also ends by:
+
+- **Abdication after a lost war.** A ruler who leads the nation into defeat steps down.
+- **Revolution.** High unrest at home topples him.
+- **Assassination.** A small chance each year, higher for some rulers.
+- **Coup.** Already in the game.
+
+This gives the choice stakes: pick the Conqueror, and if he loses his war he loses his throne.
+
+### The ruler pool (not built yet unless marked)
+
+Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5).
+
+Ordinary rulers:
+
+- **Warmonger, Builder, Paranoid, Revanchist, Spendthrift, Reformer, Incompetent.** Built (`TRAITS` in `sim.js`).
+- **The Soldier King.** Wins battles, loses many men.
+- **The Cautious.** Rarely loses ground, rarely gains it.
+- **The Arbiter.** Values alliances and treaties; brokers peace between others for gold.
+- **The Shrewd.** Sees the odds of a war as they really are (no misjudgment).
+- **The Anglophile** (or Francophile, Russophile…). Close to one great power's court; joins its wars.
+- **The Tolerant.** Accepts one more culture; a restless province calms down.
+- **The Chauvinist.** Drops an accepted culture; that province turns restless.
+- **The Miser.** Never lets gold fall below a floor; the heir inherits the hoard.
+- **The Impatient.** Plans 8 years ahead: quick gold, quick wars, no factories.
+- **The Dynast.** Plans 30+ years ahead: runs deficits for factories and fortresses.
+- **The Drunk.** His misjudgment is re-rolled every season.
+- **The Mad.** Takes a new quirk every few years.
+- **The Puppet.** Follows the alliances and wars of the strongest neighbouring great power.
+- **The Usurper.** Comes after a coup; unrest everywhere until he wins a war.
+- **The Lecher.** At his death a bastard claims the throne and a pretender uprising breaks out.
+- **The Child King.** A regent with a random quirk rules until he comes of age; then he takes his own.
+
+Legendary rulers, about 1 card in 8. A big upside paid for with an equally big visible downside, recognised by what they do (no colour tiers or rarity frames). The effect dies with them; only their landmark stays on the map.
+
+- **The Conqueror.** Armies fight far better; every neighbour distrusts him; his death brings a succession crisis.
+- **The Genius.** Factories boom; he has no heir, so a regency council follows.
+- **The Great Builder.** Raises a landmark of the age (the Great Railway, the Fortress Line, the Grand Exhibition) that shows on the map; the treasury is empty when he dies.
+- **The Liberator.** Frees the serfs and accepts every culture at once: unrest vanishes, but the nobles try a coup.
+- **The Saint.** No unrest anywhere while he lives; he refuses every war, even defensive alliances.
+- **The Iron King.** Crushes uprisings and integrates conquests twice as fast; revolts flare everywhere when he dies.
+- **The Navigator.** Sea crossings count as land borders for war and trade; a fleet lost at war costs him his throne.
+
+Sweep check for legendary rulers: they should often help and rarely decide the winner (`npm run sweep -- 1 13`, spread of winners).
 
 ## Interface rules
 
