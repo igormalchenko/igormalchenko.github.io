@@ -41,7 +41,7 @@ function newWorld(seed, player){
 }
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
-  ['next', 'auto'].forEach(id => $(id).disabled = S.over || !!S.pending);
+  $('auto').disabled = !!S.pending; autoLabel();
   renderMap(); renderOverlays(); renderNation();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
     if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else renderProvince(); }
@@ -151,7 +151,9 @@ function step(n = 1){ for (let i = 0; i < n && !S.over && !S.pending; i++) S.ste
 function checkPending(){ if (!S.pending) return; stopAuto(); if (S.pending.type === 'heir') showHeir(); }
 // speeds: seconds a season, slowest first; changing speed keeps the time already waited
 const SPEEDS = [3000, 1500, 700, 250, 40]; let speed = 1, lastTick = 0;
-function stopAuto(){ if (timer) clearTimeout(timer); timer = null; $('auto').textContent = 'Play'; }
+function stopAuto(){ if (timer) clearTimeout(timer); timer = null; autoLabel(); }
+// once the war is over the play button starts the next game
+function autoLabel(){ const a = $('auto'); a.textContent = S && S.over ? 'New world' : timer ? 'Pause' : 'Play'; a.dataset.tip = S && S.over ? 'Start a new world' : 'Play or pause (Space)'; }
 function schedule(){ clearTimeout(timer); timer = setTimeout(tick, Math.max(0, SPEEDS[speed] - (performance.now() - lastTick))); }
 function tick(){ lastTick = performance.now(); step(1); if (timer && !S.over) schedule(); }
 function startAuto(){ if (S.pending || S.over) return; stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }

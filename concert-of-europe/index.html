@@ -38,8 +38,9 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .pip{width:12px;height:30px;padding:0 2px;background:none;border:0;cursor:pointer;display:flex;align-items:flex-end}
 .pip i{display:block;width:100%;border-radius:2px;background:var(--line)}
 .pip.on i{background:var(--brass)}.pip:hover i{outline:1px solid #46505c}
-.seed{color:var(--muted);font:11.5px var(--body)}
-@media (max-width:760px){.bar h1,.seed{display:none}}
+.seed{color:var(--muted);font:11.5px var(--body);background:none;border:0;border-radius:6px;height:30px;padding:0 8px;cursor:pointer}
+.seed:hover{color:var(--ink);background:var(--panel2)}
+@media (max-width:760px){.bar h1{display:none}}
 
 .main{flex:1;display:flex;min-height:0}
 .mapwrap{position:relative;flex:1;min-width:0;background:#0f1317}
@@ -213,12 +214,10 @@ th svg.ic{margin:0}
 <div class="bar">
   <h1>Concert of Europe</h1>
   <div class="date"><span id="season">Winter</span><b id="year">1836</b></div>
-  <button class="btn primary" id="auto" data-tip="Play or pause (P)">Play</button>
-  <button class="btn" id="next" data-tip="Next season (N or Space)">Next</button>
+  <button class="btn primary" id="auto" data-tip="Play or pause (Space)">Play</button>
   <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" data-tip="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" data-tip="Faster (+)" aria-label="Faster">+</button></div>
   <div class="spacer"></div>
-  <span class="seed" id="seed"></span>
-  <button class="btn" id="new">New world</button>
+  <button class="seed" id="seed" data-tip="Start a new world"></button>
   <button class="btn icon" id="help" data-tip="How it works" aria-label="How it works">?</button>
   <button class="btn icon" id="toggle" data-tip="Show or hide the side panel" aria-label="Show or hide the side panel"></button>
 </div>
@@ -262,14 +261,14 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme: the provinces they were founded to win, which they treat as their own. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: 1, 2 or 3 to pick an heir, R to reroll, Space or N for next season, P to play or pause, + and − to change speed.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: 1, 2 or 3 to pick an heir, R to reroll, Space or P to play or pause, + and − to change speed. Click the world number to start a new world.</p>
   </div>
 </div>
 <div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
   <div class="box">
     <h2 id="startTitle">Concert of Europe</h2>
     <div id="startIntro"></div>
-    <p><button class="btn primary" id="watch">Watch Europe</button></p>
+    <p style="display:flex;gap:8px"><button class="btn primary" id="watch">Watch Europe</button><button class="btn" id="reworld">Different world</button></p>
     <div id="startBody"></div>
   </div>
 </div>
@@ -279,6 +278,13 @@ th svg.ic{margin:0}
     <p class="muted" id="heirSub"></p>
     <div class="heirs" id="heirCards"></div>
     <div class="rerolls"><button class="btn" id="reroll"></button><span class="muted" id="rerollNote"></span></div>
+  </div>
+</div>
+<div class="modal" id="newModal" role="dialog" aria-modal="true" aria-labelledby="newTitle">
+  <div class="box" style="max-width:420px">
+    <h2 id="newTitle">Start a new world?</h2>
+    <p class="muted">This game ends here and cannot be resumed.</p>
+    <p style="display:flex;gap:8px;margin-bottom:0"><button class="btn primary" id="abandon">Start a new world</button><button class="btn" data-close>Keep playing</button></p>
   </div>
 </div>
 <div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">
@@ -1682,7 +1688,7 @@ function newWorld(seed, player){
 }
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
-  ['next', 'auto'].forEach(id => $(id).disabled = S.over || !!S.pending);
+  $('auto').disabled = !!S.pending; autoLabel();
   renderMap(); renderOverlays(); renderNation();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
     if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else renderProvince(); }
@@ -1792,7 +1798,9 @@ function step(n = 1){ for (let i = 0; i < n && !S.over && !S.pending; i++) S.ste
 function checkPending(){ if (!S.pending) return; stopAuto(); if (S.pending.type === 'heir') showHeir(); }
 // speeds: seconds a season, slowest first; changing speed keeps the time already waited
 const SPEEDS = [3000, 1500, 700, 250, 40]; let speed = 1, lastTick = 0;
-function stopAuto(){ if (timer) clearTimeout(timer); timer = null; $('auto').textContent = 'Play'; }
+function stopAuto(){ if (timer) clearTimeout(timer); timer = null; autoLabel(); }
+// once the war is over the play button starts the next game
+function autoLabel(){ const a = $('auto'); a.textContent = S && S.over ? 'New world' : timer ? 'Pause' : 'Play'; a.dataset.tip = S && S.over ? 'Start a new world' : 'Play or pause (Space)'; }
 function schedule(){ clearTimeout(timer); timer = setTimeout(tick, Math.max(0, SPEEDS[speed] - (performance.now() - lastTick))); }
 function tick(){ lastTick = performance.now(); step(1); if (timer && !S.over) schedule(); }
 function startAuto(){ if (S.pending || S.over) return; stopAuto(); $('auto').textContent = 'Pause'; lastTick = -Infinity; schedule(); }
@@ -1943,7 +1951,7 @@ function renderNation(){
       ${dreams.length ? `<div class="lg" ${tipOf('dream')}><span>${ic('dream')}Dreams of</span><span>${dreams.map(d => d.title).join(', ')}</span></div>` : ''}
     </div>
     <h3>What the ministers did</h3>
-    <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet. Advance a season.</div>'}</div>
+    <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet.</div>'}</div>
     ${thoughts.length > done.length ? `<button class="btn more" id="allForecasts" aria-expanded="${allForecasts}">${allForecasts ? 'Hide forecasts' : `All ${thoughts.length} forecasts`}</button>
       ${allForecasts ? `<div class="think">${thoughts.map(t => thought(t, true)).join('')}</div>` : ''}` : ''}
     <h3>Budget</h3>
@@ -2010,15 +2018,16 @@ function showEnd(){
 
 
 // ---------- wiring ----------
-$('next').onclick = () => step(1);
-$('auto').onclick = () => timer ? stopAuto() : startAuto();
 $('pips').innerHTML = SPEEDS.map((ms, k) => `<button class="pip" data-s="${k}" data-tip="Speed ${k + 1}: ${ms >= 1000 ? ms / 1000 + ' s' : 'under a second'} a season" aria-label="Speed ${k + 1}"><i style="height:${8 + k * 4}px"></i></button>`).join('');
 $('pips').onclick = e => { const p = e.target.closest('.pip'); if (p) setSpeed(+p.dataset.s); };
 $('slower').onclick = () => setSpeed(speed - 1);
 $('faster').onclick = () => setSpeed(speed + 1);
 setSpeed(speed);
 const freshWorld = () => { newWorld(Math.floor(Math.random() * 99999)); showStart(); };
-$('new').onclick = freshWorld;
+$('auto').onclick = () => S.over ? freshWorld() : timer ? stopAuto() : startAuto();
+$('reworld').onclick = freshWorld;
+$('seed').onclick = () => { if (S.over) { freshWorld(); return; } stopAuto(); $('newModal').classList.add('on'); $('abandon').focus(); };
+$('abandon').onclick = () => { $('newModal').classList.remove('on'); freshWorld(); };
 $('again').onclick = freshWorld;
 $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
@@ -2035,14 +2044,16 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.datas
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FILTERS[b.dataset.f].on ^= 1; renderChips(); renderLog(); });
 $('side').addEventListener('click', e => { if (e.target.closest('#allForecasts')) { allForecasts = !allForecasts; renderNation(); } });
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
+document.addEventListener('keyup', e => { if (e.key === ' ' && e.target.tagName === 'BUTTON' && !e.target.closest('.modal')) e.preventDefault(); });
 document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
+  if (e.target.tagName === 'SELECT') return;
+  // Space is play/pause everywhere outside dialogs, even with a button focused
+  if (e.key === ' ' && e.target.tagName === 'BUTTON' && e.target.closest('.modal')) return;
   // 1, 2, 3 pick the heir on that card
   if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && /^[1-3]$/.test(e.key)) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
   if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
   if (S.pending) return;
-  if (e.key === 'n' || e.key === ' ') { e.preventDefault(); if (!S.over) step(1); }
-  if (e.key === 'p') { timer ? stopAuto() : startAuto(); }
+  if (e.key === ' ' || e.key === 'p' || e.key === 'P') { e.preventDefault(); if (document.querySelector('.modal.on')) return; timer ? stopAuto() : startAuto(); }
   if (e.key === '+' || e.key === '=') setSpeed(speed + 1);
   if (e.key === '-' || e.key === '_') setSpeed(speed - 1);
   if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on:not(.sticky)')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }

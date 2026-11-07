@@ -1,14 +1,15 @@
 
 // ---------- wiring ----------
-$('next').onclick = () => step(1);
-$('auto').onclick = () => timer ? stopAuto() : startAuto();
 $('pips').innerHTML = SPEEDS.map((ms, k) => `<button class="pip" data-s="${k}" data-tip="Speed ${k + 1}: ${ms >= 1000 ? ms / 1000 + ' s' : 'under a second'} a season" aria-label="Speed ${k + 1}"><i style="height:${8 + k * 4}px"></i></button>`).join('');
 $('pips').onclick = e => { const p = e.target.closest('.pip'); if (p) setSpeed(+p.dataset.s); };
 $('slower').onclick = () => setSpeed(speed - 1);
 $('faster').onclick = () => setSpeed(speed + 1);
 setSpeed(speed);
 const freshWorld = () => { newWorld(Math.floor(Math.random() * 99999)); showStart(); };
-$('new').onclick = freshWorld;
+$('auto').onclick = () => S.over ? freshWorld() : timer ? stopAuto() : startAuto();
+$('reworld').onclick = freshWorld;
+$('seed').onclick = () => { if (S.over) { freshWorld(); return; } stopAuto(); $('newModal').classList.add('on'); $('abandon').focus(); };
+$('abandon').onclick = () => { $('newModal').classList.remove('on'); freshWorld(); };
 $('again').onclick = freshWorld;
 $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
@@ -25,14 +26,16 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.datas
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FILTERS[b.dataset.f].on ^= 1; renderChips(); renderLog(); });
 $('side').addEventListener('click', e => { if (e.target.closest('#allForecasts')) { allForecasts = !allForecasts; renderNation(); } });
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
+document.addEventListener('keyup', e => { if (e.key === ' ' && e.target.tagName === 'BUTTON' && !e.target.closest('.modal')) e.preventDefault(); });
 document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'SELECT' || (e.target.tagName === 'BUTTON' && e.key === ' ')) return;
+  if (e.target.tagName === 'SELECT') return;
+  // Space is play/pause everywhere outside dialogs, even with a button focused
+  if (e.key === ' ' && e.target.tagName === 'BUTTON' && e.target.closest('.modal')) return;
   // 1, 2, 3 pick the heir on that card
   if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && /^[1-3]$/.test(e.key)) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
   if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
   if (S.pending) return;
-  if (e.key === 'n' || e.key === ' ') { e.preventDefault(); if (!S.over) step(1); }
-  if (e.key === 'p') { timer ? stopAuto() : startAuto(); }
+  if (e.key === ' ' || e.key === 'p' || e.key === 'P') { e.preventDefault(); if (document.querySelector('.modal.on')) return; timer ? stopAuto() : startAuto(); }
   if (e.key === '+' || e.key === '=') setSpeed(speed + 1);
   if (e.key === '-' || e.key === '_') setSpeed(speed - 1);
   if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on:not(.sticky)')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }

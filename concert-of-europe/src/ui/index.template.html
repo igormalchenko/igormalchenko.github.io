@@ -38,8 +38,9 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .pip{width:12px;height:30px;padding:0 2px;background:none;border:0;cursor:pointer;display:flex;align-items:flex-end}
 .pip i{display:block;width:100%;border-radius:2px;background:var(--line)}
 .pip.on i{background:var(--brass)}.pip:hover i{outline:1px solid #46505c}
-.seed{color:var(--muted);font:11.5px var(--body)}
-@media (max-width:760px){.bar h1,.seed{display:none}}
+.seed{color:var(--muted);font:11.5px var(--body);background:none;border:0;border-radius:6px;height:30px;padding:0 8px;cursor:pointer}
+.seed:hover{color:var(--ink);background:var(--panel2)}
+@media (max-width:760px){.bar h1{display:none}}
 
 .main{flex:1;display:flex;min-height:0}
 .mapwrap{position:relative;flex:1;min-width:0;background:#0f1317}
@@ -213,12 +214,10 @@ th svg.ic{margin:0}
 <div class="bar">
   <h1>Concert of Europe</h1>
   <div class="date"><span id="season">Winter</span><b id="year">1836</b></div>
-  <button class="btn primary" id="auto" data-tip="Play or pause (P)">Play</button>
-  <button class="btn" id="next" data-tip="Next season (N or Space)">Next</button>
+  <button class="btn primary" id="auto" data-tip="Play or pause (Space)">Play</button>
   <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" data-tip="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" data-tip="Faster (+)" aria-label="Faster">+</button></div>
   <div class="spacer"></div>
-  <span class="seed" id="seed"></span>
-  <button class="btn" id="new">New world</button>
+  <button class="seed" id="seed" data-tip="Start a new world"></button>
   <button class="btn icon" id="help" data-tip="How it works" aria-label="How it works">?</button>
   <button class="btn icon" id="toggle" data-tip="Show or hide the side panel" aria-label="Show or hide the side panel"></button>
 </div>
@@ -262,14 +261,14 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme: the provinces they were founded to win, which they treat as their own. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: 1, 2 or 3 to pick an heir, R to reroll, Space or N for next season, P to play or pause, + and − to change speed.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: 1, 2 or 3 to pick an heir, R to reroll, Space or P to play or pause, + and − to change speed. Click the world number to start a new world.</p>
   </div>
 </div>
 <div class="modal" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
   <div class="box">
     <h2 id="startTitle">Concert of Europe</h2>
     <div id="startIntro"></div>
-    <p><button class="btn primary" id="watch">Watch Europe</button></p>
+    <p style="display:flex;gap:8px"><button class="btn primary" id="watch">Watch Europe</button><button class="btn" id="reworld">Different world</button></p>
     <div id="startBody"></div>
   </div>
 </div>
@@ -279,6 +278,13 @@ th svg.ic{margin:0}
     <p class="muted" id="heirSub"></p>
     <div class="heirs" id="heirCards"></div>
     <div class="rerolls"><button class="btn" id="reroll"></button><span class="muted" id="rerollNote"></span></div>
+  </div>
+</div>
+<div class="modal" id="newModal" role="dialog" aria-modal="true" aria-labelledby="newTitle">
+  <div class="box" style="max-width:420px">
+    <h2 id="newTitle">Start a new world?</h2>
+    <p class="muted">This game ends here and cannot be resumed.</p>
+    <p style="display:flex;gap:8px;margin-bottom:0"><button class="btn primary" id="abandon">Start a new world</button><button class="btn" data-close>Keep playing</button></p>
   </div>
 </div>
 <div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">

@@ -141,7 +141,7 @@ function renderNation(){
       ${dreams.length ? `<div class="lg" ${tipOf('dream')}><span>${ic('dream')}Dreams of</span><span>${dreams.map(d => d.title).join(', ')}</span></div>` : ''}
     </div>
     <h3>What the ministers did</h3>
-    <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet. Advance a season.</div>'}</div>
+    <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet.</div>'}</div>
     ${thoughts.length > done.length ? `<button class="btn more" id="allForecasts" aria-expanded="${allForecasts}">${allForecasts ? 'Hide forecasts' : `All ${thoughts.length} forecasts`}</button>
       ${allForecasts ? `<div class="think">${thoughts.map(t => thought(t, true)).join('')}</div>` : ''}` : ''}
     <h3>Budget</h3>
