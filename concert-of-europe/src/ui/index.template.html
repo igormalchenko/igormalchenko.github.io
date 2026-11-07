@@ -77,6 +77,7 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .tip .fl{width:14px;height:10px;border-radius:2px;flex:none}
 .tip hr{border:0;border-top:1px solid var(--line);margin:6px 0}
 .qtip{position:fixed;pointer-events:none;background:rgba(14,17,21,.96);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:12px;line-height:1.35;max-width:260px;display:none;z-index:20}
+.qtip b{font-weight:600}.qtip .d{color:var(--muted);margin-top:1px}
 
 .side{width:210px;flex:none;border-right:1px solid var(--line);background:var(--panel);padding:14px 14px 12px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
 .side .who{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
@@ -209,14 +210,14 @@ th svg.ic{margin:0}
 <div class="bar">
   <h1>Concert of Europe</h1>
   <div class="date"><span id="season">Winter</span><b id="year">1836</b></div>
-  <button class="btn primary" id="auto" title="Play or pause (P)">Play</button>
-  <button class="btn" id="next" title="Next season (N or Space)">Next</button>
-  <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" title="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" title="Faster (+)" aria-label="Faster">+</button></div>
+  <button class="btn primary" id="auto" data-tip="Play or pause (P)">Play</button>
+  <button class="btn" id="next" data-tip="Next season (N or Space)">Next</button>
+  <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" data-tip="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" data-tip="Faster (+)" aria-label="Faster">+</button></div>
   <div class="spacer"></div>
   <span class="seed" id="seed"></span>
   <button class="btn" id="new">New world</button>
-  <button class="btn icon" id="help" title="How it works" aria-label="How it works">?</button>
-  <button class="btn icon" id="toggle" title="Show or hide the side panel"></button>
+  <button class="btn icon" id="help" data-tip="How it works" aria-label="How it works">?</button>
+  <button class="btn icon" id="toggle" data-tip="Show or hide the side panel" aria-label="Show or hide the side panel"></button>
 </div>
 <div class="main">
   <aside class="side" id="side" aria-label="Nation at a glance"></aside>

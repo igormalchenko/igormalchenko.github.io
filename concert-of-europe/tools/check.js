@@ -1,7 +1,8 @@
 // Keeps the interface consistent with src/ui/registry.js. Runs before every build; any problem stops the build.
 //  1. Every icon the code asks for exists in the registry.
 //  2. No drawing is made outside the registry (no shapes with hand-typed coordinates in other UI files).
-//  3. No visible text uses a word the registry says to avoid (e.g. "treasury" instead of "Gold").
+//  3. No browser title tooltips (they pop up late, on top of the instant ones): use data-tip and data-desc.
+//  4. No visible text uses a word the registry says to avoid (e.g. "treasury" instead of "Gold").
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
@@ -21,7 +22,14 @@ UI.forEach(f => {
   while ((m = DRAWN.exec(src))) problems.push(`${f}:${lineOf(src, m.index)}: a shape drawn outside the registry: ${m[0].slice(0, 40)}…`);
 });
 
-// ---- 3: words ----
+// ---- 3: no native tooltips ----
+const NATIVE = /<title>|\stitle="/g;
+[...UI, 'src/ui/registry.js'].forEach(f => { const src = read(f); let m;
+  while ((m = NATIVE.exec(src))) problems.push(`${f}:${lineOf(src, m.index)}: a browser title tooltip; use data-tip (and data-desc) instead`); });
+{ const t = read('src/ui/index.template.html'), body = t.slice(t.indexOf('</head>')); let m;
+  while ((m = NATIVE.exec(body))) problems.push(`src/ui/index.template.html:${lineOf(t, t.indexOf('</head>') + m.index)}: a browser title tooltip; use data-tip instead`); }
+
+// ---- 4: words ----
 // the text inside JS string literals, with ${…} code removed (nested strings inside it are collected too)
 function strings(src){
   const out = []; let i = 0;
@@ -52,17 +60,17 @@ function strings(src){
   return out;
 }
 // visible text of an HTML fragment: text between tags plus title/aria-label/placeholder values
-const visible = h => [...h.matchAll(/\b(?:title|aria-label|placeholder)="([^"]*)"/g)].map(m => m[1]).join(' · ') + ' ' + h.replace(/<[^>]*>/g, ' ').replace(/var\(--[^)]*\)/g, ' ');
+const visible = h => [...h.matchAll(/\b(?:title|aria-label|placeholder|data-tip|data-desc)="([^"]*)"/g)].map(m => m[1]).join(' · ') + ' ' + h.replace(/<[^>]*>/g, ' ').replace(/var\(--[^)]*\)/g, ' ');
 const NAMED = { ...ctx.WORDS, ...REG };
 const avoid = Object.entries(NAMED).flatMap(([k, e]) => (e.avoid || []).map(w => ({ k, w,
   re: new RegExp((/^\w/.test(w) ? '\\b' : '') + w.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&') + '\\b', 'i') })));
 function checkText(file, text, line){
   avoid.forEach(({ k, w, re }) => { const m = text.match(re); if (m) problems.push(`${file}:${line}: "${m[0]}" in visible text; the registry calls it "${NAMED[k].name}"  ⟶  ${text.trim().replace(/\s+/g, ' ').slice(0, 90)}`); });
 }
-['src/sim.js', ...UI].forEach(f => {
+['src/sim.js', 'src/ui/registry.js', ...UI].forEach(f => {
   const src = read(f);
   strings(src).forEach(({ s, at }) => {
-    if (/^[\w.\-#:%]*$/.test(s)) return; // keys, ids, colours: not prose
+    if (/^[\w.\-#:%\/]*$/.test(s)) return; // keys, ids, colours: not prose
     checkText(f, visible(s), lineOf(src, at));
   });
 });

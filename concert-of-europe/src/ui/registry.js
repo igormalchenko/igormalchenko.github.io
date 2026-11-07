@@ -72,7 +72,7 @@ const REG = {
     draw: `<path d="M0 -7.2C2.6 -4.2 5.2 -2 5.2 1.8A5.2 5.2 0 0 1 -5.2 1.8C-5.2 -1 -3.2 -2.6 -2.6 -4.8C-1.2 -3.2 -.6 -2.2 0 -7.2z" fill="#e0453a" stroke="${DARK}" stroke-width=".9" stroke-linejoin="round"/><path d="M0 -.8C1.4 .9 2.3 1.9 2.3 3.2A2.3 2.3 0 0 1 -2.3 3.2C-2.3 1.9 -1.1 .9 0 -.8z" fill="#f2c94c"/>` },
 
   // ----- war -----
-  army: { name: 'Army', desc: 'Soldiers under arms, in thousands. Deter attack, win wars, but every man is a worker lost.', map: .62, avoid: ['soldiers', 'troops'],
+  army: { name: 'Army', desc: 'Men under arms, in thousands. Deters attack and wins wars, but every man is a worker lost.', map: .62, avoid: ['soldiers', 'troops'],
     draw: P('<g stroke-linecap="round"><path d="M2.5 13.5L12.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M12.5 3.5l2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M13.5 13.5L3.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M3.5 3.5l-2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M4.2 11.8l1.6 1.6M11.8 11.8l-1.6 1.6" stroke="#4a3018" stroke-width="1.6"/></g>') },
   war: { name: 'War', desc: 'Nations fighting over a province. Ends when one side wins or both are exhausted.',
     draw: P('<path d="M13.5 2.5L5 11" stroke="#e0e3e8" stroke-width="2.2" stroke-linecap="round"/><path d="M3 9.5l3.5 3.5M2 14l2.3-2.3" stroke="#d65a4d" stroke-width="2" stroke-linecap="round"/>') },
@@ -121,7 +121,7 @@ const REG = {
 };
 // concepts that are only words, with no icon of their own
 const WORDS = {
-  nation: { name: 'Nation', desc: 'One of the states on the map, with its own ruler, gold and army.', avoid: ['country', 'countries', 'states'] },
+  nation: { name: 'Nation', desc: 'A realm on the map, with its own ruler, gold and army.', avoid: ['country', 'countries', 'states'] },
 };
 // ruler quirk emblems, drawn inside a round badge (names and descriptions come from TRAITS in sim.js)
 const EMB = {
@@ -137,9 +137,13 @@ const EMB_BADGE = `<circle r="7" fill="#1a1f26" stroke="#c9a45c" stroke-width="1
 
 // the name of a concept, for labels
 const nm = k => REG[k].name;
-// a panel icon that names itself on hover; `style` can set --uc for unrest colour
+// hover text for anything: its name, and a line of description under it. Shown at once by the
+// instant tooltip in main.js; the browser's own title tooltips are never used (the build checks).
+const tipAttr = (name, desc = '') => `data-tip="${name}"${desc ? ` data-desc="${desc.replace(/"/g, '&quot;')}"` : ''}`;
+const tipOf = k => { const e = REG[k] || WORDS[k]; return tipAttr(e.name, e.desc); };
+// a panel icon that names and explains itself on hover; `style` can set --uc for unrest colour
 const ic = (k, cls = '', style = '') => { const e = REG[k], b = e.box || 8;
-  return `<svg class="ic ${cls}" viewBox="${-b} ${-b} ${2 * b} ${2 * b}" role="img" aria-label="${e.name}"${style ? ` style="${style}"` : ''}><title>${e.name}</title>${e.draw}</svg>`; };
+  return `<svg class="ic ${cls}" viewBox="${-b} ${-b} ${2 * b} ${2 * b}" role="img" aria-label="${e.name}" ${tipOf(k)}${style ? ` style="${style}"` : ''}>${e.draw}</svg>`; };
 // the same drawing for the map, centred on 0,0 at the map's scale
 const glyph = (k, style = '') => { const e = REG[k], s = e.map || .55;
   return `<g transform="scale(${s})"${style ? ` style="${style}"` : ''}>${e.draw}</g>`; };

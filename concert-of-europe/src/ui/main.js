@@ -2,7 +2,7 @@
 // ---------- wiring ----------
 $('next').onclick = () => step(1);
 $('auto').onclick = () => timer ? stopAuto() : startAuto();
-$('pips').innerHTML = SPEEDS.map((ms, k) => `<button class="pip" data-s="${k}" title="Speed ${k + 1}: ${ms >= 1000 ? ms / 1000 + ' s' : 'under a second'} a season" aria-label="Speed ${k + 1}"><i style="height:${8 + k * 4}px"></i></button>`).join('');
+$('pips').innerHTML = SPEEDS.map((ms, k) => `<button class="pip" data-s="${k}" data-tip="Speed ${k + 1}: ${ms >= 1000 ? ms / 1000 + ' s' : 'under a second'} a season" aria-label="Speed ${k + 1}"><i style="height:${8 + k * 4}px"></i></button>`).join('');
 $('pips').onclick = e => { const p = e.target.closest('.pip'); if (p) setSpeed(+p.dataset.s); };
 $('slower').onclick = () => setSpeed(speed - 1);
 $('faster').onclick = () => setSpeed(speed + 1);
@@ -57,21 +57,18 @@ function deselect(){ if (selected == null && selProv == null) return; selected =
   const on = document.querySelector('.pane.on').id; if (on === 'nation' || on === 'province') showTab('chron'); else render(); }
 $('map').addEventListener('click', e => { if (!e.target.closest('.cell')) deselect(); });
 
-// instant tooltips: the browser's own title tooltips wait about a second, so take their text over and show it at once
+// instant tooltips from data-tip (a name) and data-desc (one line under it). The browser's own title
+// tooltips wait a second and then pop up on top of this one, so the interface never uses them.
 const qtip = document.createElement('div'); qtip.className = 'qtip'; document.body.appendChild(qtip);
-function tipOf(el){
-  if (el.hasAttribute('title')) { el.dataset.tip = el.getAttribute('title'); el.removeAttribute('title'); if (!el.hasAttribute('aria-label') && !el.textContent.trim()) el.setAttribute('aria-label', el.dataset.tip); }
-  const t = el.querySelector(':scope > title'); if (t) { el.dataset.tip = t.textContent; t.remove(); }
-  return el.dataset.tip;
-}
+const qName = document.createElement('b'), qDesc = document.createElement('div'); qDesc.className = 'd'; qtip.append(qName, qDesc);
 document.addEventListener('mousemove', e => {
-  let el = e.target.closest && e.target.closest('[title],[data-tip],svg:has(> title)');
+  let el = e.target.closest && e.target.closest('[data-tip]');
   // an icon inside a labelled cell or row: the wider label says more
-  const up = el && el.tagName.toLowerCase() === 'svg' && el.parentElement && el.parentElement.closest('[title],[data-tip]');
+  const up = el && el.tagName.toLowerCase() === 'svg' && el.parentElement && el.parentElement.closest('[data-tip]');
   if (up) el = up;
-  const text = el && tipOf(el);
-  if (!text) { qtip.style.display = 'none'; return; }
-  qtip.textContent = text; qtip.style.display = 'block';
+  if (!el) { qtip.style.display = 'none'; return; }
+  qName.textContent = el.dataset.tip; qDesc.textContent = el.dataset.desc || ''; qDesc.hidden = !el.dataset.desc;
+  qtip.style.display = 'block';
   const w = qtip.offsetWidth, h = qtip.offsetHeight;
   let x = e.clientX + 12, y = e.clientY + 16;
   if (x + w > innerWidth - 8) x = e.clientX - w - 8; if (y + h > innerHeight - 8) y = e.clientY - h - 10;

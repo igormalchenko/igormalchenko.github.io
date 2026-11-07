@@ -15,7 +15,7 @@ function renderLog(){
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
 const statTile = (icon, value, color) => `<div class="stat">${ic(icon, 'lg')}<div><small>${nm(icon)}</small><b${color ? ` style="color:${color}"` : ''}>${value}</b></div></div>`;
-const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}"><title>${TRAITS[t].label}</title>${EMB_BADGE}${EMB[t]}</svg>` : '';
+const emblem = t => t ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[t].label}" ${tipAttr(TRAITS[t].label, TRAITS[t].desc + '.')}>${EMB_BADGE}${EMB[t]}</svg>` : '';
 
 // ---------- the player's choices ----------
 // one line of character per heir, then what it does in the game
@@ -139,9 +139,9 @@ function renderNation(){
     <div class="rulercard"><div class="rname">${ic('ruler', 'lg')}<div><small>${nm('ruler')} since ${c.ruler.since}</small><b>${c.ruler.name}</b></div>${emblem(c.ruler.trait)}</div>
       ${c.ruler.trait ? `<div class="trait"><b>${S.TRAITS[c.ruler.trait].label}.</b> ${S.TRAITS[c.ruler.trait].desc}.</div>` : ''}
       <div class="pers">
-        <span title="${REG.patience.desc}">${ic('patience')}${nm('patience')}</span><div class="barx"><i style="width:${Math.round(c.ruler.pat * 100)}%"></i></div><span class="muted">${H} yrs</span>
-        <span title="${REG.risk.desc}">${ic('risk')}${nm('risk')}</span><div class="barx"><i style="width:${Math.round(c.ruler.risk * 100)}%"></i></div><span class="muted">${c.ruler.risk > 0.6 ? 'gambler' : c.ruler.risk < 0.4 ? 'cautious' : 'measured'}</span>
-        <span title="${REG.judgment.desc}">${ic('judgment')}${nm('judgment')}</span><div class="barx mid"><i style="left:${50 + Math.min(0, c.ruler.bias) * 50}%;width:${Math.abs(c.ruler.bias) * 50}%"></i></div><span class="muted">${c.ruler.bias > 0.15 ? 'overconfident' : c.ruler.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span>
+        <span ${tipOf('patience')}>${ic('patience')}${nm('patience')}</span><div class="barx"><i style="width:${Math.round(c.ruler.pat * 100)}%"></i></div><span class="muted">${H} yrs</span>
+        <span ${tipOf('risk')}>${ic('risk')}${nm('risk')}</span><div class="barx"><i style="width:${Math.round(c.ruler.risk * 100)}%"></i></div><span class="muted">${c.ruler.risk > 0.6 ? 'gambler' : c.ruler.risk < 0.4 ? 'cautious' : 'measured'}</span>
+        <span ${tipOf('judgment')}>${ic('judgment')}${nm('judgment')}</span><div class="barx mid"><i style="left:${50 + Math.min(0, c.ruler.bias) * 50}%;width:${Math.abs(c.ruler.bias) * 50}%"></i></div><span class="muted">${c.ruler.bias > 0.15 ? 'overconfident' : c.ruler.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span>
       </div>${S.inCrisis(c) ? `<div class="trait" style="color:#c9b3e6">${ic('civilWar')}${nm('civilWar')}: the army fights at half strength.</div>` : ''}</div>
     <div class="stats">
       ${statTile('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
