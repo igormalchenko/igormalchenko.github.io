@@ -8,9 +8,9 @@ When a change is done, commit it and push it to `master` without asking for conf
 
 ## Rule 1: content lives in content/, and only there
 
-Every piece of content (rulers, rarities, temperaments, nations, breakaways, peoples, provinces, sea crossings, dreams, ambitions, events, ways of war, landmarks, concepts, and the rules of the age the player is told about) lives in `content/*.json`. The engine (`src/sim.js`), the interface and the Almanac read it from `CONTENT`; nothing else may hold a copy.
+Every piece of content (rulers, rarities, temperaments, nations, breakaways, peoples, provinces, sea crossings, ambitions, events, ways of war, landmarks, concepts, and the rules of the age the player is told about) lives in `content/*.json`. The engine (`src/sim.js`), the interface and the Almanac read it from `CONTENT`; nothing else may hold a copy.
 
-- **To change content, change the content file.** A ruler's strength, an event's odds, a dream's provinces, a concept's name: edit the JSON, run `npm run build`, and the engine, the cards, the chronicle, the help text and the Almanac all follow.
+- **To change content, change the content file.** A ruler's strength, an event's odds, a union's provinces, a concept's name: edit the JSON, run `npm run build`, and the engine, the cards, the chronicle, the help text and the Almanac all follow.
 - **Never type a number into text.** A sentence that states a number takes it from the data with a placeholder: `"His armies fight {fx.fight|harder}"`, `"Takes {rules.build.factory|word} seasons."`. The formats (`word`, `pct`, `up`, `down`, `frac`, `times`, `harder`, `x`, `xs`, `span`, `years`, `inv`, `thrift`, `horizon`) are in `src/text.js`; add one there if a phrase needs it. In the HTML template use `{{path|format}}`.
 - **Never type a content number into the engine.** The engine reads a ruler's numbers with `F('ruler', 'key')` and his flags with `hasFx(c, 'flag')`, rules with `RULES.x`, events with `EV.id`. A new effect gets a key in the ruler's `fx` and a line in `content/effects.json`. The tuning of the forecast itself (tax rates, the win-chance curve) is engine, not content.
 - **The build enforces it** (`tools/check.js`): every reference in the content points at something that exists, every template fills in and states no typed number, every `F(...)`, `hasFx`, `RULES.` and `EV.` the code reads exists, and every number in the content is read by something. A failing check means the data and the engine disagree: fix one of them, never the check.
@@ -20,7 +20,7 @@ Every piece of content (rulers, rarities, temperaments, nations, breakaways, peo
 
 ## Design rules
 
-1. **One ambition for every nation, judged in autumn 1918.** Each nation is born with one of three (`setAmbition`, see "Ambitions" below): the great powers of 1836 want the most income per year (taxes + factory output + sea trade) among themselves; a nation whose people have a national dream wants to proclaim it and still hold it; every other nation wants to survive. The forecast still counts everything in gold (rule 2); the ambition only changes what some provinces and losses are worth.
+1. **One ambition for every nation, judged in autumn 1918.** Each nation is born with one of three (`setAmbition`, see "Ambitions" below): the great powers of 1836 want the most income per year (taxes + factory output + sea trade) among themselves; a nation whose people are divided wants to unite them and still hold them together; every other nation wants to survive. The forecast still counts everything in gold (rule 2); the ambition only changes what some provinces and losses are worth.
 2. **Every decision is a forecast in gold.** In `considerations(c)` each option gets `ev` = extra or protected income over the ruler's horizon (8–30 years) minus its cost. The country does every option with positive `ev`, best first, up to 4 a season. Do not reintroduce hand-tuned "urge" scores.
 3. **Same rules for everyone.** No per-country stat bonuses. Countries differ only by starting data, ruler tendencies, a few historical special rules (unifiers, serfdom, accepted cultures, programmes) and luck.
 4. **Visible or hidden, never in between.** Any stat shown to the player must visibly change something on the map or in the budget. Infamy and relations maths are hidden plumbing. Prestige, colonies and great-power status were removed on purpose.
@@ -130,13 +130,17 @@ The heir cards don't show temperaments yet; only the panel does, once he reigns.
 
 ## Ambitions (built)
 
-Every nation has one ambition for the armistice of autumn 1918 (shown as **Ambition** in the panel, the start screen and the end screen). It is fixed at birth, in 1836 or at independence, by `setAmbition` in `sim.js`, and `ambitionOf` says how it stands (`open`, `met` or `lost`):
+Every nation has exactly one ambition for the armistice of autumn 1918 (shown as **Ambition** in the panel, the start screen and the end screen), and several nations can share one. There are no "national dreams" any more: a people to unite is simply an ambition, and the build refuses the word "dream" in visible text. Each nation names its ambition in its own entry (`ambition` in `content/nations.json` and `content/breakaways.json`; a restored nation takes its old one). The ambitions are in `content/ambitions.json`, and what each kind means, its wording and its weights in `content/ambitionKinds.json`. `setAmbition` fixes it at birth and `ambitionOf` says how it stands (`open`, `met` or `lost`):
 
-- **Richest great power.** The great powers of 1836 (`GREAT_1836`, the top six by power) without a dream: Great Britain, France, Russia, the Ottoman Empire. The one with the most Gold a year meets it.
-- **National dream.** Any nation whose people have a dream in `content/dreams.json`: proclaim it and still hold at least `need` of its provinces at the armistice. A dream proclaimed by a rival is lost. Prussia and Austria (great powers, but leaders of the German dream) get the dream on purpose.
-- **Survive.** Everyone else, and the Papal States (`ambition: 'survive'` in `content/nations.json`): still be on the map.
+- **Richest great power** (kind `richest`). Great Britain, France, Russia and the Ottoman Empire race for it; the one with the most Gold a year meets it. Only a nation that existed in 1836 can hold it (a restored one gets Survive).
+- **Unite a people** (kind `unite`, one ambition per union: the German Empire, the Iberian Union…). Its nations race to hold `need` of its provinces from the year `from`; the first proclaims it, takes its name, and the smaller nations of its `peoples` vote to join. It is met if the proclaimer still holds `need` of them at the armistice; for everyone else who held it, it is lost. A union someone already proclaimed gives a newborn nation Survive. Prussia and Austria (great powers) race for the German Empire on purpose.
+- **Survive** (kind `survive`). Still be on the map.
 
-The AI acts on it in gold (rule 2): a province of its dream is worth twice its gold a year to it, to win and to keep (`ambitionW`; other dreamers keep the old 1.35), and a Survive nation counts every expected loss and the loss term of its own wars half again (`surviveW`). Great powers are unchanged.
+A nation only works toward its own ambition. Since the merge, a nation whose people have a union but whose ambition is something else (only the Papal States, which are Italian) no longer counts that union's provinces as its programme or values them more, and can't proclaim it.
+
+Measured when dreams merged into ambitions (40 worlds, seeds 1–40, before → after): wars 39.1 → 40.9, uprisings 35.2 → 33.8, Survive nations alive 170/464 → 176/460, Ukraine alive 22 → 27. Italy is proclaimed in 27 worlds instead of 37: before, the Papal States (ambition Survive) proclaimed Italy in about a quarter of the worlds where it formed; now they can't. Whether the Papal States should hold the Italy ambition is open.
+
+The AI acts on it in gold (rule 2): a province of the union a nation works toward is worth `worth` (2) times its gold a year to it, to win and to keep (`ambitionW`), and a Survive nation counts every expected loss and the loss term of its own wars `losses` (1.5) times (`surviveW`). Great powers are unchanged.
 
 Every nation that can exist, 24 at the start and 16 that can break away (`content/breakaways.json`):
 
@@ -156,22 +160,20 @@ Every nation that can exist, 24 at the start and 16 that can break away (`conten
 | Crown of St Stephen | | Hungary |
 | Survive | Hanover, Hesse, Saxony, Württemberg, Switzerland, Belgium, Netherlands, Papal States | Bohemia, Ireland, Finland, Baltic Republic, Albania, Scotland |
 
-A breakaway whose dream someone else already proclaimed gets Survive. Restored nations get their ambition again at rebirth.
+Union names follow historical precedent (the Kalmar Union of the northern crowns, the Cossack Hetmanate, Dacia of the Romanian nationalists, the Byzantine Empire of the Greek Great Idea, the Illyrian movement, the Crown of St Stephen). Dacia takes no article (`art: ''`).
 
-Dream names follow historical precedent (the Kalmar Union of the northern crowns, the Cossack Hetmanate, Dacia of the Romanian nationalists, the Byzantine Empire of the Greek Great Idea, the Illyrian movement, the Crown of St Stephen). Dacia takes no article (`art: ''`).
-
-Not done yet: **dream balance.** Some dreams form in nearly every world and some in none (measured below); tune `need` and `from` per dream so each forms in roughly a third to two thirds of worlds.
+Not done yet: **union balance.** Some unions are proclaimed in nearly every world and some in none (measured below); tune `need` and `from` per union so each forms in roughly a third to two thirds of worlds.
 
 Measured (12 worlds, seeds 1–12, end year always autumn 1918). Before ambitions: 34.5 wars and 33.5 uprisings a world. With them: 37.3 and 35.4. The same scoring with the AI weights switched off (`ambitionW` back to 1.35, `surviveW` 1): 35.2 and 34.4, so the weights add about two wars a world.
 
 | | Weights on | Weights off |
 |---|---|---|
 | Richest great power | France 7, Britain 4, Russia 1 | France 9, Britain 2, Russia 1 |
-| Dreams proclaimed (worlds out of 12) | German 12, Italy 11, Iberia 11, Bulgaria 6, Dacia 5, Poland 5, Hungary 2, Kalmar 2, Byzantine 2, Hetmanate 1, Illyria 0 | German 12, Italy 11, Iberia 9, Dacia 4, Poland 4, Bulgaria 2, Kalmar 2, Illyria 1, Hetmanate 1, Byzantine 0, Hungary 0 |
-| Dreams still held in 1918 | 34 (German 11, Italy 6, Iberia 6, Bulgaria 4, Dacia 4, Hungary, Byzantine, Poland 1 each) | 33 |
+| Unions proclaimed (worlds out of 12) | German 12, Italy 11, Iberia 11, Bulgaria 6, Dacia 5, Poland 5, Hungary 2, Kalmar 2, Byzantine 2, Hetmanate 1, Illyria 0 | German 12, Italy 11, Iberia 9, Dacia 4, Poland 4, Bulgaria 2, Kalmar 2, Illyria 1, Hetmanate 1, Byzantine 0, Hungary 0 |
+| Unions still held in 1918 | 34 (German 11, Italy 6, Iberia 6, Bulgaria 4, Dacia 4, Hungary, Byzantine, Poland 1 each) | 33 |
 | Survive nations alive in 1918 | 48 of 134 (36%) | 57 of 140 (41%) |
 
-The survive weight doesn't save small nations: they die slightly more often with it on, probably because the dream weight makes the German dreamers swallow Hanover, Hesse, Saxony and Württemberg faster. Tune this together with dream balance.
+The survive weight doesn't save small nations: they die slightly more often with it on, probably because the union weight makes the German Empire's nations swallow Hanover, Hesse, Saxony and Württemberg faster. Tune this together with dream balance.
 
 ## Future work (agreed, not built)
 
@@ -179,7 +181,7 @@ The survive weight doesn't save small nations: they die slightly more often with
 
 The "no stacking, levelling or evolutions" rule stays within a game. Across games:
 
-- **Yes: nations to play.** New nations unlock as you play, for example by proclaiming a dream.
+- **Yes: nations to play.** New nations unlock as you play, for example by uniting a people.
 - **Yes: new rulers in the deck.** AI nations draw from the same pool, so an unlock changes the world for everyone (rule 3 still holds). Sweeps should run with a fixed pool so they stay comparable.
 - **No:** start dates other than 1836, a ruler book, or permanent stat bonuses.
 
@@ -193,7 +195,7 @@ Moments that already exist in the code:
 - **Peace table after a win** (`endWar`). Take the land (restless, slow to integrate), take the gold, or leave him as an ally. Rule 7 still limits what land can be offered. The strongest first candidate.
 - **Uprising in your provinces** (`revolts`). Crush it at a cost in men, grant autonomy, or let it go.
 - **Summer 1914** (the Great War block). Join your allies, stay out, or switch sides.
-- **Dream within reach** (`unification`). Proclaim now or wait for a better border.
+- **Union within reach** (`unification`). Proclaim now or wait for a better border.
 - **Royal marriage** (the marriage event). Choose the court; the next heirs carry a claim there.
 
 ## Workflow
@@ -201,7 +203,7 @@ Moments that already exist in the code:
 - Content changes go in `content/*.json` (Rule 1), then `npm run build`.
 
 - Edit `content/`, `src/` or `map/`, then `npm run build`. Never hand-edit the root `index.html`; it is generated.
-- After any simulation change run `npm run sweep -- 1 13` and compare: wars, revolts, Ukraine survival, richest great power, dreams proclaimed and held, Survive nations alive, end year (always 1918 Autumn). Read at least one `npm run chronicle` for oddities; the chronicle is the best bug detector.
+- After any simulation change run `npm run sweep -- 1 13` and compare: wars, revolts, Ukraine survival, richest great power, unions proclaimed and held, Survive nations alive, end year (always 1918 Autumn). Read at least one `npm run chronicle` for oddities; the chronicle is the best bug detector.
 - After any map change run `npm run map` and read the audit table it prints (coastal flags, land neighbours, sea crossings) before trusting it. Coastlines and adjacency come from the shapes; do not hand-type geography from memory.
 - Sweeps are deterministic per seed, so before/after comparisons are fair.
 - Report test results precisely: say whether a number counts an event happening or surviving to the end.
@@ -216,7 +218,7 @@ Moments that already exist in the code:
 - War: `declareWar`, `frontMove`, `warScore`, `endWar`, `tickWars`.
 - Provinces: `tickProvinces` (construction, integration), `tickUnrest`, `revolts`.
 - Rulers and chaos: `newRuler`, `TRAITS`, `successions`, `EVENTS`.
-- Dreams: `DREAMS`, `dreamsOf`, `unification`.
+- Ambitions: `AMBITIONS`, `UNIONS`, `unionOf` (the union a nation works toward), `unification`.
 - Ambitions: `setAmbition` (at birth), `ambitionOf` (how it stands), `ambitionW` and `surviveW` (what they add to the forecast), the closing line of the armistice block.
 - Player: `createSim(seed, geo, { player })`; `heirCard` builds a choice of three heirs and parks it in `S.pending` (which halts `step()`), `chooseHeir(i)` resolves it. Every reign ends through `endReign`; AI countries get a random heir from `drawQuirk`. `tickRulers` runs what changes during a reign (the Drunk, the Mad, the Child King growing up, the Great Builder's landmark, the Arbiter's peace deals). `tools/load.js` passes `{ player }` through for headless tests.
 - End: the armistice block at the end of `step()`.

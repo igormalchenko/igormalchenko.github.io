@@ -6,6 +6,8 @@ const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const swatch = color => `<span class="sw" style="background:${color}"></span>`;
 const provName = id => CONTENT.provinces[id] ? CONTENT.provinces[id].name : `<b style="color:var(--war)">${esc(id)}?</b>`;
 const nationName = tag => CONTENT.nations[tag] ? CONTENT.nations[tag].name : tag;
+// an ambition's name: a union's title, or its kind's name (Richest great power, Survive)
+const ambitionName = id => { const a = CONTENT.ambitions[id]; return a.title || CONTENT.ambitionKinds[a.kind].name; };
 const pctOf = p => `${Math.round(p * 1000) / 10}%`;
 const yearly = p => `${pctOf(p)} a year`;
 const listOf = xs => xs.join(', ');
@@ -30,7 +32,7 @@ const SECTIONS = {
             ${facts([['Chance per heir', card ? `1 in ${Math.round(offered.length / rar.odds)}` : 'never on a card']])}${numbers(q.fx, q.temper)}`, { sub: q.epi, lead: `<svg class="emb" viewBox="-8 -8 16 16">${embBadge(tier)}${EMB[t] || ''}</svg>`, style: `--tc:${rar.color}` }); }).join('')}`; }).join(''); } },
   nations: { name: 'Nations of ' + CONTENT.rules.start, file: 'nations', count: () => Object.keys(CONTENT.nations).length, render(){
     return Object.entries(CONTENT.nations).map(([tag, n]) => { const live = S && S.C[tag];
-      const amb = live && live.ambition ? (live.ambition.kind === 'dream' ? CONTENT.dreams[live.ambition.dream].title : CONTENT.ambitions[live.ambition.kind].name) : '';
+      const amb = ambitionName(n.ambition) + (live && live.ambition && live.ambition.id !== n.ambition ? ` (in this world: ${ambitionName(live.ambition.id)})` : '');
       return entry(n.name, facts([
         ['People', n.people + (n.accepts ? ` (also accepts ${listOf(n.accepts)})` : '')],
         ['Ambition', amb], ['Army', `${n.army}k`], ['Leans to war', n.hawk], ['Patience', n.patience],
@@ -44,27 +46,30 @@ const SECTIONS = {
   breakaways: { name: 'Breakaway nations', file: 'breakaways', count: () => Object.keys(CONTENT.breakaways).length, render(){
     return `<p class="muted">The nation a people forms when it rises and wins, unless its own fallen state of ${CONTENT.rules.start} comes back.</p>` +
       Object.entries(CONTENT.breakaways).map(([people, b]) => { const n = b.restores ? CONTENT.nations[b.restores] : b;
-        return entry(n.name, facts([['Formed by', `the ${people} people`], ['Restores', b.restores ? `${nationName(b.restores)} of ${CONTENT.rules.start}` : ''],
+        return entry(n.name, facts([['Formed by', `the ${people} people`], ['Ambition', ambitionName(b.restores ? CONTENT.nations[b.restores].ambition : b.ambition)], ['Restores', b.restores ? `${nationName(b.restores)} of ${CONTENT.rules.start}` : ''],
           ['Programme', b.programme ? listOf(b.programme.map(provName)) : '']]), { sub: n.adj, lead: swatch(n.color) }); }).join(''); } },
   peoples: { name: 'Peoples', file: 'peoples', count: () => Object.keys(CONTENT.peoples).length, render(){
     return Object.entries(CONTENT.peoples).map(([p, d]) => { const home = Object.values(CONTENT.provinces).filter(x => x.people === p);
-      const dreams = Object.values(CONTENT.dreams).filter(x => x.cultures.includes(p)).map(x => x.title);
+      const unions = Object.values(CONTENT.ambitions).filter(x => x.peoples && x.peoples.includes(p)).map(x => x.title);
       return entry(p, facts([['Lives in', listOf(home.map(x => x.name)) || '<span class="muted">no province of its own</span>'],
         ['People', `${Math.round(home.reduce((s, x) => s + x.pop, 0) * 10) / 10}m in ${CONTENT.rules.start}`],
         ['Ruler names', d.names ? listOf(d.names) : '<span class="muted">none: borrows the German ones</span>'],
-        ['Dreams of', listOf(dreams)], ['Rises as', CONTENT.breakaways[p] ? (CONTENT.breakaways[p].restores ? nationName(CONTENT.breakaways[p].restores) : CONTENT.breakaways[p].name) : ''],
+        ['Unites in', listOf(unions)], ['Rises as', CONTENT.breakaways[p] ? (CONTENT.breakaways[p].restores ? nationName(CONTENT.breakaways[p].restores) : CONTENT.breakaways[p].name) : ''],
         ['Can awaken', CONTENT.events.awakening.peoples.includes(p) || CONTENT.events.shevchenko.people === p ? 'yes' : '']])); }).join(''); } },
-  dreams: { name: 'National dreams', file: 'dreams', count: () => Object.keys(CONTENT.dreams).length, render(){
-    const prog = S ? Object.fromEntries(S.unifyProgress().map(u => [u.id, u])) : {};
-    return Object.entries(CONTENT.dreams).map(([id, d]) => { const u = prog[id];
-      return entry(d.title, `${d.note ? `<p class="vibe">${d.note}</p>` : ''}${facts([['People', listOf(d.cultures)], ['Led by', d.leaders ? listOf(d.leaders.map(nationName)) : 'any nation of its people'],
-        ['To proclaim', `hold ${d.need} of ${d.provinces.length} provinces, from ${d.from}`], ['Provinces', listOf(d.provinces.map(provName))],
-        ['In this world', u ? (u.done ? `proclaimed by ${u.done.name}` : u.lead ? `${u.lead.name} holds ${u.n} of ${u.need}` : 'no one to lead it') : '']])}`, { sub: d.adj, lead: ic('dream') }); }).join(''); } },
-  ambitions: { name: 'Ambitions', file: 'ambitions', count: () => Object.keys(CONTENT.ambitions).length, render(){
-    const sample = { the: 'the ', title: '<i>its dream</i>', need: '<i>enough</i>' };
-    return Object.entries(CONTENT.ambitions).map(([k, a]) => entry(a.name, `<p>${say(a.desc, sample)}</p>${facts([['Who has it', say(a.who)],
-      ['A province of its own dream is worth', a.own != null ? `${a.own}× its gold a year` : ''], ['A province of another dream of its people', a.other != null ? `${a.other}×` : ''],
-      ['Every expected loss counts', a.losses != null ? `${a.losses}×` : '']])}`, { lead: ic('ambition') })).join(''); } },
+  ambitions: { name: 'Ambitions', count: () => Object.keys(CONTENT.ambitions).length, render(){
+    const prog = S ? Object.fromEntries(S.unionProgress().map(u => [u.id, u])) : {};
+    const holders = id => listOf([...Object.values(CONTENT.nations).filter(n => n.ambition === id).map(n => n.name),
+      ...Object.values(CONTENT.breakaways).filter(b => !b.restores && b.ambition === id).map(b => b.name)]);
+    return Object.entries(CONTENT.ambitionKinds).map(([kind, k]) => {
+      const ids = Object.keys(CONTENT.ambitions).filter(id => CONTENT.ambitions[id].kind === kind);
+      const head = `<p>${say(k.desc, { the: '', title: '<i>the new nation</i>', need: '<i>enough</i>' })}</p><p class="vibe">${say(k.who)}</p>${facts([
+        ['A province of its people is worth', k.worth != null ? `${k.worth}× its gold a year` : ''], ['Every expected loss counts', k.losses != null ? `${k.losses}×` : '']])}`;
+      if (kind !== 'unite') return entry(k.name, head + facts([['Held by', holders(ids[0])]]), { lead: ic('ambition') });
+      return entry(k.name, head, { lead: ic('ambition') }) + ids.map(id => { const d = CONTENT.ambitions[id], u = prog[id];
+        return entry(d.title, `${d.note ? `<p class="vibe">${d.note}</p>` : ''}${facts([['Held by', holders(id)], ['People', listOf(d.peoples)],
+          ['To proclaim', `hold ${d.need} of ${d.provinces.length} provinces, from ${d.from}`], ['Provinces', listOf(d.provinces.map(provName))],
+          ['In this world', u ? (u.done ? `proclaimed by ${u.done.name}` : u.lead ? `${u.lead.name} holds ${u.n} of ${u.need}` : 'no one left to unite it') : '']])}`,
+          { sub: d.adj, lead: ic('proclaim') }); }).join(''); }).join(''); } },
   provinces: { name: 'Provinces', file: 'provinces', count: () => Object.keys(CONTENT.provinces).length, render(){
     const ids = Object.keys(CONTENT.provinces), sea = CONTENT.map.seaCrossings;
     return `<table class="al-tab"><thead><tr><th>Province</th><th>${WORDS.nation.name} in ${CONTENT.rules.start}</th><th>${ic('culture')}</th><th>${ic('pop')}</th><th>${ic('factory')}</th><th>${ic('trade')}</th><th>${ic('sea')}</th></tr></thead><tbody>${

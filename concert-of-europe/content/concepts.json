@@ -25,7 +25,10 @@
   },
   "occupied": {"name": "Occupied", "desc": "Held by an enemy army. Pays its owner nothing until freed."},
   "sea": {"name": "Sea crossing", "desc": "Two coastal provinces close enough to invade across the water."},
-  "claim": {"name": "Claims", "desc": "Nations that want a province: its old owner, its own people, a dream or a programme."},
+  "claim": {
+    "name": "Claims",
+    "desc": "Nations that want a province: its old owner, its own people, a people it is uniting, or a programme."
+  },
   "programme": {"name": "Programme", "desc": "The provinces a new nation is founded to win. They count as its own when it weighs a war."},
   "factory": {"name": "Factories", "desc": "Produce gold every season. Each new one costs more and adds less."},
   "fort": {
@@ -62,11 +65,14 @@
   "dead": {"name": "Dead", "desc": "Lives lost in the fighting, in millions."},
   "ally": {"name": "Alliance", "desc": "Nations bound to join each other's defensive wars."},
   "rival": {"name": "Biggest threat", "desc": "The neighbour a nation fears most. It arms and allies against it."},
-  "dream": {"name": "National dream", "desc": "A people divided among several nations hoping to unite, like Germany or Italy."},
+  "proclaim": {
+    "name": "Proclamation",
+    "desc": "A divided people united: the nation that holds enough of its lands takes its new name, and the smaller nations of its people join it."
+  },
   "ambition": {
     "name": "Ambition",
-    "desc": "What a nation must achieve by the armistice of autumn {rules.end.year}: be the richest great power, build its national dream, or survive.",
-    "avoid": ["objective"]
+    "desc": "What a nation must achieve by the armistice of autumn {rules.end.year}: be the richest great power, unite its people, or survive.",
+    "avoid": ["objective", "dream", "dreams"]
   },
   "leader": {"name": "Leading nation", "desc": "The nation with the most gold a year right now."},
   "ruler": {
@@ -96,7 +102,7 @@
   "panel": {"name": "Side panel", "desc": "Shows or hides the chronicle, rankings and details on the right."},
   "almanac": {
     "name": "Almanac",
-    "desc": "Every ruler, nation, people, dream, event and rule in the game, read live from the game's own data (key A)."
+    "desc": "Every ruler, nation, people, ambition, event and rule in the game, read live from the game's own data (key A)."
   },
   "nation": {
     "name": "Nation",

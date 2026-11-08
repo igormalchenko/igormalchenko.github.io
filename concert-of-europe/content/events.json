@@ -143,6 +143,6 @@
   },
   "opening": {
     "name": "Europe",
-    "text": "<strong>Europe, {rules.start}.</strong> {nations|Word} nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to build its people's dream, or just to survive."
+    "text": "<strong>Europe, {rules.start}.</strong> {nations|Word} nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to unite its people, or just to survive."
   }
 }

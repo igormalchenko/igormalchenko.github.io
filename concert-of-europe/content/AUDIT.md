@@ -72,3 +72,18 @@ Now every number lives in `content/` and the text is filled in from it.
 - The forecasting maths (tax rates, the win-chance curve, the AI's weights): these are the engine, not content.
 - Chronicle sentences about wars, peace, diplomacy and uprisings: their numbers are live state (gold paid, odds), not constants.
 - Drawings: they stay in `registry.js` and `EMB`, keyed by the same ids as the content.
+
+## Settled since
+
+- **Civil war** is the one name for a disputed succession.
+- **Dreams merged into ambitions.** A nation has exactly one ambition, named in its own entry; several nations can share one. "National dream" is gone as a concept and as a word, and the build refuses it. The one behaviour change: the Papal States (ambition Survive) can no longer proclaim Italy, which they did in about a quarter of the worlds where Italy formed.
+
+## Open drifts, to settle one at a time
+
+- **Programmes repeat unions.** Every programme except Lithuania's (Belarus) lists only provinces its nation's union already lists, and the engine adds the union's provinces to the programme anyway. Two lists for one thing; the programme could shrink to the provinces outside the union.
+- **A nation's "hawk" is a ruler's judgment.** Nations carry `hawk`, shown as "Leans to war", but the engine only uses it to tilt each new ruler's judgment (over- or underconfident). The player sees Judgment on the ruler and "leans to war" on the nation for the same number.
+- **Admirer** says "joins every war" his favourite fights; he joins 90% of the time.
+- **Ultimatums never become wars** (see above).
+- **The uprising threshold is two numbers.** A province can rise at 65 unrest (`rules.unrest.uprising`), but the chance formula counts from a hidden 60 (`(unrest - 60) / 40` in `revolts`).
+- **The Papal States and Italy.** Their ambition is Survive, but their people are Italian; should they hold the Italy ambition instead?
+- **The chronicle puts the cause after the effect.** "X has ceased to exist" is written before the peace treaty that ended it.

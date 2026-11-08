@@ -2,7 +2,7 @@ const $ = id => document.getElementById(id);
 const svgNS = 'http://www.w3.org/2000/svg';
 let S, timer = null, selected = null;
 const FILTERS = { war:{on:1,label:'Wars',icon:'war',types:['war','peace']}, diplo:{on:1,label:'Diplomacy',icon:'ally',types:['diplo']},
-  nations:{on:1,label:'Uprisings & dreams',icon:'uprising',types:['unify','revolt']}, rulers:{on:1,label:'Rulers',icon:'ruler',types:['ruler']},
+  nations:{on:1,label:'Uprisings & unions',icon:'uprising',types:['unify','revolt']}, rulers:{on:1,label:'Rulers',icon:'ruler',types:['ruler']},
   event:{on:1,label:'Events',icon:'event',types:['event']}, econ:{on:0,label:'Construction',icon:'build',types:['econ']} };
 let selProv = null;
 function el(tag, attrs, parent){ const e = document.createElementNS(svgNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }

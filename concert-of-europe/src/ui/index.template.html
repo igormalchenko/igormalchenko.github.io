@@ -156,7 +156,6 @@ svg.emb{width:22px;height:22px;flex:none}
 .ev{display:flex;gap:8px}.ev .evi{flex:none;padding-top:1px}.ev .evi svg.ic{width:16px;height:16px;margin:0}
 .stat{display:flex;gap:8px;align-items:center}
 
-.dreamline{font-size:12.5px;margin:-4px 0 12px;color:#e6d8b0}
 .claims div{font-size:12.5px;padding:2px 0}
 .nbs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .nbx{background:var(--panel2);border-radius:999px;padding:2px 9px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
@@ -279,7 +278,7 @@ th svg.ic{margin:0}
   <div class="box">
     <button class="btn close" data-close>Close</button>
     <h2 id="helpTitle">How it works</h2>
-    <p><b>The ambition.</b> Every nation has one ambition for the armistice of {{rules.end.year}}: the great powers of {{rules.start}} want the most gold a year, a divided people wants to proclaim its national dream and hold it, and the small want to survive. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first. A province of its dream is worth {{ambitions.dream.own|times}} its gold a year to it, and a nation that only has to survive counts every loss {{ambitions.survive.losses|times}} as dear.</p>
+    <p><b>The ambition.</b> Every nation has one ambition for the armistice of {{rules.end.year}}: the great powers of {{rules.start}} want the most gold a year, a divided people wants to unite and hold together, and the small want to survive. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first. A province of the people it is uniting is worth {{ambitionKinds.unite.worth|times}} its gold a year to it, and a nation that only has to survive counts every loss {{ambitionKinds.survive.losses|times}} as dear.</p>
     <div class="formula">value = extra gold a year × years planned − cost − expected losses</div>
     <p>Factories pay for good but each one costs more and adds less. An army deters neighbours whose own forecast says "invade", but its men are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it is integrated, minus army losses, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
     <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. New nations carry a programme: the provinces they were founded to win, which they treat as their own. Russia's factories run at {{events.serfdom.before|frac}} speed until the serfs are freed.</p>

@@ -198,7 +198,7 @@
     "tier": 4,
     "label": "Great Builder",
     "epi": "the Architect",
-    "vibe": "Dreams in marble and iron.",
+    "vibe": "Sees the future in marble and iron.",
     "desc": "Raises {landmark}; leaves no gold behind when he dies",
     "temper": {"thrift": 0.2},
     "fx": {"works": 20}

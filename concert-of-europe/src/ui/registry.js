@@ -69,7 +69,7 @@ const DRAW = {
   // ----- diplomacy -----
   ally: { draw: P('<path d="M1 8.5l3-3 3 1.5 2-1.5 3 1.5 3 3-3.5 3.5-2-1-2 1z" fill="#8bb6e0" stroke="#2f557e" stroke-width="1" stroke-linejoin="round"/>') },
   rival: { draw: P('<circle cx="8" cy="8" r="6.3" fill="#f2ece6" stroke="#8a2a20" stroke-width="1"/><circle cx="8" cy="8" r="4.2" fill="#d65a4d"/><circle cx="8" cy="8" r="2.2" fill="#f2ece6"/><circle cx="8" cy="8" r=".9" fill="#8a2a20"/>') },
-  dream: { map: .85,
+  proclaim: { map: .85,
     draw: P('<path d="M8 1.2l2 4.6 5 .4-3.8 3.2 1.2 4.9L8 11.7l-4.4 2.6 1.2-4.9L1 6.2l5-.4z" fill="#e9c35a" stroke="#8a6a1c" stroke-linejoin="round"/>') },
   ambition: { draw: P('<path d="M8 14.6C4.6 14.4 2.8 11.4 3.2 3.6M8 14.6c3.4-.2 5.2-3.2 4.8-11" fill="none" stroke="#3d5a26" stroke-width=".9"/><g fill="#7fae7a" stroke="#3d5a26" stroke-width=".6"><path d="M4.4 13c-1.7-.1-2.8-1.1-3-2.6 1.5 0 2.7.9 3 2.6z"/><path d="M3 9.6C1.5 9 .8 7.8 1 6.3c1.4.5 2.1 1.8 2 3.3z"/><path d="M2.8 6.2C1.9 5 2 3.6 2.8 2.4c.9 1.1 1 2.5 0 3.8z"/><path d="M11.6 13c1.7-.1 2.8-1.1 3-2.6-1.5 0-2.7.9-3 2.6z"/><path d="M13 9.6c1.5-.6 2.2-1.8 2-3.3-1.4.5-2.1 1.8-2 3.3z"/><path d="M13.2 6.2c.9-1.2.8-2.6 0-3.8-.9 1.1-1 2.5 0 3.8z"/></g><circle cx="8" cy="14.4" r="1.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".5"/>') },
   leader: { box: 7.5, map: 1,
@@ -163,7 +163,7 @@ const iconize = text => { const seen = new Set();
 // the unrest at which a province shows as restless, and at which it can rise (content/rules.json)
 const UNREST = CONTENT.rules.unrest;
 const UNREST_HOT = '--uc:#e0453a', UNREST_WARM = '--uc:#e3933c';
-const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'uprising', unify: 'dream', ruler: 'ruler', event: 'event', econ: 'build' };
-const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'army', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'dream', war: 'war' };
+const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'uprising', unify: 'proclaim', ruler: 'ruler', event: 'event', econ: 'build' };
+const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'army', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'ambition', war: 'war' };
 // map markers left by the simulation, by its own type names
-const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'dream', coup: 'coup', crisis: 'civilWar', landmark: 'landmark' };
+const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'proclaim', coup: 'coup', crisis: 'civilWar', landmark: 'landmark' };

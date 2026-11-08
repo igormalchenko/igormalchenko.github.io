@@ -1,24 +1,121 @@
 {
-  "rich": {
-    "name": "Richest great power",
-    "heading": "Richest great power",
-    "desc": "Have the most gold a year of the great powers of {rules.start} when the war ends in autumn {rules.end.year}.",
-    "who": "The great powers of {rules.start} without a national dream."
+  "rich": {"kind": "richest"},
+  "survive": {"kind": "survive"},
+  "ger": {
+    "kind": "unite",
+    "title": "German Empire",
+    "adj": "German",
+    "pre": "German",
+    "peoples": ["German"],
+    "need": 8,
+    "from": 1850,
+    "provinces": ["bra", "pom", "epr", "sil", "rhi", "wes", "han", "hes", "sax", "bav", "wur", "vie", "tyr", "als", "sch"]
   },
-  "dream": {
-    "name": "National dream",
-    "heading": "Build a national dream",
-    "desc": "Proclaim {the}{title} by holding {need} of its provinces, and still hold them in autumn {rules.end.year}.",
-    "who": "Every nation whose people have a national dream.",
-    "own": 2,
-    "other": 1.35
+  "ita": {
+    "kind": "unite",
+    "title": "Kingdom of Italy",
+    "adj": "Italian",
+    "pre": "Italo",
+    "peoples": ["Italian"],
+    "need": 4,
+    "from": 1836,
+    "provinces": ["pie", "lom", "ven", "tus", "rom", "nap", "sic"]
   },
-  "survive": {
-    "name": "Survive",
-    "heading": "Survive",
-    "aside": "small and exposed",
-    "desc": "Still be on the map in autumn {rules.end.year}.",
-    "who": "Everyone else.",
-    "losses": 1.5
+  "sca": {
+    "kind": "unite",
+    "title": "Kalmar Union",
+    "adj": "Scandinavian",
+    "pre": "Scando",
+    "peoples": ["Swedish", "Norwegian", "Danish"],
+    "need": 5,
+    "from": 1845,
+    "provinces": ["sve", "got", "nor", "jut", "fin"],
+    "note": "The old union of the three northern crowns."
+  },
+  "ukr": {
+    "kind": "unite",
+    "title": "Cossack Hetmanate",
+    "adj": "Ukrainian",
+    "pre": "Ukraino",
+    "peoples": ["Ukrainian"],
+    "need": 3,
+    "from": 1836,
+    "provinces": ["kie", "cri", "bes", "gli", "don"],
+    "note": "The Cossack state of the seventeenth century."
+  },
+  "rom": {
+    "kind": "unite",
+    "title": "Dacia",
+    "art": "",
+    "adj": "Dacian",
+    "pre": "Daco",
+    "peoples": ["Romanian"],
+    "need": 3,
+    "from": 1836,
+    "provinces": ["wal", "mol", "trn", "bes"],
+    "note": "The Roman province whose name the Romanian nationalists of the age gave to a united Romania."
+  },
+  "bul": {
+    "kind": "unite",
+    "title": "Tsardom of Bulgaria",
+    "adj": "Bulgarian",
+    "pre": "Bulgaro",
+    "peoples": ["Bulgarian"],
+    "need": 3,
+    "from": 1836,
+    "provinces": ["bul", "mac", "the"]
+  },
+  "gre": {
+    "kind": "unite",
+    "title": "Byzantine Empire",
+    "adj": "Byzantine",
+    "pre": "Byzantino",
+    "peoples": ["Greek"],
+    "need": 3,
+    "from": 1836,
+    "provinces": ["ath", "the", "mac", "con"],
+    "note": "The Great Idea: Constantinople Greek again."
+  },
+  "yug": {
+    "kind": "unite",
+    "title": "Kingdom of Illyria",
+    "adj": "Illyrian",
+    "pre": "Illyro",
+    "peoples": ["Serb", "Croat", "Bosniak"],
+    "need": 3,
+    "from": 1850,
+    "provinces": ["ser", "bos", "cro"],
+    "note": "The Illyrian movement of the 1830s hoped for one South Slav nation."
+  },
+  "pol": {
+    "kind": "unite",
+    "title": "Polish Commonwealth",
+    "adj": "Polish",
+    "pre": "Polono",
+    "peoples": ["Polish", "Lithuanian"],
+    "need": 3,
+    "from": 1836,
+    "provinces": ["pol", "pos", "gli", "lit"]
+  },
+  "ibe": {
+    "kind": "unite",
+    "title": "Iberian Union",
+    "adj": "Iberian",
+    "pre": "Ibero",
+    "peoples": ["Spanish", "Portuguese"],
+    "need": 5,
+    "from": 1860,
+    "provinces": ["cas", "cat", "and", "gal", "por"]
+  },
+  "hun": {
+    "kind": "unite",
+    "title": "Crown of St Stephen",
+    "adj": "Hungarian",
+    "pre": "Magyar",
+    "peoples": ["Hungarian"],
+    "need": 3,
+    "from": 1836,
+    "provinces": ["hun", "trn", "cro"],
+    "note": "The lands of the Hungarian crown."
   }
 }

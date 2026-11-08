@@ -13,7 +13,7 @@ const COUNTRIES = Object.fromEntries(Object.entries(CONTENT.nations).map(([tag, 
 // nations that can appear through an uprising, by the people that rises; some restore a nation of 1836
 const TEMPLATES = Object.fromEntries(Object.entries(CONTENT.breakaways).map(([people, b]) => {
   const n = b.restores && CONTENT.nations[b.restores];
-  return [people, n ? { tag: b.restores, name: n.name, adj: n.adj, pre: n.pre, color: n.color, programme: b.programme } : b];
+  return [people, n ? { tag: b.restores, name: n.name, adj: n.adj, pre: n.pre, color: n.color, ambition: n.ambition, programme: b.programme } : b];
 }));
 
 function proj(lon, lat){ return [(lon + 10.5) * 18.7, (62.5 - lat) * 25.5]; }

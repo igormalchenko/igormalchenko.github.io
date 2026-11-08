@@ -98,7 +98,7 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
     [sv(glyph('fort')), nm('fort')], [sv(glyph('buildFactory')), nm('buildFactory')], [sv(glyph('buildFort')), nm('buildFort')],
     [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} ${UNREST.restless}+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} ${UNREST.uprising}+: close to an uprising`],
     [sv(glyph('battle')), `${nm('battle')} this season`], [sv(glyph('uprising')), nm('uprising')], [sv(glyph('boom')), `${nm('boom')}: coal or railway`],
-    [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('dream')), `${nm('dream')} fulfilled`], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
+    [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('proclaim')), nm('proclaim')], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
     [sv(REG.capital.draw), nm('capital')], [sv(glyph('landmark')), nm('landmark')],
     [sv(`<rect x="-10" y="-7" width="20" height="14" rx="3" fill="rgba(20,24,30,.92)" stroke="#c9a45c" stroke-width="1.2"/><g transform="translate(-4.5,0)">${glyph('army')}</g><text x="1" y="3" font-size="7" font-family="IBM Plex Sans" fill="${INK}">80</text>`), `${nm('army')} in thousands, at the capital in wartime`],
     [sv(REG.front.draw), nm('front')],

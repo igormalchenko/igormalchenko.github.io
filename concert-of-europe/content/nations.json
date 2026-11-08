@@ -6,6 +6,7 @@
     "color": "#b8524a",
     "people": "English",
     "accepts": ["Scottish"],
+    "ambition": "rich",
     "hawk": 0.45,
     "patience": 0.95,
     "army": 30,
@@ -18,6 +19,7 @@
     "pre": "Franco",
     "color": "#4f72a8",
     "people": "French",
+    "ambition": "rich",
     "hawk": 0.6,
     "patience": 0.6,
     "army": 60,
@@ -30,10 +32,10 @@
     "pre": "Prusso",
     "color": "#5e6573",
     "people": "German",
+    "ambition": "ger",
     "hawk": 0.85,
     "patience": 0.8,
-    "army": 50,
-    "unifier": 1
+    "army": 50
   },
   "AUS": {
     "name": "Austria",
@@ -41,10 +43,10 @@
     "pre": "Austro",
     "color": "#cdb36a",
     "people": "German",
+    "ambition": "ger",
     "hawk": 0.45,
     "patience": 0.45,
     "army": 60,
-    "unifier": 1,
     "relations": {"SAR": -35, "SIC": 45},
     "allies": ["SIC"]
   },
@@ -54,6 +56,7 @@
     "pre": "Russo",
     "color": "#6b8a4f",
     "people": "Russian",
+    "ambition": "rich",
     "hawk": 0.7,
     "patience": 0.3,
     "army": 90,
@@ -67,6 +70,7 @@
     "color": "#4b8b84",
     "people": "Turkish",
     "accepts": ["Bosniak"],
+    "ambition": "rich",
     "hawk": 0.35,
     "patience": 0.2,
     "army": 50
@@ -77,6 +81,7 @@
     "pre": "Hispano",
     "color": "#d4a043",
     "people": "Spanish",
+    "ambition": "ibe",
     "hawk": 0.3,
     "patience": 0.3,
     "army": 25
@@ -87,6 +92,7 @@
     "pre": "Luso",
     "color": "#8aa86a",
     "people": "Portuguese",
+    "ambition": "ibe",
     "hawk": 0.2,
     "patience": 0.3,
     "army": 8
@@ -97,6 +103,7 @@
     "pre": "Dutch",
     "color": "#de8a3e",
     "people": "Dutch",
+    "ambition": "survive",
     "hawk": 0.25,
     "patience": 0.7,
     "army": 10
@@ -107,6 +114,7 @@
     "pre": "Belgo",
     "color": "#a38c55",
     "people": "Belgian",
+    "ambition": "survive",
     "hawk": 0.15,
     "patience": 0.85,
     "army": 8
@@ -117,6 +125,7 @@
     "pre": "Dano",
     "color": "#b06a62",
     "people": "Danish",
+    "ambition": "sca",
     "hawk": 0.3,
     "patience": 0.5,
     "army": 10,
@@ -129,20 +138,67 @@
     "color": "#6d9fc8",
     "people": "Swedish",
     "accepts": ["Norwegian"],
+    "ambition": "sca",
     "hawk": 0.3,
     "patience": 0.55,
     "army": 15
   },
-  "HAN": {"name": "Hanover", "adj": "Hanoverian", "color": "#c3b05b", "people": "German", "hawk": 0.2, "patience": 0.5, "army": 8},
-  "HES": {"name": "Hesse", "adj": "Hessian", "color": "#9d82a8", "people": "German", "hawk": 0.2, "patience": 0.5, "army": 5},
-  "SAX": {"name": "Saxony", "adj": "Saxon", "color": "#7d9a8b", "people": "German", "hawk": 0.2, "patience": 0.6, "army": 8},
-  "BAV": {"name": "Bavaria", "adj": "Bavarian", "color": "#8eb2d6", "people": "German", "hawk": 0.3, "patience": 0.5, "army": 15},
-  "WUR": {"name": "Württemberg", "adj": "Württemberg", "color": "#c69a6e", "people": "German", "hawk": 0.2, "patience": 0.5, "army": 7},
+  "HAN": {
+    "name": "Hanover",
+    "adj": "Hanoverian",
+    "color": "#c3b05b",
+    "people": "German",
+    "ambition": "survive",
+    "hawk": 0.2,
+    "patience": 0.5,
+    "army": 8
+  },
+  "HES": {
+    "name": "Hesse",
+    "adj": "Hessian",
+    "color": "#9d82a8",
+    "people": "German",
+    "ambition": "survive",
+    "hawk": 0.2,
+    "patience": 0.5,
+    "army": 5
+  },
+  "SAX": {
+    "name": "Saxony",
+    "adj": "Saxon",
+    "color": "#7d9a8b",
+    "people": "German",
+    "ambition": "survive",
+    "hawk": 0.2,
+    "patience": 0.6,
+    "army": 8
+  },
+  "BAV": {
+    "name": "Bavaria",
+    "adj": "Bavarian",
+    "color": "#8eb2d6",
+    "people": "German",
+    "ambition": "ger",
+    "hawk": 0.3,
+    "patience": 0.5,
+    "army": 15
+  },
+  "WUR": {
+    "name": "Württemberg",
+    "adj": "Württemberg",
+    "color": "#c69a6e",
+    "people": "German",
+    "ambition": "survive",
+    "hawk": 0.2,
+    "patience": 0.5,
+    "army": 7
+  },
   "SWI": {
     "name": "Switzerland",
     "adj": "Swiss",
     "color": "#a4465c",
     "people": "Swiss",
+    "ambition": "survive",
     "hawk": 0.05,
     "patience": 0.6,
     "army": 6,
@@ -154,22 +210,31 @@
     "pre": "Sardo",
     "color": "#9fbd6c",
     "people": "Italian",
+    "ambition": "ita",
     "hawk": 0.75,
     "patience": 0.5,
-    "army": 20,
-    "unifier": 1
+    "army": 20
   },
-  "TUS": {"name": "Tuscany", "adj": "Tuscan", "color": "#b6a06b", "people": "Italian", "hawk": 0.1, "patience": 0.4, "army": 4},
+  "TUS": {
+    "name": "Tuscany",
+    "adj": "Tuscan",
+    "color": "#b6a06b",
+    "people": "Italian",
+    "ambition": "ita",
+    "hawk": 0.1,
+    "patience": 0.4,
+    "army": 4
+  },
   "PAP": {
     "name": "Papal States",
     "adj": "Papal",
     "color": "#ece1bb",
     "people": "Italian",
+    "ambition": "survive",
     "hawk": 0.05,
     "patience": 0.2,
     "army": 5,
     "noAnnex": 1,
-    "ambition": "survive",
     "rulerNames": ["Gregory", "Pius", "Leo"]
   },
   "SIC": {
@@ -177,10 +242,10 @@
     "adj": "Neapolitan",
     "color": "#c58b8b",
     "people": "Italian",
+    "ambition": "ita",
     "hawk": 0.35,
     "patience": 0.25,
-    "army": 20,
-    "unifier": 1
+    "army": 20
   },
   "GRE": {
     "name": "Greece",
@@ -188,6 +253,7 @@
     "pre": "Greco",
     "color": "#6ea4c8",
     "people": "Greek",
+    "ambition": "gre",
     "hawk": 0.6,
     "patience": 0.3,
     "army": 6,
@@ -200,6 +266,7 @@
     "pre": "Serbo",
     "color": "#a35d5d",
     "people": "Serb",
+    "ambition": "yug",
     "hawk": 0.65,
     "patience": 0.25,
     "army": 6,

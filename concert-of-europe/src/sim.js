@@ -175,7 +175,7 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(0.9, 1.1), treasury: 30 + rand(0, 20), infamy: 0, allies: new Set(), rival: null, truce: {},
       programme: new Set(d.programme || []), guarantee: null,
-      alive: true, unifier: !!d.unifier, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, federal: d.federal || null, serfs: !!d.serfs, fixedAmbition: d.ambition || null, thoughts: [], unified: false, born: S.year,
+      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, federal: d.federal || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', thoughts: [], born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
@@ -254,12 +254,11 @@ function createSim(seed, geo, opts = {}){
     const own = income(c) * 4;
     return sumInc(regionIncome(r, c, { ignoreOcc: true, unrest: foreign ? 25 + 36 * nationalism() : 10, integ: 1, war: false, admin: a1 })) * 4 - own * (a0 - a1) / a0;
   }
-  // a province of the dream a nation lives for is worth twice its gold a year to it, to win and to keep (see ambitions)
-  const AMB = CONTENT.ambitions;
-  const ambitionW = (c, r) => { const a = c.ambition; if (a && a.kind === 'dream') { const d = dreamById(a.dream); if (d.pset.has(r.id) && (!d.done || d.done === c.tag)) return AMB.dream.own; }
-    return inDream(c, r) ? AMB.dream.other : 1; };
+  // a province of the union a nation works toward (or has proclaimed) is worth more to it, to win and to keep (ambitionKinds.json)
+  const ambitionW = (c, r) => { const a = c.ambition && AMBITIONS[c.ambition.id];
+    return a && a.kind === 'unite' && a.pset.has(r.id) && (!a.done || a.done === c.tag) ? KINDS.unite.worth : 1; };
   // a nation that only has to survive counts every loss half again as dear
-  const surviveW = c => c.ambition && c.ambition.kind === 'survive' ? AMB.survive.losses : 1;
+  const surviveW = c => c.ambition && c.ambition.kind === 'survive' ? KINDS.survive.losses : 1;
   const settleYears = (r, c) => (!isAccepted(c, r.culture) && !hasFx(c, 'converts') && r.core !== c.tag && !c.programme.has(r.id)) ? 9 : 4;
   Object.assign(S, { adminOf, regionsOf, popOf, facOf, facAvg, unrestOf, power, income, score, upkeep, regionIncome, sumInc, strength, warOf, claim, RB, isAccepted, maxBuilds, workforce, horizon });
 
@@ -591,13 +590,14 @@ function createSim(seed, geo, opts = {}){
       else add({ type: 'court', o, ev: ev * 0.25, label: `Court ${o.name}`, why: `A future ally against ${guard} (relations ${Math.round(r)})` });
     });
     // peaceful union of a fellow-national minor
-    if (dreamsOf(c).length && !war) neighborsOf(c).forEach(o => {
-      if (isMajor(o) || o.noAnnex || warOf(o) || !dreamsOf(c).some(d => d.cultures.includes(o.culture))) return;
+    const union = unionOf(c);
+    if (union && !war) neighborsOf(c).forEach(o => {
+      if (isMajor(o) || o.noAnnex || warOf(o) || !union.peoples.includes(o.culture)) return;
       const val = regionsOf(o).reduce((s, r) => s + provYearly(r, c) * ambitionW(c, r), 0) * (H - 1.5);
       const r = rel(c.tag, o.tag);
       const ok = r >= 70 && power(c) > 2 * power(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]));
-      if (ok) add({ type: 'annex', o, ev: val, label: `Unite with ${o.name} by treaty`, why: `Toward ${dreamsOf(c)[0].title}; adds ${Math.round(val / (H - 1.5))} a year with no war` });
-      else if (r < 75) add({ type: 'court', o, ev: val * 0.08, label: `Court ${o.name}`, why: `Toward ${dreamsOf(c)[0].title} (relations ${Math.round(r)} of 70 needed)` });
+      if (ok) add({ type: 'annex', o, ev: val, label: `Unite with ${o.name} by treaty`, why: `Toward ${theTitle(union)}; adds ${Math.round(val / (H - 1.5))} a year with no war` });
+      else if (r < 75) add({ type: 'court', o, ev: val * 0.08, label: `Court ${o.name}`, why: `Toward ${theTitle(union)} (relations ${Math.round(r)} of 70 needed)` });
     });
 
     // war: chance of winning x what the province pays once settled, minus the price of fighting and of losing
@@ -608,7 +608,7 @@ function createSim(seed, geo, opts = {}){
         if (!o.alive) return;
         const e = warEval(c, o, r); if (!e || e.p < 0.55) return;
         if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invade ${o.name} for ${r.name}`,
-          why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inDream(c, r) ? `; part of the dream of ${dreamsOf(c).find(d => d.pset.has(r.id)).title}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once integrated${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
+          why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inUnion(c, r) ? `; toward ${theTitle(unionOf(c))}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once integrated${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
       });
       if (best) add(best);
     }
@@ -700,9 +700,9 @@ function createSim(seed, geo, opts = {}){
         L('revolt', `Rebels seize ${Rn(r)} but find no allies; ${N(o)} retakes it at a heavy cost in gold and men.`); return; }
       const restored = !!S.C[tag], wasPlayer = restored && S.C[tag].player;
       const nc = home ? makeCountry(tag, Object.assign({}, COUNTRIES[tag], { army: r.pop * RULES.breakaway.armyPerMillion }))
-        : makeCountry(tag, { name: t.name, adj: t.adj, pre: t.pre, color: t.color, culture: r.culture, p: [RULES.breakaway.hawk, RULES.breakaway.patience], army: r.pop * RULES.breakaway.armyPerMillion, programme: t.programme });
+        : makeCountry(tag, { name: t.name, adj: t.adj, pre: t.pre, color: t.color, culture: r.culture, p: [RULES.breakaway.hawk, RULES.breakaway.patience], army: r.pop * RULES.breakaway.armyPerMillion, programme: t.programme, ambition: t.ambition });
       nc.treasury = RULES.breakaway.gold; nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
-      dreamsOf(nc).forEach(d => d.provinces.forEach(id => nc.programme.add(id))); setAmbition(nc); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
+      setAmbition(nc); if (unionOf(nc)) unionOf(nc).provinces.forEach(id => nc.programme.add(id)); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
       const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ && (!home || x.core === home)));
       invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = 15; x.build = null; x.flash = 3; x.integ = 1; });
       killIfEmpty(o);
@@ -716,52 +716,56 @@ function createSim(seed, geo, opts = {}){
     });
   }
 
-  // ---------- national dreams: unify a people, or build a greater state (content/dreams.json) ----------
-  const DREAMS = Object.entries(CONTENT.dreams).map(([id, d]) => Object.assign({ id }, d));
-  DREAMS.forEach(d => d.pset = new Set(d.provinces));
-  function dreamsOf(c){ return DREAMS.filter(d => !d.done && d.cultures.includes(c.culture) && (!d.leaders || d.leaders.includes(c.tag))); }
-  const inDream = (c, r) => dreamsOf(c).some(d => d.pset.has(r.id));
-  S.DREAMS = DREAMS; S.dreamsOf = dreamsOf;
-  S.unifyProgress = () => DREAMS.map(d => {
-    const lead = alive().filter(c => d.done ? c.tag === d.done : dreamsOf(c).includes(d)).map(c => ({ c, n: regionsOf(c).filter(r => d.pset.has(r.id)).length })).sort((a, b) => b.n - a.n)[0];
-    return { id: d.id, title: d.title, need: d.need, done: d.done && S.C[d.done].alive ? S.C[d.done] : null, lead: lead ? lead.c : null, n: lead ? lead.n : 0, cul: d.cultures.join(', ') };
+  // ---------- ambitions (content/ambitions.json): what each nation must achieve by the armistice ----------
+  // Every nation names its ambition in its own entry, and several can share one. The great powers race to be the richest;
+  // the nations of a divided people race to unite it, and the first to proclaim it wins while the rest have lost.
+  const KINDS = CONTENT.ambitionKinds;
+  const AMBITIONS = Object.fromEntries(Object.entries(CONTENT.ambitions).map(([id, a]) => [id, Object.assign({ id }, a, a.provinces ? { pset: new Set(a.provinces) } : {})]));
+  const UNIONS = Object.values(AMBITIONS).filter(a => a.kind === 'unite');
+  // the union a nation is still working toward, if any
+  const unionOf = c => { const a = c.ambition && AMBITIONS[c.ambition.id]; return a && a.kind === 'unite' && !a.done ? a : null; };
+  const inUnion = (c, r) => { const u = unionOf(c); return !!u && u.pset.has(r.id); };
+  const theTitle = u => `${u.art ?? 'the '}${u.title}`;
+  S.UNIONS = UNIONS; S.unionOf = unionOf;
+  S.unionProgress = () => UNIONS.map(d => {
+    const lead = alive().filter(c => d.done ? c.tag === d.done : unionOf(c) === d).map(c => ({ c, n: regionsOf(c).filter(r => d.pset.has(r.id)).length })).sort((a, b) => b.n - a.n)[0];
+    return { id: d.id, title: d.title, need: d.need, done: d.done && S.C[d.done].alive ? S.C[d.done] : null, lead: lead ? lead.c : null, n: lead ? lead.n : 0, peoples: d.peoples.join(', ') };
   });
   function unification(){
-    DREAMS.forEach(d => {
+    UNIONS.forEach(d => {
       if (d.done || S.year < d.from) return;
-      alive().filter(c => dreamsOf(c).includes(d)).forEach(c => {
+      alive().filter(c => unionOf(c) === d).forEach(c => {
         if (d.done) return;
         const own = regionsOf(c).filter(r => d.pset.has(r.id)).length;
         if (own < d.need) return;
-        d.done = c.tag; c.unified = true; c.name = d.title; c.adj = d.adj; c.pre = d.pre;
-        d.cultures.forEach(x => c.acc.add(x)); d.provinces.forEach(id => c.programme.add(id));
-        regionsOf(c).forEach(r => { r.unrest = Math.max(0, r.unrest - 25); if (d.cultures.includes(r.culture)) r.integ = 1; });
+        d.done = c.tag; c.name = d.title; c.adj = d.adj; c.pre = d.pre;
+        d.peoples.forEach(x => c.acc.add(x)); d.provinces.forEach(id => c.programme.add(id));
+        regionsOf(c).forEach(r => { r.unrest = Math.max(0, r.unrest - 25); if (d.peoples.includes(r.culture)) r.integ = 1; });
         mark(capitalOf(c).i, 'crown');
-        L('unify', `<strong>A dream fulfilled.</strong> Holding ${own} of its people's lands, ${N(c)} is proclaimed.`);
-        alive().filter(o => o !== c && d.cultures.includes(o.culture) && !isMajor(o) && !o.noAnnex && !warOf(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]))).forEach(o => {
-          L('unify', `${N(o)} votes to join ${N(c)}.`); regionsOf(o).forEach(r => transfer(r, c, o, 'treaty')); });
+        L('unify', say(KINDS.unite.proclaimText, { n: own, nation: N(c) }));
+        alive().filter(o => o !== c && d.peoples.includes(o.culture) && !isMajor(o) && !o.noAnnex && !warOf(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]))).forEach(o => {
+          L('unify', say(KINDS.unite.joinText, { nation: N(o), by: N(c) })); regionsOf(o).forEach(r => transfer(r, c, o, 'treaty')); });
       });
     });
   }
-  alive().forEach(c => dreamsOf(c).forEach(d => d.provinces.forEach(id => { if (RB[id].owner !== c.tag) c.programme.add(id); })));
-
-  // ---------- ambitions: what each nation must achieve by the armistice ----------
-  // Fixed at birth: build its people's dream if it has one, else be the richest great power (the great powers of 1836), else survive.
-  const GREAT_1836 = S.majors.slice();
-  const dreamById = id => DREAMS.find(d => d.id === id);
+  // fixed at birth from the nation's own entry; a union someone else already proclaimed leaves only survival,
+  // and only the great powers of the first season can race to be the richest
   function setAmbition(c){
-    const d = c.fixedAmbition !== 'survive' && dreamsOf(c)[0];
-    c.ambition = d ? { kind: 'dream', dream: d.id } : GREAT_1836.includes(c.tag) && c.born === RULES.start ? { kind: 'rich' } : { kind: 'survive' };
+    const a = AMBITIONS[c.ambitionId] || AMBITIONS.survive;
+    const gone = (a.kind === 'unite' && a.done) || (a.kind === 'richest' && c.born !== RULES.start);
+    c.ambition = gone ? { id: 'survive', kind: 'survive' } : { id: a.id, kind: a.kind };
   }
   alive().forEach(setAmbition);
+  // a nation counts the provinces of the union it works toward as its programme
+  alive().forEach(c => { const u = unionOf(c); if (u) u.provinces.forEach(id => { if (RB[id].owner !== c.tag) c.programme.add(id); }); });
   // how the ambition stands: 'open', 'met' (so far, or for good at the armistice) or 'lost'
   function ambitionOf(c){
-    const a = c.ambition || { kind: 'survive' };
+    const a = c.ambition || { id: 'survive', kind: 'survive' };
     if (!c.alive) return { ...a, state: 'lost' };
     if (a.kind === 'survive') return { ...a, state: S.over ? 'met' : 'open' };
-    if (a.kind === 'rich') { const rich = alive().filter(o => o.ambition && o.ambition.kind === 'rich').sort((x, y) => score(y) - score(x));
+    if (a.kind === 'richest') { const rich = alive().filter(o => o.ambition && o.ambition.kind === 'richest').sort((x, y) => score(y) - score(x));
       return { ...a, rank: rich.indexOf(c) + 1, of: rich.length, state: rich[0] === c ? (S.over ? 'met' : 'open') : S.over ? 'lost' : 'open' }; }
-    const d = dreamById(a.dream), n = regionsOf(c).filter(r => d.pset.has(r.id)).length, base = { ...a, title: d.title, the: d.art ?? 'the ', n, need: d.need };
+    const d = AMBITIONS[a.id], n = regionsOf(c).filter(r => d.pset.has(r.id)).length, base = { ...a, title: d.title, the: d.art ?? 'the ', n, need: d.need };
     if (d.done && d.done !== c.tag) return { ...base, state: 'lost', by: d.done };
     if (d.done) return { ...base, state: n >= d.need ? 'met' : S.over ? 'lost' : 'open', proclaimed: true };
     return { ...base, state: S.over ? 'lost' : 'open' };
@@ -908,10 +912,10 @@ function createSim(seed, geo, opts = {}){
       if (S.greatWar && S.wars.includes(S.greatWar)) L('peace', say(EV.armistice.text));
       S.wars.slice().forEach(w => endWar(w, w.score > 10 ? 'att' : w.score < -10 ? 'def' : 'white'));
       S.over = true;
-      const rich = alive().filter(c => c.ambition.kind === 'rich').sort((a, b) => score(b) - score(a))[0];
-      const dreamt = alive().filter(c => c.ambition.kind === 'dream' && ambitionOf(c).state === 'met');
+      const rich = alive().filter(c => c.ambition.kind === 'richest').sort((a, b) => score(b) - score(a))[0];
+      const united = alive().filter(c => c.ambition.kind === 'unite' && ambitionOf(c).state === 'met');
       const survivors = alive().filter(c => c.ambition.kind === 'survive');
-      L('event', `<strong>The age ends.</strong> ${rich ? `${N(rich)} is the richest great power. ` : ''}${dreamt.length ? `${list(dreamt)} ${dreamt.length > 1 ? 'hold their dreams' : 'holds its dream'}. ` : 'No dream outlives the war. '}${survivors.length ? `${list(survivors)} survive${survivors.length > 1 ? '' : 's'}.` : ''}`);
+      L('event', `<strong>The age ends.</strong> ${rich ? `${N(rich)} is the richest great power. ` : ''}${united.length ? `${list(united)} still ${united.length > 1 ? 'hold their peoples' : 'holds its people'} together. ` : 'No united people outlives the war. '}${survivors.length ? `${list(survivors)} survive${survivors.length > 1 ? '' : 's'}.` : ''}`);
       return;
     }
     S.t++; S.year = RULES.start + Math.floor(S.t / 4); S.q = S.t % 4;

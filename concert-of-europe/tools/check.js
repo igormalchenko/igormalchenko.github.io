@@ -3,7 +3,7 @@
 //  2. No drawing is made outside the registry (no shapes with hand-typed coordinates in other UI files).
 //  3. No browser title tooltips (they pop up late, on top of the instant ones): use data-tip and data-desc.
 //  4. No visible text (code, template or content) uses a word the registry says to avoid (e.g. "treasury" instead of "Gold").
-//  5. Content refers only to things that exist: every province, nation, people, dream and drawing it names.
+//  5. Content refers only to things that exist: every province, nation, people, ambition and drawing it names.
 //  6. Every template in the content fills in (no unknown {path} or format), and states no hand-typed number.
 //  7. Engine and content match both ways: every number the engine reads exists, and every number in the content is read.
 const fs = require('fs'), path = require('path'), vm = require('vm');
@@ -102,8 +102,16 @@ Object.entries(C.nations).forEach(([t, n]) => { const w = `nations.json ${t}`; p
   (n.programme || []).forEach(id => prov(w, id)); (n.allies || []).forEach(o => nation(w, o)); Object.keys(n.relations || {}).forEach(o => nation(w, o));
   if (!Object.values(C.provinces).some(p => p.owner === t)) bad(w, 'holds no province'); });
 Object.entries(C.breakaways).forEach(([p, b]) => { const w = `breakaways.json ${p}`; people(w, p); if (b.restores) nation(w, b.restores); (b.programme || []).forEach(id => prov(w, id)); });
-Object.entries(C.dreams).forEach(([id, d]) => { const w = `dreams.json ${id}`; d.cultures.forEach(p => people(w, p)); (d.leaders || []).forEach(t => nation(w, t)); d.provinces.forEach(x => prov(w, x));
-  if (d.need > d.provinces.length) bad(w, `needs ${d.need} of only ${d.provinces.length} provinces`); });
+const ambition = (w, id) => { if (!C.ambitions[id]) bad(w, `no ambition "${id}"`); };
+Object.entries(C.nations).forEach(([t, n]) => ambition(`nations.json ${t}`, n.ambition));
+Object.entries(C.breakaways).forEach(([p, b]) => { if (!b.restores) ambition(`breakaways.json ${p}`, b.ambition); else if (b.ambition) bad(`breakaways.json ${p}`, 'a restored nation takes the ambition of the nation it restores; remove this one'); });
+Object.entries(C.ambitions).forEach(([id, d]) => { const w = `ambitions.json ${id}`;
+  if (!C.ambitionKinds[d.kind]) bad(w, `no kind "${d.kind}" in ambitionKinds.json`);
+  if (d.kind !== 'unite') return;
+  d.peoples.forEach(p => people(w, p)); d.provinces.forEach(x => prov(w, x));
+  if (d.need > d.provinces.length) bad(w, `needs ${d.need} of only ${d.provinces.length} provinces`);
+  if (!Object.values(C.nations).some(n => n.ambition === id) && !Object.values(C.breakaways).some(b => b.ambition === id)) bad(w, 'no nation holds it'); });
+Object.keys(C.ambitionKinds).forEach(k => { if (!Object.values(C.ambitions).some(a => a.kind === k)) bad('ambitionKinds.json', `no ambition is of kind "${k}"`); });
 ['famine', 'compromise'].forEach(k => prov(`events.json ${k}`, C.events[k].province)); C.events.serfdom.provinces.forEach(x => prov('events.json serfdom', x));
 ['compromise', 'serfdom'].forEach(k => nation(`events.json ${k}`, C.events[k].nation));
 C.events.awakening.peoples.forEach(p => people('events.json awakening', p)); people('events.json shevchenko', C.events.shevchenko.people); people('events.json compromise', C.events.compromise.people);
@@ -120,9 +128,9 @@ if (C.eras.filter(e => e.start).length !== 1) bad('eras.json', 'exactly one way 
 
 // ---- 6: templates ----
 // every placeholder a template may use, besides its own fields: the words a running world fills in
-const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need'];
+const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need', 'n', 'by'];
 const probe = Object.fromEntries(RUNTIME.map(k => [k, 'X']));
-const TEXT_FIELDS = ['desc', 'text', 'rattleText', 'warText', 'vibe', 'fx', 'who', 'name', 'label', 'epi', 'heading', 'aside'];
+const TEXT_FIELDS = ['desc', 'text', 'rattleText', 'warText', 'proclaimText', 'joinText', 'vibe', 'fx', 'who', 'name', 'label', 'epi', 'heading', 'aside'];
 function template(where, tpl, own){
   if (typeof tpl !== 'string') return;
   try { ctx.say(tpl, Object.assign({}, own, probe, own)); } catch (e) { bad(where, `${e.message} in "${tpl.slice(0, 70)}"`); }
