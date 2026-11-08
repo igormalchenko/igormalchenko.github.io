@@ -47,10 +47,13 @@ const FORMATS = {
   s: x => x === 1 ? '' : 's',                                  // province{v|s}
   ies: x => x === 1 ? 'y' : 'ies',                             // factor{v|ies}
   years: x => { const y = x / 4; return `${numberWord(y)} year${y === 1 ? '' : 's'}`; },   // seasons as years
+  people: x => peopleName(x),                                   // a people's id → its name
   nation: x => CONTENT.nations[x] ? CONTENT.nations[x].name : x,                // a nation's tag → its name
   place: x => { const nm = id => CONTENT.provinces[id] ? CONTENT.provinces[id].name : id;   // a province id (or a list) → its name
     const xs = [].concat(x).map(nm); return xs.length > 1 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs.join(''); },
 };
+// a people's name from its id (content/peoples.json)
+const peopleName = p => CONTENT.peoples[p] ? CONTENT.peoples[p].name : p;
 function lookup(path, ctx){
   let v = ctx; for (const k of path.split('.')) { if (v == null || !(k in Object(v))) throw new Error(`say: no "${path}"`); v = v[k]; }
   return v;

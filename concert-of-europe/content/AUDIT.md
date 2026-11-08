@@ -152,6 +152,16 @@ Almost all of it is 1.14. The same sweep with every fix but the old uprising cur
 - **Province history** in the panel searches the chronicle for `<i>name</i>`: two provinces with one name share a history.
 - **"German" is the fallback for ruler names**, typed in `sim.js` (`namesOf`) and `almanac.js`. Switzerland has no names, so its rulers are Friedrich and Wilhelm.
 
+**Done (step 3).** All six are now joined by id:
+- Province shapes: `geo.json` records what it was built from, and the check refuses a mismatch (step 2).
+- Peoples have short ids (`ukrainian`, `croat`) and a `name`; every file refers to the id, and everything the player reads shows the name (`peopleName`, or `{x|people}` in a template). Renaming a people is now one edit of its `name`. One word still serves every use, because every use is an adjective ("the Croat people", "Croat-speaking"); add a second field only if a sentence ever needs a noun.
+- The Flirt's and Planner's grant carries its own chronicle line (step 2).
+- The era in force keeps its own entry, and the next one is drawn from the others by entry.
+- Every province the chronicle names carries its index (`data-p`), and the panel finds a province's history by it.
+- The German fallback is gone; the Swiss have their own names (step 2).
+
+Proven unchanged: final states of eight worlds (two of them player games) match, and so does every chronicle line once the markup is stripped. No Almanac page shows a people's id.
+
 **Names copied into text instead of read from content**
 - Event prose: serfdom names "Moscow and St Petersburg", compromise "Hungary", the Ukrainian awakening "Ukrainian" (its id is `shevchenko`), and most events repeat their own name in their text.
 - `ambitions.json` notes name provinces (Constantinople); the rulebook and concepts name rarities and the Flirt.

@@ -230,6 +230,7 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
 // ---- 9: the shape of the content ----
 { const num = (w, v, lo, hi) => { if (typeof v !== 'number' || !(v >= lo && v <= hi)) bad(w, `${JSON.stringify(v)} should be a number from ${lo} to ${hi}`); };
   C.rarities.forEach(r => num(`rarities.json ${r.name} odds`, r.odds, 0, 1));
+  Object.entries(C.peoples).forEach(([id, p]) => { if (typeof p.name !== 'string' || !p.name) bad(`peoples.json ${id}`, 'needs a name'); });
   Object.entries(C.nations).forEach(([t, n]) => { num(`nations.json ${t} hawk`, n.hawk, 0, 1); num(`nations.json ${t} patience`, n.patience, 0, 1);
     if (n.starts) num(`nations.json ${t} army`, n.army, 1, 1000);
     if (!(n.rulerNames || (C.peoples[n.people] && C.peoples[n.people].names || []).length)) bad(`nations.json ${t}`, `has no ruler names, and the ${n.people} people have none either`); });
@@ -256,7 +257,7 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
   const nm = (n, what) => { if (n) NAMES.push({ n: n.replace(/^The /, ''), what }); };
   Object.entries(C.provinces).forEach(([id, p]) => nm(p.name, `province ${id}`));
   Object.entries(C.nations).forEach(([t, n]) => nm(n.name, `nation ${t}`));
-  Object.keys(C.peoples).forEach(p => nm(p, `people ${p}`));
+  Object.entries(C.peoples).forEach(([id, p]) => nm(p.name, `people ${id}`));
   Object.entries(C.ambitions).forEach(([id, a]) => nm(a.title, `union ${id}`));
   Object.entries(C.events).forEach(([id, e]) => nm(e.name, `event ${id}`));
   C.eras.forEach((e, i) => nm(e.name, `way of war ${i}`));

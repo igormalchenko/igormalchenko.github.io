@@ -47,7 +47,7 @@
     "chance": 0.4,
     "nation": "AUS",
     "province": "hun",
-    "people": "Hungarian",
+    "people": "hungarian",
     "unrest": 40,
     "calm": 15,
     "newName": "Austria-Hungary",
@@ -77,9 +77,9 @@
     "name": "Ukrainian national awakening",
     "years": [1840, 1852],
     "chance": 0.3,
-    "people": "Ukrainian",
+    "people": "ukrainian",
     "awake": 14,
-    "text": "Shevchenko's poems spark a <strong>{name}</strong>; unrest grows in {people} lands."
+    "text": "Shevchenko's poems spark a <strong>{name}</strong>; unrest grows in {people|people} lands."
   },
   "awakening": {
     "name": "National awakening",
@@ -87,22 +87,22 @@
     "chance": 0.07,
     "awake": 10,
     "peoples": [
-      "Polish",
-      "Czech",
-      "Hungarian",
-      "Romanian",
-      "Bulgarian",
-      "Finnish",
-      "Irish",
-      "Croat",
-      "Lithuanian",
-      "Baltic",
-      "Norwegian",
-      "Albanian",
-      "Greek",
-      "Serb"
+      "polish",
+      "czech",
+      "hungarian",
+      "romanian",
+      "bulgarian",
+      "finnish",
+      "irish",
+      "croat",
+      "lithuanian",
+      "baltic",
+      "norwegian",
+      "albanian",
+      "greek",
+      "serb"
     ],
-    "text": "A national awakening stirs the {people} people; their provinces grow restless."
+    "text": "A national awakening stirs the {people|people} people; their provinces grow restless."
   },
   "revolution": {
     "name": "Military revolution",

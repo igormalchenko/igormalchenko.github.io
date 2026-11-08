@@ -31,7 +31,7 @@
   "New nations": [
     "A nation born in an uprising starts with {rules.newNation.gold} gold and an army of {rules.newNation.armyPerMillion}k men per million people. It leans to war and plans ahead as its own entry says.",
     "Its relations with the nation it broke from start at {rules.newNation.hostility}, but the two keep the peace for {rules.newNation.truce|span}. A great power on bad terms with the old ruler may guarantee its independence for {rules.newNation.guarantee|span}.",
-    "When an uprising wins in a province next to a living nation of its own people, the province joins that nation. Otherwise the province's own fallen nation comes back if it was of the same people, or else the people rises as its nation that was not on the map in {rules.start}, or else as its only nation. A people with several nations and none of them new, like the Germans, finds no allies."
+    "When an uprising wins in a province next to a living nation of its own people, the province joins that nation. Otherwise the province's own fallen nation comes back if it was of the same people, or else the people rises as its nation that was not on the map in {rules.start}, or else as its only nation. A people with several nations and none of them new, like the {peoples.german.name} people, finds no allies."
   ],
   "Alliances": [
     "An ally comes to a nation's defence {rules.allies.defend|pct} of the time, and always if it guaranteed that nation's independence. It joins an attack {rules.allies.attack|pct} of the time, and only if the two are on good terms.",

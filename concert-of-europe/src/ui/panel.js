@@ -148,7 +148,7 @@ function renderNation(){
     const facs = x.fac > 4 ? `${ic('factory')}<span class="pn-x">×${x.fac}</span>` : ic('factory').repeat(x.fac);
     const restless = u >= UNREST.restless ? `<span style="color:${u >= UNREST.uprising ? '#e0453a' : '#e3933c'}">${ic('unrest')}${u}</span>` : '';
     return `<div class="prov click" data-prov="${x.i}" style="--w:${Math.max(0, v / topV * 100).toFixed(1)}%">
-      <span class="pn">${x.name}${x.culture !== c.culture && !c.acc.has(x.culture) ? ` <span class="muted">${x.culture}</span>` : ''}</span>
+      <span class="pn">${x.name}${x.culture !== c.culture && !c.acc.has(x.culture) ? ` <span class="muted">${peopleName(x.culture)}</span>` : ''}</span>
       <span class="pf">${facs}</span><span class="pk">${x.fort ? ic('fort') : ''}${x.build ? ic('build') : ''}${x.integ < 1 ? ic('settle') : ''}${x.occ ? ic('occupied') : ''}</span><span class="pu">${restless}</span>
       <span class="pv">${v.toFixed(1)}</span></div>`; };
   const r = c.ruler;
@@ -202,11 +202,11 @@ function renderProvince(){
   const inc = S.regionIncome(r), yr = S.sumInc(inc) * 4;
   const u = Math.round(r.unrest);
   const claims = S.alive().filter(o => o !== c && S.claim(o, r) > 0).map(o => {
-    const why = r.core === o.tag ? 'lost province' : o.culture === r.culture || o.acc.has(r.culture) ? `same people (${r.culture})` : `for ${S.theTitle(S.claimedUnion(o))}`;
+    const why = r.core === o.tag ? 'lost province' : o.culture === r.culture || o.acc.has(r.culture) ? `same people (${peopleName(r.culture)})` : `for ${S.theTitle(S.claimedUnion(o))}`;
     return `<div>${nameSpan(o.tag)} <span class="muted">${why}</span></div>`; }).join('');
   const nb = r.nb.map(j => { const x = S.regions[j]; const sea = GEO.naval.some(([a, b]) => (a === r.i && b === j) || (b === r.i && a === j));
     return `<span class="nbx click" data-prov="${j}">${sea ? ic('sea') : ''}${x.name} <span class="sw" style="background:${S.C[x.owner].color}"></span></span>`; }).join('');
-  const pat = `<i>${r.name}</i>`;
+  const pat = `data-p="${r.i}"`;   // the chronicle marks every province it names (Rn in sim.js)
   const hist = logHtml(S.log.filter(l => l.h.includes(pat)), 60);
   const foreign = !S.isAccepted(c, r.culture);
   box.innerHTML = `
@@ -225,7 +225,7 @@ function renderProvince(){
       <div class="lg"><span>${ic('taxes')}${nm('taxes')}</span><span>${(inc.tax * 4).toFixed(1)}</span></div>
       <div class="lg"><span>${ic('factory')}Factory output</span><span>${(inc.fac * 4).toFixed(1)}</span></div>
       <div class="lg"><span>${ic('trade')}${nm('trade')}</span><span>${(inc.trade * 4).toFixed(1)}</span></div>
-      <div class="lgnote">${r.integ < 1 ? `${ic('settle')}Newly conquered: pays ${Math.round((0.1 + 0.9 * r.integ) * 100)}% until fully integrated. ` : ''}${ic('culture')}${r.culture} · ${foreign ? 'restless minority' : 'content'}.${r.occ ? ` ${ic('occupied')}<span style="color:var(--war)">Occupied by ${S.C[r.occ].name}: pays nothing until freed (normally ${(S.sumInc(S.regionIncome(r, c, { ignoreOcc: true })) * 4).toFixed(1)} a year).</span>` : ''}${r.build ? ` ${ic('build')}Building a ${r.build.type === 'factory' ? 'factory' : 'fortress'}, ${r.build.left} season${r.build.left > 1 ? 's' : ''} left.` : ''}</div>
+      <div class="lgnote">${r.integ < 1 ? `${ic('settle')}Newly conquered: pays ${Math.round((0.1 + 0.9 * r.integ) * 100)}% until fully integrated. ` : ''}${ic('culture')}${peopleName(r.culture)} · ${foreign ? 'restless minority' : 'content'}.${r.occ ? ` ${ic('occupied')}<span style="color:var(--war)">Occupied by ${S.C[r.occ].name}: pays nothing until freed (normally ${(S.sumInc(S.regionIncome(r, c, { ignoreOcc: true })) * 4).toFixed(1)} a year).</span>` : ''}${r.build ? ` ${ic('build')}Building a ${r.build.type === 'factory' ? 'factory' : 'fortress'}, ${r.build.left} season${r.build.left > 1 ? 's' : ''} left.` : ''}</div>
     </div>
     ${claims ? `<h3>${nm('claim')}</h3><div class="claims">${claims}</div>` : ''}
     <h3>Neighbours</h3><div class="nbs">${nb}</div>

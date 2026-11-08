@@ -6,7 +6,7 @@
     "title": "German Empire",
     "adj": "German",
     "pre": "German",
-    "peoples": ["German"],
+    "peoples": ["german"],
     "need": 8,
     "from": 1850,
     "provinces": ["bra", "pom", "epr", "sil", "rhi", "wes", "han", "hes", "sax", "bav", "wur", "vie", "tyr", "als", "sch"]
@@ -16,7 +16,7 @@
     "title": "Kingdom of Italy",
     "adj": "Italian",
     "pre": "Italo",
-    "peoples": ["Italian"],
+    "peoples": ["italian"],
     "need": 4,
     "from": 1836,
     "provinces": ["pie", "lom", "ven", "tus", "rom", "nap", "sic"]
@@ -26,7 +26,7 @@
     "title": "Kalmar Union",
     "adj": "Scandinavian",
     "pre": "Scando",
-    "peoples": ["Swedish", "Norwegian", "Danish"],
+    "peoples": ["swedish", "norwegian", "danish"],
     "need": 5,
     "from": 1845,
     "provinces": ["sve", "got", "nor", "jut", "fin"],
@@ -37,7 +37,7 @@
     "title": "Cossack Hetmanate",
     "adj": "Ukrainian",
     "pre": "Ukraino",
-    "peoples": ["Ukrainian"],
+    "peoples": ["ukrainian"],
     "need": 3,
     "from": 1836,
     "provinces": ["kie", "cri", "bes", "gli", "don"],
@@ -49,18 +49,18 @@
     "art": "",
     "adj": "Dacian",
     "pre": "Daco",
-    "peoples": ["Romanian"],
+    "peoples": ["romanian"],
     "need": 3,
     "from": 1836,
     "provinces": ["wal", "mol", "trn", "bes"],
-    "note": "The Roman province whose name the {peoples.0} nationalists of the age gave to a united {nations.ROM.name}."
+    "note": "The Roman province whose name the {peoples.0|people} nationalists of the age gave to a united {nations.ROM.name}."
   },
   "bul": {
     "kind": "unite",
     "title": "Tsardom of Bulgaria",
     "adj": "Bulgarian",
     "pre": "Bulgaro",
-    "peoples": ["Bulgarian"],
+    "peoples": ["bulgarian"],
     "need": 3,
     "from": 1836,
     "provinces": ["bul", "mac", "the"]
@@ -70,18 +70,18 @@
     "title": "Byzantine Empire",
     "adj": "Byzantine",
     "pre": "Byzantino",
-    "peoples": ["Greek"],
+    "peoples": ["greek"],
     "need": 3,
     "from": 1836,
     "provinces": ["ath", "the", "mac", "con"],
-    "note": "The Great Idea: {provinces.con.name} {peoples.0} again."
+    "note": "The Great Idea: {provinces.con.name} {peoples.0|people} again."
   },
   "yug": {
     "kind": "unite",
     "title": "Kingdom of Illyria",
     "adj": "Illyrian",
     "pre": "Illyro",
-    "peoples": ["Serb", "Croat", "Bosniak"],
+    "peoples": ["serb", "croat", "bosniak"],
     "need": 3,
     "from": 1850,
     "provinces": ["ser", "bos", "cro"],
@@ -92,7 +92,7 @@
     "title": "Polish Commonwealth",
     "adj": "Polish",
     "pre": "Polono",
-    "peoples": ["Polish", "Lithuanian"],
+    "peoples": ["polish", "lithuanian"],
     "need": 3,
     "from": 1836,
     "provinces": ["pol", "pos", "gli", "lit", "blr"]
@@ -102,7 +102,7 @@
     "title": "Iberian Union",
     "adj": "Iberian",
     "pre": "Ibero",
-    "peoples": ["Spanish", "Portuguese"],
+    "peoples": ["spanish", "portuguese"],
     "need": 5,
     "from": 1860,
     "provinces": ["cas", "cat", "and", "gal", "por"]
@@ -112,10 +112,10 @@
     "title": "Crown of St Stephen",
     "adj": "Hungarian",
     "pre": "Magyar",
-    "peoples": ["Hungarian"],
+    "peoples": ["hungarian"],
     "need": 3,
     "from": 1836,
     "provinces": ["hun", "trn", "cro"],
-    "note": "The lands of the {peoples.0} crown."
+    "note": "The lands of the {peoples.0|people} crown."
   }
 }

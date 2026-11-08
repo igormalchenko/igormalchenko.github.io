@@ -34,7 +34,7 @@ function createSim(seed, geo, opts = {}){
   const namesOf = c => c.rulerNames || PEOPLES[c.culture].names;
 
   const S = { seed, t: 0, year: RULES.start, q: 0, regions: [], C: {}, wars: [], log: [], history: [], flags: {}, over: false,
-    marks: [], warNames: {}, railBoom: -1, era: (e => ({ name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: {}, depression: -1, majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0 } };
+    marks: [], warNames: {}, railBoom: -1, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: {}, depression: -1, majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
     fac: r[7], fort: 0, build: null, unrest: 10, occ: null, battle: 0, flash: 0, integ: 1,
@@ -83,7 +83,7 @@ function createSim(seed, geo, opts = {}){
     for (let k = 0; k < (v('reforms') || 0); k++) reform(c);
     if (v('truce')) neighborsOf(c).forEach(o => { c.truce[o.tag] = S.year + v('truce'); o.truce[c.tag] = S.year + v('truce'); });
     if (v('rights')) { const ps = [...new Set(mine.map(x => x.culture))].map(p => [rng(), p]).sort((p, q) => p[0] - q[0]).map(x => x[1]).slice(0, v('rights'));
-      ps.forEach(p => c.acc.add(p)); if (ps.length) say1(`${RN(r)} of ${N(c)} declares the ${ps.join(' and ')} people equal subjects.`); }
+      ps.forEach(p => c.acc.add(p)); if (ps.length) say1(`${RN(r)} of ${N(c)} declares the ${ps.map(peopleName).join(' and ')} people equal subjects.`); }
     for (let k = 0; k < (v('province') || 0); k++) { const bs = borderRegions(c); if (!bs.length) break;
       const x = pick(bs), from = S.C[x.owner]; transfer(x, c, from, 'treaty');
       L('ruler', say(r.effects.find(e => e.fx === 'province').news, { ruler: RN(r), nation: N(c), province: Rn(x), from: N(from) })); }
@@ -245,7 +245,7 @@ function createSim(seed, geo, opts = {}){
   Object.assign(S, { adminOf, regionsOf, popOf, facOf, facAvg, unrestOf, power, income, score, upkeep, regionIncome, sumInc, strength, warOf, claim, RB, isAccepted, maxBuilds, workforce, horizon });
 
   const N = c => `<b class="cn" data-tag="${c.tag}" style="--c:${c.color}">${c.name}</b>`;
-  const Rn = r => `<i>${r.name}</i>`;
+  const Rn = r => `<i data-p="${r.i}">${r.name}</i>`;
   const list = cs => cs.length <= 1 ? cs.map(N).join('') : cs.slice(0, -1).map(N).join(', ') + ' and ' + N(cs[cs.length - 1]);
   const rlist = rs => rs.length <= 1 ? rs.map(Rn).join('') : rs.slice(0, -1).map(Rn).join(', ') + ' and ' + Rn(rs[rs.length - 1]);
   const L = (t, h) => S.log.push({ y: S.year, q: S.q, t, h });
@@ -362,7 +362,7 @@ function createSim(seed, geo, opts = {}){
     w.att.forEach(t => w.def.forEach(u => addRel(t, u, -30)));
     let txt = opts.text;
     if (!txt) {
-      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl && isAccepted(a, goal.culture) ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would integrate quickly`
+      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl && isAccepted(a, goal.culture) ? `for ${Rn(goal)}, whose ${peopleName(goal.culture)}-speaking people would integrate quickly`
         : cl ? `to bring ${Rn(goal)} into ${theTitle(claimedUnion(a))}` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
       const mis = opts.pTrue != null && opts.p - opts.pTrue > 0.08 ? `, though his generals privately think ${Math.round(opts.pTrue * 100)}%` : '';
       txt = `${N(a)} invades ${N(d)} ${why}. ${RN(a.ruler)} rates the odds at ${Math.round(opts.p * 100)}%${mis}. The <em>${w.name}</em> begins.`;
@@ -712,7 +712,7 @@ function createSim(seed, geo, opts = {}){
   S.UNIONS = UNIONS; S.unionOf = unionOf; S.claimedUnion = claimedUnion; S.theTitle = theTitle;
   S.unionProgress = () => UNIONS.map(d => {
     const lead = alive().filter(c => d.done ? c.tag === d.done : unionOf(c) === d).map(c => ({ c, n: regionsOf(c).filter(r => d.pset.has(r.id)).length })).sort((a, b) => b.n - a.n)[0];
-    return { id: d.id, title: d.title, need: d.need, done: d.done && S.C[d.done].alive ? S.C[d.done] : null, lead: lead ? lead.c : null, n: lead ? lead.n : 0, peoples: d.peoples.join(', ') };
+    return { id: d.id, title: d.title, need: d.need, done: d.done && S.C[d.done].alive ? S.C[d.done] : null, lead: lead ? lead.c : null, n: lead ? lead.n : 0, peoples: d.peoples.map(peopleName).join(', ') };
   });
   function unification(){
     UNIONS.forEach(d => {
@@ -775,7 +775,7 @@ function createSim(seed, geo, opts = {}){
       if (!S.awake[cul] && S.regions.some(r => r.culture === cul && !isAccepted(S.C[r.owner], cul))) { S.awake[cul] = e.awake; L('event', say(e.text, { people: cul })); } } },
     // a military revolution changes who wins battles (content/eras.json)
     () => { const e = EV.revolution; if (S.year - S.era.since >= e.every && Q(e.chance)) {
-      const nx = pick(CONTENT.eras.filter(x => !x.start && x.name !== S.era.name)); S.era = { name: nx.name, def: nx.def, fort: nx.fort, since: S.year };
+      const nx = pick(CONTENT.eras.filter(x => !x.start && x !== S.era.of)); S.era = { of: nx, name: nx.name, def: nx.def, fort: nx.fort, since: S.year };
       L('event', say(e.text, { ...e, era: nx.name })); } },
     // a coal or railway boom makes one province suddenly valuable
     () => { const e = EV.boom; if (S.year >= e.from && Q(e.chance)) { const r = pick(S.regions.filter(x => !x.occ)); r.fac += e.factories; r.pop *= e.pop; mark(r.i, 'boom');
