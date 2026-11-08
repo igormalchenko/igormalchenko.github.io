@@ -15,7 +15,9 @@ $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
 $('reroll').onclick = () => {
   if (S.rerollHeirs()) { showHeir(); return; }
-  $('reroll').disabled = true; $('rerollNote').textContent = 'Coming soon';
+  // out of free rerolls: the paid one isn't built yet, so the button shakes and says so
+  const b = $('reroll'); $('rerollNote').textContent = 'Coming soon';
+  b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope');
 };
 $('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); startAuto(); });
 $('help').onclick = () => $('helpModal').classList.add('on');

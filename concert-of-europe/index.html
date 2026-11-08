@@ -205,6 +205,10 @@ th svg.ic{margin:0}
 @keyframes sheen{0%{opacity:1;background-position:120% 0}45%,100%{opacity:1;background-position:-20% 0}}
 .iw{white-space:nowrap}
 .rerolls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
+.rr{position:relative}
+#rerollNote{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:10px;white-space:nowrap;color:var(--war)}
+.btn.nope{animation:nope .4s;border-color:var(--war)}
+@keyframes nope{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 .formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
 .legend div{display:flex;align-items:center;gap:8px}
@@ -277,7 +281,7 @@ th svg.ic{margin:0}
     <h2 id="heirTitle"></h2>
     <p class="muted" id="heirSub"></p>
     <div class="heirs" id="heirCards"></div>
-    <div class="rerolls"><button class="btn" id="reroll"></button><span class="muted" id="rerollNote"></span></div>
+    <div class="rerolls"><span class="rr"><button class="btn" id="reroll"></button><span id="rerollNote"></span></span></div>
   </div>
 </div>
 <div class="modal" id="newModal" role="dialog" aria-modal="true" aria-labelledby="newTitle">
@@ -1900,7 +1904,7 @@ function showHeir(){
   // three free rerolls a game; the fourth will be for sale (no payment yet)
   const left = S.rerolls || 0;
   $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $1.99`;
-  $('reroll').disabled = left <= 0; $('rerollNote').textContent = left > 0 ? '' : 'Coming soon';
+  $('reroll').disabled = false; $('reroll').classList.remove('nope'); $('rerollNote').textContent = '';
   Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
@@ -2101,7 +2105,9 @@ $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
 $('reroll').onclick = () => {
   if (S.rerollHeirs()) { showHeir(); return; }
-  $('reroll').disabled = true; $('rerollNote').textContent = 'Coming soon';
+  // out of free rerolls: the paid one isn't built yet, so the button shakes and says so
+  const b = $('reroll'); $('rerollNote').textContent = 'Coming soon';
+  b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope');
 };
 $('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); startAuto(); });
 $('help').onclick = () => $('helpModal').classList.add('on');

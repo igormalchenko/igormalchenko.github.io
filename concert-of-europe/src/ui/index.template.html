@@ -205,6 +205,10 @@ th svg.ic{margin:0}
 @keyframes sheen{0%{opacity:1;background-position:120% 0}45%,100%{opacity:1;background-position:-20% 0}}
 .iw{white-space:nowrap}
 .rerolls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
+.rr{position:relative}
+#rerollNote{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:10px;white-space:nowrap;color:var(--war)}
+.btn.nope{animation:nope .4s;border-color:var(--war)}
+@keyframes nope{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 .formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
 .legend div{display:flex;align-items:center;gap:8px}
@@ -277,7 +281,7 @@ th svg.ic{margin:0}
     <h2 id="heirTitle"></h2>
     <p class="muted" id="heirSub"></p>
     <div class="heirs" id="heirCards"></div>
-    <div class="rerolls"><button class="btn" id="reroll"></button><span class="muted" id="rerollNote"></span></div>
+    <div class="rerolls"><span class="rr"><button class="btn" id="reroll"></button><span id="rerollNote"></span></span></div>
   </div>
 </div>
 <div class="modal" id="newModal" role="dialog" aria-modal="true" aria-labelledby="newTitle">

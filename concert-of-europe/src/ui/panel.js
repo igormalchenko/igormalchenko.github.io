@@ -42,7 +42,7 @@ function showHeir(){
   // three free rerolls a game; the fourth will be for sale (no payment yet)
   const left = S.rerolls || 0;
   $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $1.99`;
-  $('reroll').disabled = left <= 0; $('rerollNote').textContent = left > 0 ? '' : 'Coming soon';
+  $('reroll').disabled = false; $('reroll').classList.remove('nope'); $('rerollNote').textContent = '';
   Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
