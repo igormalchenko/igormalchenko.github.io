@@ -69,7 +69,7 @@
   "harvest": {
     "name": "Failed harvest",
     "season": 2,
-    "chance": 0.32,
+    "chance": 0.08,
     "unrest": 18,
     "text": "A failed harvest brings bread riots to {nation}."
   },
@@ -143,6 +143,6 @@
   },
   "opening": {
     "name": "Europe",
-    "text": "<strong>Europe, {rules.start}.</strong> {nations|Word} nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to unite its people, or just to survive."
+    "text": "<strong>Europe, {rules.start}.</strong> {count|Word} nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to unite its people, or just to survive."
   }
 }

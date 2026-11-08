@@ -4,9 +4,6 @@
 
 // provinces: id, name, lon, lat, owner, people, pop (millions), industry
 const REGIONS = Object.entries(CONTENT.provinces).map(([id, p]) => [id, p.name, p.lon, p.lat, p.owner, p.people, p.pop, p.industry]);
-// sea anchor points shape the coastline of the map; sea crossings join two coasts across the water
-const SEA = CONTENT.map.seaPoints;
-const NAVAL = CONTENT.map.seaCrossings;
 // every nation (content/nations.json): those that start are on the map in 1836, the rest can only be born in an uprising
 const NATIONS = Object.fromEntries(Object.entries(CONTENT.nations).map(([tag, n]) => [tag, Object.assign({}, n,
   { culture: n.people, acc: n.accepts, p: [n.hawk, n.patience] })]));

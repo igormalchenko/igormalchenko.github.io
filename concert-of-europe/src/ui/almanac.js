@@ -61,7 +61,8 @@ const SECTIONS = {
           ['In this world', u ? (u.done ? `proclaimed by ${u.done.name}` : u.lead ? `${u.lead.name} holds ${u.n} of ${u.need}` : 'no one left to unite it') : '']])}`,
           { sub: d.adj, lead: ic('proclaim') }); }).join(''); }).join(''); } },
   provinces: { name: 'Provinces', file: 'provinces', count: () => Object.keys(CONTENT.provinces).length, render(){
-    const ids = Object.keys(CONTENT.provinces), sea = CONTENT.map.seaCrossings;
+    // sea crossings as the map has them (map/geo.json), which is what the game plays on
+    const ids = Object.keys(CONTENT.provinces), sea = GEO.naval.map(([a, b]) => [ids[a], ids[b]]);
     return `<table class="al-tab"><thead><tr><th>Province</th><th>${WORDS.nation.name} in ${CONTENT.rules.start}</th><th>${ic('culture')}</th><th>${ic('pop')}</th><th>${ic('factory')}</th><th>${ic('trade')}</th><th>${ic('sea')}</th></tr></thead><tbody>${
       ids.map((id, i) => { const p = CONTENT.provinces[id], g = GEO.regions[i];
         return `<tr class="al-e"><td>${p.name}</td><td>${nationName(p.owner)}</td><td>${p.people}</td><td>${p.pop}m</td><td>${p.industry}</td><td>${g && g.coast ? 'coast' : ''}</td>
@@ -69,7 +70,7 @@ const SECTIONS = {
   events: { name: 'Events', file: 'events', count: () => Object.keys(CONTENT.events).length, render(){
     return Object.entries(CONTENT.events).map(([id, e]) => { const when = e.year ? `${['Winter', 'Spring', 'Summer', 'Autumn'][e.season]} ${e.year}`
         : e.years ? `${e.years[0]} to ${e.years[1]}` : e.from ? `from ${e.from}` : e.every ? `at least ${e.every} years after the last` : e.season != null ? `${['winter', 'spring', 'summer', 'autumn'][e.season]}s` : '';
-      const lines = ['text', 'rattleText', 'warText'].filter(k => e[k]).map(k => `<p>${say(e[k], Object.assign({}, SAMPLE, e, { province: e.province ? `<i>${provName(e.province)}</i>` : SAMPLE.province, people: e.people || SAMPLE.people, nations: SAMPLE.nations, find: e.finds ? e.finds[0] : SAMPLE.find, pretext: e.pretexts ? e.pretexts[0] : SAMPLE.pretext, nation: e.nation ? `<i>${nationName(e.nation)}</i>` : SAMPLE.nation }))}</p>`).join('');
+      const lines = ['text', 'rattleText', 'warText'].filter(k => e[k]).map(k => `<p>${say(e[k], Object.assign({}, SAMPLE, e, { province: e.province ? `<i>${provName(e.province)}</i>` : SAMPLE.province, people: e.people || SAMPLE.people, nations: typeof e.nations === 'number' ? `<i>${numberWord(e.nations)} nations</i>` : SAMPLE.nations, count: Object.values(CONTENT.nations).filter(n => n.starts).length, find: e.finds ? e.finds[0] : SAMPLE.find, pretext: e.pretexts ? e.pretexts[0] : SAMPLE.pretext, nation: e.nation ? `<i>${nationName(e.nation)}</i>` : SAMPLE.nation }))}</p>`).join('');
       return entry(e.name, lines + facts([['When', when], ['Chance', e.chance != null ? yearly(e.chance) : ''], ['Peoples', e.peoples ? listOf(e.peoples) : '']]), { lead: ic('event') }); }).join(''); } },
   eras: { name: 'Ways of war', file: 'eras', count: () => CONTENT.eras.length, render(){
     return CONTENT.eras.map((e, i) => entry(e.name, facts([['Defender fights', `${e.def}× as hard`], ['A fortress stops an advance', pctOf(e.fort)], ['Begins', e.start ? `in ${CONTENT.rules.start}` : 'with a military revolution']]), { lead: ic('war') })).join(''); } },

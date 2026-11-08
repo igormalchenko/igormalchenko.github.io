@@ -98,7 +98,7 @@ const nation = (w, t) => { if (!C.nations[t]) bad(w, `no nation "${t}"`); };
 const people = (w, p) => { if (!C.peoples[p]) bad(w, `no people "${p}" in peoples.json`); };
 Object.entries(C.provinces).forEach(([id, p]) => { nation(`provinces.json ${id}`, p.owner); people(`provinces.json ${id}`, p.people);
   if (C.nations[p.owner] && !C.nations[p.owner].starts) bad(`provinces.json ${id}`, `${p.owner} is not on the map at the start, so it can't hold a province then`); });
-C.map.seaCrossings.forEach(x => x.forEach(id => prov('map.json seaCrossings', id)));
+['land', 'sea'].forEach(k => C.map[k].forEach(x => x.forEach(id => prov(`map.json ${k}`, id))));
 // one table of nations: every one has the same fields, and says whether it is on the map at the start
 const NATION_FIELDS = ['name', 'adj', 'color', 'people', 'ambition', 'hawk', 'patience', 'starts'];
 Object.entries(C.nations).forEach(([t, n]) => { const w = `nations.json ${t}`; people(w, n.people); (n.accepts || []).forEach(p => people(w, p));
@@ -129,7 +129,7 @@ if (C.eras.filter(e => e.start).length !== 1) bad('eras.json', 'exactly one way 
 
 // ---- 6: templates ----
 // every placeholder a template may use, besides its own fields: the words a running world fills in
-const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need', 'n', 'by'];
+const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need', 'n', 'by', 'count'];
 const probe = Object.fromEntries(RUNTIME.map(k => [k, 'X']));
 const TEXT_FIELDS = ['desc', 'text', 'rattleText', 'warText', 'proclaimText', 'joinText', 'vibe', 'fx', 'who', 'name', 'label', 'epi', 'heading', 'aside'];
 function template(where, tpl, own){

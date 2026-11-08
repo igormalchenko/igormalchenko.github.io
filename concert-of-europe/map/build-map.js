@@ -7,8 +7,8 @@ const pc = require('polygon-clipping');
 const { Delaunay } = require('d3-delaunay');
 const vm = require('vm');
 const ctx = {}; vm.createContext(ctx);
-vm.runInContext(require('../tools/content').source() + fs.readFileSync(__dirname + '/../src/data.js', 'utf8') + '\nthis.REGIONS=REGIONS;this.SEA=SEA;this.NAVAL=NAVAL;this.proj=proj;this.MAP_W=MAP_W;this.MAP_H=MAP_H;', ctx);
-const { REGIONS, SEA, NAVAL, proj, MAP_W, MAP_H } = ctx;
+vm.runInContext(require('../tools/content').source() + fs.readFileSync(__dirname + '/../src/data.js', 'utf8') + '\nthis.REGIONS=REGIONS;this.CONTENT=CONTENT;this.proj=proj;this.MAP_W=MAP_W;this.MAP_H=MAP_H;', ctx);
+const { REGIONS, CONTENT, proj, MAP_W, MAP_H } = ctx;
 
 // ---- land ----
 const land = topo.feature(require('world-atlas/land-50m.json'), require('world-atlas/land-50m.json').objects.land);
@@ -228,10 +228,10 @@ const mids = [];
 cands.forEach(c => { if ((per[c.i] || 0) >= 3 || (per[c.j] || 0) >= 3) return;
   const mid = [(c.p[0] + c.q[0]) / 2, (c.p[1] + c.q[1]) / 2]; if (mids.some(m => Math.hypot(m[0] - mid[0], m[1] - mid[1]) < 30)) return; mids.push(mid); per[c.i] = (per[c.i] || 0) + 1; per[c.j] = (per[c.j] || 0) + 1;
   nb[c.i].add(c.j); nb[c.j].add(c.i); naval.push([c.i, c.j]); linkPts[c.i + '-' + c.j] = [c.p.map(r1), c.q.map(r1)]; });
-// hand corrections from the audit
-[['con', 'bul'], ['con', 'mac']].forEach(([x, y]) => { const i = idx[x], j = idx[y]; nb[i].add(j); nb[j].add(i);
+// geography the shapes get wrong (content/map.json): pairs joined by land, and pairs joined by a sea crossing
+CONTENT.map.land.forEach(([x, y]) => { const i = idx[x], j = idx[y]; nb[i].add(j); nb[j].add(i);
   const k = naval.findIndex(([p, q]) => (p === i && q === j) || (p === j && q === i)); if (k >= 0) { naval.splice(k, 1); delete linkPts[i + '-' + j]; delete linkPts[j + '-' + i]; } });
-[['lon', 'hol'], ['sco', 'nor'], ['nth', 'jut']].forEach(([x, y]) => { const i = idx[x], j = idx[y]; if (nb[i].has(j)) return; nb[i].add(j); nb[j].add(i);
+CONTENT.map.sea.forEach(([x, y]) => { const i = idx[x], j = idx[y]; if (nb[i].has(j)) return; nb[i].add(j); nb[j].add(i);
   const [d, p, q] = nearest(coastPts[i], coastPts[j]); naval.push([i, j]); linkPts[i + '-' + j] = [p.map(r1), q.map(r1)]; });
 const out = {
   W: MAP_W, H: MAP_H,

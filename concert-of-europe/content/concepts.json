@@ -58,7 +58,7 @@
   "goal": {"name": "War goal", "desc": "The province a war is being fought for."},
   "peace": {"name": "Peace", "desc": "A war ends and land or gold changes hands."},
   "dead": {"name": "Dead", "desc": "Lives lost in the fighting, in millions."},
-  "ally": {"name": "Alliance", "desc": "Nations bound to join each other's defensive wars."},
+  "ally": {"name": "Alliance", "desc": "Nations that usually join each other's wars, and nearly always each other's defence."},
   "rival": {"name": "Biggest threat", "desc": "The neighbour a nation fears most. It arms and allies against it."},
   "proclaim": {
     "name": "Proclamation",

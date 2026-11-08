@@ -185,7 +185,7 @@ Moments that already exist in the code:
 
 - Edit `content/`, `src/` or `map/`, then `npm run build`. Never hand-edit the root `index.html`; it is generated.
 - After any simulation change run `npm run sweep -- 1 41` (40 worlds, in parallel on every core: about two minutes) and compare against the same sweep of the old code (a `git worktree` of HEAD). Fewer worlds mislead: wars per world range from about 15 to 85, so 12 worlds can't show a change smaller than about 8 wars, 40 worlds about 4. A pure refactor is proven differently: compare full chronicles and final states, which must match to the character. Compare: wars, revolts, Ukraine survival, richest great power, unions proclaimed and held, Survive nations alive, end year (always 1918 Autumn). Read at least one `npm run chronicle` for oddities; the chronicle is the best bug detector.
-- After any map change run `npm run map` and read the audit table it prints (coastal flags, land neighbours, sea crossings) before trusting it. Coastlines and adjacency come from the shapes; do not hand-type geography from memory.
+- After any map change run `npm run map` and read the audit table it prints (coastal flags, land neighbours, sea crossings) before trusting it. Coastlines, neighbours and sea crossings come from the shapes; do not hand-type geography from memory. Where the shapes get it wrong, the fix is a pair in `content/map.json` (`land`: joined by land, `sea`: joined by a sea crossing), never a line in the builder.
 - Sweeps are deterministic per seed, so before/after comparisons are fair.
 - Report test results precisely: say whether a number counts an event happening or surviving to the end.
 

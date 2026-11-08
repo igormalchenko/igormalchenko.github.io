@@ -88,7 +88,6 @@ Measured for both together (40 worlds, seeds 1–40, before → after): wars 40.
 
 - **A nation's "hawk" is a ruler's judgment.** Nations carry `hawk`, shown as "Leans to war", but the engine only uses it to tilt each new ruler's judgment (over- or underconfident). The player sees Judgment on the ruler and "leans to war" on the nation for the same number.
 - **Ultimatums never become wars** (see above).
-- **The uprising threshold is two numbers.** A province can rise at 65 unrest (`rules.unrest.uprising`), but the chance formula counts from a hidden 60 (`(unrest - 60) / 40` in `revolts`).
 - **The chronicle puts the cause after the effect.** "X has ceased to exist" is written before the peace treaty that ended it.
 
 (The Admirer drift is gone with the Admirer: the ruler pool was replaced.)
@@ -121,6 +120,27 @@ Fixing several of these changes the simulation (marked *sim*): each needs a befo
 | 1.12 | — | The Almanac shows the opening event as "three nations nations" (the sample word is a phrase, the template wants a count) | almanac `SAMPLE` |
 | 1.13 | A province starts with the industry in `provinces.json` | Capped at 3 by `Math.min(3, …)`; the Almanac shows the uncapped number | `createSim` |
 | 1.14 | Uprising threshold | 65 to rise, but the chance counts from a hidden 60 (also above) | `revolts` |
+
+### Section 1: fixed
+
+- **1.1** `map.json` now holds only the geography the shapes get wrong (`land` and `sea` pairs, moved out of `build-map.js`); the dead `seaCrossings` and `seaPoints` are gone. The Almanac lists the crossings from the map itself. `npm run map` rebuilds `geo.json` byte for byte.
+- **1.2** The leader of a war fought over his own land fights harder in battle by his `homeFight`, as the forecast already assumed.
+- **1.3** A nation born in an uprising starts with `newNation.gold` *before* its ruler is crowned, so his coronation gold adds to it.
+- **1.4** A Flirt's reign ends in civil war after a coup or a revolution too.
+- **1.5** The floor is `rules.workersMin`, and the rulebook says so.
+- **1.6** A seasonal event's chance is its chance in that season: the harvest's is 0.08, rolled each summer (the same odds as before, now shown truthfully).
+- **1.7** The rulebook gives the engine's order: a neighbouring nation of the same people first.
+- **1.8** At the armistice every occupier keeps what it holds ("ends on the lines as they stand"); no war goal, reparations or abdication. The treaty is written before any nation it ends ceases to exist.
+- **1.9** Allies join by `rules.allies` (defend, attack), stated in a new rulebook group; the Alliance concept says "usually".
+- **1.10** Reforms and fortresses are affordable at their real, trait-adjusted price; a fortress's price is `rules.price.fort`.
+- **1.11** The army forecast quotes upkeep with the ruler's effect.
+- **1.12** The opening event takes `{count}`; the Almanac's samples follow `cholera.nations` and count the nations of 1836.
+- **1.13** The cap was dead (no province starts above 3) and is removed.
+- **1.14** The uprising chance counts from `rules.unrest.uprising`.
+
+Measured (40 worlds, seeds 1–40, before → after; every world ends in autumn 1918): wars 34.7 → 31.3, uprisings 34.5 → 30.5, Ukraine alive in 1918 27 → 23, richest great power France 24 / Britain 14 / Russia 2 → 26 / 9 / 5, Survive nations alive in 1918 164/444 → 164/441. Unions proclaimed: German 40 → 39, Iberian 36 → 35, Italy 24 → 26, Polish 19 → 16, Dacia 11 → 10, Hetmanate 7 → 10, Bulgaria 7 → 2, Kalmar 8 → 6, Hungary 3 → 6, Illyria 3 → 2, Byzantine 0 → 1; held in 1918: 105 → 104.
+
+Almost all of it is 1.14. The same sweep with every fix but the old uprising curve: wars 38.1, uprisings 36.6, Britain richest 16, Survive alive 181/457. The armistice fix (1.8) on its own changes almost nothing: with the old armistice, Britain is richest in 10 worlds instead of 9 and the German Empire is held in 24 instead of 25.
 
 ## 2. Breaks on change: one edit doesn't reach everything
 
