@@ -98,12 +98,12 @@ const REG = {
     draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#c9a45c" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
 
   // ----- rulers -----
-  ruler: { name: 'Ruler', desc: 'Who decides for the nation, with his own patience, nerve and quirks.', avoid: ['sovereign'],
+  ruler: { name: 'Ruler', desc: 'Who decides for the nation, with his own patience, judgment, thrift and quirk.', avoid: ['sovereign'],
     draw: `<ellipse rx="6.2" ry="7.3" fill="#b9a3d6" stroke="#4e3f66" stroke-width="1"/><path d="M-4.2 6.2C-4 3.2 -2.6 2 -1.1 1.5C-2.3 .6 -2.8 -.9 -2.6 -2.3C-2.3 -4.3 -.8 -5.2 .6 -5C2.1 -4.8 2.9 -3.5 2.8 -2.1L3.7 -.9 2.8 -.5C2.8 .5 2.2 1.1 1.3 1.5C2.8 2 4 3.2 4.2 6.2C2.9 6.9 1.5 7.3 0 7.3S-2.9 6.9 -4.2 6.2Z" fill="#4e3f66"/>` },
   patience: { name: 'Patience', desc: 'How many years ahead a ruler counts gains and costs.',
     draw: P('<path d="M4 1.5h8M4 14.5h8M5 1.5c0 4 6 4.5 6 6.5s-6 2.5-6 6.5M11 1.5c0 4-6 4.5-6 6.5s6 2.5 6 6.5" fill="none" stroke="#c9a45c" stroke-width="1.3"/><path d="M6.5 13.5c.5-1.5 2.5-1.5 3 0z" fill="#c9a45c"/>') },
-  risk: { name: 'Risk', desc: 'How much a possible loss scares a ruler.',
-    draw: P('<rect x="2" y="2" width="12" height="12" rx="2.5" fill="#f2f0ea" stroke="#5a5650" stroke-width="1.1"/><circle cx="5.3" cy="5.3" r="1.2" fill="#5a5650"/><circle cx="8" cy="8" r="1.2" fill="#5a5650"/><circle cx="10.7" cy="10.7" r="1.2" fill="#5a5650"/>') },
+  thrift: { name: 'Thrift', desc: 'How dear a ruler holds his gold. A thrifty one hoards it and builds little; a lavish one spends it on factories, recruits and reforms.', avoid: ['frugal', 'frugality'],
+    draw: P('<path d="M2 7.2V5.6C2 3.6 4.7 2.4 8 2.4s6 1.2 6 3.2v1.6z" fill="#9a6a3c" stroke="#4e3420" stroke-width="1" stroke-linejoin="round"/><rect x="2" y="7.2" width="12" height="6.6" rx=".8" fill="#7d5430" stroke="#4e3420" stroke-width="1"/><path d="M2 7.2h12" stroke="#c9a45c" stroke-width="1.2"/><rect x="6.5" y="6.3" width="3" height="3.6" rx=".6" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".7"/><circle cx="8" cy="8.4" r=".55" fill="#4e3420"/>') },
   judgment: { name: 'Judgment', desc: 'Whether a ruler sees his odds in war as better or worse than they are.',
     draw: P('<path d="M1 8Q8 1.5 15 8Q8 14.5 1 8z" fill="#e6eef6" stroke="#3f6a94" stroke-width="1.1"/><circle cx="8" cy="8" r="2.6" fill="#3f6a94"/><circle cx="8.8" cy="7.2" r=".8" fill="#fff"/>') },
   forecast: { name: 'Forecasts', desc: 'What each option is worth in gold over the ruler\'s horizon. Positive ones are done, best first.',

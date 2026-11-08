@@ -124,8 +124,8 @@ function renderNation(){
     <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${r.name}</b></div>
     <div class="pers">
       <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${r.pat > 0.6 ? 'far-sighted' : r.pat < 0.4 ? 'short-sighted' : 'steady'}</span>
-      <span ${tipOf('risk')}>${ic('risk')}${r.risk > 0.6 ? 'gambler' : r.risk < 0.4 ? 'cautious' : 'measured'}</span>
-      <span ${tipOf('judgment')}>${ic('judgment')}${r.bias > 0.15 ? 'overconfident' : r.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span></div>
+      <span ${tipOf('judgment')}>${ic('judgment')}${r.bias > 0.15 ? 'overconfident' : r.bias < -0.15 ? 'underconfident' : 'clear-eyed'}</span>
+      <span ${tipOf('thrift')}>${ic('thrift')}${S.thriftOf(c) > 1.4 ? 'thrifty' : S.thriftOf(c) < 0.7 ? 'lavish' : 'balanced'}</span></div>
     <div class="stats">
       ${statTile('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
       ${statTile('army', fmt(c.army) + 'k')}

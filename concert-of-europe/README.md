@@ -83,7 +83,7 @@ Known weak spots:
 - France and Britain win most worlds: few restless minorities, while the multinational empires bleed from revolts.
 - The Iberian union forms too easily once Spain takes Portugal.
 - Map icons are small when zoomed out.
-- Some forecast reasons are terse ("risk rises by 0").
+- Some forecast reasons are terse ("expected losses rise by 0").
 - Scores have no sense of scale (is 78 a lot?).
 - Each season takes about 30 ms to compute, so the fastest speed runs a little slow.
 
