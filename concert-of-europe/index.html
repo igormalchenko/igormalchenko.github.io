@@ -1766,7 +1766,7 @@ function ambitionText(c){
   return { a, what, color: a.state === 'met' ? 'var(--peace)' : a.state === 'lost' ? 'var(--war)' : 'inherit' };
 }
 function showStart(){
-  $('startIntro').innerHTML = iconize(say('Pick a nation. You never give it orders: each time the throne passes, you choose its next ruler from {rules.heirs|word} heirs, and his ministers do the rest.'));
+  $('startIntro').innerHTML = iconize(say('Pick a nation and meet its ambition by {rules.end.season|season} {rules.end.year}. You choose its rulers, and each one decides how the nation is run during his reign. When it ends, you pick the next from {rules.heirs|word} heirs.'));
   const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
   const of = k => cs.filter(c => S.ambitionOf(c).kind === k);
   const AM = CONTENT.ambitionKinds;
