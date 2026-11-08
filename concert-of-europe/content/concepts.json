@@ -121,7 +121,7 @@
   },
   "major": {
     "name": "Great power",
-    "desc": "One of the strongest nations, recounted every few years. Great powers step in against a nation that grows too strong, guarantee nations born in uprisings and fight the {events.greatWar.name}. The great powers of {rules.start} race to be the richest.",
+    "desc": "One of the {rules.majors.count|word} strongest nations, recounted every {rules.majors.every|span}. Great powers step in against a nation that grows too strong, guarantee nations born in uprisings and fight the {events.greatWar.name}. The great powers of {rules.start} race to be the richest.",
     "word": true
   }
 }

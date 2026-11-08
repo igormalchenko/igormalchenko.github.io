@@ -32,6 +32,7 @@ const FORMATS = {
   word: x => numberWord(x),
   Word: x => { const w = numberWord(x); return w.charAt(0).toUpperCase() + w.slice(1); },
   pct,
+  fine: x => `${+(x * 100).toFixed(2)}%`,                     // 0.0015 → 0.15%, for shares too small for pct
   up: x => pct(x - 1),                                         // 1.4 → 40% (more)
   down: x => pct(1 - x),                                       // 0.7 → 30% (less)
   frac: x => { const f = FRACTIONS.find(([v]) => Math.abs(v - x) < 1e-9); return f ? f[1] : pct(x); },

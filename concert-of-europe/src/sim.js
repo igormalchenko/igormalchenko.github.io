@@ -36,7 +36,7 @@ function createSim(seed, geo, opts = {}){
     marks: [], warNames: {}, railBoom: -1, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: {}, depression: -1, majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
-    fac: r[7], fort: 0, build: null, unrest: 10, occ: null, battle: 0, flash: 0, integ: 1,
+    fac: r[7], fort: 0, build: null, unrest: RULES.setup.unrest, occ: null, battle: 0, flash: 0, integ: 1,
     coast: geo.regions[i].coast, nb: geo.regions[i].nb, startOwner: r[4] }));
   const RB = {}; S.regions.forEach(r => RB[r.id] = r);
 
@@ -133,7 +133,7 @@ function createSim(seed, geo, opts = {}){
     }
     const why = { death: `${RN(old)} of ${N(c)} dies.`,
       abdicate: `Beaten in the <em>${ctx}</em>, ${RN(old)} of ${N(c)} abdicates.`, revolution: `Revolution in ${ctx}! ${RN(old)} of ${N(c)} is overthrown.`,
-      murder: `${RN(old)} of ${N(c)} is assassinated${S.year >= 1870 ? ' by an anarchist' : ' by a conspirator'}.` }[how];
+      murder: `${RN(old)} of ${N(c)} is assassinated${S.year >= RULES.reign.anarchists ? ' by an anarchist' : ' by a conspirator'}.` }[how];
     const crisis = flirt || (how !== 'revolution' && chance(RULES.reign.crisis));
     if (c.player) { S.pending = heirCard(c, false, why, crisis); return; }
     successionLog(c, why, crown(c, makeRuler(c), true), crisis);
@@ -153,7 +153,7 @@ function createSim(seed, geo, opts = {}){
   function makeCountry(tag, d){
     const c = { tag, name: d.name, adj: d.adj, pre: d.pre || null, color: d.color, culture: d.culture, acc: new Set(d.acc || []),
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
-      army: d.army * rand(0.9, 1.1), treasury: (g => d.gold != null ? d.gold : g)(30 + rand(0, 20)), infamy: 0, allies: new Set(), rival: null, truce: {},
+      army: d.army * rand(RULES.setup.army[0], RULES.setup.army[1]), treasury: (g => d.gold != null ? d.gold : g)(RULES.setup.gold[0] + rand(0, RULES.setup.gold[1] - RULES.setup.gold[0])), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
       alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: tag === EV.serfdom.nation, ambitionId: d.ambition || 'survive', didThisSeason: [], born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
@@ -187,7 +187,7 @@ function createSim(seed, geo, opts = {}){
   const facAvg = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.fac * r.pop, 0) / p; };
   const unrestOf = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.unrest * r.pop, 0) / p; };
   // how well the armies fight: industry, and a soldier or conqueror at their head
-  const quality = c => (1 + 0.15 * facAvg(c)) * fx(c, 'fight');
+  const quality = c => (1 + RULES.battle.industry * facAvg(c)) * fx(c, 'fight');
   const inCrisis = c => c.crisis && S.t < c.crisis.until;
   const strength = c => c.army * quality(c) * (1 - unrestOf(c) / 250) * (inCrisis(c) ? RULES.reign.crisisArmy : 1);
   const warOf = c => S.wars.find(w => w.att.includes(c.tag) || w.def.includes(c.tag));
@@ -197,7 +197,7 @@ function createSim(seed, geo, opts = {}){
   const isNeighbor = (a, b) => neighborsOf(a).includes(b);
   const landNeighbors = c => { const s2 = new Set(); regionsOf(c).forEach(r => r.nb.forEach(j => { const o = S.regions[j].owner; if (o !== c.tag && !geoNaval(r.i, j)) s2.add(o); })); return s2.size; };
   // Big states are harder to run: every province beyond six trims the yield of all of them.
-  const admin = n => clamp(1 - 0.03 * Math.max(0, n - 6), 0.55, 1);
+  const admin = n => clamp(1 - RULES.admin.cost * Math.max(0, n - RULES.admin.free), RULES.admin.floor, 1);
   const adminOf = c => admin(regionsOf(c).length);
   const workforce = (c, army = c.army) => clamp(1 - army / (Math.max(0.5, popOf(c)) * RULES.workers), RULES.workersMin, 1);
   // the share of its gold a province pays while it becomes integrated
@@ -218,11 +218,11 @@ function createSim(seed, geo, opts = {}){
   const income = c => regionsOf(c).reduce((s, r) => s + sumInc(regionIncome(r, c)), 0);
   const score = c => income(c) * 4;
   // what an army of `men` (thousands) costs c a season
-  const upkeepOf = (c, men) => men * 0.04 * fx(c, 'upkeep');
+  const upkeepOf = (c, men) => men * RULES.price.upkeep * fx(c, 'upkeep');
   const upkeep = c => upkeepOf(c, c.army);
   const power = c => regionsOf(c).reduce((s, r) => s + r.pop * (1 + 0.5 * r.fac), 0) + c.army * 0.5;
   const isMajor = c => S.majors.includes(c.tag);
-  const maxBuilds = c => 1 + Math.floor(regionsOf(c).length / 3);
+  const maxBuilds = c => RULES.build.slots.base + Math.floor(regionsOf(c).length / RULES.build.slots.per);
   function claim(c, r){
     if (r.owner === c.tag) return 0;
     if (r.core === c.tag) return 3;
@@ -254,7 +254,7 @@ function createSim(seed, geo, opts = {}){
   const capitalOf = c => regionsOf(c).slice().sort((a, b) => b.pop * (1 + b.fac) - a.pop * (1 + a.fac))[0];
   const g = v => `${v >= 0 ? '+' : '−'}${Math.abs(Math.round(v))}`;
 
-  function computeMajors(){ S.majors = alive().sort((a, b) => power(b) - power(a)).slice(0, 6).map(c => c.tag); }
+  function computeMajors(){ S.majors = alive().sort((a, b) => power(b) - power(a)).slice(0, RULES.majors.count).map(c => c.tag); }
   computeMajors();
   S.ready = true;
   // the player's nation gets a stand-in who never reigns: its real ruler of 1836 comes from the first heir card
@@ -386,8 +386,8 @@ function createSim(seed, geo, opts = {}){
   function transfer(r, to, from, how = 'war'){
     const kin = isAccepted(to, r.culture) || r.core === to.tag;
     r.owner = to.tag; r.occ = null; r.build = null; invalidate();
-    if (how === 'war') { if (r.fac > 0) r.fac--; r.integ = kin ? 0.4 : 0.1; r.unrest = Math.max(r.unrest, kin ? 25 : 45); }
-    else r.integ = Math.min(r.integ, 0.6);
+    if (how === 'war') { if (r.fac > 0) r.fac--; r.integ = kin ? RULES.conquest.kin.integrated : RULES.conquest.other.integrated; r.unrest = Math.max(r.unrest, kin ? RULES.conquest.kin.unrest : RULES.conquest.other.unrest); }
+    else r.integ = Math.min(r.integ, RULES.conquest.treaty);
     killIfEmpty(from);
   }
   const controlledBy = (r, side) => (side.includes(r.owner) && !r.occ) || side.includes(r.occ);
@@ -399,8 +399,8 @@ function createSim(seed, geo, opts = {}){
     const goal = RB[w.goal];
     const r = isAtt && cands.includes(goal) ? goal : cands.sort((a, b) => b.pop - a.pop)[Math.floor(rng() * Math.min(3, cands.length))];
     r.battle = 2; S.stats.battles++;
-    r.pop *= 0.985; S.stats.dead = (S.stats.dead || 0) + r.pop * 0.015;
-    if (r.fac > 0 && chance(0.22)) { r.fac--; mark(r.i, 'ruin'); }
+    r.pop *= 1 - RULES.battle.dead; S.stats.dead = (S.stats.dead || 0) + r.pop * RULES.battle.dead;
+    if (r.fac > 0 && chance(RULES.battle.ruin)) { r.fac--; mark(r.i, 'ruin'); }
     if (r.fort && chance(S.era.fort)) return;
     // a Cautious ruler stops some advances into his land
     if (chance(fx(S.C[r.owner], 'hold'))) return;
@@ -409,7 +409,7 @@ function createSim(seed, geo, opts = {}){
     const counts = {};
     r.nb.forEach(j => { const x = S.regions[j]; const holder = x.occ && win.includes(x.occ) ? x.occ : (win.includes(x.owner) && !x.occ ? x.owner : null); if (holder) counts[holder] = (counts[holder] || 0) + 1; });
     r.occ = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || (a === win[0] ? -1 : 1))[0] || win[0];
-    r.unrest = Math.min(100, r.unrest + 12);
+    r.unrest = Math.min(100, r.unrest + RULES.battle.occupied);
   }
   function warScore(w){
     const pops = side => S.regions.filter(r => side.includes(r.owner)).reduce((s, r) => s + r.pop, 0) || 1;
@@ -438,13 +438,13 @@ function createSim(seed, geo, opts = {}){
       // the war goal goes to the attacker if it won and can reach it
       if (outcome === 'att' && w.def.includes(goal.owner)) { const holder = goal.occ && w.att.includes(goal.occ) ? goal.occ : A.tag; give(goal, reachable(goal, holder) ? holder : A.tag); }
       // occupied land the occupier can reach and has a reason to keep
-      const most = w.great ? 3 : 1;
+      const most = w.great ? RULES.war.greatExtra : RULES.war.extra;
       let extra = 0;
       occupied.filter(r => r.owner && losers.includes(r.owner) && winners.includes(r.occ) && r !== goal)
         .sort((x, y) => (claim(S.C[y.occ], y) - claim(S.C[x.occ], x)) || y.pop - x.pop)
-        .forEach(r => { if (extra >= most) return; const occ = r.occ; if ((claim(S.C[occ], r) > 0 || w.score >= 85 || w.score <= -85 || w.great) && give(r, occ)) extra++; });
+        .forEach(r => { if (extra >= most) return; const occ = r.occ; if ((claim(S.C[occ], r) > 0 || w.score >= RULES.war.crushing || w.score <= -RULES.war.crushing || w.great) && give(r, occ)) extra++; });
       // reparations: a third of the loser's treasury, shared by winners who gained no land (or by all)
-      const rep = Math.max(0, loser.treasury * 0.3); loser.treasury -= rep;
+      const rep = Math.max(0, loser.treasury * RULES.war.reparations); loser.treasury -= rep;
       const gainers = new Set(taken.map(x => x[1]));
       const payees = winners.filter(t => S.C[t].alive && !gainers.has(t));
       (payees.length ? payees : winners.filter(t => S.C[t].alive)).forEach((t, _, arr) => { S.C[t].treasury += rep / arr.length; });
@@ -456,7 +456,7 @@ function createSim(seed, geo, opts = {}){
         : `${N(lead)} holds out: the <em>${w.name}</em> ends in defeat for ${N(loser)}${landTxt}${rep > 5 ? `, who pays ${Math.round(rep)} gold` : ''}.`);
     } else L('peace', whiteText || `Exhausted after ${Math.round(w.quarters / 4 * 10) / 10} years, the sides of the <em>${w.name}</em> agree to a white peace.`);
     S.regions.forEach(r => { if (r.occ && all.includes(r.occ) && all.includes(r.owner)) r.occ = null; });
-    all.forEach(t => all.forEach(u => { if (t !== u && S.C[t]) S.C[t].truce[u] = S.year + 10; }));
+    all.forEach(t => all.forEach(u => { if (t !== u && S.C[t]) S.C[t].truce[u] = S.year + RULES.war.truce; }));
     S.wars = S.wars.filter(x => x !== w);
     if (outcome === 'white' || outcome === 'lines') return;
     // a ruler who led his nation into defeat may have to go (not at the armistice: the age is over)
@@ -479,16 +479,16 @@ function createSim(seed, geo, opts = {}){
       // a crushing advantage breaks through twice; a Bold leader needs less of one, a Cautious one more
       if (ratio > RULES.breakthrough * fx(S.C[win[0]], 'breakthrough')) frontMove(win, lose, w, aWin);
       const bleed = t => fx(S.C[t], 'bleed');
-      win.forEach(t => { S.C[t].army *= 1 - rand(0.01, 0.025) * bleed(t); });
-      lose.forEach(t => { S.C[t].army *= 1 - rand(0.025, 0.045) * bleed(t); });
+      win.forEach(t => { S.C[t].army *= 1 - rand(RULES.battle.losses.win[0], RULES.battle.losses.win[1]) * bleed(t); });
+      lose.forEach(t => { S.C[t].army *= 1 - rand(RULES.battle.losses.lose[0], RULES.battle.losses.lose[1]) * bleed(t); });
       w.score = warScore(w);
-      const thr = w.great ? 75 : 60, maxQ = w.great ? 40 : 18;
+      const WR = RULES.war, thr = w.great ? WR.greatWin : WR.win, maxQ = w.great ? WR.greatSeasons : WR.seasons;
       const allTaken = S.regions.filter(r => r.owner === w.def[0]).every(r => w.att.includes(r.occ));
-      if (w.quarters < 4 && !allTaken) return;
+      if (w.quarters < WR.minSeasons && !allTaken) return;
       if (w.score >= thr || allTaken) endWar(w, 'att');
       else if (w.score <= -thr) endWar(w, 'def');
-      else if (w.quarters >= maxQ) endWar(w, w.score > 20 ? 'att' : w.score < -20 ? 'def' : 'white');
-      else if (w.quarters >= 8 && Math.abs(w.score) < 15 && chance(0.05)) endWar(w, 'white');
+      else if (w.quarters >= maxQ) endWar(w, w.score > WR.timeoutLead ? 'att' : w.score < -WR.timeoutLead ? 'def' : 'white');
+      else if (w.quarters >= WR.stalemate.after && Math.abs(w.score) < WR.stalemate.below && chance(WR.stalemate.chance)) endWar(w, 'white');
     });
   }
 
@@ -505,11 +505,11 @@ function createSim(seed, geo, opts = {}){
 
     // factory: pays back over the horizon
     const leaderFac = Math.max(0.5, ...alive().map(facAvg));
-    const catchup = 0.55 + 0.45 * Math.min(1, facAvg(c) / leaderFac);
-    const maxFac = 10;
+    const catchup = (1 - RULES.price.copy) + RULES.price.copy * Math.min(1, facAvg(c) / leaderFac);
+    const maxFac = RULES.build.maxFactories;
     if (building < maxBuilds(c)) {
       mine.filter(r => r.fac < maxFac && !r.build && !r.occ).forEach(r => {
-        const cost = 22 * Math.pow(1.55, r.fac) * catchup * fx(c, 'factoryCost') * (S.railBoom > S.year ? EV.railway.cost : 1);
+        const cost = RULES.price.factory * Math.pow(RULES.price.factoryGrowth, r.fac) * catchup * fx(c, 'factoryCost') * (S.railBoom > S.year ? EV.railway.cost : 1);
         if (cost > T) return;
         const gain = (sumInc(regionIncome(r, c, { fac: r.fac + 1, war: false, ignoreOcc: true })) - sumInc(regionIncome(r, c, { war: false, ignoreOcc: true }))) * 4;
         const ev = gain * (H - 1) - cost * gv;
@@ -528,11 +528,11 @@ function createSim(seed, geo, opts = {}){
       const r1 = riskOf(c, delta).total + gwLoss(delta) - gwLoss(0);
       const incLoss = (inc0 / Math.max(0.01, wf0)) * (wf0 - workforce(c, c.army + delta)) * 0.85; // tax and factory part
       const upk = upkeepOf(c, delta) * 4;
-      return (baseRisk.total - r1) - (incLoss + upk * gv) * H - (delta > 0 ? delta * 3 * fx(c, 'recruit') * gv : 0);
+      return (baseRisk.total - r1) - (incLoss + upk * gv) * H - (delta > 0 ? delta * RULES.price.recruit * fx(c, 'recruit') * gv : 0);
     };
     const step = Math.max(5, c.army * 0.15, popOf(c) * 0.5);
     let bestA = null;
-    [step, step * 2.5].forEach(st => { if (T < st * 3 * fx(c, 'recruit') + 5) return;
+    [step, step * 2.5].forEach(st => { if (T < st * RULES.price.recruit * fx(c, 'recruit') + 5) return;
       const ev = armyEV(st) + (war ? 30 + st : 0);
       if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Growing the army by ${Math.round(st)}k`,
         why: war ? 'At war: the army needs every man' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(upkeepOf(c, st) * 4).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
@@ -562,7 +562,7 @@ function createSim(seed, geo, opts = {}){
     // diplomacy: alliances cut expected losses; courting makes them possible
     const allyPool = new Set(); neighborsOf(c).forEach(o => allyPool.add(o)); if (baseRisk.top) neighborsOf(baseRisk.top).forEach(o => allyPool.add(o)); S.majors.forEach(t => allyPool.add(S.C[t]));
     if (!war) [...allyPool].forEach(o => {
-      if (!o.alive || o === c || c.allies.has(o.tag) || warOf(o) || c.allies.size >= 3 || o.allies.size >= 3) return;
+      if (!o.alive || o === c || c.allies.has(o.tag) || warOf(o) || c.allies.size >= RULES.allies.max || o.allies.size >= RULES.allies.max) return;
       const mine2 = baseRisk.total - riskOf(c, 0, o).total;
       const theirs = riskOf(o).total - riskOf(o, 0, c).total;
       const drag = riskOf(o).total * 0.12;
@@ -586,7 +586,7 @@ function createSim(seed, geo, opts = {}){
     });
 
     // war: chance of winning x what the province pays once settled, minus the price of fighting and of losing
-    if (!war && T > -10 && unrestOf(c) < 50) {
+    if (!war && T > -10 && unrestOf(c) < RULES.war.maxUnrest) {
       let best = null;
       borderRegions(c).forEach(r => {
         const o = S.C[r.owner];
@@ -606,7 +606,7 @@ function createSim(seed, geo, opts = {}){
     switch (a.type) {
       case 'factory': spend('build', a.cost); a.r.build = { type: 'factory', left: RULES.build.factory }; return;
       case 'fort': spend('build', a.cost); a.r.build = { type: 'fort', left: RULES.build.fort }; return;
-      case 'army': spend('army', a.amt * 3 * fx(c, 'recruit')); c.army += a.amt; return;
+      case 'army': spend('army', a.amt * RULES.price.recruit * fx(c, 'recruit')); c.army += a.amt; return;
       case 'demob': c.army = Math.max(3, c.army - a.amt); return;
       case 'reform': spend('reform', RULES.reform.cost * fx(c, 'reformCost')); reform(c); return;
       case 'court': addRel(c.tag, a.o.tag, 6 + rand(0, 4)); return;
@@ -622,7 +622,7 @@ function createSim(seed, geo, opts = {}){
   // Do every affordable option that is expected to pay off, best first (up to 4 a season).
   function decide(c){
     const done = [];
-    for (let k = 0; k < 4 && c.alive; k++) {
+    for (let k = 0; k < RULES.actions && c.alive; k++) {
       RISK = {};
       const cands = considerations(c);
       const choice = cands[0];
@@ -639,7 +639,7 @@ function createSim(seed, geo, opts = {}){
     S.regions.forEach(r => {
       if (r.battle > 0) r.battle--;
       if (r.flash > 0) r.flash--;
-      if (r.integ < 1 && !r.occ) { const o = S.C[r.owner]; r.integ = Math.min(1, r.integ + ((isAccepted(o, r.culture) || r.core === o.tag) ? 0.08 : 0.028 * fx(o, 'integrateOther')) * fx(o, 'integrate'));
+      if (r.integ < 1 && !r.occ) { const o = S.C[r.owner]; r.integ = Math.min(1, r.integ + ((isAccepted(o, r.culture) || r.core === o.tag) ? RULES.integrate.kin : RULES.integrate.other * fx(o, 'integrateOther')) * fx(o, 'integrate'));
         if (r.integ >= 1) L('econ', `${Rn(r)} is now fully integrated into ${N(o)}.`); }
       if (!r.build || r.occ) return;
       if (--r.build.left > 0) return;
@@ -649,13 +649,14 @@ function createSim(seed, geo, opts = {}){
       r.build = null;
     });
   }
-  function nationalism(){ return 0.3 + (S.year - RULES.start) / 70; }
+  function nationalism(){ return RULES.unrest.nationalism.start + (S.year - RULES.start) / RULES.unrest.nationalism.years; }
   function tickUnrest(){
     S.regions.forEach(r => {
       const o = S.C[r.owner];
       const foreign = !isAccepted(o, r.culture);
-      const target = 8 + (foreign ? 25 + 36 * nationalism() + (S.awake[r.culture] || 0) : 0) + (inCrisis(o) ? 12 : 0) + Math.min(18, r.fac * 3) * clamp((S.year - 1848) / 45, 0, 1) + (warOf(o) ? 10 : 0) + (r.occ ? 25 : 0) + (o.treasury < 0 ? 15 : 0) + 15 * (1 - r.integ) + fx(o, 'unrest') + (foreign ? fx(o, 'unrestOther') : fx(o, 'unrestOwn'));
-      r.unrest = clamp(r.unrest + (target - r.unrest) * 0.07 + rand(-2, 2.5), 0, 100);
+      const UT = RULES.unrest.target, WK = RULES.unrest.workers;
+      const target = UT.base + (foreign ? UT.foreign + UT.nationalism * nationalism() + (S.awake[r.culture] || 0) : 0) + (inCrisis(o) ? UT.crisis : 0) + Math.min(WK.max, r.fac * WK.perFactory) * clamp((S.year - WK.from) / WK.years, 0, 1) + (warOf(o) ? UT.war : 0) + (r.occ ? UT.occupied : 0) + (o.treasury < 0 ? RULES.debt.unrest : 0) + UT.unsettled * (1 - r.integ) + fx(o, 'unrest') + (foreign ? fx(o, 'unrestOther') : fx(o, 'unrestOwn'));
+      r.unrest = clamp(r.unrest + (target - r.unrest) * RULES.unrest.pull + rand(-2, 2.5), 0, 100);
     });
   }
   function revolts(){
@@ -666,18 +667,19 @@ function createSim(seed, geo, opts = {}){
       S.stats.revolts++; r.flash = 3; mark(r.i, 'revolt');
       const rebels = r.pop * 2.2 * rand(0.5, 1.6) * (1 + (S.year - RULES.start) / 80) * (1 + (S.awake[r.culture] || 0) / 10);
       const garrison = o.army * quality(o) * (warOf(o) ? 0.6 : 2.2) / Math.max(1, regionsOf(o).length) * (inCrisis(o) ? RULES.reign.crisisArmy : 1) * rand(0.6, 1.3) * (r.fort ? 1.6 : 1) * fx(o, 'garrison');
-      if (rebels < garrison) { r.unrest = 35; o.army *= 0.96; L('revolt', `Riots in ${Rn(r)} are put down by the ${o.adj} army.`); return; }
+      const UP = RULES.uprising;
+      if (rebels < garrison) { r.unrest = UP.crushed.unrest; o.army *= UP.crushed.army; L('revolt', `Riots in ${Rn(r)} are put down by the ${o.adj} army.`); return; }
       if (isAccepted(o, r.culture)) {
-        o.treasury *= 0.5; regionsOf(o).forEach(x => x.unrest = Math.max(15, x.unrest - 30)); o.army *= 0.85;
+        o.treasury *= UP.revolution.gold; regionsOf(o).forEach(x => x.unrest = Math.max(UP.revolution.floor, x.unrest - UP.revolution.calm)); o.army *= UP.revolution.army;
         endReign(o, 'revolution', Rn(r)); return; }
       const kin = r.nb.map(j => S.C[S.regions[j].owner]).find(k => k.alive && k.culture === r.culture && k !== o && !warOf(k));
-      const spread = () => regionsOf(o).forEach(x => { if (!isAccepted(o, x.culture) && x.core !== o.tag) x.unrest = Math.min(100, x.unrest + 15); });
-      if (kin) { L('revolt', `${Rn(r)} rises against ${N(o)} and declares for ${N(kin)}.`); transfer(r, kin, o, 'treaty'); r.core = kin.tag; r.unrest = 20; spread(); return; }
+      const spread = () => regionsOf(o).forEach(x => { if (!isAccepted(o, x.culture) && x.core !== o.tag) x.unrest = Math.min(100, x.unrest + UP.spread); });
+      if (kin) { L('revolt', `${Rn(r)} rises against ${N(o)} and declares for ${N(kin)}.`); transfer(r, kin, o, 'treaty'); r.core = kin.tag; r.unrest = UP.joins.unrest; spread(); return; }
       // who the rebels fight for: the province's own fallen nation if it was of their people, else the nation their people rises as
       const home = NATIONS[r.core] && NATIONS[r.core].culture === r.culture && !S.C[r.core].alive ? r.core : null;
       const tag = home || risesAs(r.culture);
       if (!tag || (S.C[tag] && S.C[tag].alive)) {
-        r.unrest = 40; o.army *= 0.93; if (o.treasury > 0) o.treasury *= 0.85;
+        r.unrest = UP.alone.unrest; o.army *= UP.alone.army; if (o.treasury > 0) o.treasury *= UP.alone.gold;
         L('revolt', `Rebels seize ${Rn(r)} but find no allies; ${N(o)} retakes it at a heavy cost in gold and men.`); return; }
       const restored = !!S.C[tag], wasPlayer = restored && S.C[tag].player;
       // what every nation born in an uprising gets (rules.json newNation): gold, an army sized by its people, an old enemy, perhaps a guarantor
@@ -685,15 +687,15 @@ function createSim(seed, geo, opts = {}){
       nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
       setAmbition(nc); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
       const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ && (!home || x.core === home)));
-      invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = 15; x.build = null; x.flash = 3; x.integ = 1; });
+      invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = UP.free.unrest; x.build = null; x.flash = 3; x.integ = 1; });
       killIfEmpty(o);
       tags.forEach(u => u !== tag && setRel(tag, u, u === o.tag ? RULES.newNation.hostility : rand(-5, 20)));
       nc.truce[o.tag] = S.year + RULES.newNation.truce; o.truce[tag] = S.year + RULES.newNation.truce;
       spread();
-      const guard = S.majors.map(t2 => S.C[t2]).filter(m => m.alive && m !== o && !warOf(m) && m.allies.size < 3 && (rel(m.tag, o.tag) < 0 || m.rival === o.tag)).sort((x, y) => strength(y) - strength(x))[0];
+      const guard = S.majors.map(t2 => S.C[t2]).filter(m => m.alive && m !== o && !warOf(m) && m.allies.size < RULES.allies.max && (rel(m.tag, o.tag) < 0 || m.rival === o.tag)).sort((x, y) => strength(y) - strength(x))[0];
       if (guard) { ally(guard.tag, tag); setRel(guard.tag, tag, 70); nc.guarantee = { by: guard.tag, until: S.year + RULES.newNation.guarantee }; }
       L('revolt', `Independence! ${rlist(group)} break${group.length > 1 ? '' : 's'} away from ${N(o)} and ${restored ? 'restore' : 'form'}${group.length > 1 ? '' : 's'} ${N(nc)} under ${RN(nc.ruler)}.${guard ? ` ${N(guard)} guarantees its independence.` : ''}`);
-      o.army *= 0.85;
+      o.army *= UP.free.army;
     });
   }
 
@@ -724,7 +726,7 @@ function createSim(seed, geo, opts = {}){
         if (own < d.need) return;
         d.done = c.tag; c.name = d.title; c.adj = d.adj; c.pre = d.pre;
         d.peoples.forEach(x => c.acc.add(x));
-        regionsOf(c).forEach(r => { r.unrest = Math.max(0, r.unrest - 25); if (d.peoples.includes(r.culture)) r.integ = 1; });
+        regionsOf(c).forEach(r => { r.unrest = Math.max(0, r.unrest - RULES.unite.calm); if (d.peoples.includes(r.culture)) r.integ = 1; });
         mark(capitalOf(c).i, 'crown');
         L('unify', say(KINDS.unite.proclaimText, { n: own, nation: N(c) }));
         alive().filter(o => o !== c && d.peoples.includes(o.culture) && !isMajor(o) && !o.noAnnex && !warOf(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]))).forEach(o => {
@@ -846,9 +848,9 @@ function createSim(seed, geo, opts = {}){
       c.ledger = { tax, fac, trade, upkeep: upkeep(c), lostWork, lostAdmin, spent: c.spent }; c.spent = {};
       c.treasury += tax + fac + trade - upkeep(c);
       if (c.crisis && S.t === c.crisis.until && c.ruler.name === c.crisis.winner) L('ruler', `${RN(c.ruler)} wins the civil war in ${N(c)}.`);
-      regionsOf(c).forEach(r => r.pop *= 1 + 0.0015 + r.fac * 0.0003);
+      regionsOf(c).forEach(r => r.pop *= 1 + RULES.growth.base + r.fac * RULES.growth.perFactory);
       c.infamy = Math.max(0, c.infamy - 0.3);
-      if (c.treasury < -40) c.army *= 0.97;
+      if (c.treasury < RULES.debt.below) c.army *= RULES.debt.army;
       c.army = Math.max(1, c.army);
     });
     cs.forEach(c => cs.forEach(o => { if (c.tag >= o.tag) return;
@@ -859,8 +861,8 @@ function createSim(seed, geo, opts = {}){
       if (c.infamy > 15 && isNeighbor(c, o)) r -= c.infamy / 40;
       setRel(c.tag, o.tag, r); }));
     const guarded = (c, t) => (c.guarantee && c.guarantee.by === t && S.year < c.guarantee.until) || (S.C[t].guarantee && S.C[t].guarantee.by === c.tag && S.year < S.C[t].guarantee.until);
-    cs.forEach(c => [...c.allies].forEach(t => { if (rel(c.tag, t) < 0 && chance(0.08) && !warOf(c) && !guarded(c, t)) { c.allies.delete(t); S.C[t].allies.delete(c.tag); L('diplo', `The alliance between ${N(c)} and ${N(S.C[t])} lapses.`); } }));
-    if (S.q === 0) { if (S.year % 5 === 0) computeMajors(); alive().forEach(pickRival); }
+    cs.forEach(c => [...c.allies].forEach(t => { if (rel(c.tag, t) < 0 && chance(RULES.allies.lapse) && !warOf(c) && !guarded(c, t)) { c.allies.delete(t); S.C[t].allies.delete(c.tag); L('diplo', `The alliance between ${N(c)} and ${N(S.C[t])} lapses.`); } }));
+    if (S.q === 0) { if (S.year % RULES.majors.every === 0) computeMajors(); alive().forEach(pickRival); }
     S.leader = alive().reduce((b, c) => !b || score(c) > score(b) ? c : b, null).tag;
     EVENTS.forEach(e => e());
     successions();
@@ -887,7 +889,7 @@ function createSim(seed, geo, opts = {}){
   }
 
   alive().forEach(pickRival);
-  S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
+  S.history.push({ y: RULES.start - 1, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
   L('event', say(EV.opening.text, { count: alive().length }));
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
   if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true; S.rerolls = RULES.rerolls;

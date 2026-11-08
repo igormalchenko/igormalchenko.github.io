@@ -219,6 +219,24 @@ Proven unchanged: final states and chronicles of eight worlds match the code bef
 | Diplomacy and unions | at most 3 allies; uniting by treaty needs relations 70 and twice the power; a proclamation takes away 25 unrest and integrates its people; who votes to join |
 | Great War | 6 great powers, recounted every 5 years; how the two sides are picked; running wars abandoned; alliances pulled in |
 
+**Done (step 5): the rules of the world are in `rules.json`, each with a rulebook sentence.** About 70 numbers moved, every value unchanged:
+- Start: `setup` (unrest, gold, the spread of armies). Dates: `reign.anarchists`, `unrest.workers.from`, `unrest.nationalism`; the chart starts the year before `rules.start`.
+- Economy: `admin`, `price` (factory, its growth, the discount for copying, recruits, upkeep), `build.slots`, `build.maxFactories`, `actions`, `growth`, `debt`.
+- War: `war` (when a war ends, what the winner takes, reparations, the truce, the unrest above which no nation attacks), `battle` (industry, the dead, ruined factories, occupation, army losses), `conquest`, `integrate`.
+- Unrest and uprisings: `unrest.pull`, `unrest.target`, `unrest.workers`, `unrest.nationalism`, and `uprising` (put down, revolution, joining kin, the spread, rebels alone, independence).
+- Diplomacy and unions: `allies.max`, `allies.lapse`, `unite.calm`. Great powers: `majors` (how many, how often recounted), and the concept Great power says so.
+
+The check counts a rule read through a short name (`const UP = RULES.uprising`) as read, and the Almanac's Rules page now answers what a factory costs, how a war ends, how many allies a nation can have and what an uprising costs.
+
+Left in the engine on purpose, as forecast maths or hidden plumbing (CLAUDE.md rules 2 and 4):
+- the AI's own estimates: integration years in the forecast (4 or 9), the general-war expectation from 1888, the cheaper swallowing of a whole nation before 1860, the affordability margins;
+- what a province yields (tax, factory and trade rates) and the win-chance curve;
+- the size of rebels and garrisons, unrest's drag on army strength, the war tally's weights;
+- relations and infamy, which the player never sees;
+- how temperaments are drawn around a nation's leanings.
+
+Proven unchanged: final states and chronicles of eight worlds match the code before.
+
 ## 4. Gaps in tools/check.js
 
 - **Read somewhere isn't used.** Event fields (`e.unrest`, `e.pop`…) are never checked: deleting `springtime.unrest` passes. A rule counts as used if only its rulebook sentence mentions it. An unused new content file passes.

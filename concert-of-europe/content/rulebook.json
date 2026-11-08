@@ -2,7 +2,8 @@
   "The age": [
     "The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.",
     "The year runs {rules.seasons|list}, and every nation decides once a season.",
-    "The {events.greatWar.name} breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."
+    "The {events.greatWar.name} breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}.",
+    "In {rules.start} every province starts at {rules.setup.unrest} unrest, and every nation with {rules.setup.gold.0} to {rules.setup.gold.1} gold and an army between {rules.setup.army.0|pct} and {rules.setup.army.1|pct} of its listed size."
   ],
   "Heirs": [
     "Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game.",
@@ -15,7 +16,8 @@
     "A ruler beaten in a war he started, or one that cost him land, abdicates {rules.reign.abdicate|pct} of the time.",
     "Besides a {rulers.flirt.label}, whose reign always ends in one, {rules.reign.crisis|pct} of successions end in civil war, which adds {rules.reign.crisisUnrest} unrest everywhere and lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.",
     "In a nation whose unrest is above {rules.reign.coupUnrest}, the army stages a coup in {rules.reign.coup|pct} of seasons and crowns a ruler of its own choosing: no heir card.",
-    "A ruler plans at least {rules.horizon.min} years ahead, and up to {rules.horizon.span} more the more patient he is."
+    "A ruler plans at least {rules.horizon.min} years ahead, and up to {rules.horizon.span} more the more patient he is.",
+    "Assassins are conspirators until {rules.reign.anarchists}, and anarchists from then on."
   ],
   "Armies": [
     "Every soldier is a worker lost: the work done in fields and factories falls with the size of the army, as if {rules.workers}k men per million people would empty them, but it never falls below {rules.workersMin|pct}.",
@@ -27,6 +29,7 @@
   ],
   "Unrest and war": [
     "A province with unrest of {rules.unrest.restless} or more is restless; at {rules.unrest.uprising} or more it can rise.",
+    "Each season a province's unrest moves {rules.unrest.pull|pct} of the way toward what its conditions call for: {rules.unrest.target.base} in calm times; {rules.unrest.target.foreign} more under a ruler of another people, plus {rules.unrest.target.nationalism} times the strength of nationalism, which is {rules.unrest.nationalism.start} in {rules.start} and grows by one every {rules.unrest.nationalism.years} years; {rules.unrest.target.crisis} more during a civil war, {rules.unrest.target.war} at war and {rules.unrest.target.occupied} while occupied; up to {rules.unrest.target.unsettled} more while it is not yet integrated; and from {rules.unrest.workers.from}, {rules.unrest.workers.perFactory} for every factory (at most {rules.unrest.workers.max}), reaching its full weight over {rules.unrest.workers.years} years.",
     "Weighing a war, a ruler counts {rules.settle|pct} of the time a conquest takes to become integrated."
   ],
   "New nations": [
@@ -36,6 +39,34 @@
   ],
   "Alliances": [
     "An ally comes to a nation's defence {rules.allies.defend|pct} of the time, and always if it guaranteed that nation's independence. It joins an attack {rules.allies.attack|pct} of the time, and only if the two are on good terms.",
-    "A nation can unite with a smaller nation of its own people by treaty once their relations reach {rules.unite.relations} and it is more than {rules.unite.power|times} as powerful, unless the smaller one has another great power for an ally."
+    "A nation has at most {rules.allies.max|word} allies. An alliance between nations on bad terms lapses {rules.allies.lapse|pct} of the time each season, unless one guarantees the other.",
+    "A nation can unite with a smaller nation of its own people by treaty once their relations reach {rules.unite.relations} and it is more than {rules.unite.power|times} as powerful, unless the smaller one has another great power for an ally.",
+    "When a people is united, unrest falls by {rules.unite.calm} across the new nation, and the provinces of its people are integrated at once."
+  ],
+  "Great powers": ["The {rules.majors.count|word} strongest nations are the great powers, recounted every {rules.majors.every|span}."],
+  "Economy": [
+    "Every province beyond the first {rules.admin.free|word} costs its nation {rules.admin.cost|pct} of all its gold a year, until it keeps no more than {rules.admin.floor|pct} of it.",
+    "The first factory in a province costs {rules.price.factory} gold, and each one after it {rules.price.factoryGrowth|times} the one before; a province holds at most {rules.build.maxFactories} factories. A nation behind the most industrial one pays up to {rules.price.copy|pct} less, copying what others built.",
+    "Raising the army costs {rules.price.recruit} gold per thousand men, and keeping it {rules.price.upkeep} gold per thousand men a season.",
+    "A nation builds {rules.build.slots.base|word} thing at a time, and one more for every {rules.build.slots.per|word} provinces it holds. Each season it does up to {rules.actions|word} things.",
+    "Each season a province's people grow by {rules.growth.base|fine}, and {rules.growth.perFactory|fine} more for every factory.",
+    "A nation in debt angers its people: {rules.debt.unrest} unrest everywhere. More than {rules.debt.below|abs} gold in debt, it also loses {rules.debt.army|down} of its army every season."
+  ],
+  "Wars": [
+    "Each war keeps a tally of the land each side occupies and the battles it wins. A side wins when its tally reaches {rules.war.win} ({rules.war.greatWin} in the {events.greatWar.name}), but no war ends in its first {rules.war.minSeasons|word} seasons unless one side holds all of the other's land.",
+    "After {rules.war.seasons|word} seasons ({rules.war.greatSeasons|word} in the {events.greatWar.name}) a war ends anyway: a side ahead by more than {rules.war.timeoutLead} wins, otherwise it is a white peace. From {rules.war.stalemate.after|word} seasons on, a war with neither side ahead by {rules.war.stalemate.below} ends in a white peace {rules.war.stalemate.chance|pct} of the time each season.",
+    "The winner takes the war goal if it can reach it, and up to {rules.war.extra|word} more occupied province{rules.war.extra|s} ({rules.war.greatExtra|word} in the {events.greatWar.name}) that it has a claim on, or any it occupies once its tally reaches {rules.war.crushing}. The loser pays {rules.war.reparations|pct} of its gold, shared by the winners who gained no land. Then the two sides keep the peace for {rules.war.truce|span}.",
+    "A nation whose unrest averages {rules.war.maxUnrest} or more starts no war.",
+    "An army fights {rules.battle.industry|pct} harder for every factory its provinces hold on average.",
+    "Every battle kills {rules.battle.dead|fine} of the province's people and wrecks one of its factories {rules.battle.ruin|pct} of the time, and an occupied province gains {rules.battle.occupied} unrest. Each season of war the side that wins the battle loses {rules.battle.losses.win.0|fine} to {rules.battle.losses.win.1|fine} of its army, the other side {rules.battle.losses.lose.0|fine} to {rules.battle.losses.lose.1|fine}.",
+    "A province won in war loses a factory, if it has one. If its people are the conqueror's own or accepted, it starts {rules.conquest.kin.integrated|pct} integrated with at least {rules.conquest.kin.unrest} unrest; if not, {rules.conquest.other.integrated|pct} and {rules.conquest.other.unrest}. A province gained by treaty is at most {rules.conquest.treaty|pct} integrated.",
+    "Each season a province becomes {rules.integrate.kin|pct} more integrated if its people are the ruler's own or accepted, and {rules.integrate.other|fine} if not."
+  ],
+  "Uprisings": [
+    "Riots that the garrison puts down leave the province at {rules.uprising.crushed.unrest} unrest and cost the ruler {rules.uprising.crushed.army|down} of his army.",
+    "An uprising of the ruler's own people is a revolution: the ruler falls, the nation loses {rules.uprising.revolution.gold|frac} its gold and {rules.uprising.revolution.army|down} of its army, and unrest falls by {rules.uprising.revolution.calm} everywhere, to no less than {rules.uprising.revolution.floor}.",
+    "A province that rises next to a nation of its own people joins it at {rules.uprising.joins.unrest} unrest. Whenever a province breaks away, every province of a subject people left in the old nation gains {rules.uprising.spread} unrest.",
+    "Rebels who find no allies are beaten back at a heavy price: the province stays at {rules.uprising.alone.unrest} unrest, and its ruler loses {rules.uprising.alone.army|down} of his army and {rules.uprising.alone.gold|down} of his gold.",
+    "A province that wins its independence starts at {rules.uprising.free.unrest} unrest and fully integrated, and the old ruler loses {rules.uprising.free.army|down} of his army."
   ]
 }

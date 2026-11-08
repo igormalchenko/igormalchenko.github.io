@@ -196,6 +196,11 @@ SRC.forEach(([f, src]) => { let m;
   while ((m = fe.exec(src))) { const k = m[1] || m[2]; if (!C.effects[k]) problems.push(`${f}:${lineOf(src, m.index)}: the effect "${k}" is not in effects.json`); else used.add('fx.' + k); }
   const rl = /\bRULES((?:\.\w+)+)/g;
   while ((m = rl.exec(src))) { let v = C.rules; const ks = m[1].slice(1).split('.'); for (const k of ks) { if (v == null || typeof v !== 'object' || !(k in v)) { problems.push(`${f}:${lineOf(src, m.index)}: RULES${m[1]} is not in rules.json`); break; } v = v[k]; used.add('rules.' + ks.slice(0, ks.indexOf(k) + 1).join('.')); } }
+  // a short name for part of the rules (const UP = RULES.uprising, or `, WR = RULES.war` in a list) reads what follows it
+  const aliases = [...src.matchAll(/\b([A-Z]\w*) = RULES((?:\.\w+)+)/g)];
+  aliases.forEach(([, name, base]) => { const re = new RegExp(`\\b${name}((?:\\.\\w+)+)`, 'g'); let a;
+    while ((a = re.exec(src))) { if (src.slice(a.index - 1, a.index) === '.') continue; let v = C.rules; const ks = (base + a[1]).slice(1).split('.'); let p = 'rules';
+      for (const k of ks) { if (v == null || typeof v !== 'object' || !(k in v)) { if (!Array.isArray(v)) problems.push(`${f}:${lineOf(src, a.index)}: ${name}${a[1]} (RULES${base}${a[1]}) is not in rules.json`); break; } v = v[k]; p += '.' + k; used.add(p); } } });
   const un = /\bUNREST\.(\w+)/g;   // the interface's shorthand for RULES.unrest
   while ((m = un.exec(src))) { if (!(m[1] in C.rules.unrest)) problems.push(`${f}:${lineOf(src, m.index)}: UNREST.${m[1]} is not in rules.json`); else used.add('rules.unrest.' + m[1]); }
   const ev = /\bEV\.(\w+)/g;
@@ -234,7 +239,7 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
   Object.entries(C.nations).forEach(([t, n]) => { num(`nations.json ${t} hawk`, n.hawk, 0, 1); num(`nations.json ${t} patience`, n.patience, 0, 1);
     if (n.starts) num(`nations.json ${t} army`, n.army, 1, 1000);
     if (!(n.rulerNames || (C.peoples[n.people] && C.peoples[n.people].names || []).length)) bad(`nations.json ${t}`, `has no ruler names, and the ${n.people} people have none either`); });
-  Object.entries(C.provinces).forEach(([id, p]) => { num(`provinces.json ${id} pop`, p.pop, 0.01, 100); num(`provinces.json ${id} industry`, p.industry, 0, 10);
+  Object.entries(C.provinces).forEach(([id, p]) => { num(`provinces.json ${id} pop`, p.pop, 0.01, 100); num(`provinces.json ${id} industry`, p.industry, 0, C.rules.build.maxFactories);
     if (!Number.isInteger(p.industry)) bad(`provinces.json ${id}`, 'industry is a number of factories, a whole number'); });
   Object.entries(C.ambitions).forEach(([id, d]) => { if (d.provinces && new Set(d.provinces).size !== d.provinces.length) bad(`ambitions.json ${id}`, 'lists a province twice'); });
   Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); });
