@@ -179,9 +179,9 @@ The survive weight doesn't save small nations: they die slightly more often with
 
 ## Future work (agreed, not built)
 
-### Ruler grades (proposed, not agreed)
+### Ruler quirks × grades (proposed, not agreed)
 
-Split a ruler's line (what he wants) from his grade (how able he is), so the same Warmonger can be drawn common or legendary. Spec and open questions: `specs/ruler-grades.md`.
+Every quirk at every grade (20 × 5 cards). Each quirk is one strength and one flaw from a shared list of stats; a common ruler is all flaw, a legendary one has turned his flaw into his strength. Full matrix and open questions: `specs/ruler-grades.md`.
 
 ### Metaprogression
 
