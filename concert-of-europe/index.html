@@ -1524,7 +1524,8 @@ const glyph = (k, style = '') => { const e = REG[k], s = e.map || .55;
 // words in copy that get their concept's icon in front (see iconize)
 const WORD_IC = { 'gold a year': 'goldYear', 'army upkeep': 'upkeep', 'sea trade': 'trade', 'civil war': 'civilWar', factories: 'factory', factory: 'factory',
   fortresses: 'fort', fortress: 'fort', unrest: 'unrest', uprisings: 'uprising', uprising: 'uprising', armies: 'army', army: 'army', alliances: 'ally', alliance: 'ally',
-  reforms: 'reform', integrates: 'settle', integrated: 'settle', capital: 'capital', gold: 'gold', peace: 'peace', ruler: 'ruler', war: 'war' };
+  reforms: 'reform', integrates: 'settle', integrated: 'settle', capital: 'capital', gold: 'gold', peace: 'peace', rulers: 'ruler', ruler: 'ruler', war: 'war',
+  ambitions: 'ambition', ambition: 'ambition', proclaims: 'proclaim', proclaim: 'proclaim' };
 const WORD_RE = new RegExp(`\\b(${Object.keys(WORD_IC).sort((a, b) => b.length - a.length).join('|')})\\b`, 'gi');
 // copy with an icon in front of the first mention of each concept it names
 const iconize = text => { const seen = new Set();
