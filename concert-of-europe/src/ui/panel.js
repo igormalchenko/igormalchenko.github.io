@@ -65,16 +65,22 @@ function ambitionText(c){
   return { a, what, color: a.state === 'met' ? 'var(--peace)' : a.state === 'lost' ? 'var(--war)' : 'inherit' };
 }
 function showStart(){
-  $('startIntro').innerHTML = `<p>${iconize(say('Europe, {rules.start} to {rules.end.year}. Every nation has one ambition for the day the {events.greatWar.name} ends: the great powers want the most gold a year, a divided people wants to unite, and the small just want to survive.'))}</p>
-    <p>${iconize(say('Pick a nation to rule. You never give orders: each time the throne passes, you choose the next ruler from {rules.heirs|word} heirs, and the ministers run the nation the way he sees the world. Choose well, and it meets its ambition. Or just watch.'))}</p>`;
+  $('startIntro').innerHTML = iconize(say('Pick a nation. You never give it orders: each time the throne passes, you choose its next ruler from {rules.heirs|word} heirs, and his ministers do the rest.'));
   const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
   const of = k => cs.filter(c => S.ambitionOf(c).kind === k);
-  const btn = c => { const a = S.ambitionOf(c);
-    return `<button class="pick" data-play="${c.tag}" ${tipAttr(c.name, ambitionDesc(a))}><span class="fl" style="background:${c.color}"></span>${c.name}${a.kind === 'unite' ? ` <span class="muted">${a.title}</span>` : ''}</button>`; };
   const AM = CONTENT.ambitionKinds;
-  $('startBody').innerHTML = `<h3>${AM.richest.heading}</h3><div class="picks">${of('richest').map(btn).join('')}</div>
-    <h3>${AM.unite.heading}</h3><div class="picks">${of('unite').sort((x, y) => S.ambitionOf(x).title.localeCompare(S.ambitionOf(y).title)).map(btn).join('')}</div>
-    <h3>${AM.survive.heading} <span class="muted" style="font:12px var(--body)">${AM.survive.aside}</span></h3><div class="picks">${of('survive').map(btn).join('')}</div>`;
+  // one nation: its colour and its name, largest first; hover says what its ambition asks
+  const row = c => `<button class="t-n" data-play="${c.tag}" ${tipAttr(c.name, ambitionDesc(S.ambitionOf(c)))}><span class="fl" style="background:${c.color}"></span>${c.name}</button>`;
+  // the unions as races: one per union, its nations largest first, the biggest races first
+  const races = new Map();
+  of('unite').forEach(c => { const t = S.ambitionOf(c).title; if (!races.has(t)) races.set(t, []); races.get(t).push(c); });
+  const raceList = [...races].sort((x, y) => y[1].reduce((s, c) => s + S.score(c), 0) - x[1].reduce((s, c) => s + S.score(c), 0));
+  const col = (k, who, body) => `<section class="t-col"><h3>${AM[k].heading}</h3><p class="who">${iconize(who)}</p>${body}</section>`;
+  $('startBody').innerHTML =
+    col('richest', say('The most gold a year among the great powers in {rules.end.year}.'), of('richest').map(c => row(c)).join('')) +
+    col('unite', say('Be the first of its nations to proclaim the union, and still hold it in {rules.end.year}.'), `<div class="t-races">${raceList.map(([t, ns]) => `<div class="t-race"><div class="rt">${t}</div>${ns.map(c => row(c)).join('')}</div>`).join('')}</div>`) +
+    col('survive', say('Still be on the map in {rules.end.year}.') + ` ${cap1(AM.survive.aside)}.`, of('survive').map(c => row(c)).join(''));
+  $('startSeed').textContent = `World #${S.seed}`;
   $('startModal').classList.add('on');
 }
 
