@@ -1,17 +1,18 @@
 {
   "The age": [
     "The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.",
-    "The Great War breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."
+    "The {events.greatWar.name} breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."
   ],
   "Heirs": [
     "Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game.",
-    "Every heir is a rarity and a trait. A Common or Uncommon ruler has a bonus and a malus; from Rare on he also brings a one-time bonus at his coronation. The rarer he is, the bigger the bonus and the smaller the malus."
+    "Every heir is a rarity and a trait. A {rarities.0.name} or {rarities.1.name} ruler has a bonus and a malus; from {rarities.2.name} on he also brings a one-time bonus at his coronation. The rarer he is, the bigger the bonus and the smaller the malus.",
+    "More rerolls will be for sale at ${rules.price.reroll} each; they are not for sale yet."
   ],
   "Reigns": [
     "A reign lasts {rules.reign.years.0} to {rules.reign.years.1} years if nothing ends it sooner.",
     "Each year a ruler has a {rules.reign.murder|pct} chance of being assassinated.",
     "A ruler beaten in a war he started, or one that cost him land, abdicates {rules.reign.abdicate|pct} of the time.",
-    "Besides a Flirt, whose reign always ends in one, {rules.reign.crisis|pct} of successions end in civil war, which adds {rules.reign.crisisUnrest} unrest everywhere and lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.",
+    "Besides a {rulers.flirt.label}, whose reign always ends in one, {rules.reign.crisis|pct} of successions end in civil war, which adds {rules.reign.crisisUnrest} unrest everywhere and lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.",
     "In a nation whose unrest is above {rules.reign.coupUnrest}, the army stages a coup in {rules.reign.coup|pct} of seasons and crowns a ruler of its own choosing: no heir card.",
     "A ruler plans at least {rules.horizon.min} years ahead, and up to {rules.horizon.span} more the more patient he is."
   ],
@@ -33,6 +34,7 @@
     "When an uprising wins in a province next to a living nation of its own people, the province joins that nation. Otherwise the province's own fallen nation comes back if it was of the same people, or else the people rises as its nation that was not on the map in {rules.start}, or else as its only nation. A people with several nations and none of them new, like the Germans, finds no allies."
   ],
   "Alliances": [
-    "An ally comes to a nation's defence {rules.allies.defend|pct} of the time, and always if it guaranteed that nation's independence. It joins an attack {rules.allies.attack|pct} of the time, and only if the two are on good terms."
+    "An ally comes to a nation's defence {rules.allies.defend|pct} of the time, and always if it guaranteed that nation's independence. It joins an attack {rules.allies.attack|pct} of the time, and only if the two are on good terms.",
+    "A nation can unite with a smaller nation of its own people by treaty once their relations reach {rules.unite.relations} and it is more than {rules.unite.power|times} as powerful, unless the smaller one has another great power for an ally."
   ]
 }

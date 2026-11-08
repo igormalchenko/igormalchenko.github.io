@@ -235,6 +235,8 @@ CONTENT.map.sea.forEach(([x, y]) => { const i = idx[x], j = idx[y]; if (nb[i].ha
   const [d, p, q] = nearest(coastPts[i], coastPts[j]); naval.push([i, j]); linkPts[i + '-' + j] = [p.map(r1), q.map(r1)]; });
 const out = {
   W: MAP_W, H: MAP_H,
+  // what the map was built from, in order: the check refuses a geo.json that no longer matches the content
+  built: { provinces: REGIONS.map(r => [r[0], r[2], r[3]]), fixes: CONTENT.map },
   land: pathOf(fullLandLL.map(poly => poly.map(ring => thin(ring.map(([lo, la]) => proj(lo, la)), 1.1))).filter(poly => poly[0].length >= 4)),
   regions: regions.map((r, i) => ({ d: r.d, ax: r.ax, ay: r.ay, area: r.area, nb: [...nb[i]], coast: coastal[i] })),
   borders, naval, navalPts: naval.map(([a2, b2]) => linkPts[a2 + '-' + b2]),

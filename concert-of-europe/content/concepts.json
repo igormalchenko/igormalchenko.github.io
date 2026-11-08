@@ -111,7 +111,7 @@
   },
   "rarity": {
     "name": "Rarity",
-    "desc": "How rare a ruler is, from Common to Legendary. The rarer he is, the more he can change the game.",
+    "desc": "How rare a ruler is, from {rarities.0.name} to {rarities.4.name}. The rarer he is, the more he can change the game.",
     "word": true
   }
 }

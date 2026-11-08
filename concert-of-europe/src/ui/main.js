@@ -36,8 +36,8 @@ document.addEventListener('keydown', e => {
   if ((e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') && e.key !== 'Escape') return;
   // Space is play/pause everywhere outside dialogs, even with a button focused
   if (e.key === ' ' && e.target.tagName === 'BUTTON' && e.target.closest('.modal')) return;
-  // 1, 2, 3 pick the heir on that card
-  if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && /^[1-3]$/.test(e.key)) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
+  // the number on a card picks that heir
+  if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && /^[1-9]$/.test(e.key) && +e.key <= RULES.heirs) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
   if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
   if (S.pending) return;
   if (e.key === ' ' || e.key === 'p' || e.key === 'P') { e.preventDefault(); if (document.querySelector('.modal.on')) return; timer ? stopAuto() : startAuto(); }

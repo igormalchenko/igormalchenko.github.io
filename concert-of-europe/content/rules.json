@@ -16,7 +16,7 @@
   },
   "horizon": {"min": 8, "span": 22},
   "build": {"factory": 4, "fort": 3},
-  "price": {"fort": 25},
+  "price": {"fort": 25, "reroll": 1.99},
   "reform": {"cost": 20, "calm": 18, "wait": 16},
   "unrest": {"restless": 40, "uprising": 65},
   "settle": 0.6,
@@ -25,5 +25,6 @@
   "newNation": {"gold": 60, "armyPerMillion": 6, "hostility": -60, "truce": 15, "guarantee": 25},
   "heirs": 3,
   "breakthrough": 2.2,
-  "allies": {"defend": 0.85, "attack": 0.6}
+  "allies": {"defend": 0.85, "attack": 0.6},
+  "unite": {"relations": 70, "power": 2}
 }

@@ -127,23 +127,39 @@ Object.entries(C.concepts).forEach(([k, c]) => { if (!c.word && !ctx.DRAW[k]) pr
 Object.keys(ctx.DRAW).forEach(k => { if (!C.concepts[k] || C.concepts[k].word) problems.push(`src/ui/registry.js: drawing for "${k}", which is not a concept with an icon in concepts.json`); });
 if (C.eras.filter(e => e.start).length !== 1) bad('eras.json', 'exactly one way of war must be marked start');
 
+// the map (map/geo.json) is joined to the provinces by position: it must have been built from these provinces, in this order
+{ const geo = JSON.parse(read('map/geo.json')), b = geo.built;
+  const now = { provinces: Object.entries(C.provinces).map(([id, p]) => [id, p.lon, p.lat]), fixes: C.map };
+  if (!b) problems.push('map/geo.json: says nothing about what it was built from; run npm run map');
+  else if (JSON.stringify(b) !== JSON.stringify(now)) {
+    const diff = now.provinces.map((p, i) => JSON.stringify(p) === JSON.stringify(b.provinces[i]) ? null : !b.provinces[i] ? `${p[0]} (new)` : b.provinces[i][0] === p[0] ? `${p[0]} (moved)` : `${p[0]} (the map has ${b.provinces[i][0]} in its place)`).filter(Boolean);
+    problems.push(`map/geo.json: built from other provinces or map fixes than content/ has now${diff.length ? ': ' + diff.slice(0, 5).join(', ') : ''}; run npm run map`); }
+  if (geo.regions.length !== now.provinces.length) problems.push(`map/geo.json: ${geo.regions.length} shapes for ${now.provinces.length} provinces; run npm run map`); }
+
 // ---- 6: templates ----
 // every placeholder a template may use, besides its own fields: the words a running world fills in
-const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need', 'n', 'by', 'count'];
-const probe = Object.fromEntries(RUNTIME.map(k => [k, 'X']));
-const TEXT_FIELDS = ['desc', 'text', 'rattleText', 'warText', 'proclaimText', 'joinText', 'vibe', 'fx', 'who', 'name', 'label', 'epi', 'heading', 'aside'];
+const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need', 'n', 'by', 'count', 'v', 'ruler', 'from'];
+// a runtime word that is also a content file (nations) is left to the content, so {nations.FRA.name} still checks
+const probe = Object.fromEntries(RUNTIME.filter(k => !(k in C)).map(k => [k, 'X']));
 function template(where, tpl, own){
   if (typeof tpl !== 'string') return;
   try { ctx.say(tpl, Object.assign({}, own, probe, own)); } catch (e) { bad(where, `${e.message} in "${tpl.slice(0, 70)}"`); }
-  const typed = tpl.replace(/\{[^}]*\}/g, '').match(/\d+/);
+  const typed = tpl.replace(/\{[^}]*\}/g, '').replace(/<[^>]*>/g, '').match(/\d+/);
   if (typed) bad(where, `the number ${typed[0]} is typed into the text; put it in the data and write {its.path} ("${tpl.slice(0, 70)}")`);
 }
-const own = {};
-Object.entries(C).forEach(([file, data]) => {
-  if (!data || typeof data !== 'object' || Array.isArray(data) && file !== 'eras') return;
-  Object.entries(data).forEach(([id, e]) => { if (!e || typeof e !== 'object') return;
-    TEXT_FIELDS.forEach(f => template(`${file}.json ${id}.${f}`, e[f], Object.assign({}, e, own[file] ? own[file](e) : {}))); });
-});
+// every piece of prose anywhere in the content is a template: it must fill in, and type no number.
+// Its own fields are its entry's and its parent object's (a ruler's effect text sees {v}).
+const PROSE = v => typeof v === 'string' && !/^[\w.\-#]*$/.test(v);
+const NOT_PROSE = new Set(['avoid', 'names', 'rulerNames']);   // lists of words, not sentences
+function walkProse(v, where, entry, parent, key, fn){
+  if (NOT_PROSE.has(key)) return;
+  if (PROSE(v)) return fn(v, where, Object.assign({}, entry, parent), key);
+  if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => walkProse(x, `${where}.${k}`, entry, Array.isArray(v) ? parent : v, k, fn));
+}
+const eachProse = fn => Object.entries(C).forEach(([file, data]) => {
+  if (!data || typeof data !== 'object') return;
+  Object.entries(data).forEach(([id, e]) => walkProse(e, `${file}.json ${id}`, e && typeof e === 'object' ? e : {}, e && typeof e === 'object' ? e : {}, id, fn)); });
+eachProse((tpl, where, own) => template(where, tpl, own));
 
 // rulers: a trait has a main bonus and a malus with a small, medium and big value, and a flat bonus with a small and a medium one
 // (or a small one and, at Legendary, an effect of its own); every effect is described in effects.json
@@ -187,11 +203,89 @@ SRC.forEach(([f, src]) => { let m;
 });
 Object.keys(C.effects).forEach(k => { if (!used.has('fx.' + k)) bad('effects.json', `"${k}" is read nowhere: the engine never applies it`); });
 // every rule is read by the engine, the interface or a template ({rules.x} in any content text or {{rules.x}} in the HTML)
-const textAll = JSON.stringify(C) + read('src/ui/index.template.html') + SRC.map(([, s]) => s).join('');
+// (a sentence that only states a rule doesn't count: the engine or the interface has to act on it)
+const html = read('src/ui/index.template.html');
 (function leaves(o, pre){ Object.entries(o).forEach(([k, v]) => { const p = pre + k;
   if (v && typeof v === 'object' && !Array.isArray(v)) return leaves(v, p + '.');
-  if (!used.has(p) && !textAll.includes('{' + p) && !textAll.includes('{{' + p)) bad('rules.json', `${p.slice(6)} is read nowhere`); }); })(C.rules, 'rules.');
+  if (!used.has(p) && !html.includes('{{' + p)) bad('rules.json', `${p.slice(6)} is stated but read by no code`); }); })(C.rules, 'rules.');
 Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.json', `event "${k}" is never run by the engine`); });
+
+
+// ---- 8: events: every field an event handler reads exists, and every field an event has is read ----
+// An event's handler is the line in sim.js that starts `const e = EV.<id>`; it reads e.<field>. Elsewhere the engine
+// reads EV.<id>.<field>. Its own name and texts are for the chronicle and the Almanac; a placeholder in them counts as a read.
+{ const sim = read('src/sim.js'), reads = {};
+  const add = (id, f) => (reads[id] = reads[id] || new Set()).add(f);
+  // a handler runs from its `const e = EV.<id>` line to the next handler, comment or the end of the list
+  const lines = sim.split('\n'), block = n => { const out = [lines[n]]; for (let k = n + 1; k < lines.length && !/^\s*(\(\) =>|\/\/|\];)/.test(lines[k]); k++) out.push(lines[k]); return out.join('\n'); };
+  lines.forEach((l, n) => { const h = l.match(/const e = EV\.(\w+)/); if (!h) return; const id = h[1], e = C.events[id], line = block(n); if (!e) return;
+    let m; const re = /\be\.(\w+)/g; while ((m = re.exec(line))) { add(id, m[1]); if (!(m[1] in e)) problems.push(`src/sim.js:${n + 1}: event "${id}" has no field "${m[1]}"`); }
+    if (/\bwithin\(e\)/.test(line)) { add(id, 'years'); if (!e.years) problems.push(`src/sim.js:${n + 1}: event "${id}" is checked with within() but has no "years"`); }
+    if (/say\(e\.\w+,\s*(?:\{\s*\.\.\.e|e\b)/.test(line)) Object.keys(e).forEach(f => { if (/Text$|^text$/.test(f)) (e[f].match(/\{(\w+)/g) || []).forEach(p => add(id, p.slice(1))); }); });
+  SRC.forEach(([, src]) => { let m; const re = /\bEV\.(\w+)\.(\w+)/g; while ((m = re.exec(src))) { add(m[1], m[2]); if (C.events[m[1]] && !(m[2] in C.events[m[1]])) problems.push(`engine reads EV.${m[1]}.${m[2]}, which events.json doesn't have`); } });
+  Object.entries(C.events).forEach(([id, e]) => Object.keys(e).forEach(f => {
+    if (f === 'name' || /Text$|^text$/.test(f)) return;
+    if (!(reads[id] && reads[id].has(f))) bad(`events.json ${id}`, `"${f}" is read by nothing: the engine ignores it`); })); }
+
+// ---- 9: the shape of the content ----
+{ const num = (w, v, lo, hi) => { if (typeof v !== 'number' || !(v >= lo && v <= hi)) bad(w, `${JSON.stringify(v)} should be a number from ${lo} to ${hi}`); };
+  C.rarities.forEach(r => num(`rarities.json ${r.name} odds`, r.odds, 0, 1));
+  Object.entries(C.nations).forEach(([t, n]) => { num(`nations.json ${t} hawk`, n.hawk, 0, 1); num(`nations.json ${t} patience`, n.patience, 0, 1);
+    if (n.starts) num(`nations.json ${t} army`, n.army, 1, 1000);
+    if (!(n.rulerNames || (C.peoples[n.people] && C.peoples[n.people].names || []).length)) bad(`nations.json ${t}`, `has no ruler names, and the ${n.people} people have none either`); });
+  Object.entries(C.provinces).forEach(([id, p]) => { num(`provinces.json ${id} pop`, p.pop, 0.01, 100); num(`provinces.json ${id} industry`, p.industry, 0, 10);
+    if (!Number.isInteger(p.industry)) bad(`provinces.json ${id}`, 'industry is a number of factories, a whole number'); });
+  Object.entries(C.ambitions).forEach(([id, d]) => { if (d.provinces && new Set(d.provinces).size !== d.provinces.length) bad(`ambitions.json ${id}`, 'lists a province twice'); });
+  Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); });
+  Object.entries(C.temperaments).forEach(([k, t]) => { ['high', 'low'].forEach(h => { if (!Array.isArray(t[h]) || typeof t[h][0] !== 'number' || typeof t[h][1] !== 'string') bad(`temperaments.json ${k}`, `"${h}" should be [threshold, word]`); });
+    if (typeof t.mid !== 'string') bad(`temperaments.json ${k}`, '"mid" should be a word'); });
+  if (C.rules.heirs > Object.keys(C.rulers).length) bad('rules.json', `heirs: a card can't show ${C.rules.heirs} different traits out of ${Object.keys(C.rulers).length}`);
+  ['compromise', 'serfdom'].forEach(k => { const n = C.nations[C.events[k].nation]; if (n && !n.starts) bad(`events.json ${k}`, `${C.events[k].nation} is not on the map at the start`); });
+  // a trait's three effects are different, and only the flat bonus is a one-time grant at coronation (read as v('x') in coronation)
+  const sim = read('src/sim.js'), grants = new Set([...sim.matchAll(/\bv\('(\w+)'\)/g)].map(m => m[1]));
+  Object.entries(C.rulers).forEach(([t, q]) => { const w = `rulers.json ${t}`, fxs = ['main', 'flat', 'malus'].map(sl => q[sl] && q[sl].fx);
+    if (new Set(fxs).size !== 3) bad(w, 'two of its effects are the same');
+    [q.flat, q.flat && q.flat.big].filter(Boolean).forEach(f => { if (!grants.has(f.fx)) bad(w, `flat bonus "${f.fx}" is not a one-time grant at coronation`); });
+    ['main', 'malus'].forEach(sl => { if (q[sl] && grants.has(q[sl].fx)) bad(w, `${sl} "${q[sl].fx}" is a coronation grant, not an effect that lasts his reign`); }); }); }
+
+// ---- 10: names come from the content ----
+// The name of a province, nation, people, union, event, way of war, trait or rarity lives in its own entry. Anywhere else
+// (content prose, the HTML template, any string in the code) it must be a placeholder or come from the data, so renaming
+// the entry renames it everywhere. Event names are matched without a leading "The".
+{ const NAMES = [];
+  const nm = (n, what) => { if (n) NAMES.push({ n: n.replace(/^The /, ''), what }); };
+  Object.entries(C.provinces).forEach(([id, p]) => nm(p.name, `province ${id}`));
+  Object.entries(C.nations).forEach(([t, n]) => nm(n.name, `nation ${t}`));
+  Object.keys(C.peoples).forEach(p => nm(p, `people ${p}`));
+  Object.entries(C.ambitions).forEach(([id, a]) => nm(a.title, `union ${id}`));
+  Object.entries(C.events).forEach(([id, e]) => nm(e.name, `event ${id}`));
+  C.eras.forEach((e, i) => nm(e.name, `way of war ${i}`));
+  Object.entries(C.rulers).forEach(([t, q]) => nm(q.label, `trait ${t}`));
+  C.rarities.forEach((r, i) => nm(r.name, `rarity ${i}`));
+  const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const RE = new RegExp(`(?<![\\w-])(${NAMES.map(x => x.n).sort((a, b) => b.length - a.length).map(esc).join('|')})(?![\\w-])`, 'g');
+  const whatOf = n => NAMES.filter(x => x.n === n).map(x => x.what).join(' / ');
+  const hits = (text, where, hint) => { const t = text.replace(/\{[^}]*\}/g, ' '); let m; RE.lastIndex = 0;
+    while ((m = RE.exec(t))) problems.push(`${where}: "${m[1]}" (${whatOf(m[1])}) is typed here; ${hint}`); };
+  // content prose; the fields that define a name are where names live
+  const NAME_FIELDS = new Set(['name', 'label', 'title', 'adj', 'pre', 'newName', 'newAdj']);
+  eachProse((tpl, where, own, key) => { if (!NAME_FIELDS.has(key)) hits(tpl, `content/${where}`, 'write a placeholder such as {provinces.kie.name}'); });
+  // the HTML template, outside its {{placeholders}}
+  html.replace(/<(style|script)[\s\S]*?<\/\1>/g, m => m.replace(/[^\n]/g, '')).split('\n').forEach((l, n) => hits(visible(l.replace(/\{\{[^}]*\}\}/g, ' ')), `src/ui/index.template.html:${n + 1}`, 'write {{path}}'));
+  // strings in the code: prose, and any string that is exactly a name (a label compared in code)
+  ['src/sim.js', 'src/data.js', ...UI, 'src/ui/registry.js'].forEach(f => { const src = read(f);
+    strings(src).forEach(({ s, at }) => { if (NAMES.some(x => x.n === s)) problems.push(`${f}:${lineOf(src, at)}: the string "${s}" is a content name; compare ids, not names`);
+      else hits(visible(s), `${f}:${lineOf(src, at)}`, 'read it from CONTENT'); }); }); }
+
+// ---- 11: no number typed into the interface's text ----
+// A number the player reads comes from the content or the running world, never from a string in the code.
+UI.concat(['src/ui/registry.js', 'src/sim.js']).forEach(f => { const src = read(f);
+  strings(src).forEach(({ s, at }) => { if (/^[\w.\-#:%\/ ]*$/.test(s) && !/[a-z]{3}.*\d|\d.*[a-z]{3}/i.test(s)) return;
+    if (/^(https?:|rgba?\(|rotate\(|translate\(|scale\(|url\()/.test(s.trim())) return;   // addresses and drawing, not text
+    const t = visible(s).replace(/&#?\w+;/g, ' ');
+    if (/^\s*[+−-]?\d+\s*$/.test(t)) return;   // a bare figure: a sample on the map key, "+1" beside a factory being built
+    const m = t.match(/(?<![\w#.-])\d+(?:\.\d+)?%?(?![\w-])/);
+    if (m) problems.push(`${f}:${lineOf(src, at)}: the number ${m[0]} is typed into visible text ("${t.trim().replace(/\s+/g, ' ').slice(0, 70)}")`); }); });
 
 if (problems.length) { console.error(`Consistency check failed (${problems.length}):\n  ` + problems.join('\n  ')); process.exit(1); }
 console.log(`Consistency check passed: ${Object.keys(REG).length} concepts in the registry.`);

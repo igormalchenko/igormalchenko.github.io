@@ -91,7 +91,12 @@
       "fx": "gold",
       "values": [30],
       "text": "+{v} gold in a dowry at his coronation",
-      "big": {"fx": "province", "value": 1, "text": "Marries into a random bordering province at his coronation"}
+      "big": {
+        "fx": "province",
+        "value": 1,
+        "text": "Marries into {v|word} random bordering province{v|s} at his coronation",
+        "news": "{ruler} of {nation} marries into {province} from {from}."
+      }
     },
     "malus": {"fx": "civilWar", "values": [40, 25, 10], "text": "His reign ends in civil war: unrest +{v} everywhere"}
   },
@@ -117,7 +122,12 @@
       "fx": "factoryRandom",
       "values": [1],
       "text": "+{v} factor{v|ies} in a random province at his coronation",
-      "big": {"fx": "province", "value": 1, "text": "Inherits a random bordering province at his coronation"}
+      "big": {
+        "fx": "province",
+        "value": 1,
+        "text": "Inherits {v|word} random bordering province{v|s} at his coronation",
+        "news": "{ruler} of {nation} inherits {province} from {from}."
+      }
     },
     "malus": {"fx": "earns", "values": [0.8, 0.9, 0.95], "text": "Gold a year {v|down} lower"}
   },

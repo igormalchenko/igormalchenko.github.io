@@ -1,8 +1,9 @@
 // ===================== TEXT FROM CONTENT =====================
 // Every sentence that states a number takes it from content/, never types it. A template says
-// {path|format|format}: the path is looked up in the context (and in `rules`, always there),
-// `a/b` divides two paths, and each format turns the value into words. say() refuses a path that
-// doesn't exist, so a renamed number breaks the build instead of printing "undefined".
+// {path|format|format}: the path is looked up in the context, then in the whole content (so any text can
+// name any entry, as {provinces.kie.name} or {rules.start}), `a/b` divides two paths, and each format turns
+// the value into words. say() refuses a path that doesn't exist and anything left in braces, so a renamed
+// entry or a typo breaks the build instead of printing "undefined" or "{pop|nonsense}".
 const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
   'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
 const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -46,16 +47,23 @@ const FORMATS = {
   s: x => x === 1 ? '' : 's',                                  // province{v|s}
   ies: x => x === 1 ? 'y' : 'ies',                             // factor{v|ies}
   years: x => { const y = x / 4; return `${numberWord(y)} year${y === 1 ? '' : 's'}`; },   // seasons as years
+  nation: x => CONTENT.nations[x] ? CONTENT.nations[x].name : x,                // a nation's tag → its name
+  place: x => { const nm = id => CONTENT.provinces[id] ? CONTENT.provinces[id].name : id;   // a province id (or a list) → its name
+    const xs = [].concat(x).map(nm); return xs.length > 1 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs.join(''); },
 };
 function lookup(path, ctx){
   let v = ctx; for (const k of path.split('.')) { if (v == null || !(k in Object(v))) throw new Error(`say: no "${path}"`); v = v[k]; }
   return v;
 }
 function say(tpl, ctx = {}){
-  const c = Object.assign({ rules: CONTENT.rules }, ctx);
-  return tpl.replace(/\{([\w.\/]+)((?:\|\w+)*)\}/g, (_, path, fmts) => {
-    let v = path.split('/').map(p => lookup(p, c)).reduce((a, b) => a / b);
+  const c = Object.assign({}, CONTENT, ctx);
+  const out = tpl.replace(/\{([\w.\/]+)((?:\|\w+)*)\}/g, (_, path, fmts) => {
+    // an entry's own field wins (a union's own `provinces` list), but a path it doesn't have is looked up in the content
+    let v = path.split('/').map(p => { try { return lookup(p, c); } catch (e) { return lookup(p, CONTENT); } }).reduce((a, b) => a / b);
     fmts.split('|').slice(1).forEach(f => { if (!FORMATS[f]) throw new Error(`say: no format "${f}"`); v = FORMATS[f](v, c); });
     return String(v);
   });
+  const left = tpl.replace(/\{([\w.\/]+)((?:\|\w+)*)\}/g, '').match(/\{[^{}]*\}/);
+  if (left) throw new Error(`say: "${left[0]}" is not a placeholder`);
+  return out;
 }

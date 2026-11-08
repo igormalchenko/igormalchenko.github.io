@@ -12,7 +12,7 @@
   "Swedish": {"names": ["Karl", "Oscar", "Gustaf"]},
   "Norwegian": {"names": ["Haakon", "Olav"]},
   "Polish": {"names": ["Jan", "Stanisław", "Józef"]},
-  "Swiss": {},
+  "Swiss": {"names": ["Ulrich", "Niklaus", "Hans", "Rudolf", "Konrad", "Werner", "Walter", "Jakob"]},
   "Czech": {"names": ["František", "Tomáš"]},
   "Hungarian": {"names": ["Lajos", "István", "Ferenc"]},
   "Italian": {"names": ["Carlo Alberto", "Vittorio Emanuele", "Umberto", "Ferdinando", "Francesco", "Leopoldo"]},

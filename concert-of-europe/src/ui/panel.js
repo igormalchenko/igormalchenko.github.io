@@ -45,7 +45,7 @@ function showHeir(){
   $('heirCards').innerHTML = p.options.map(card).join('');
   // three free rerolls a game; the fourth will be for sale (no payment yet)
   const left = S.rerolls || 0;
-  $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $1.99`;
+  $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $${RULES.price.reroll}`;
   $('reroll').disabled = false; $('reroll').classList.remove('nope'); $('rerollNote').textContent = '';
   Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
   $('heirModal').classList.add('on');
@@ -65,7 +65,7 @@ function ambitionText(c){
   return { a, what, color: a.state === 'met' ? 'var(--peace)' : a.state === 'lost' ? 'var(--war)' : 'inherit' };
 }
 function showStart(){
-  $('startIntro').innerHTML = `<p>${iconize(say('Europe, {rules.start} to {rules.end.year}. Every nation has one ambition for the day the Great War ends: the great powers want the most gold a year, a divided people wants to unite, and the small just want to survive.'))}</p>
+  $('startIntro').innerHTML = `<p>${iconize(say('Europe, {rules.start} to {rules.end.year}. Every nation has one ambition for the day the {events.greatWar.name} ends: the great powers want the most gold a year, a divided people wants to unite, and the small just want to survive.'))}</p>
     <p>${iconize(say('Pick a nation to rule. You never give orders: each time the throne passes, you choose the next ruler from {rules.heirs|word} heirs, and the ministers run the nation the way he sees the world. Choose well, and it meets its ambition. Or just watch.'))}</p>`;
   const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
   const of = k => cs.filter(c => S.ambitionOf(c).kind === k);

@@ -53,7 +53,7 @@
     "need": 3,
     "from": 1836,
     "provinces": ["wal", "mol", "trn", "bes"],
-    "note": "The Roman province whose name the Romanian nationalists of the age gave to a united Romania."
+    "note": "The Roman province whose name the {peoples.0} nationalists of the age gave to a united {nations.ROM.name}."
   },
   "bul": {
     "kind": "unite",
@@ -74,7 +74,7 @@
     "need": 3,
     "from": 1836,
     "provinces": ["ath", "the", "mac", "con"],
-    "note": "The Great Idea: Constantinople Greek again."
+    "note": "The Great Idea: {provinces.con.name} {peoples.0} again."
   },
   "yug": {
     "kind": "unite",
@@ -85,7 +85,7 @@
     "need": 3,
     "from": 1850,
     "provinces": ["ser", "bos", "cro"],
-    "note": "The Illyrian movement of the 1830s hoped for one South Slav nation."
+    "note": "The Illyrian movement of Ljudevit Gaj hoped for one South Slav nation."
   },
   "pol": {
     "kind": "unite",
@@ -116,6 +116,6 @@
     "need": 3,
     "from": 1836,
     "provinces": ["hun", "trn", "cro"],
-    "note": "The lands of the Hungarian crown."
+    "note": "The lands of the {peoples.0} crown."
   }
 }

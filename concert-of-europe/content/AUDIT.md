@@ -204,6 +204,19 @@ Almost all of it is 1.14. The same sweep with every fix but the old uprising cur
 - **Templates are checked only in a shallow list of fields**, and numbers only as digits. A malformed placeholder is left in the text silently (`{pop|does-not-exist}` and `{missingAuditPath}` passed), and UI strings aren't checked for typed numbers ("99% cheaper" in a chip passed).
 - **Never checked:** the map against the provinces, the Almanac's sea crossings against the playable ones, and whether every Almanac section renders.
 
+### Section 4: done, except the Almanac
+
+`tools/check.js` now refuses each of the cases above. Proven by breaking a copy of the project once per case: all 18 (Codex's probes, plus typing a province, nation or trait name into content, the help text or code) fail the build with a message that names the file and what to write instead. What's new:
+- `geo.json` records the province ids, coordinates and map fixes it was built from (`built`).
+- Every piece of prose in the content is a template, checked wherever it sits; `say()` refuses anything left in braces, and any text can name any entry (`{provinces.kie.name}`).
+- No content name typed into content prose, the HTML template or a string in the code; no number typed into the interface's strings.
+- Every field an event handler reads exists, and every event field is read by code. A rule only a rulebook sentence mentions counts as unread.
+- Shapes: odds, hawk and patience from 0 to 1, a starting army, whole-number industry, unique union provinces, a neutral value for every effect, temperament thresholds, heirs no more than traits, the two special events aimed at nations of 1836, a flat bonus that is a coronation grant (and a main bonus and malus that aren't), ruler names for every nation.
+
+Fixing what it found took care of most of section 2's copied names and numbers: event prose names its own event and its provinces through placeholders, the map chips read the railway and panic events, the help text names the serfdom event's nation, the rulebook and Rarity concept name rarities and the Flirt by path, the Great War's name is its event's, the reroll price and the treaty-union threshold are rules, the heir keys follow `rules.heirs`, the Flirt's and Planner's province grant carries its own chronicle line (`news`) instead of the engine checking the label, and the Swiss have ruler names (eight, like the German list they borrowed, so the draw is unchanged), so the German fallback is gone. The opening event is now called "The age begins" ("Europe" was a name in every sentence) and the serfdom event "Emancipation of the serfs". The simulation is unchanged: full chronicles and final states of eight worlds match the code before, apart from these sentences.
+
+Still to do from the list: every event field *stated* in the Almanac, and rendering every Almanac section in the check (both with step 6).
+
 ## Plan, in order
 
 1. **Fix section 1.** Several fixes change the simulation: sweep before and after.

@@ -4,7 +4,7 @@
     "year": 1848,
     "season": 1,
     "unrest": 40,
-    "text": "<strong>The Springtime of Nations.</strong> Revolution sweeps the continent; unrest soars everywhere."
+    "text": "<strong>{name}.</strong> Revolution sweeps the continent; unrest soars everywhere."
   },
   "famine": {
     "name": "The Great Famine",
@@ -13,7 +13,7 @@
     "province": "ire",
     "pop": 0.75,
     "unrest": 30,
-    "text": "The Great Famine devastates {province}: {pop|inv|frac} of its people die or emigrate."
+    "text": "{name} devastates {province}: {pop|inv|frac} of its people die or emigrate."
   },
   "cholera": {
     "name": "Cholera",
@@ -21,7 +21,7 @@
     "nations": 3,
     "pop": 0.95,
     "unrest": 8,
-    "text": "Cholera spreads through {nations}; {pop|inv|frac} dies."
+    "text": "{name} spreads through {nations}; {pop|inv|frac} dies."
   },
   "railway": {
     "name": "Railway mania",
@@ -29,7 +29,7 @@
     "chance": 0.2,
     "lasts": 10,
     "cost": 0.7,
-    "text": "Railway mania: for {lasts|span}, factories cost {cost|down} less."
+    "text": "{name}: for {lasts|span}, factories cost {cost|down} less."
   },
   "panic": {
     "name": "The Panic",
@@ -39,7 +39,7 @@
     "earns": 0.8,
     "seasons": 12,
     "unrest": 10,
-    "text": "<strong>The Panic.</strong> Banks fail across Europe: every nation loses {gold|inv|frac} its gold and earns {earns|inv|frac} less for {seasons|years}."
+    "text": "<strong>{name}.</strong> Banks fail across Europe: every nation loses {gold|inv|frac} its gold and earns {earns|inv|frac} less for {seasons|years}."
   },
   "compromise": {
     "name": "The Compromise",
@@ -52,17 +52,17 @@
     "calm": 15,
     "newName": "Austria-Hungary",
     "newAdj": "Austro-Hungarian",
-    "text": "The Compromise: {nation} becomes a dual monarchy, and Hungary is calmed."
+    "text": "{name}: {nation} becomes a dual monarchy, and {province|place} is calmed."
   },
   "serfdom": {
-    "name": "The serfs are freed",
+    "name": "Emancipation of the serfs",
     "from": 1855,
     "chance": 0.15,
     "nation": "RUS",
     "provinces": ["mos", "spb"],
     "factories": 1,
     "before": 0.5,
-    "text": "{nation} frees the serfs; workers pour into the factories of Moscow and St Petersburg."
+    "text": "{nation} frees the serfs; workers pour into the factories of {provinces|place}."
   },
   "incident": {"name": "Border incident", "chance": 0.3, "relations": -25, "text": "A border incident sours relations between {a} and {b}."},
   "marriage": {"name": "Royal marriage", "chance": 0.1, "relations": 25, "text": "A royal marriage links {a} and {b}."},
@@ -79,7 +79,7 @@
     "chance": 0.3,
     "people": "Ukrainian",
     "awake": 14,
-    "text": "Shevchenko's poems spark a <strong>Ukrainian national awakening</strong>; unrest grows in Ukrainian lands."
+    "text": "Shevchenko's poems spark a <strong>{name}</strong>; unrest grows in {people} lands."
   },
   "awakening": {
     "name": "National awakening",
@@ -108,7 +108,7 @@
     "name": "Military revolution",
     "every": 12,
     "chance": 0.12,
-    "text": "<strong>Military revolution.</strong> {era}: every war forecast in Europe shifts."
+    "text": "<strong>{name}.</strong> {era}: every war forecast in Europe shifts."
   },
   "boom": {
     "name": "Boom",
@@ -134,15 +134,15 @@
     "warText": "<strong>Crisis.</strong> {a} sends {b} an ultimatum over {province}. {b} refuses, and the <em>{war}</em> begins."
   },
   "greatWar": {
-    "name": "The Great War",
-    "text": "<strong>The lamps go out all over Europe.</strong> A shot in the Balkans sets the alliances in motion: {a} and {b} go to war. The <em>Great War</em> begins."
+    "name": "Great War",
+    "text": "<strong>The lamps go out all over Europe.</strong> A shot in the Balkans sets the alliances in motion: {a} and {b} go to war. The <em>{name}</em> begins."
   },
   "armistice": {
     "name": "The Armistice",
-    "text": "<strong>Armistice.</strong> At the eleventh hour the guns fall silent; peace is made on the lines as they stand."
+    "text": "<strong>{name}.</strong> At the eleventh hour the guns fall silent; peace is made on the lines as they stand."
   },
   "opening": {
-    "name": "Europe",
+    "name": "The age begins",
     "text": "<strong>Europe, {rules.start}.</strong> {count|Word} nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to unite its people, or just to survive."
   }
 }
