@@ -7,7 +7,8 @@
     "build": "node tools/check.js && node tools/build.js",
     "map": "node map/build-map.js && node tools/check.js && node tools/build.js",
     "sweep": "node tools/sweep.js",
-    "chronicle": "node tools/chronicle.js"
+    "chronicle": "node tools/chronicle.js",
+    "content": "node tools/content.js --format"
   },
   "devDependencies": {
     "d3-delaunay": "^6.0.4",

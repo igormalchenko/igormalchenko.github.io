@@ -1,0 +1,28 @@
+{
+  "start": 1836,
+  "end": {"year": 1918, "season": 3},
+  "greatWar": {"year": 1914, "season": 2},
+  "rerolls": 3,
+  "reign": {
+    "years": [8, 24],
+    "regencyYears": [6, 10],
+    "regency": "the Regency Council",
+    "murder": 0.01,
+    "hatedMurder": 3,
+    "abdicate": 0.5,
+    "crisis": 0.18,
+    "crisisYears": [1, 2.25],
+    "coupUnrest": 45,
+    "coup": 0.03,
+    "crisisArmy": 0.5
+  },
+  "horizon": {"min": 8, "span": 22},
+  "build": {"factory": 4, "fort": 3},
+  "reform": {"cost": 20, "calm": 18, "wait": 16},
+  "unrest": {"restless": 40, "uprising": 65},
+  "settle": 0.6,
+  "workers": 45,
+  "levy": {"army": 1.5, "perMillion": 8, "workers": 90},
+  "breakaway": {"hawk": 0.55, "patience": 0.4, "armyPerMillion": 6, "gold": 60},
+  "heirs": 3
+}

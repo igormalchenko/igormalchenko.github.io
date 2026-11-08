@@ -6,6 +6,18 @@ Read README.md first for what this is and why. This file holds the design rules 
 
 When a change is done, commit it and push it to `master` without asking for confirmation, every time. Commit everything in the working tree, including changes another chat left behind. The only exception is when the user explicitly says not to commit or not to push.
 
+## Rule 1: content lives in content/, and only there
+
+Every piece of content (rulers, rarities, temperaments, nations, breakaways, peoples, provinces, sea crossings, dreams, ambitions, events, ways of war, landmarks, concepts, and the rules of the age the player is told about) lives in `content/*.json`. The engine (`src/sim.js`), the interface and the Almanac read it from `CONTENT`; nothing else may hold a copy.
+
+- **To change content, change the content file.** A ruler's strength, an event's odds, a dream's provinces, a concept's name: edit the JSON, run `npm run build`, and the engine, the cards, the chronicle, the help text and the Almanac all follow.
+- **Never type a number into text.** A sentence that states a number takes it from the data with a placeholder: `"His armies fight {fx.fight|harder}"`, `"Takes {rules.build.factory|word} seasons."`. The formats (`word`, `pct`, `up`, `down`, `frac`, `times`, `harder`, `x`, `xs`, `span`, `years`, `inv`, `thrift`, `horizon`) are in `src/text.js`; add one there if a phrase needs it. In the HTML template use `{{path|format}}`.
+- **Never type a content number into the engine.** The engine reads a ruler's numbers with `F('ruler', 'key')` and his flags with `hasFx(c, 'flag')`, rules with `RULES.x`, events with `EV.id`. A new effect gets a key in the ruler's `fx` and a line in `content/effects.json`. The tuning of the forecast itself (tax rates, the win-chance curve) is engine, not content.
+- **The build enforces it** (`tools/check.js`): every reference in the content points at something that exists, every template fills in and states no typed number, every `F(...)`, `hasFx`, `RULES.` and `EV.` the code reads exists, and every number in the content is read by something. A failing check means the data and the engine disagree: fix one of them, never the check.
+- **The Almanac is the proof.** Press A in the game (or the book button) to see every entry exactly as the engine has it, with its raw data and file. If something looks wrong there, it is wrong in the game.
+- **After moving or reshaping content,** compare full chronicles and final states before and after (the sweep alone can hide a change). Keep the files tidy with `npm run content`.
+- The numbers quoted in this file (the ruler pool, the ambitions) describe the design and can lag behind; `content/` and the Almanac are the truth.
+
 ## Design rules
 
 1. **One ambition for every nation, judged in autumn 1918.** Each nation is born with one of three (`setAmbition`, see "Ambitions" below): the great powers of 1836 want the most income per year (taxes + factory output + sea trade) among themselves; a nation whose people have a national dream wants to proclaim it and still hold it; every other nation wants to survive. The forecast still counts everything in gold (rule 2); the ambition only changes what some provinces and losses are worth.
@@ -45,7 +57,7 @@ This gives the choice stakes: pick the Conqueror, and if he loses his war he los
 
 ### The ruler pool (built)
 
-Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5). Every heir in Europe is rolled the same way (`TIER_ODDS` in `sim.js`): first his rarity, then a ruler of that rarity. The card shows the rarity's colour and name, and the emblem badge is ringed in it (`TIER` in `registry.js`); epic and legendary cards glow gently, the legendary one with a slow sheen.
+Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5). Every heir in Europe is rolled the same way (`content/rarities.json`): first his rarity, then a ruler of that rarity. The card shows the rarity's colour and name, and the emblem badge is ringed in it (`content/rarities.json`); epic and legendary cards glow gently, the legendary one with a slow sheen.
 
 **Common (white, 46%).** Flavour, mostly sideways or a mixed blessing.
 - **Drunkard.** His misjudgment is re-rolled every season.
@@ -93,7 +105,7 @@ Rule 7 still holds for legendary conquerors: they keep only land they can reach.
 
 ## Interface rules
 
-- **The registry (`src/ui/registry.js`) is the single source for every concept the player sees**: one name, one line of description, one drawing, and the words to `avoid`. The map, panel, map key and tooltips all draw from it (`ic`, `glyph`, `nm`). Concepts with no icon (like Nation) live in `WORDS`. Add new concepts there, never ad hoc.
+- **Every concept the player sees is one entry in `content/concepts.json`** (one name, one line of description, the words to `avoid`) with its drawing under the same key in `DRAW` in `src/ui/registry.js`. `REG` joins the two; the map, panel, map key, Almanac and tooltips all draw from it (`ic`, `glyph`, `nm`). Concepts with no icon (like Nation) are marked `word` and live in `WORDS`. Add new concepts there, never ad hoc.
 - One icon means one thing. Two different concepts never share an icon, and a label beside an icon uses the icon's own name.
 - **Icons in copy.** When a sentence names a registry concept (Gold, Factories, Fortress, Unrest, Army…), its icon goes in front of the word, on its first mention in that text. Don't place them by hand: run the text through `iconize` (`registry.js`), which reads the word list `WORD_IC`; add new words there. Hover text (`data-desc`) stays plain, because it can't hold icons. Done so far for the heir cards and the start screen; the chronicle and older copy don't follow it yet.
 - `npm run build` runs `tools/check.js` first and fails on an unknown icon, a shape drawn outside the registry, or an avoided word in visible text (UI strings, the HTML template and chronicle lines in `sim.js`). Fix the text, or change the registry on purpose; never weaken the check to get a build through.
@@ -112,7 +124,7 @@ Besides his quirk, every ruler has three temperaments, shown as tags in the pane
 
 Risk (`ruler.risk`, `lossW`) was removed on purpose: it was a second copy of Judgment that no player could tell apart. In its place the loss term of `warEval` carries a fixed weight of 1.25 (a beaten ruler may lose his throne), and the neighbour-threat formulas use the old average. Don't bring back a second war temperament; a new one must act on something other than war.
 
-Quirks that fix a temperament do it through `temper` in `TRAITS`, also for a regent's or a madman's mood: Bold (patience 0.02, overconfident), Dynast (patience 0.95, a little underconfident), Shrewd and the Iron Chancellor (judgment exactly right), Man of Destiny and Prophet (overconfident), Miser (thrift ×3), Spendthrift and Great Builder (lavish).
+Quirks that fix a temperament do it through `temper` in `content/rulers.json`, also for a regent's or a madman's mood: Bold (patience 0.02, overconfident), Dynast (patience 0.95, a little underconfident), Shrewd and the Iron Chancellor (judgment exactly right), Man of Destiny and Prophet (overconfident), Miser (thrift ×3), Spendthrift and Great Builder (lavish).
 
 The heir cards don't show temperaments yet; only the panel does, once he reigns. Undecided.
 
@@ -121,12 +133,12 @@ The heir cards don't show temperaments yet; only the panel does, once he reigns.
 Every nation has one ambition for the armistice of autumn 1918 (shown as **Ambition** in the panel, the start screen and the end screen). It is fixed at birth, in 1836 or at independence, by `setAmbition` in `sim.js`, and `ambitionOf` says how it stands (`open`, `met` or `lost`):
 
 - **Richest great power.** The great powers of 1836 (`GREAT_1836`, the top six by power) without a dream: Great Britain, France, Russia, the Ottoman Empire. The one with the most Gold a year meets it.
-- **National dream.** Any nation whose people have a dream in `DREAMS`: proclaim it and still hold at least `need` of its provinces at the armistice. A dream proclaimed by a rival is lost. Prussia and Austria (great powers, but leaders of the German dream) get the dream on purpose.
-- **Survive.** Everyone else, and the Papal States (`ambition: 'survive'` in `data.js`): still be on the map.
+- **National dream.** Any nation whose people have a dream in `content/dreams.json`: proclaim it and still hold at least `need` of its provinces at the armistice. A dream proclaimed by a rival is lost. Prussia and Austria (great powers, but leaders of the German dream) get the dream on purpose.
+- **Survive.** Everyone else, and the Papal States (`ambition: 'survive'` in `content/nations.json`): still be on the map.
 
 The AI acts on it in gold (rule 2): a province of its dream is worth twice its gold a year to it, to win and to keep (`ambitionW`; other dreamers keep the old 1.35), and a Survive nation counts every expected loss and the loss term of its own wars half again (`surviveW`). Great powers are unchanged.
 
-Every nation that can exist, 24 at the start and 16 that can break away (`TEMPLATES`):
+Every nation that can exist, 24 at the start and 16 that can break away (`content/breakaways.json`):
 
 | Ambition | At the start | Breakaways |
 |---|---|---|
@@ -186,13 +198,17 @@ Moments that already exist in the code:
 
 ## Workflow
 
-- Edit `src/` or `map/`, then `npm run build`. Never hand-edit the root `index.html`; it is generated.
+- Content changes go in `content/*.json` (Rule 1), then `npm run build`.
+
+- Edit `content/`, `src/` or `map/`, then `npm run build`. Never hand-edit the root `index.html`; it is generated.
 - After any simulation change run `npm run sweep -- 1 13` and compare: wars, revolts, Ukraine survival, richest great power, dreams proclaimed and held, Survive nations alive, end year (always 1918 Autumn). Read at least one `npm run chronicle` for oddities; the chronicle is the best bug detector.
 - After any map change run `npm run map` and read the audit table it prints (coastal flags, land neighbours, sea crossings) before trusting it. Coastlines and adjacency come from the shapes; do not hand-type geography from memory.
 - Sweeps are deterministic per seed, so before/after comparisons are fair.
 - Report test results precisely: say whether a number counts an event happening or surviving to the end.
 
 ## Map of the code (src/sim.js)
+
+- Content: `CONTENT` (all of `content/`), `RULES`, `EV` (events), `TRAITS` (rulers), `F(t, k)` (a ruler's number), `hasFx(c, k)` (a ruler's flag), `quirkDesc` (a ruler's text), `say` (any template, `src/text.js`).
 
 - `createSim(seed, geo)` builds state `S`; `S.step()` advances one season.
 - Economy: `regionIncome`, `income`, `score`, `workforce`, `admin`.

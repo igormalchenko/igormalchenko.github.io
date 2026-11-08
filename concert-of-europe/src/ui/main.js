@@ -30,7 +30,7 @@ $('side').addEventListener('click', e => { if (e.target.closest('#allForecasts')
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
 document.addEventListener('keyup', e => { if (e.key === ' ' && e.target.tagName === 'BUTTON' && !e.target.closest('.modal')) e.preventDefault(); });
 document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'SELECT') return;
+  if ((e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') && e.key !== 'Escape') return;
   // Space is play/pause everywhere outside dialogs, even with a button focused
   if (e.key === ' ' && e.target.tagName === 'BUTTON' && e.target.closest('.modal')) return;
   // 1, 2, 3 pick the heir on that card
@@ -38,6 +38,7 @@ document.addEventListener('keydown', e => {
   if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
   if (S.pending) return;
   if (e.key === ' ' || e.key === 'p' || e.key === 'P') { e.preventDefault(); if (document.querySelector('.modal.on')) return; timer ? stopAuto() : startAuto(); }
+  if ((e.key === 'a' || e.key === 'A') && !document.querySelector('.modal.on')) { e.preventDefault(); openAlmanac(); return; }
   if (e.key === '+' || e.key === '=') setSpeed(speed + 1);
   if (e.key === '-' || e.key === '_') setSpeed(speed - 1);
   if (e.key === 'Escape') { const open = [...document.querySelectorAll('.modal.on:not(.sticky)')]; if (open.length) open.forEach(m => m.classList.remove('on')); else deselect(); }
@@ -55,7 +56,7 @@ $('gCells').addEventListener('mousemove', e => {
     ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div style="color:#b9a3d6">${ic('civilWar')}${nm('civilWar')}</div>` : ''}
     <hr><b>${r.name}</b> <span class="muted">${r.culture}</span><br>
     ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('goldYear')}${(inc * 4).toFixed(1)} gold a year<br>
-    <span style="color:${r.unrest >= 65 ? '#e0453a' : r.unrest >= 40 ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}${nm('unrest')} ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">${nm('settle')} ${Math.round(r.integ * 100)}%</span>` : ''}
+    <span style="color:${r.unrest >= UNREST.uprising ? '#e0453a' : r.unrest >= UNREST.restless ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}${nm('unrest')} ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">${nm('settle')} ${Math.round(r.integ * 100)}%</span>` : ''}
     ${r.landmark ? `<br>${ic('landmark')}${r.landmark}` : ''}${r.occ ? `<br><span style="color:var(--war)">${ic('occupied')}${nm('occupied')} by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
   const box = $('mapwrap').getBoundingClientRect();
   let x = e.clientX - box.left + 14, y = e.clientY - box.top + 14;
@@ -95,7 +96,7 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
   const items = [
     [sv(glyph('factory') + `<text x="5" y="3" font-size="7.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}" stroke="${DARK}" stroke-width="2" paint-order="stroke">3</text>`), `${nm('factory')} (number = how many)`],
     [sv(glyph('fort')), nm('fort')], [sv(glyph('buildFactory')), nm('buildFactory')], [sv(glyph('buildFort')), nm('buildFort')],
-    [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} 40+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} 65+: close to an uprising`],
+    [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} ${UNREST.restless}+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} ${UNREST.uprising}+: close to an uprising`],
     [sv(glyph('battle')), `${nm('battle')} this season`], [sv(glyph('uprising')), nm('uprising')], [sv(glyph('boom')), `${nm('boom')}: coal or railway`],
     [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('dream')), `${nm('dream')} fulfilled`], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
     [sv(REG.capital.draw), nm('capital')], [sv(glyph('landmark')), nm('landmark')],
@@ -115,7 +116,7 @@ renderChips();
 const scene = Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
 if (scene.seed || scene.to) {
   newWorld(+scene.seed || 1848, scene.play || undefined);
-  const to = +scene.to || 1836;
+  const to = +scene.to || RULES.start;
   while (!S.over && S.year < to) { if (S.pending) S.chooseHeir(0); S.step(); }
   if (S.pending) S.chooseHeir(0);
   $('heirModal').classList.remove('on'); render();

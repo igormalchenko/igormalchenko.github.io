@@ -1,0 +1,5 @@
+{
+  "railway": {"name": "the Great Railway", "fx": "{factories|word} more factories in the capital", "factories": 2},
+  "fortress": {"name": "the Fortress Line", "fx": "a fortress in every border province"},
+  "exhibition": {"name": "the Grand Exhibition", "fx": "a factory in each of the {provinces|word} richest provinces", "provinces": 3}
+}

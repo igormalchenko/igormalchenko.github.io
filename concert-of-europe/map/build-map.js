@@ -7,7 +7,7 @@ const pc = require('polygon-clipping');
 const { Delaunay } = require('d3-delaunay');
 const vm = require('vm');
 const ctx = {}; vm.createContext(ctx);
-vm.runInContext(fs.readFileSync(__dirname + '/../src/data.js', 'utf8') + '\nthis.REGIONS=REGIONS;this.SEA=SEA;this.NAVAL=NAVAL;this.proj=proj;this.MAP_W=MAP_W;this.MAP_H=MAP_H;', ctx);
+vm.runInContext(require('../tools/content').source() + fs.readFileSync(__dirname + '/../src/data.js', 'utf8') + '\nthis.REGIONS=REGIONS;this.SEA=SEA;this.NAVAL=NAVAL;this.proj=proj;this.MAP_W=MAP_W;this.MAP_H=MAP_H;', ctx);
 const { REGIONS, SEA, NAVAL, proj, MAP_W, MAP_H } = ctx;
 
 // ---- land ----

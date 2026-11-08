@@ -1,0 +1,273 @@
+{
+  "warmonger": {
+    "tier": 2,
+    "label": "Warmonger",
+    "epi": "the Warlike",
+    "vibe": "Wants to bathe in the blood of his enemies.",
+    "desc": "Values conquered land {fx.land|up} more and shrugs off neighbours' distrust",
+    "fx": {"land": 1.5, "distrust": 0.5}
+  },
+  "builder": {
+    "tier": 2,
+    "label": "Builder",
+    "epi": "the Builder",
+    "vibe": "Talks of nothing but coal, iron and railways.",
+    "desc": "Factories cost {fx.factoryCost|down} less",
+    "fx": {"factoryCost": 0.7}
+  },
+  "paranoid": {
+    "tier": 1,
+    "label": "Paranoid",
+    "epi": "the Suspicious",
+    "vibe": "Sleeps with a pistol and trusts no neighbour.",
+    "desc": "Sees every threat as {fx.threat|times} as large",
+    "fx": {"threat": 1.8}
+  },
+  "revanchist": {
+    "tier": 2,
+    "label": "Revanchist",
+    "epi": "the Avenger",
+    "vibe": "Has sworn to take back every acre ever lost.",
+    "desc": "Values winning back lost provinces {fx.revenge|x}",
+    "fx": {"revenge": 2}
+  },
+  "spendthrift": {
+    "tier": 1,
+    "label": "Spendthrift",
+    "epi": "the Magnificent",
+    "vibe": "Wants wine, opera and a new palace every spring.",
+    "desc": "Wastes {fx.waste|pct} of all gold on the court, and spends the rest freely",
+    "temper": {"thrift": 0.15},
+    "fx": {"waste": 0.15}
+  },
+  "reformer": {
+    "tier": 2,
+    "label": "Reformer",
+    "epi": "the Liberal",
+    "vibe": "Reads the liberal papers, and agrees with them.",
+    "desc": "Reforms cost {fx.reformCost/rules.reform.cost|frac} and calm more unrest",
+    "fx": {"reformCost": 10, "reformCalm": 26, "reformWait": 10}
+  },
+  "soldier": {
+    "tier": 3,
+    "label": "Soldier King",
+    "epi": "the Soldier",
+    "vibe": "Happiest on a horse at the head of a column.",
+    "desc": "His armies fight {fx.fight|harder} but lose {fx.bleed|times} as many men",
+    "fx": {"fight": 1.25, "bleed": 1.5}
+  },
+  "cautious": {
+    "tier": 1,
+    "label": "Cautious",
+    "epi": "the Careful",
+    "vibe": "Never risks a man he cannot spare.",
+    "desc": "Loses ground less often in war, and gains it less often",
+    "fx": {"hold": 0.4}
+  },
+  "arbiter": {
+    "tier": 2,
+    "label": "Arbiter",
+    "epi": "the Peacemaker",
+    "vibe": "Loves a conference more than a battle.",
+    "desc": "Values alliances {fx.allies|x} and is paid to broker peace between his neighbours",
+    "fx": {"allies": 2, "broker": 0.08, "brokerAfter": 6, "brokerScore": 50, "fee": 0.1, "feeCap": 15}
+  },
+  "shrewd": {
+    "tier": 3,
+    "label": "Shrewd",
+    "epi": "the Shrewd",
+    "vibe": "Reads every dispatch twice.",
+    "desc": "Sees his odds in war exactly as they are",
+    "temper": {"bias": 0}
+  },
+  "admirer": {
+    "tier": 2,
+    "label": "Admirer",
+    "epi": "the Courtier",
+    "vibe": "Dresses, dines and thinks like a foreign court.",
+    "desc": "Close friend of {friend}, and joins every war it fights",
+    "fx": {"friendship": 60, "join": 0.9}
+  },
+  "tolerant": {
+    "tier": 3,
+    "label": "Tolerant",
+    "epi": "the Just",
+    "vibe": "Sees no difference between his peoples.",
+    "desc": "Accepts the {culture} people as his own, for good: their provinces calm down"
+  },
+  "chauvinist": {
+    "tier": 2,
+    "label": "Chauvinist",
+    "epi": "the Proud",
+    "vibe": "Thinks only his own people are fit to rule.",
+    "desc": "Provinces of his own people pay {fx.ownPeople|up} more; stops accepting the {culture}, for good",
+    "fx": {"ownPeople": 1.1, "hated": true}
+  },
+  "miser": {
+    "tier": 1,
+    "label": "Miser",
+    "epi": "the Thrifty",
+    "vibe": "Counts the candles in the palace.",
+    "desc": "Values gold {temper.thrift|thrift|times} over: the hoard grows, little gets built",
+    "temper": {"thrift": 1}
+  },
+  "dynast": {
+    "tier": 3,
+    "label": "Dynast",
+    "epi": "the Wise",
+    "vibe": "Rules for his great-grandchildren.",
+    "desc": "Plans {fx.horizon} years ahead and borrows to build factories",
+    "temper": {"pat": 0.95, "bias": -0.2},
+    "fx": {"horizon": 40, "borrow": 40}
+  },
+  "bold": {
+    "tier": 2,
+    "label": "Bold",
+    "epi": "the Bold",
+    "vibe": "A gambler at cards, in love and in war.",
+    "desc": "Plans only {temper.pat|horizon} years ahead and thinks he will win every war",
+    "temper": {"pat": 0.02, "bias": 0.35}
+  },
+  "drunk": {
+    "tier": 1,
+    "label": "Drunkard",
+    "epi": "the Drunkard",
+    "vibe": "Never seen before noon.",
+    "desc": "Misjudges his odds in war, differently every season",
+    "fx": {"misjudge": 0.9}
+  },
+  "mad": {
+    "tier": 1,
+    "label": "Mad",
+    "epi": "the Mad",
+    "vibe": "Talks to the portraits in the gallery.",
+    "desc": "Takes on a new quirk every few years{mood}",
+    "fx": {"changeEvery": 12}
+  },
+  "lecher": {
+    "tier": 1,
+    "label": "Lecher",
+    "epi": "the Charming",
+    "vibe": "Has a mistress in every palace in Europe.",
+    "desc": "Charms every neighbour, but his bastards fight for the throne when he dies",
+    "fx": {"charm": 15, "crisis": "bastard"}
+  },
+  "child": {
+    "tier": 1,
+    "label": "Child King",
+    "epi": "the Young",
+    "vibe": "Six years old, and already bored.",
+    "desc": "A regent with a random quirk rules until he comes of age; then anything can happen{mood}",
+    "fx": {"ofAge": [16, 44], "incompetent": 0.15}
+  },
+  "incompetent": {
+    "tier": 1,
+    "label": "Incompetent",
+    "epi": "the Unready",
+    "vibe": "Cannot tell a map from a menu.",
+    "desc": "The whole nation earns {fx.earns|down} less",
+    "card": false,
+    "fx": {"earns": 0.88}
+  },
+  "usurper": {
+    "tier": 1,
+    "label": "Usurper",
+    "epi": "the Usurper",
+    "vibe": "Seized the throne with the army behind him.",
+    "desc": "Unrest everywhere until he wins a war",
+    "card": false,
+    "fx": {"unrest": 10, "keepGold": 0.7, "calm": 15, "legitimacy": 0.06, "hated": true}
+  },
+  "conqueror": {
+    "tier": 4,
+    "label": "Conqueror",
+    "epi": "the Conqueror",
+    "vibe": "Means to redraw the map of Europe.",
+    "desc": "His armies fight {fx.fight|harder}; every neighbour distrusts him, and his death brings civil war",
+    "fx": {"fight": 1.4, "distrusted": 30, "infamy": 10, "crisis": true, "hated": true}
+  },
+  "genius": {
+    "tier": 4,
+    "label": "Genius",
+    "epi": "the Great",
+    "vibe": "Speaks nine languages and designs his own engines.",
+    "desc": "Factories cost {fx.factoryCost|frac} and go up {rules.build.factory/fx.buildTime|times} as fast; he leaves no heir, so a council rules after him",
+    "fx": {"factoryCost": 0.5, "buildTime": 2}
+  },
+  "architect": {
+    "tier": 4,
+    "label": "Great Builder",
+    "epi": "the Architect",
+    "vibe": "Dreams in marble and iron.",
+    "desc": "Raises {landmark}; leaves no gold behind when he dies",
+    "temper": {"thrift": 0.2},
+    "fx": {"works": 20}
+  },
+  "liberator": {
+    "tier": 4,
+    "label": "Liberator",
+    "epi": "the Liberator",
+    "vibe": "Would free every serf and every people.",
+    "desc": "Accepts every people of the realm, for good; the nobles plot a coup",
+    "fx": {"coup": 0.02, "hated": true}
+  },
+  "saint": {
+    "tier": 4,
+    "label": "Saint",
+    "epi": "the Saint",
+    "vibe": "Prays for his enemies, and means it.",
+    "desc": "No unrest while he lives, but he starts no wars and helps no ally",
+    "fx": {"calm": 8}
+  },
+  "iron": {
+    "tier": 4,
+    "label": "Iron King",
+    "epi": "the Iron",
+    "vibe": "Has never pardoned anyone.",
+    "desc": "Crushes uprisings and integrates conquests {fx.integrate|times} as fast; when he dies, his subject peoples rise",
+    "fx": {"garrison": 3, "integrate": 2, "settle": 0.3, "rise": 30, "hated": true}
+  },
+  "navigator": {
+    "tier": 4,
+    "label": "Navigator",
+    "epi": "the Navigator",
+    "vibe": "Happier on a quarterdeck than a throne.",
+    "desc": "Sea trade pays {fx.trade|times} and invading across the sea is easy, but the fleet {fx.upkeep|xs} army upkeep",
+    "fx": {"trade": 1.5, "upkeep": 2}
+  },
+  "chancellor": {
+    "tier": 5,
+    "label": "Iron Chancellor",
+    "epi": "the Unifier",
+    "vibe": "Decides the great questions of the day by blood and iron.",
+    "desc": "Raises a great army that fights {fx.fight|times} as hard, one enemy at a time, and keeps all the land he wins. When he dies, his conquests rise",
+    "temper": {"pat": 0.8, "bias": 0},
+    "fx": {"fight": 2, "levy": true, "isolates": true, "keepsAll": true, "rise": 40, "integration": 0.3, "crisis": true}
+  },
+  "destiny": {
+    "tier": 5,
+    "label": "Man of Destiny",
+    "epi": "the Lion",
+    "vibe": "Has never lost a battle he chose to fight.",
+    "desc": "Raises a great army that fights {fx.fight|times} as hard and keeps all the land it wins. When he dies, his conquests rise",
+    "temper": {"pat": 0.6, "bias": 0.4},
+    "fx": {"fight": 3, "levy": true, "keepsAll": true, "rise": 40, "integration": 0.3, "crisis": true}
+  },
+  "prophet": {
+    "tier": 5,
+    "label": "Prophet",
+    "epi": "the Prophet",
+    "vibe": "Thousands follow him wherever he rides.",
+    "desc": "Raises a great army that fights {fx.fight|times} as hard, and every people he conquers becomes his own at once. When he dies, they are foreigners again",
+    "temper": {"pat": 0.7, "bias": 0.25},
+    "fx": {"fight": 2.5, "levy": true, "converts": true, "crisis": true}
+  },
+  "sun": {
+    "tier": 5,
+    "label": "Sun King",
+    "epi": "the Radiant",
+    "vibe": "The age will be named after him.",
+    "desc": "The whole nation earns {fx.earns|up} more while he lives. When he dies, the bill comes: {fx.debtYears|word} years of gold a year in debt",
+    "fx": {"earns": 1.6, "debtYears": 3, "crisis": true}
+  }
+}

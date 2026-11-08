@@ -1,0 +1,24 @@
+{
+  "rich": {
+    "name": "Richest great power",
+    "heading": "Richest great power",
+    "desc": "Have the most gold a year of the great powers of {rules.start} when the war ends in autumn {rules.end.year}.",
+    "who": "The great powers of {rules.start} without a national dream."
+  },
+  "dream": {
+    "name": "National dream",
+    "heading": "Build a national dream",
+    "desc": "Proclaim {the}{title} by holding {need} of its provinces, and still hold them in autumn {rules.end.year}.",
+    "who": "Every nation whose people have a national dream.",
+    "own": 2,
+    "other": 1.35
+  },
+  "survive": {
+    "name": "Survive",
+    "heading": "Survive",
+    "aside": "small and exposed",
+    "desc": "Still be on the map in autumn {rules.end.year}.",
+    "who": "Everyone else.",
+    "losses": 1.5
+  }
+}

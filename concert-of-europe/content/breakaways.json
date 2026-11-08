@@ -1,0 +1,38 @@
+{
+  "Polish": {"tag": "POL", "name": "Poland", "adj": "Polish", "pre": "Polono", "color": "#c45a6c", "programme": ["pos", "gli", "lit"]},
+  "Hungarian": {"tag": "HUN", "name": "Hungary", "adj": "Hungarian", "pre": "Magyar", "color": "#a07d50", "programme": ["trn", "cro"]},
+  "Romanian": {
+    "tag": "ROM",
+    "name": "Romania",
+    "adj": "Romanian",
+    "pre": "Romano",
+    "color": "#d6b84c",
+    "programme": ["bes", "trn", "wal", "mol"]
+  },
+  "Bulgarian": {"tag": "BUL", "name": "Bulgaria", "adj": "Bulgarian", "pre": "Bulgaro", "color": "#7e9b58", "programme": ["mac", "the"]},
+  "Irish": {"tag": "IRE", "name": "Ireland", "adj": "Irish", "pre": "Hiberno", "color": "#5aa46d"},
+  "Norwegian": {"tag": "NOR", "name": "Norway", "adj": "Norwegian", "pre": "Norwego", "color": "#b46a6a"},
+  "Finnish": {"tag": "FIN", "name": "Finland", "adj": "Finnish", "pre": "Finno", "color": "#c9d6de"},
+  "Czech": {"tag": "CZE", "name": "Bohemia", "adj": "Bohemian", "pre": "Czecho", "color": "#8b6fa1"},
+  "Croat": {"tag": "CRO", "name": "Croatia", "adj": "Croatian", "pre": "Croato", "color": "#c47e68"},
+  "Lithuanian": {"tag": "LIT", "name": "Lithuania", "adj": "Lithuanian", "pre": "Lithuano", "color": "#c8a55a", "programme": ["blr", "pol"]},
+  "Ukrainian": {
+    "tag": "UKR",
+    "name": "Ukraine",
+    "adj": "Ukrainian",
+    "pre": "Ukraino",
+    "color": "#2f86e6",
+    "programme": ["cri", "bes", "gli"]
+  },
+  "Baltic": {"tag": "BAL", "name": "Baltic Republic", "adj": "Baltic", "pre": "Balto", "color": "#9bb0a0"},
+  "Albanian": {"tag": "ALB", "name": "Albania", "adj": "Albanian", "pre": "Albano", "color": "#9f515b"},
+  "Bosniak": {"tag": "BOS", "name": "Bosnia", "adj": "Bosnian", "pre": "Bosno", "color": "#8b916b"},
+  "Greek": {"restores": "GRE"},
+  "Serb": {"restores": "SER"},
+  "Italian": {"tag": "ITA", "name": "Italian Republic", "adj": "Italian", "pre": "Italo", "color": "#9fbd6c"},
+  "Belgian": {"restores": "BEL"},
+  "Danish": {"restores": "DEN"},
+  "Dutch": {"restores": "NET"},
+  "Portuguese": {"restores": "POR"},
+  "Scottish": {"tag": "SCO", "name": "Scotland", "adj": "Scottish", "pre": "Scoto", "color": "#6d7fb0"}
+}

@@ -1,0 +1,5 @@
+{
+  "patience": {"high": [0.6, "far-sighted"], "low": [0.4, "short-sighted"], "mid": "steady"},
+  "judgment": {"high": [0.15, "overconfident"], "low": [-0.15, "underconfident"], "mid": "clear-eyed"},
+  "thrift": {"high": [1.4, "thrifty"], "low": [0.7, "lavish"], "mid": "balanced"}
+}

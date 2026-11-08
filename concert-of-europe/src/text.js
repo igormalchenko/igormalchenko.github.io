@@ -1,0 +1,55 @@
+// ===================== TEXT FROM CONTENT =====================
+// Every sentence that states a number takes it from content/, never types it. A template says
+// {path|format|format}: the path is looked up in the context (and in `rules`, always there),
+// `a/b` divides two paths, and each format turns the value into words. say() refuses a path that
+// doesn't exist, so a renamed number breaks the build instead of printing "undefined".
+const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
+  'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+const near = (x, y) => Math.abs(x - y) < 1e-9;
+function numberWord(n){
+  if (n !== Math.round(n) || n < 0 || n > 99) return String(n);
+  return n < 20 ? NUMBER_WORDS[n] : TENS[Math.floor(n / 10)] + (n % 10 ? '-' + NUMBER_WORDS[n % 10] : '');
+}
+const FRACTIONS = [[0.5, 'half'], [0.25, 'a quarter'], [0.75, 'three quarters'], [1 / 3, 'a third'], [0.2, 'a fifth'], [0.1, 'a tenth'], [0.05, 'one in twenty']];
+// how many times something is multiplied, in words: twice, three times, half again, nearly twice
+function timesWord(x){
+  if (near(x, 1.5)) return 'half again';
+  if (near(x, 2)) return 'twice';
+  if (near(x, Math.round(x))) return `${numberWord(Math.round(x))} times`;
+  if (near(x * 2, Math.round(x * 2))) return `${numberWord(Math.floor(x))} and a half times`;
+  const up = Math.ceil(x); if (up - x <= 0.25) return `nearly ${timesWord(up)}`;
+  return `${x} times`;
+}
+const pct = x => `${Math.round(x * 100)}%`;
+const FORMATS = {
+  // value to value
+  inv: x => 1 - x,                                             // 0.75 kept → 0.25 lost
+  thrift: x => Math.pow(3, (x - 0.5) * 2),                     // a thrift temper → how dear he holds gold (see thriftOf)
+  horizon: (x, ctx) => Math.round(ctx.rules.horizon.min + x * ctx.rules.horizon.span),   // a patience → years planned ahead
+  // value to words
+  word: x => numberWord(x),
+  Word: x => { const w = numberWord(x); return w.charAt(0).toUpperCase() + w.slice(1); },
+  pct,
+  up: x => pct(x - 1),                                         // 1.4 → 40% (more)
+  down: x => pct(1 - x),                                       // 0.7 → 30% (less)
+  frac: x => { const f = FRACTIONS.find(([v]) => Math.abs(v - x) < 1e-9); return f ? f[1] : pct(x); },
+  times: timesWord,
+  harder: x => x < 2 ? `${pct(x - 1)} harder` : `${timesWord(x)} as hard`,
+  x: x => near(x, 2) ? 'double' : near(x, 3) ? 'triple' : `${timesWord(x)} over`,
+  xs: x => near(x, 2) ? 'doubles' : near(x, 3) ? 'triples' : `multiplies by ${x}`,
+  span: x => near(x, 10) ? 'a decade' : `${numberWord(x)} years`,  // years
+  years: x => { const y = x / 4; return `${numberWord(y)} year${y === 1 ? '' : 's'}`; },   // seasons as years
+};
+function lookup(path, ctx){
+  let v = ctx; for (const k of path.split('.')) { if (v == null || !(k in Object(v))) throw new Error(`say: no "${path}"`); v = v[k]; }
+  return v;
+}
+function say(tpl, ctx = {}){
+  const c = Object.assign({ rules: CONTENT.rules }, ctx);
+  return tpl.replace(/\{([\w.\/]+)((?:\|\w+)*)\}/g, (_, path, fmts) => {
+    let v = path.split('/').map(p => lookup(p, c)).reduce((a, b) => a / b);
+    fmts.split('|').slice(1).forEach(f => { if (!FORMATS[f]) throw new Error(`say: no format "${f}"`); v = FORMATS[f](v, c); });
+    return String(v);
+  });
+}

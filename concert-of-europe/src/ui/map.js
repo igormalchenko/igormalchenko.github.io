@@ -66,7 +66,7 @@ function renderMap(){
     if (r.fac) items.push({ g: glyph('factory'), n: r.fac, w: r.fac > 1 ? 15 : 10 });
     if (r.build) items.push({ g: glyph(r.build.type === 'factory' ? 'buildFactory' : 'buildFort'), w: 10 });
     if (r.fort) items.push({ g: glyph('fort'), w: 10 });
-    if (r.unrest >= 40) items.push({ g: glyph('unrest', r.unrest >= 65 ? UNREST_HOT : UNREST_WARM), w: 9, hot: r.unrest >= 65 });
+    if (r.unrest >= UNREST.restless) items.push({ g: glyph('unrest', r.unrest >= UNREST.uprising ? UNREST_HOT : UNREST_WARM), w: 9, hot: r.unrest >= UNREST.uprising });
     let x = cx - items.reduce((s, it) => s + it.w, 0) / 2;
     const y = cy + 7;
     items.forEach(it => {

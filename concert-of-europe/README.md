@@ -40,10 +40,11 @@ To work on it you need Node 18 or later:
 
 ```bash
 npm install          # only needed for regenerating the map
-npm run build        # assemble index.html from src/ and map/geo.json
+npm run build        # check, then assemble index.html from content/, src/ and map/geo.json
 npm run sweep -- 1 13    # play worlds 1..12 headlessly, one summary line each
 npm run chronicle -- 7   # print the full history of world 7
 npm run map          # regenerate map/geo.json from the coastline data, then build
+npm run content      # rewrite content/*.json in the house layout
 ```
 
 `build`, `sweep` and `chronicle` use no dependencies. `map` needs the dev dependencies for coastline data and polygon clipping.
@@ -51,9 +52,15 @@ npm run map          # regenerate map/geo.json from the coastline data, then bui
 ## Project layout
 
 ```
-src/data.js            provinces, countries, cultures, breakaway nations, map anchors
+content/*.json         every piece of content: rulers, rarities, nations, breakaways, peoples,
+                       provinces, dreams, ambitions, events, ways of war, landmarks, concepts, rules
+content/AUDIT.md       what was found when the content moved there, and what is still open
+src/text.js            fills {placeholders} in content text from content numbers (say)
+src/data.js            reshapes the content into what the simulation reads
 src/sim.js             the whole simulation: economy, AI, wars, unrest, rulers, events, dreams
-src/ui/registry.js     every concept once: name, description, icon, words to avoid
+src/ui/registry.js     every concept's drawing (names and descriptions come from content/concepts.json)
+src/ui/almanac.js      the Almanac: every piece of content, shown live from the data (key A)
+tools/content.js       loads content/ for the build and tools; formats it
 tools/check.js         consistency check run by npm run build
 src/ui/map.js          map rendering: provinces, icons, markers, front lines, overlays
 src/ui/panel.js        nation column on the left; Chronicle, Powers and Province tabs; end screen

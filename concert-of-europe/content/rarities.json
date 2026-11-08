@@ -1,0 +1,7 @@
+[
+  {"name": "Common", "color": "#cfd3d8", "odds": 0.46},
+  {"name": "Uncommon", "color": "#6cc070", "odds": 0.3},
+  {"name": "Rare", "color": "#5b9be6", "odds": 0.15},
+  {"name": "Epic", "color": "#a678e8", "odds": 0.08},
+  {"name": "Legendary", "color": "#f0c24b", "odds": 0.01}
+]
