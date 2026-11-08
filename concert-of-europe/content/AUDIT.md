@@ -87,7 +87,116 @@ Measured for both together (40 worlds, seeds 1–40, before → after): wars 40.
 ## Open drifts, to settle one at a time
 
 - **A nation's "hawk" is a ruler's judgment.** Nations carry `hawk`, shown as "Leans to war", but the engine only uses it to tilt each new ruler's judgment (over- or underconfident). The player sees Judgment on the ruler and "leans to war" on the nation for the same number.
-- **Admirer** says "joins every war" his favourite fights; he joins 90% of the time.
 - **Ultimatums never become wars** (see above).
 - **The uprising threshold is two numbers.** A province can rise at 65 unrest (`rules.unrest.uprising`), but the chance formula counts from a hidden 60 (`(unrest - 60) / 40` in `revolts`).
 - **The chronicle puts the cause after the effect.** "X has ceased to exist" is written before the peace treaty that ended it.
+
+(The Admirer drift is gone with the Admirer: the ruler pool was replaced.)
+
+# Second audit (November 2026): what is left of Rule 1
+
+The goal: every piece of content is a one-place change in `content/`, and the Almanac can answer every question a player could ask. Changing how the simulation itself works (the forecast maths) is out of scope.
+
+Two independent audits were run on the same code (Claude and Codex, neither shown the other's findings) and merged here. Every finding below was checked against the code. Line numbers drift, so each one names the function. `npm run build` passes with all of them in place: the check doesn't catch them yet.
+
+**What already works:** renaming a province (`"name"` in `provinces.json`) reaches the map, panel, chronicle and Almanac. No nation tag or province id is typed into `src/`.
+
+## 1. Wrong now: the content promises what the engine doesn't do
+
+Fixing several of these changes the simulation (marked *sim*): each needs a before/after sweep.
+
+| | Promise | What the engine does | Where |
+|---|---|---|---|
+| 1.1 | `map.json` `seaCrossings` (11) are the sea crossings; the Almanac lists them | The map builder ignores them and works out its own 23, which the engine uses. Five listed ones don't exist (London–Flanders, Jutland–Gotland, Constantinople–Anatolia, Crimea–Ukraine, St Petersburg–Finland); 17 real ones aren't listed. `seaPoints` (54) are read by nothing | `build-map.js`, almanac Provinces |
+| 1.2 | Vengeful: his army fights harder for its own land *(sim)* | `homeFight` is read only in `warEval` (what he expects), never in battle (`strength`, `tickWars`) | `warEval` |
+| 1.3 | Coronation grants apply to every new ruler *(sim)* | A nation born in an uprising is crowned in `makeCountry`, then `revolts` overwrites its gold with `newNation.gold`, so a dowry or hoard is lost | `revolts` |
+| 1.4 | A Flirt's reign always ends in civil war *(sim)* | A coup returns before the civil war; a revolution sets it to false | `endReign` |
+| 1.5 | 45k soldiers per million people "would empty the fields and factories" | `workforce` never falls below 55% | `workforce`, `rulebook.json` Armies |
+| 1.6 | Failed harvest: 32% a year (Almanac) *(sim or text)* | Rolled with `Q` (a yearly chance split over four seasons) in summer only: 8% a year | `EVENTS` harvest |
+| 1.7 | An uprising restores the province's fallen nation first *(sim or text)* | It first joins a living neighbour of its people (formerly Prussian Rhineland joins Hesse while Prussia is gone) | `revolts` |
+| 1.8 | The armistice makes "peace on the lines as they stand" *(sim or text)* | It runs an ordinary `endWar`: an attacker ahead on score gets its war goal even if it never occupied it | armistice block, `endWar` |
+| 1.9 | Alliance: "bound to join each other's defensive wars" | Allies join 85% of the time (attackers' allies 60%) | `declareWar`, `concepts.json` ally |
+| 1.10 | Reform and fortress costs come from content and the ruler | Affordability is checked against typed prices (`T >= 20`, `T >= 25`): a Religious ruler with 15 gold can't consider an 8-gold reform *(sim)* | `considerations` |
+| 1.11 | The army forecast quotes its upkeep | `st * 0.16` ignores the ruler's `upkeep` effect | `considerations` |
+| 1.12 | — | The Almanac shows the opening event as "three nations nations" (the sample word is a phrase, the template wants a count) | almanac `SAMPLE` |
+| 1.13 | A province starts with the industry in `provinces.json` | Capped at 3 by `Math.min(3, …)`; the Almanac shows the uncapped number | `createSim` |
+| 1.14 | Uprising threshold | 65 to rise, but the chance counts from a hidden 60 (also above) | `revolts` |
+
+## 2. Breaks on change: one edit doesn't reach everything
+
+**Joined by position or display text instead of an id**
+- **Province shapes are joined by order.** `geo.json` has no province ids: province *i* gets shape *i*. Reordering `provinces.json` (tested in memory) gives Serbia Scotland's shape and neighbours; adding a province or moving its coordinates without `npm run map` does the same silently.
+- **Peoples use their display name as id** ("Ukrainian", "Croat"). Renaming one means editing provinces, nations, ambitions, events and peoples, and the one word must serve as noun, adjective and language ("Croat-speaking").
+- **The Flirt is found by its label** (`label === 'Flirt'` in `coronation` picks "marries into" over "inherits").
+- **Eras are compared by name** in the military revolution event.
+- **Province history** in the panel searches the chronicle for `<i>name</i>`: two provinces with one name share a history.
+- **"German" is the fallback for ruler names**, typed in `sim.js` (`namesOf`) and `almanac.js`. Switzerland has no names, so its rulers are Friedrich and Wilhelm.
+
+**Names copied into text instead of read from content**
+- Event prose: serfdom names "Moscow and St Petersburg", compromise "Hungary", the Ukrainian awakening "Ukrainian" (its id is `shevchenko`), and most events repeat their own name in their text.
+- `ambitions.json` notes name provinces (Constantinople); the rulebook and concepts name rarities and the Flirt.
+- `say()` only exposes `rules` globally, so a sentence can't refer to a province, nation or people by id today.
+- UI: the map chips type "Railway mania" and "The Panic" (`globalChips`); help names "Russia"; the Great War's runtime name is typed in `greatWar`, and "Great War" appears in four places.
+- Concept names in prose: renaming "Fortress" means editing chronicle sentences in `sim.js`, the `WORD_IC` word list in `registry.js` and the map key. The check only refuses *avoided* words, not a stale old name. Labels with no concept: Allies, Budget, Factory output, Recruiting, Net, seaport, "Independence guaranteed by".
+- "Great power" means two things: the top 6 by power, recounted every 5 years (`computeMajors`: interveners, guarantors, the Great War), and the four nations whose ambition is Richest. Neither is a concept.
+- Other authored copy outside content: the start screen text (`showStart`), the help text in the template, the heir-odds line in the Almanac, the $1.99 reroll price (`showHeir`).
+- `tools/sweep.js` picks `UKR` and prints "Ukraine" and "held in 1918".
+
+**Numbers copied instead of read**
+- Map chips: "Factories 30% cheaper", "Gold a year down 20%" copy `events.railway.cost` and `events.panic.earns`.
+- The treaty-union threshold: `r >= 70`, `r < 75` and the text "70 needed".
+- Integration: 4 or 9 years in the forecast (`settleYears`), 0.08 or 0.028 a season in `tickProvinces`, and the panel's "pays X%" formula copied a third time.
+- `rules.heirs` deals the cards, but the keys 1–3 and the help text are fixed.
+- The end season: "autumn" typed in `ambitionKinds.json` and `concepts.json` instead of `{rules.end.season|season}`.
+- Season names exist four times (`SEASONS` in `sim.js`, the `season` format in `text.js`, twice in `almanac.js`).
+- Legendary Flirt and Planner say "a random bordering province" whatever their `province` value.
+- Cholera's Almanac sample always says "three nations".
+
+**Two sources for one fact**
+- Serfdom: `nations.RUS.serfs` and `events.serfdom.nation`. Give serfs to another nation and nothing frees them.
+
+**Geography outside content**
+- `build-map.js` has five hand corrections (`con–bul`, `con–mac` by land; `lon–hol`, `sco–nor`, `nth–jut` by sea) and the Anatolia/Caucasus cut.
+
+## 3. Not in the Almanac
+
+- **Temperaments:** `temperaments.json` (the nine words and their thresholds) appears nowhere.
+- **Nations:** `serfs` and `noAnnex` aren't shown; nor are war-name prefixes.
+- **Provinces:** land neighbours aren't shown, and sea crossings are wrong (1.1).
+- **Great powers:** who they are and what being one does.
+- **Events:** the Almanac shows the text, timing and chance, not the numbers the text leaves out: unrest added by Springtime, Famine, Cholera, Panic and Harvest; the Compromise's conditions, calm, accepted people and new name; serfdom's factories and the half-speed factories before it; the awakenings' permanent unrest; a boom's 10% people; the ultimatum's payment, unrest and thresholds; every boom find and ultimatum pretext but the first. Nor when an event can actually happen (once only, who must own what, which eras can follow).
+- **Rules of the world still typed into `sim.js`** (what happens, not what the AI forecasts). Each should move to `rules.json` with a rulebook sentence:
+
+| Family | Typed in the engine |
+|---|---|
+| Dates | assassins become anarchists in 1870; swallowing a whole nation gets cheaper in 1860; nations expect a general war from 1888; factory workers grow restless from 1848; nationalism grows over 70 years; the chart starts in 1835 |
+| Start | 10 unrest; 30–50 gold; army ±10%; how temperaments are drawn |
+| Economy | factory 22 × 1.55ⁿ gold, at most 10 a province; fortress 25 gold; recruits 3 gold per thousand; upkeep 0.04 per thousand a season; every province beyond 6 costs 3% of all yield, down to 55%; 1 build at a time plus 1 per 3 provinces; 4 actions a season; population growth; the army shrinks below −40 gold |
+| War | ends at score 60 (75 in the Great War), after 18 seasons (40), never before 4; the loser pays 30% of its gold; 1 extra province (3 in the Great War); 10-year truce after a war; allies join 85%/60%; a battle kills 1.5% of a province and wrecks a factory 22% of the time; army losses per season; occupation +12 unrest; a conquest starts at 0.4/0.1 integrated and 25/45 unrest; no war above 50 unrest; industry and unrest change army strength |
+| Unrest and uprisings | unrest targets and smoothing; rebels and garrison sizes; what a crushed, won or lone uprising costs; neighbouring provinces that break away with it |
+| Diplomacy and unions | at most 3 allies; uniting by treaty needs relations 70 and twice the power; a proclamation takes away 25 unrest and integrates its people; who votes to join |
+| Great War | 6 great powers, recounted every 5 years; how the two sides are picked; running wars abandoned; alliances pulled in |
+
+## 4. Gaps in tools/check.js
+
+- **Read somewhere isn't used.** Event fields (`e.unrest`, `e.pop`…) are never checked: deleting `springtime.unrest` passes. A rule counts as used if only its rulebook sentence mentions it. An unused new content file passes.
+- **Schemas are loose.** Probes that passed: a starting nation with no army; negative rarity odds summing to one; 21 heirs from 20 traits; a duplicated union province; serfdom aimed at a nation that doesn't start; an effect with no neutral value; a misspelled temperament threshold; a coronation slot using an ongoing effect.
+- **Templates are checked only in a shallow list of fields**, and numbers only as digits. A malformed placeholder is left in the text silently (`{pop|does-not-exist}` and `{missingAuditPath}` passed), and UI strings aren't checked for typed numbers ("99% cheaper" in a chip passed).
+- **Never checked:** the map against the provinces, the Almanac's sea crossings against the playable ones, and whether every Almanac section renders.
+
+## Plan, in order
+
+1. **Fix section 1.** Several fixes change the simulation: sweep before and after.
+2. **Make the check enforce the rule**, so it can't drift back:
+   - `geo.json` records the province ids and coordinates it was built from; the build fails if they differ.
+   - The Almanac's sea crossings come from the map.
+   - Every event field must be read by the engine and stated by its text or the Almanac.
+   - Malformed placeholders fail.
+   - No typed numbers in UI strings.
+   - No province, nation, people or union name typed into any text: it must come from a placeholder.
+   - Strict schemas for every content file.
+   - Every Almanac section renders.
+3. **Ids instead of display names:** peoples (with a name and an adjective), eras, the Flirt's grant wording, province history.
+4. **Names and numbers read from content:** event prose, map chips, help and start text, seasons, the Great War, the reroll price, serfdom in one place.
+5. **Rules of the world into `rules.json`** with rulebook sentences (the table in section 3). The forecast maths stays in code.
+6. **Fill the Almanac:** temperaments, great powers, neighbours, full event effects and when each event can happen.
