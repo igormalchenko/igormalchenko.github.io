@@ -179,9 +179,9 @@ The survive weight doesn't save small nations: they die slightly more often with
 
 ## Future work (agreed, not built)
 
-### Ruler quirks × grades (structure agreed, not built)
+### Ruler quirks × grades (replacement scoped, not built)
 
-One trait per ruler, at every grade. Common: small bonus and big malus; Uncommon: medium bonus and medium malus; Rare: medium bonus, small thematic flat bonus and medium malus; Epic: medium bonus, small flat bonus and small malus; Legendary: big bonus, medium flat bonus and small malus. Two or three effect lines per card, with explicit timing. Rarer rulers have a better benefit/cost balance; this replaces the old increasing-price rule when implemented. Plain-language names replace obscure ones. The complete draft has 20 traits × 5 grades; its names, effects, numbers and treatment of existing special rulers remain proposals. Full matrix, semantics and open decisions: `specs/ruler-grades.md`.
+Replace all old leader content and its exclusive mechanics with 20 traits × 5 grades; no legacy special rulers, landmarks, compatibility pool or additional traits. One trait per ruler. Common: small bonus and big malus; Uncommon: medium bonus and medium malus; Rare: medium bonus, small flat bonus and medium malus; Epic: medium bonus, small flat bonus and small malus; Legendary: big bonus, medium flat bonus and small malus. Names and the table are reviewed; values are starting points for automated tuning owned by the agent, not manual user work. Additional bonuses apply immediately at coronation. Apply effects through ordinary state changes and existing formulas; an already-satisfied or irrelevant effect may do nothing, with no compensation, target ranking, eligibility rerolls or bookkeeping system. Keep current grade odds. Full table, simplified application rules and replacement scope: `specs/ruler-grades.md`. The built-pool descriptions above remain accurate until implementation.
 
 ### Metaprogression
 
