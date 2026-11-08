@@ -18,8 +18,7 @@ function traitEffects(t, g){
   one('malus', T.malus, T.malus.values[R.malus]);
   return out;
 }
-// what a ruler is called everywhere: his rarity and his trait ("the Rare Builder")
-const rulerTitle = (t, g) => `the ${RARITY[g].name} ${TRAITS[t].label}`;
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
 
 function createSim(seed, geo, opts = {}){
   const rng = mulberry32(seed);
@@ -31,6 +30,8 @@ function createSim(seed, geo, opts = {}){
   // the reigning ruler's value for an effect (content/effects.json), or the value that changes nothing
   const fx = (c, k) => { const v = c && c.ruler && c.ruler.fx && c.ruler.fx[k]; return v == null ? EFFECTS[k].none : v; };
   const hasFx = (c, k) => !!(c && c.ruler && c.ruler.fx && c.ruler.fx[k] != null);
+  // a people's ruler names (peoples.json); a people with none borrows the German ones
+  const namesOf = c => c.rulerNames || (PEOPLES[c.culture] && PEOPLES[c.culture].names) || PEOPLES.German.names;
 
   const S = { seed, t: 0, year: RULES.start, q: 0, regions: [], C: {}, wars: [], log: [], history: [], flags: {}, over: false,
     marks: [], warNames: {}, railBoom: -1, era: (e => ({ name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: {}, depression: -1, majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0 } };
@@ -41,26 +42,29 @@ function createSim(seed, geo, opts = {}){
   const RB = {}; S.regions.forEach(r => RB[r.id] = r);
 
   // ---------- rulers ----------
+  const regnal = {};   // how many rulers of each name a nation has had
   const reign = () => S.t + Math.floor(rand(RULES.reign.years[0] * 4, RULES.reign.years[1] * 4));   // unless something ends it sooner
   // the same odds for every heir in Europe: roll his rarity, then any trait not already on the card
   function drawHeir(not = []){
     let x = rng(), g = 0; while (g < RARITY.length - 1 && x >= RARITY[g].odds) { x -= RARITY[g].odds; g++; }
     return { trait: pick(TRAIT_KEYS.filter(t => !not.includes(t))), grade: g };
   }
-  // a ruler, not yet crowned: his trait and rarity (drawn, or fixed by an heir card) and his temperaments
+  // a ruler, not yet crowned: his name, his trait and rarity (drawn, or fixed by an heir card) and his temperaments
   function makeRuler(c, want){
     const { trait, grade } = want || drawHeir();
+    const nm = (want && want.nm) || pick(namesOf(c)), k = c.tag + nm, num = (regnal[k] || 0) + 1;
     const b = c.lean || { pat: 0.5, hawk: 0.5 };
     // patience and judgment lean the way his nation does; thrift is his own
     const pat = clamp(b.pat + rand(-0.35, 0.35), 0.05, 0.95), hawk = clamp(b.hawk + rand(-0.35, 0.35), 0.05, 0.95);
     const effects = traitEffects(trait, grade);
-    return { name: rulerTitle(trait, grade), trait, grade, effects, fx: Object.fromEntries(effects.map(e => [e.fx, e.value])),
+    return { name: `${nm} ${ROMAN[num] || num} the ${TRAITS[trait].label}`, given: `${nm} ${ROMAN[num] || num}`, k, trait, grade, effects, fx: Object.fromEntries(effects.map(e => [e.fx, e.value])),
       pat, bias: (hawk - 0.5) * 0.9 + rand(-0.3, 0.3), thrift: rand(0.1, 0.9), swing: 0, since: S.year, until: reign() };
   }
   // what the ruler does, in words
   const traitDesc = r => r && r.effects ? r.effects.map(e => e.text).join('. ') : '';
-  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
-  function crown(c, r, quiet){ r.since = S.year; c.ruler = r; coronation(c, r, quiet); return r; }
+  // a ruler's name in the chronicle, in his rarity's colour
+  const RN = r => `<b class="rn" style="color:${RARITY[r.grade].color}">${r.name}</b>`;
+  function crown(c, r, quiet){ regnal[r.k] = (regnal[r.k] || 0) + 1; r.since = S.year; c.ruler = r; coronation(c, r, quiet); return r; }
   // the one-time bonus of a ruler from Rare up, the moment he is crowned
   function coronation(c, r, quiet){
     const say1 = h => { if (!quiet) L('ruler', h); };
@@ -79,15 +83,16 @@ function createSim(seed, geo, opts = {}){
     for (let k = 0; k < (v('reforms') || 0); k++) reform(c);
     if (v('truce')) neighborsOf(c).forEach(o => { c.truce[o.tag] = S.year + v('truce'); o.truce[c.tag] = S.year + v('truce'); });
     if (v('rights')) { const ps = [...new Set(mine.map(x => x.culture))].map(p => [rng(), p]).sort((p, q) => p[0] - q[0]).map(x => x[1]).slice(0, v('rights'));
-      ps.forEach(p => c.acc.add(p)); if (ps.length) say1(`${cap(r.name)} of ${N(c)} declares the ${ps.join(' and ')} people equal subjects.`); }
+      ps.forEach(p => c.acc.add(p)); if (ps.length) say1(`${RN(r)} of ${N(c)} declares the ${ps.join(' and ')} people equal subjects.`); }
     for (let k = 0; k < (v('province') || 0); k++) { const bs = borderRegions(c); if (!bs.length) break;
       const x = pick(bs), from = S.C[x.owner]; transfer(x, c, from, 'treaty');
-      L('ruler', `${cap(r.name)} of ${N(c)} ${TRAITS[r.trait].label === 'Flirt' ? 'marries into' : 'inherits'} ${Rn(x)} from ${N(from)}.`); }
+      L('ruler', `${RN(r)} of ${N(c)} ${TRAITS[r.trait].label === 'Flirt' ? 'marries into' : 'inherits'} ${Rn(x)} from ${N(from)}.`); }
   }
   // the player's heir card: three different traits, each drawn with the same odds as any heir in Europe
   function heirCard(c, opening, why = '', crisis = false){
     const slots = []; for (let k = 0; k < RULES.heirs; k++) slots.push(drawHeir(slots.map(s => s.trait)));
-    return { type: 'heir', tag: c.tag, opening, options: slots.map(s => makeRuler(c, s)), old: c.ruler.name, why, crisis };
+    const names = namesOf(c).map(n => [rng(), n]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
+    return { type: 'heir', tag: c.tag, opening, options: slots.map((s, i) => makeRuler(c, { ...s, nm: names[i % names.length] })), old: c.ruler.name, why, crisis };
   }
   // the player may deal a card again, three times a game; AI nations pick at random and never need to
   function rerollHeirs(){
@@ -97,7 +102,7 @@ function createSim(seed, geo, opts = {}){
   function chooseHeir(i){
     const p = S.pending; if (!p || p.type !== 'heir') return;
     const c = S.C[p.tag], nr = p.options[i]; S.pending = null;
-    if (p.opening) { crown(c, nr, false); L('ruler', `${cap(nr.name)} takes the throne of ${N(c)}. ${traitDesc(nr)}.`); return; }
+    if (p.opening) { crown(c, nr, false); L('ruler', `${RN(nr)} takes the throne of ${N(c)}. ${traitDesc(nr)}.`); return; }
     successionLog(c, p.why, crown(c, nr, false), p.crisis);
   }
   // a civil war follows some successions: rival claimants split the army and unrest soars (by `crisis` if it is a number)
@@ -106,8 +111,8 @@ function createSim(seed, geo, opts = {}){
       c.crisis = { until: S.t + Math.floor(rand(RULES.reign.crisisYears[0] * 4, RULES.reign.crisisYears[1] * 4)), winner: nr.name };
       const u = typeof crisis === 'number' ? crisis : RULES.reign.crisisUnrest;
       regionsOf(c).forEach(r => r.unrest = Math.min(100, r.unrest + u)); mark(capitalOf(c).i, 'crisis');
-      L('ruler', `<strong>Civil war in ${N(c)}.</strong> ${why} Rival claimants raise armies against ${nr.name}. The army is split and unrest soars.`);
-    } else L('ruler', `${why} ${cap(nr.name)} succeeds. ${traitDesc(nr)}.`);
+      L('ruler', `<strong>Civil war in ${N(c)}.</strong> ${why} Rival claimants raise armies against ${RN(nr)}. The army is split and unrest soars.`);
+    } else L('ruler', `${why} ${RN(nr)} succeeds. ${traitDesc(nr)}.`);
   }
   // A reign ends: by death, defeat, revolution, a bullet or the army. The player picks the heir; everyone else gets one at random.
   function endReign(c, how, ctx = ''){
@@ -116,16 +121,14 @@ function createSim(seed, geo, opts = {}){
     // what his reign leaves behind: a spent treasury, restless subject peoples
     if (fx(c, 'endGold') && c.treasury > 0) c.treasury *= 1 - fx(c, 'endGold');
     if (fx(c, 'endUnrestOther')) regionsOf(c).forEach(r => { if (!isAccepted(c, r.culture)) r.unrest = Math.min(100, r.unrest + fx(c, 'endUnrestOther')); });
-    if (c.federal) { if (how === 'death') crown(c, makeRuler(c), true); return; }   // the council simply rotates
     S.stats.rulers++; c.reigns = (c.reigns || 0) + 1;
-    const was = cap(old.name);
     if (how === 'coup') {   // the army doesn't ask: no heir card
       const nr = crown(c, makeRuler(c), true); mark(capitalOf(c).i, 'coup');
-      L('ruler', `Coup in ${N(c)}: ${old.name} is deposed by the army${ctx}; ${nr.name} takes power. ${traitDesc(nr)}.`); return;
+      L('ruler', `Coup in ${N(c)}: ${RN(old)} is deposed by the army${ctx}; ${RN(nr)} takes power. ${traitDesc(nr)}.`); return;
     }
-    const why = { death: `${was} of ${N(c)} dies.`,
-      abdicate: `Beaten in the <em>${ctx}</em>, ${old.name} of ${N(c)} abdicates.`, revolution: `Revolution in ${ctx}! ${was} of ${N(c)} is overthrown.`,
-      murder: `${was} of ${N(c)} is assassinated${S.year >= 1870 ? ' by an anarchist' : ' by a conspirator'}.` }[how];
+    const why = { death: `${RN(old)} of ${N(c)} dies.`,
+      abdicate: `Beaten in the <em>${ctx}</em>, ${RN(old)} of ${N(c)} abdicates.`, revolution: `Revolution in ${ctx}! ${RN(old)} of ${N(c)} is overthrown.`,
+      murder: `${RN(old)} of ${N(c)} is assassinated${S.year >= 1870 ? ' by an anarchist' : ' by a conspirator'}.` }[how];
     const crisis = how === 'revolution' ? false : fx(c, 'civilWar') || chance(RULES.reign.crisis);
     if (c.player) { S.pending = heirCard(c, false, why, crisis); return; }
     successionLog(c, why, crown(c, makeRuler(c), true), crisis);
@@ -147,7 +150,7 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(0.9, 1.1), treasury: 30 + rand(0, 20), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
-      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, federal: d.federal || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', thoughts: [], born: S.year,
+      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', thoughts: [], born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
@@ -246,7 +249,7 @@ function createSim(seed, geo, opts = {}){
   computeMajors();
   S.ready = true;
   // the player's nation gets a stand-in who never reigns: its real ruler of 1836 comes from the first heir card
-  alive().forEach(c => { if (c.tag === opts.player && !c.federal) c.ruler = makeRuler(c); else newRuler(c, true); });
+  alive().forEach(c => { if (c.tag === opts.player) c.ruler = makeRuler(c); else newRuler(c, true); });
 
   function pickRival(c){ // the neighbour that most threatens c's income
     let best = null, bs = 0;
@@ -354,7 +357,7 @@ function createSim(seed, geo, opts = {}){
       const why = cl === 3 ? `to win back ${Rn(goal)}` : cl && isAccepted(a, goal.culture) ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would integrate quickly`
         : cl ? `to bring ${Rn(goal)} into ${theTitle(claimedUnion(a))}` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
       const mis = opts.pTrue != null && opts.p - opts.pTrue > 0.08 ? `, though his generals privately think ${Math.round(opts.pTrue * 100)}%` : '';
-      txt = `${N(a)} invades ${N(d)} ${why}. ${a.ruler.name.charAt(0).toUpperCase() + a.ruler.name.slice(1)} rates the odds at ${Math.round(opts.p * 100)}%${mis}. The <em>${w.name}</em> begins.`;
+      txt = `${N(a)} invades ${N(d)} ${why}. ${RN(a.ruler)} rates the odds at ${Math.round(opts.p * 100)}%${mis}. The <em>${w.name}</em> begins.`;
     }
     const jd = w.def.slice(1).map(t => S.C[t]), ja = w.att.slice(1).map(t => S.C[t]);
     if (ja.length) txt += ` ${list(ja)} ${ja.length > 1 ? 'join' : 'joins'} the attack.`;
@@ -674,7 +677,7 @@ function createSim(seed, geo, opts = {}){
       spread();
       const guard = S.majors.map(t2 => S.C[t2]).filter(m => m.alive && m !== o && !warOf(m) && m.allies.size < 3 && (rel(m.tag, o.tag) < 0 || m.rival === o.tag)).sort((x, y) => strength(y) - strength(x))[0];
       if (guard) { ally(guard.tag, tag); setRel(guard.tag, tag, 70); nc.guarantee = { by: guard.tag, until: S.year + RULES.newNation.guarantee }; }
-      L('revolt', `Independence! ${rlist(group)} break${group.length > 1 ? '' : 's'} away from ${N(o)} and ${restored ? 'restore' : 'form'}${group.length > 1 ? '' : 's'} ${N(nc)} under ${nc.ruler.name}.${guard ? ` ${N(guard)} guarantees its independence.` : ''}`);
+      L('revolt', `Independence! ${rlist(group)} break${group.length > 1 ? '' : 's'} away from ${N(o)} and ${restored ? 'restore' : 'form'}${group.length > 1 ? '' : 's'} ${N(nc)} under ${RN(nc.ruler)}.${guard ? ` ${N(guard)} guarantees its independence.` : ''}`);
       o.army *= 0.85;
     });
   }
@@ -772,13 +775,13 @@ function createSim(seed, geo, opts = {}){
         L('diplo', say(e.text, { a: N(c), b: N(o), gold: Math.round(pay) })); }
       else { const name = warName(c, o); declareWar(c, o, best.r, { p: best.p, pTrue: best.pTrue, name, text: say(e.warText, { a: N(c), b: N(o), province: Rn(best.r), war: name }) }); } } },
     // coups in restless countries (rules.json: reign)
-    () => { alive().forEach(c => { if (c.federal) return;
+    () => { alive().forEach(c => {
       if (unrestOf(c) > RULES.reign.coupUnrest && chance(RULES.reign.coup)) endReign(c, 'coup'); }); },
   ];
   function successions(){
     alive().forEach(c => {
       if (S.t >= c.ruler.until) endReign(c, 'death');
-      else if (!c.federal && chance(RULES.reign.murder / 4)) endReign(c, 'murder');
+      else if (chance(RULES.reign.murder / 4)) endReign(c, 'murder');
     });
   }
   // what changes during a reign: a Drunk's judgment swings anew every season
@@ -826,7 +829,7 @@ function createSim(seed, geo, opts = {}){
       const lostAdmin = (tax + fac + trade) / adminOf(c) * (1 - adminOf(c));
       c.ledger = { tax, fac, trade, upkeep: upkeep(c), lostWork, lostAdmin, spent: c.spent }; c.spent = {};
       c.treasury += tax + fac + trade - upkeep(c);
-      if (c.crisis && S.t === c.crisis.until && c.ruler.name === c.crisis.winner) L('ruler', `${cap(c.crisis.winner)} wins the civil war in ${N(c)}.`);
+      if (c.crisis && S.t === c.crisis.until && c.ruler.name === c.crisis.winner) L('ruler', `${RN(c.ruler)} wins the civil war in ${N(c)}.`);
       regionsOf(c).forEach(r => r.pop *= 1 + 0.0015 + r.fac * 0.0003);
       c.infamy = Math.max(0, c.infamy - 0.3);
       if (c.treasury < -40) c.army *= 0.97;
@@ -873,7 +876,8 @@ function createSim(seed, geo, opts = {}){
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
   if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true; S.rerolls = RULES.rerolls;
     // vary the draw by country, so two countries in the same world are not offered the same three characters
-    if (!pc.federal) { for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng(); S.pending = heirCard(pc, true); } }
+    for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng();
+    S.pending = heirCard(pc, true); }
   Object.assign(S, { chooseHeir, rerollHeirs, step, alive, considerations, SEASONS, riskOf, thriftOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
   return S;
 }

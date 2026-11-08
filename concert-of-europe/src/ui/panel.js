@@ -17,7 +17,7 @@ function renderLog(){
 }
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 // a ruler's trait as a badge ringed in his rarity; hover names him and says what he does
-const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(cap1(r.name), S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[r.trait]}</svg>` : '';
+const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(`${r.name} (${TIER[r.grade].name})`, S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[r.trait]}</svg>` : '';
 
 // ---------- the player's choices ----------
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
@@ -32,7 +32,7 @@ function showHeir(){
       <span class="key">${i + 1}</span>
       <span class="rar" ${tipOf('rarity')}>${TIER[g].name}</span>
       ${emblem(r)}
-      <b class="ttl">${TRAITS[r.trait].label}</b>
+      <b class="ttl">${TRAITS[r.trait].label}</b><span class="who">${r.given}</span>
       <p class="vibe">${TRAITS[r.trait].vibe}</p>
       ${r.effects.map(fxLine).join('')}
     </button>`; };
@@ -139,7 +139,7 @@ function renderNation(){
     <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
       <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
     ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div class="war" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}${nm('civilWar')}</div>` : ''}
-    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${cap1(r.name)}</b></div>
+    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)} style="color:${TIER[r.grade].color}">${r.name}</b></div>
     <div class="pers">
       <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${temperTag('patience', r.pat)}</span>
       <span ${tipOf('judgment')}>${ic('judgment')}${temperTag('judgment', r.bias)}</span>

@@ -41,8 +41,8 @@ Every piece of content (rulers, rarities, temperaments, nations (those of 1836 a
 - **Rerolls.** The player may deal a heir card again three times a game, the opening card included (`rerollHeirs`). The fourth reroll is meant to be sold for $1.99; there is no payment yet, so its button only says "Coming soon". Player only: AI nations pick at random, so they have nothing to reroll for. Rerolls only change which cards are shown, so watch-mode sweeps are unaffected.
 - **A deck with rarities.** The same trait comes at five rarities: the rarer, the bigger the bonus and the smaller the malus, and from Rare on a one-time bonus at coronation. No stacking, levelling or evolutions: the thrill is the pull, not progression. A higher rarity improves the card, not the outcome: which trait suits the nation stays the real choice.
 - **AI countries draw from the same pool by the same odds, and pick at random.** No forecast for heirs: a random pick gives more variety than an AI that always takes the best ruler, and the rules stay the same for everyone (rule 3). (`drawHeir` gives one heir the odds of a random pick from a card.)
-- **Every ruler has a trait.** No blank rulers, councils included: Switzerland's federal council rotates to a random ruler from the pool without a card.
-- **Every ruler visibly changes something** on the map or in the budget (rule 4), and the chronicle names him by rarity and trait.
+- **Every ruler has a trait.** No blank rulers and no exceptions: Switzerland is a monarchy like everyone else (its federal council was removed to keep one rule for all).
+- **Every ruler visibly changes something** on the map or in the budget (rule 4), and the chronicle names him ("Ludwig II the Drunk"), coloured by his rarity.
 
 ### How a reign ends
 
@@ -57,7 +57,7 @@ This gives the choice stakes: pick the Bold, and if he loses his war he loses hi
 
 ### The ruler pool (built)
 
-Every ruler is **one trait at one rarity**: "the Rare Builder", "the Common Drunk". That label is his whole name, on the card, in the panel, the Almanac and the chronicle; there are no personal names, regnal numbers or titles per rarity. 20 traits × 5 rarities = 100 cards, all generated from `content/rulers.json` (each trait's three effects and their values) and `content/rarities.json` (the odds, and which value of each effect a rarity gets). Never author a card by hand.
+Every ruler is **one trait at one rarity**, named "Ludwig II the Builder": a name from his people's list (`peoples.json` `names`, or a nation's own `rulerNames`), a regnal number, and his trait's label as is (no separate epithets). His rarity is the colour of his name in the panel, the hover card and the chronicle, and the word above his emblem on the card. No titles per rarity. 20 traits × 5 rarities = 100 cards, all generated from `content/rulers.json` (each trait's three effects and their values) and `content/rarities.json` (the odds, and which value of each effect a rarity gets). Never author a card by hand.
 
 Each trait has three effects, each read through `fx(c, key)` from `content/effects.json`:
 

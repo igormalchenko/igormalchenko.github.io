@@ -52,7 +52,7 @@ $('gCells').addEventListener('mousemove', e => {
   const rank = S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1;
   const war = S.warOf(c);
   tip.innerHTML = `<div class="hd"><span class="fl" style="background:${c.color}"></span><b>${c.name}</b><span class="muted" style="margin-left:auto">#${rank} · ${ic('goldYear')}${fmt(S.score(c))} a year</span></div>
-    <div class="tipr">${ic('ruler')}${emblem(c.ruler)}${cap1(c.ruler.name)}</div>
+    <div class="tipr">${ic('ruler')}${emblem(c.ruler)}<span style="color:${TIER[c.ruler.grade].color}">${c.ruler.name}</span></div>
     ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div style="color:#b9a3d6">${ic('civilWar')}${nm('civilWar')}</div>` : ''}
     <hr><b>${r.name}</b> <span class="muted">${r.culture}</span><br>
     ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('goldYear')}${(inc * 4).toFixed(1)} gold a year<br>

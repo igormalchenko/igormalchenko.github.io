@@ -36,7 +36,7 @@ const SECTIONS = {
         ['Rises from', rises.length ? `an uprising of the ${listOf(rises)} people` : ''],
         ['Allies', n.allies ? listOf(n.allies.map(nationName)) : ''],
         ['Relations', n.relations ? listOf(Object.entries(n.relations).map(([o, v]) => `${nationName(o)} ${v > 0 ? '+' : ''}${v}`)) : ''],
-        ['Government', n.federal || ''],
+        ['Ruler names', listOf(n.rulerNames || (CONTENT.peoples[n.people].names || CONTENT.peoples.German.names))],
         ['In this world', live ? (live.alive ? (live.name !== n.name ? `now ${live.name}` : 'on the map') : 'gone from the map') : S && !n.starts ? 'not yet born' : ''],
       ]), { sub: n.adj, lead: swatch(n.color) }); }).join(''); } },
   peoples: { name: 'Peoples', file: 'peoples', count: () => Object.keys(CONTENT.peoples).length, render(){
@@ -44,6 +44,7 @@ const SECTIONS = {
       const unions = Object.values(CONTENT.ambitions).filter(x => x.peoples && x.peoples.includes(p)).map(x => x.title);
       return entry(p, facts([['Lives in', listOf(home.map(x => x.name)) || '<span class="muted">no province of its own</span>'],
         ['People', `${Math.round(home.reduce((s, x) => s + x.pop, 0) * 10) / 10}m in ${CONTENT.rules.start}`],
+        ['Ruler names', d.names ? listOf(d.names) : '<span class="muted">none: borrows the German ones</span>'],
         ['Unites in', listOf(unions)], ['Rises as', risesAs(p) ? nationName(risesAs(p)) : '<span class="muted">no nation: its rebels find no allies</span>'],
         ['Can awaken', CONTENT.events.awakening.peoples.includes(p) || CONTENT.events.shevchenko.people === p ? 'yes' : '']])); }).join(''); } },
   ambitions: { name: 'Ambitions', count: () => Object.keys(CONTENT.ambitions).length, render(){

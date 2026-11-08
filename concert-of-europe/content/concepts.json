@@ -72,7 +72,7 @@
   "leader": {"name": "Leading nation", "desc": "The nation with the most gold a year right now."},
   "ruler": {
     "name": "Ruler",
-    "desc": "Who decides for the nation, with his own patience, judgment, thrift and quirk.",
+    "desc": "Who decides for the nation, with his own patience, judgment, thrift and trait.",
     "avoid": ["sovereign"]
   },
   "patience": {"name": "Patience", "desc": "How many years ahead a ruler counts gains and costs."},

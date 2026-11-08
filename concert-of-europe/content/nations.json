@@ -219,8 +219,7 @@
     "hawk": 0.05,
     "patience": 0.6,
     "starts": true,
-    "army": 6,
-    "federal": "the Federal Council"
+    "army": 6
   },
   "SAR": {
     "name": "Sardinia",
@@ -255,7 +254,8 @@
     "patience": 0.2,
     "starts": true,
     "army": 5,
-    "noAnnex": 1
+    "noAnnex": 1,
+    "rulerNames": ["Gregory", "Pius", "Leo"]
   },
   "SIC": {
     "name": "Two Sicilies",
