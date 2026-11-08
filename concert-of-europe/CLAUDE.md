@@ -2,6 +2,10 @@
 
 Read README.md first for what this is and why. This file holds the design rules that were settled deliberately; do not undo them without asking.
 
+## Rule 0: commit and push every time
+
+When a change is done, commit it and push it to `master` without asking for confirmation, every time. Commit everything in the working tree, including changes another chat left behind. The only exception is when the user explicitly says not to commit or not to push.
+
 ## Design rules
 
 1. **One goal for every nation.** The score is income per year (taxes + factory output + sea trade). Whoever has the most in autumn 1918 wins. Everything else (provinces, factories, soldiers, alliances) is a means to income.
@@ -111,6 +115,97 @@ Risk (`ruler.risk`, `lossW`) was removed on purpose: it was a second copy of Jud
 Quirks that fix a temperament do it through `temper` in `TRAITS`, also for a regent's or a madman's mood: Bold (patience 0.02, overconfident), Dynast (patience 0.95, a little underconfident), Shrewd and the Iron Chancellor (judgment exactly right), Man of Destiny and Prophet (overconfident), Miser (thrift ×3), Spendthrift and Great Builder (lavish).
 
 The heir cards don't show temperaments yet; only the panel does, once he reigns. Undecided.
+
+## Future work (agreed, not built)
+
+### A goal for every nation
+
+Each nation gets one goal for the armistice of autumn 1918, instead of everyone racing for the most Gold a year. Great powers keep today's goal; secondary powers either build their national dream or survive. The nation's AI acts on its goal, but the core logic stays the same: one forecast in gold, the same rules for everyone. When this is built, rule 1 changes from "most income wins" to "meet your goal".
+
+The three goals:
+
+- **Richest.** Most Gold a year in autumn 1918, ranked against the other great powers.
+- **Dream.** Proclaim the national dream (`DREAMS`) and still hold it at the armistice.
+- **Survive.** Still exist at the armistice.
+
+Every nation that can exist. There are 24 at the start (the README says 25; `COUNTRIES` has 24) and 16 more can break away (`TEMPLATES`):
+
+| Nation | At start | Great power in 1836 | Dream it qualifies for | Proposed goal |
+|---|---|---|---|---|
+| Great Britain | yes | yes | none | Richest |
+| France | yes | yes | none | Richest |
+| Russia | yes | yes | none | Richest |
+| Ottoman Empire | yes | yes | none | Richest |
+| Prussia | yes | yes | German Empire (leader) | Richest or Dream: decide |
+| Austria | yes | yes | German Empire (leader) | Richest or Dream: decide |
+| Bavaria | yes | | German Empire (leader) | Dream |
+| Hanover | yes | | none (German, but not a leader) | Survive |
+| Hesse | yes | | none (German, but not a leader) | Survive |
+| Saxony | yes | | none (German, but not a leader) | Survive |
+| Württemberg | yes | | none (German, but not a leader) | Survive |
+| Sardinia | yes | | Kingdom of Italy | Dream |
+| Two Sicilies | yes | | Kingdom of Italy | Dream |
+| Tuscany | yes | | Kingdom of Italy | Dream |
+| Papal States | yes | | Kingdom of Italy (Italian culture) | Survive? A pope unifying Italy is odd: decide |
+| Spain | yes | | Iberian Union (from 1860) | Dream |
+| Portugal | yes | | Iberian Union | Dream or Survive: decide |
+| Sweden | yes | | United Scandinavia | Dream |
+| Denmark | yes | | United Scandinavia | Dream |
+| Greece | yes | | Greater Greece | Dream |
+| Serbia | yes | | Yugoslavia (from 1850) | Dream |
+| Switzerland | yes | | none | Survive |
+| Belgium | yes | | none | Survive |
+| Netherlands | yes | | none | Survive |
+| Poland | breakaway | | Polish Commonwealth | Dream |
+| Lithuania | breakaway | | Polish Commonwealth | Dream |
+| Ukraine | breakaway | | Greater Ukraine | Dream |
+| Romania | breakaway | | Greater Romania | Dream |
+| Bulgaria | breakaway | | Greater Bulgaria | Dream |
+| Croatia | breakaway | | Yugoslavia | Dream |
+| Bosnia | breakaway | | Yugoslavia | Dream |
+| Norway | breakaway | | United Scandinavia | Dream |
+| Italian Republic | breakaway | | Kingdom of Italy | Dream |
+| Hungary | breakaway | | none (its `programme` points at Transylvania and Croatia) | Survive, or add a Greater Hungary dream |
+| Bohemia | breakaway | | none | Survive |
+| Ireland | breakaway | | none | Survive |
+| Finland | breakaway | | none (Finland is in the Scandinavian dream, but Finns are not a Scandinavian culture) | Survive |
+| Baltic Republic | breakaway | | none | Survive |
+| Albania | breakaway | | none | Survive |
+| Scotland | breakaway | | none | Survive |
+
+Restored states (Greece, Serbia, Belgium, Denmark, Netherlands, Portugal, or any start nation reborn from its own provinces) keep their row's goal.
+
+Still to decide:
+
+- **How the AI acts on its goal while staying a forecast in gold** (rule 2). For example, provinces in its dream are valued at a multiple of their income, and a Survive nation counts losing its last province as losing everything. No hand-tuned urges.
+- **Prussia and Austria** qualify both as great powers and as leaders of the German dream.
+- **Whether a goal is fixed at birth** (in 1836, or at independence) or changes. Great powers are recomputed every 5 years (`computeMajors`). A nation that proclaims its dream may become a great power; does its goal switch to Richest?
+- **Shared dreams.** Only one nation can win each: Italy has five candidates; Germany, Scandinavia and Yugoslavia have three; the Polish Commonwealth and Iberia have two.
+- **Overlapping provinces.** Bessarabia (Ukraine, Romania), Galicia (Ukraine, Poland), Macedonia and Thessaly (Greece, Bulgaria).
+- **Poland and Ukraine have no state in 1836,** so they can't be played from the start.
+- **The end screen.** It has to compare goals that differ: who met theirs, with Gold a year to break ties.
+- **Measure first.** Before committing, sweep how often each dream is proclaimed today, and how often it is still held in 1918. A dream that never happens is just a slower loss.
+
+### Metaprogression
+
+The "no stacking, levelling or evolutions" rule stays within a game. Across games:
+
+- **Yes: nations to play.** New nations unlock as you play, for example by proclaiming a dream.
+- **Yes: new rulers in the deck.** AI nations draw from the same pool, so an unlock changes the world for everyone (rule 3 still holds). Sweeps should run with a fixed pool so they stay comparable.
+- **No:** start dates other than 1836, a ruler book, or permanent stat bonuses.
+
+### Crisis cards
+
+A second kind of decision besides heirs. When history turns for the player's nation, the game pauses and the player picks one of two or three options, face up and irreversible, with no suggested pick. The ruler shapes which options appear (a Saint gets no war option, a Conqueror at the peace table may only see "take everything"). AI nations keep deciding these moments by forecast, so watch mode is unchanged. Aim for about 10–15 crises a game beside about 6 successions. When this is built, the player rule "There are no other card types" changes.
+
+Moments that already exist in the code:
+
+- **Ultimatum received** (`oFears`). Back down, fight, or give up a province.
+- **Peace table after a win** (`endWar`). Take the land (restless, slow to integrate), take the gold, or leave him as an ally. Rule 7 still limits what land can be offered. The strongest first candidate.
+- **Uprising in your provinces** (`revolts`). Crush it at a cost in men, grant autonomy, or let it go.
+- **Summer 1914** (the Great War block). Join your allies, stay out, or switch sides.
+- **Dream within reach** (`unification`). Proclaim now or wait for a better border.
+- **Royal marriage** (the marriage event). Choose the court; the next heirs carry a claim there.
 
 ## Workflow
 
