@@ -16,8 +16,8 @@ function renderLog(){
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
-// a ruler's quirk as a badge; hover names it and says what it does for this ruler
-const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(TRAITS[r.trait].label, S.traitDesc(r) + '.')}>${embBadge(TRAITS[r.trait].tier)}${EMB[r.trait]}</svg>` : '';
+// a ruler's trait as a badge ringed in his rarity; hover names him and says what he does
+const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(cap1(r.name), S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[r.trait]}</svg>` : '';
 
 // ---------- the player's choices ----------
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
@@ -25,14 +25,16 @@ const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 const nm2 = k => WORDS[k].name;
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
-  const card = (r, i) => { const t = TRAITS[r.trait].tier;
-    return `<button class="heir tier${t}" data-i="${i}" style="--tc:${TIER[t].color};animation-delay:${i * 90}ms">
+  // one line per effect: the main bonus, the flat bonus from Rare up, the malus
+  const fxLine = e => `<p class="fx fx-${e.slot}">${iconize(e.text)}</p>`;
+  const card = (r, i) => { const g = r.grade;
+    return `<button class="heir tier${g + 1}" data-i="${i}" style="--tc:${TIER[g].color};animation-delay:${i * 90}ms">
       <span class="key">${i + 1}</span>
-      <span class="rar" ${tipOf('rarity')}>${TIER[t].name}</span>
+      <span class="rar" ${tipOf('rarity')}>${TIER[g].name}</span>
       ${emblem(r)}
-      <b class="ttl">${cap1(TRAITS[r.trait].epi)}</b><span class="who">${r.given}</span>
+      <b class="ttl">${TRAITS[r.trait].label}</b>
       <p class="vibe">${TRAITS[r.trait].vibe}</p>
-      <p class="fx">${iconize(S.traitDesc(r))}.</p>
+      ${r.effects.map(fxLine).join('')}
     </button>`; };
   const why = p.why ? p.why.replace(/<[^>]*>/g, '') : '';
   $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in ${RULES.start}?` : `Who rules ${c.name} now?`;
@@ -117,9 +119,9 @@ function renderNation(){
   const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
   const d = ago != null ? Math.round(now - ago) : 0;
   const scoreTip = tipAttr(`${nm('goldYear')}: #${rank} of ${ranked.length}`, `${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year. ${REG.goldYear.desc}`);
-  const lg = c.ledger || { tax: 0, fac: 0, trade: 0, upkeep: 0, lostWork: 0, lostAdmin: 0, waste: 0, spent: {} };
+  const lg = c.ledger || { tax: 0, fac: 0, trade: 0, upkeep: 0, lostWork: 0, lostAdmin: 0, spent: {} };
   const sp = lg.spent || {};
-  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (lg.waste || 0) - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0);
+  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0);
   const lost = `Already reduced by ${lg.lostWork.toFixed(1)} for men in the army, who aren't working, and ${lg.lostAdmin.toFixed(1)} for running ${rs.length} provinces.`;
   const line = (icon, k, v, cls = '', tip = '') => `<div class="lg ${cls}"${tip ? ' ' + tipAttr(k, tip) : ''}><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
   const H = S.horizon(c);
@@ -137,7 +139,7 @@ function renderNation(){
     <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
       <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
     ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div class="war" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}${nm('civilWar')}</div>` : ''}
-    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${r.name}</b></div>
+    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${cap1(r.name)}</b></div>
     <div class="pers">
       <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${temperTag('patience', r.pat)}</span>
       <span ${tipOf('judgment')}>${ic('judgment')}${temperTag('judgment', r.bias)}</span>
@@ -163,7 +165,7 @@ function renderNation(){
     <h3>Budget</h3>
     <div class="ledger">
       ${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
-      ${lg.waste ? line('waste', nm('waste'), -lg.waste) : ''}${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
+      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
       ${line('gold', 'Net', net, 'net')}
     </div>
     <h3>Provinces</h3><div class="provs">${rs.map(prov).join('') || '<span class="muted">none</span>'}</div>`;

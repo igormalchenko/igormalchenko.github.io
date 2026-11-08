@@ -12,7 +12,6 @@
   "taxes": {"name": "Taxes", "desc": "Gold the people pay. Falls with unrest, occupation and every man in the army."},
   "upkeep": {"name": "Army upkeep", "desc": "Gold the army costs every season."},
   "trade": {"name": "Sea trade", "desc": "Gold from coastal provinces. Lost while the nation is at war."},
-  "waste": {"name": "Court extravagance", "desc": "Gold a spendthrift ruler wastes on the court."},
   "save": {"name": "Save gold", "desc": "The ministers keep the gold when nothing else is expected to pay."},
   "province": {"name": "Provinces", "desc": "Land a nation holds. Each one costs a little to run."},
   "capital": {"name": "Capital", "desc": "Where a nation is ruled from. Its army size shows here in wartime."},
@@ -92,7 +91,6 @@
     "desc": "A disputed succession: rival claimants split the army, which fights at {rules.reign.crisisArmy|frac} strength.",
     "avoid": ["succession crisis"]
   },
-  "landmark": {"name": "Landmark", "desc": "A great work raised by a legendary ruler. It stays on the map for good."},
   "coup": {"name": "Coup", "desc": "The army deposes the ruler of a restless nation."},
   "event": {"name": "Event", "desc": "Famines, epidemics, panics, booms and other turns of fortune."},
   "panel": {"name": "Side panel", "desc": "Shows or hides the chronicle, rankings and details on the right."},

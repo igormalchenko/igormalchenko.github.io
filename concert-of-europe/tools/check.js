@@ -122,12 +122,6 @@ Object.keys(C.ambitionKinds).forEach(k => { if (!Object.values(C.ambitions).some
 ['famine', 'compromise'].forEach(k => prov(`events.json ${k}`, C.events[k].province)); C.events.serfdom.provinces.forEach(x => prov('events.json serfdom', x));
 ['compromise', 'serfdom'].forEach(k => nation(`events.json ${k}`, C.events[k].nation));
 C.events.awakening.peoples.forEach(p => people('events.json awakening', p)); people('events.json shevchenko', C.events.shevchenko.people); people('events.json compromise', C.events.compromise.people);
-Object.entries(C.rulers).forEach(([t, q]) => { const w = `rulers.json ${t}`;
-  if (!(q.tier >= 1 && q.tier <= C.rarities.length)) bad(w, `tier ${q.tier} is not a rarity`);
-  if (!ctx.EMB[t]) problems.push(`src/ui/registry.js: ruler "${t}" has no emblem in EMB`);
-  Object.keys(q.fx || {}).forEach(k => { if (!C.effects[k]) bad(w, `fx.${k} is not described in effects.json`); }); });
-Object.keys(ctx.EMB).forEach(t => { if (!C.rulers[t]) problems.push(`src/ui/registry.js: emblem for "${t}", which is not in rulers.json`); });
-Object.keys(C.effects).forEach(k => { if (!Object.values(C.rulers).some(q => q.fx && k in q.fx)) bad('effects.json', `"${k}" is used by no ruler`); });
 { const odds = C.rarities.reduce((s, r) => s + r.odds, 0); if (Math.abs(odds - 1) > 1e-9) bad('rarities.json', `odds add up to ${odds}, not 1`); }
 Object.entries(C.concepts).forEach(([k, c]) => { if (!c.word && !ctx.DRAW[k]) problems.push(`src/ui/registry.js: concept "${k}" has no drawing in DRAW`); });
 Object.keys(ctx.DRAW).forEach(k => { if (!C.concepts[k] || C.concepts[k].word) problems.push(`src/ui/registry.js: drawing for "${k}", which is not a concept with an icon in concepts.json`); });
@@ -144,13 +138,31 @@ function template(where, tpl, own){
   const typed = tpl.replace(/\{[^}]*\}/g, '').match(/\d+/);
   if (typed) bad(where, `the number ${typed[0]} is typed into the text; put it in the data and write {its.path} ("${tpl.slice(0, 70)}")`);
 }
-const own = { rulers: q => ({ fx: q.fx || {}, temper: q.temper || {} }) };
+const own = {};
 Object.entries(C).forEach(([file, data]) => {
   if (!data || typeof data !== 'object' || Array.isArray(data) && file !== 'eras') return;
   Object.entries(data).forEach(([id, e]) => { if (!e || typeof e !== 'object') return;
     TEXT_FIELDS.forEach(f => template(`${file}.json ${id}.${f}`, e[f], Object.assign({}, e, own[file] ? own[file](e) : {}))); });
 });
 
+// rulers: a trait has a main bonus and a malus with a small, medium and big value, and a flat bonus with a small and a medium one
+// (or a small one and, at Legendary, an effect of its own); every effect is described in effects.json
+Object.entries(C.rulers).forEach(([t, q]) => { const w = `rulers.json ${t}`;
+  ['label', 'vibe', 'main', 'flat', 'malus'].forEach(k => { if (q[k] == null) bad(w, `has no "${k}"`); });
+  if (!ctx.EMB[t]) problems.push(`src/ui/registry.js: ruler "${t}" has no emblem in EMB`);
+  ['main', 'flat', 'malus'].forEach(sl => { const e = q[sl]; if (!e) return;
+    const want = sl === 'flat' ? (e.big ? 1 : 2) : 3;
+    if (!Array.isArray(e.values) || e.values.length !== want) bad(w, `${sl} needs ${want} value${want > 1 ? 's' : ''}`);
+    [e, e.big].filter(Boolean).forEach(x => { if (!C.effects[x.fx]) bad(w, `${sl}: no effect "${x.fx}" in effects.json`);
+      (x.values || [x.value]).forEach(v => template(`${w} ${sl}`, x.text, { v })); }); });
+  if (q.main.fx === q.malus.fx) bad(w, 'its main bonus and malus are the same effect'); });
+{ const mains = {}; Object.entries(C.rulers).forEach(([t, q]) => { if (mains[q.main.fx]) bad(`rulers.json ${t}`, `shares its main bonus (${q.main.fx}) with ${mains[q.main.fx]}`); mains[q.main.fx] = t; }); }
+Object.keys(ctx.EMB).forEach(t => { if (!C.rulers[t]) problems.push(`src/ui/registry.js: emblem for "${t}", which is not in rulers.json`); });
+const fxOfTrait = q => ['main', 'flat', 'malus'].flatMap(sl => [q[sl].fx, q[sl].big && q[sl].big.fx]).filter(Boolean);
+Object.keys(C.effects).forEach(k => { if (!Object.values(C.rulers).some(q => fxOfTrait(q).includes(k))) bad('effects.json', `"${k}" is used by no ruler`); });
+C.rarities.forEach((r, g) => { const w = `rarities.json ${r.name}`;
+  ['main', 'malus'].forEach(k => { if (![0, 1, 2].includes(r[k])) bad(w, `${k} must be 0, 1 or 2 (small, medium, big)`); });
+  if (![null, 0, 1].includes(r.flat)) bad(w, 'flat must be null, 0 or 1 (none, small, medium)'); });
 // the rulebook: plain sentences for the Almanac, one or more for every rule
 Object.entries(C.rulebook).forEach(([g, lines]) => lines.forEach((l, i) => template(`rulebook.json "${g}" ${i + 1}`, l, {})));
 { const book = JSON.stringify(C.rulebook);
@@ -161,13 +173,11 @@ Object.entries(C.rulebook).forEach(([g, lines]) => lines.forEach((l, i) => templ
 // ---- 7: engine and content, both ways ----
 const SRC = ['src/sim.js', 'src/data.js', ...UI, 'src/ui/registry.js'].map(f => [f, read(f)]);
 const all = SRC.map(([, s]) => s).join('\n') + read('src/ui/index.template.html');
-const used = new Set();   // "rulers.<id>.fx.<key>", "rules.<path>", "events.<id>"
+const used = new Set();   // "fx.<key>", "rules.<path>", "events.<id>"
 SRC.forEach(([f, src]) => { let m;
-  const re = /\bF\(\s*'(\w+)',\s*'(\w+)'\s*\)/g;
-  while ((m = re.exec(src))) { const q = C.rulers[m[1]]; if (!q || !q.fx || !(m[2] in q.fx)) problems.push(`${f}:${lineOf(src, m.index)}: F('${m[1]}', '${m[2]}') but rulers.json has no ${m[1]}.fx.${m[2]}`); else used.add(`${m[1]}.${m[2]}`); }
-  const fl = /\bhasFx\(\s*[^,]+,\s*'(\w+)'\s*\)|\.fx\.(\w+)\b/g;
-  while ((m = fl.exec(src))) { const k = m[1] || m[2]; const who = Object.entries(C.rulers).filter(([, q]) => q.fx && k in q.fx);
-    if (!who.length) problems.push(`${f}:${lineOf(src, m.index)}: the flag "${k}" is carried by no ruler in rulers.json`); who.forEach(([t]) => used.add(`${t}.${k}`)); }
+  // every effect the engine reads exists, and is marked read
+  const fe = /\b(?:fx|hasFx)\(\s*[^,]+,\s*'(\w+)'|\bv\('(\w+)'\)/g;
+  while ((m = fe.exec(src))) { const k = m[1] || m[2]; if (!C.effects[k]) problems.push(`${f}:${lineOf(src, m.index)}: the effect "${k}" is not in effects.json`); else used.add('fx.' + k); }
   const rl = /\bRULES((?:\.\w+)+)/g;
   while ((m = rl.exec(src))) { let v = C.rules; const ks = m[1].slice(1).split('.'); for (const k of ks) { if (v == null || typeof v !== 'object' || !(k in v)) { problems.push(`${f}:${lineOf(src, m.index)}: RULES${m[1]} is not in rules.json`); break; } v = v[k]; used.add('rules.' + ks.slice(0, ks.indexOf(k) + 1).join('.')); } }
   const un = /\bUNREST\.(\w+)/g;   // the interface's shorthand for RULES.unrest
@@ -175,9 +185,7 @@ SRC.forEach(([f, src]) => { let m;
   const ev = /\bEV\.(\w+)/g;
   while ((m = ev.exec(src))) { if (!C.events[m[1]]) problems.push(`${f}:${lineOf(src, m.index)}: EV.${m[1]} is not in events.json`); else used.add('events.' + m[1]); }
 });
-// a ruler's number may also be read only by his own description
-Object.entries(C.rulers).forEach(([t, q]) => Object.keys(q.fx || {}).forEach(k => { if (q.desc.includes(`fx.${k}`)) used.add(`${t}.${k}`);
-  if (!used.has(`${t}.${k}`)) bad(`rulers.json ${t}`, `fx.${k} is read nowhere: the engine never uses it`); }));
+Object.keys(C.effects).forEach(k => { if (!used.has('fx.' + k)) bad('effects.json', `"${k}" is read nowhere: the engine never applies it`); });
 // every rule is read by the engine, the interface or a template ({rules.x} in any content text or {{rules.x}} in the HTML)
 const textAll = JSON.stringify(C) + read('src/ui/index.template.html') + SRC.map(([, s]) => s).join('');
 (function leaves(o, pre){ Object.entries(o).forEach(([k, v]) => { const p = pre + k;

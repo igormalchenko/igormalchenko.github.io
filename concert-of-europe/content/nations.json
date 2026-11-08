@@ -255,8 +255,7 @@
     "patience": 0.2,
     "starts": true,
     "army": 5,
-    "noAnnex": 1,
-    "rulerNames": ["Gregory", "Pius", "Leo"]
+    "noAnnex": 1
   },
   "SIC": {
     "name": "Two Sicilies",

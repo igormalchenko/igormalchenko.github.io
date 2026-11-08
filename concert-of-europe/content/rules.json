@@ -5,16 +5,14 @@
   "rerolls": 3,
   "reign": {
     "years": [8, 24],
-    "regencyYears": [6, 10],
-    "regency": "the Regency Council",
     "murder": 0.01,
-    "hatedMurder": 3,
     "abdicate": 0.5,
     "crisis": 0.18,
     "crisisYears": [1, 2.25],
     "coupUnrest": 45,
     "coup": 0.03,
-    "crisisArmy": 0.5
+    "crisisArmy": 0.5,
+    "crisisUnrest": 25
   },
   "horizon": {"min": 8, "span": 22},
   "build": {"factory": 4, "fort": 3},
@@ -22,7 +20,7 @@
   "unrest": {"restless": 40, "uprising": 65},
   "settle": 0.6,
   "workers": 45,
-  "levy": {"army": 1.5, "perMillion": 8, "workers": 90},
   "newNation": {"gold": 60, "armyPerMillion": 6, "hostility": -60, "truce": 15, "guarantee": 25},
-  "heirs": 3
+  "heirs": 3,
+  "breakthrough": 2.2
 }

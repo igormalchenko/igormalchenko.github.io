@@ -14,7 +14,7 @@ So this is a zero-player prototype: a test bench for opponents. If a world full 
 
 - **The AI code is small; the tuning is the work.** The decision loop is one function. Almost all of the effort went into running dozens of headless worlds, reading the chronicles, and adjusting.
 - **Reflexes are not a strategy.** The first AI scored each option with a hand-tuned "urge" and felt aimless. It got readable once every nation shared one goal (income in 1918) and every decision became a forecast in gold: what this adds or protects over the years my ruler plans ahead, minus what it costs.
-- **Rational actors in a deterrence system mostly don't fight.** Once the AI could see exactly what a war would cost, Europe went quiet. History's wars come from miscalculation and shocks, so the game adds them on purpose: rulers who misjudge their odds, quirks, succession crises, ultimatums, military revolutions, national awakenings.
+- **Rational actors in a deterrence system mostly don't fight.** Once the AI could see exactly what a war would cost, Europe went quiet. History's wars come from miscalculation and shocks, so the game adds them on purpose: rulers who misjudge their odds, traits, succession crises, ultimatums, military revolutions, national awakenings.
 - **Every number should be visible or hidden, never in between.** Stats that changed nothing you could see (prestige, colonies, great-power status) were cut. Plumbing the player shouldn't care about (infamy, relations maths) stays hidden. Everything else shows up on the map.
 - **Counterweights stop snowballs.** The game works because growth costs something you can see: conquered land pays little while it integrates, big states are harder to run, soldiers are workers missing from the economy, seaports trade only in peace, and great powers gang up on whoever leads.
 
@@ -53,10 +53,9 @@ npm run content      # rewrite content/*.json in the house layout
 
 ```
 content/*.json         every piece of content: rulers, rarities, nations, peoples,
-                       provinces, ambitions, events, ways of war, landmarks, concepts, rules
+                       provinces, ambitions, events, ways of war, concepts, rules
 content/rulebook.json  the rules of the age in plain sentences, for the Almanac
 content/AUDIT.md       what was found when the content moved there, and what is still open
-specs/                 proposals not yet agreed or built (deleted once built)
 src/text.js            fills {placeholders} in content text from content numbers (say)
 src/data.js            reshapes the content into what the simulation reads
 src/sim.js             the whole simulation: economy, AI, wars, unrest, rulers, events, ambitions

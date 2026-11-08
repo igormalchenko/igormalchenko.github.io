@@ -15,7 +15,6 @@ const DRAW = {
   taxes: { draw: P('<path d="M5.2 2.2h5.6L9.6 5c3 1 4.6 4 4.2 7-.2 1.6-1.6 2.5-3.2 2.5H5.4c-1.6 0-3-.9-3.2-2.5-.4-3 1.2-6 4.2-7z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M6.4 5h3.2" stroke="#5c4320" stroke-width="1.2"/><path d="M8 7.6v5M6.6 8.8h2.1a.9.9 0 010 1.8H7.3a.9.9 0 000 1.8h2.1" fill="none" stroke="#5c4320" stroke-width=".9"/>') },
   upkeep: { draw: P('<circle cx="7" cy="8" r="5.5" fill="#d98a6a" stroke="#7a3a22" stroke-width="1.1"/><path d="M4.5 8h5" stroke="#7a3a22" stroke-width="1.6"/>') },
   trade: { draw: P('<circle cx="8" cy="3.2" r="1.7" fill="none" stroke="#6fa8dc" stroke-width="1.3"/><path d="M8 5v9.5M5 7.5h6M2.5 10c0 2.6 2.5 4.5 5.5 4.5s5.5-1.9 5.5-4.5" fill="none" stroke="#6fa8dc" stroke-width="1.4" stroke-linecap="round"/>') },
-  waste: { draw: P('<path d="M4 4h8l-1 10.5H5z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M3 4h10M6.5 2h3" stroke="#5c4320" stroke-width="1.3"/>') },
   save: { draw: P('<path d="M2.5 6.5h11v7.5h-11z" fill="#b08a4a" stroke="#5c4320"/><path d="M2 6.5L8 2l6 4.5" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><circle cx="8" cy="10" r="1.6" fill="#e9c35a" stroke="#5c4320" stroke-width=".8"/>') },
 
   // ----- land and people -----
@@ -82,8 +81,6 @@ const DRAW = {
   forecast: { draw: P('<path d="M2 13.5h12" stroke="#97a0aa" stroke-width="1.2"/><path d="M2.5 11l3.5-3.5 2.5 2 5-5.5" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5h3v3" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>') },
   civilWar: { box: 7.5, map: 1,
     draw: `<path d="M-7 3L-7.4 -3.5L-4 -.5L-1.6 -4.6L-.4 -2.2L-1.4 -.4L-.4 1.2L-1 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M1 3L1.6 1.2L.6 -.4L1.6 -2.2L2.4 -4.6L4.6 -.5L7.4 -3.5L7 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
-  landmark: { box: 7.5, map: .9,
-    draw: `<path d="M-6.5 -2L0 -6.5L6.5 -2z" fill="#c9a45c" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M-4.4 -1.2V4M-1.5 -1.2V4M1.5 -1.2V4M4.4 -1.2V4" stroke="#c9a45c" stroke-width="1.6"/><path d="M-6.5 5H6.5" stroke="#c9a45c" stroke-width="1.6"/>` },
   coup: { box: 7.5, map: 1,
     draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M-7 4L7 -5" stroke="${DARK}" stroke-width="2.2"/><path d="M-7 4L7 -5" stroke="#e0453a" stroke-width="1.2"/>` },
 
@@ -96,48 +93,33 @@ const DRAW = {
 // descriptions filled in from content), with its drawing from DRAW. Concepts marked `word` have no icon.
 const REG = {}, WORDS = {};
 Object.entries(CONTENT.concepts).forEach(([k, c]) => { const e = Object.assign({}, c, { desc: say(c.desc) }, DRAW[k] || {}); (c.word ? WORDS : REG)[k] = e; });
-// ruler rarity, white to gold (content/rarities.json; TIER[1] is Common)
-const TIER = [null, ...CONTENT.rarities];
-// ruler quirk emblems, drawn inside a round badge (names and descriptions come from TRAITS in sim.js)
+// ruler rarity, white to gold (content/rarities.json; TIER[0] is Common)
+const TIER = CONTENT.rarities;
+// ruler quirk emblems, drawn inside a round badge (names and descriptions come from content/rulers.json)
 const EMB = {
   warmonger: `<path d="M-2.6 2.6L2.8 -2.8M-2.4 -.2L.2 2.4M-3.2 3.2l1-1" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/>`,
-  builder: `<path d="M-2.6 2.8L.8 -.6" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/><path d="M-.6 -2.8l2.2 -.6 1.6 1.6-.6 2.2z" fill="${INK}"/>`,
-  paranoid: `<path d="M-3.4 0Q0 -3 3.4 0Q0 3 -3.4 0z" fill="none" stroke="${INK}" stroke-width="1"/><circle r="1.1" fill="${INK}"/>`,
-  revanchist: `<path d="M0 -3.4C1.7 -1.2 2.5 0 1.8 1.7C1.3 3 -1.3 3 -1.8 1.7C-2.4 .2 -.9 -.8 0 -3.4z" fill="#e3933c"/>`,
-  spendthrift: `<circle r="2.8" fill="none" stroke="#f2c94c" stroke-width="1"/><path d="M0 -1.6v3.2" stroke="#f2c94c" stroke-width="1"/>`,
-  reformer: `<path d="M-2.4 -3h4.8v6h-4.8z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-1.4 -1.2h2.8M-1.4 .4h2.8M-1.4 2h1.8" stroke="${INK}" stroke-width=".7"/>`,
-  incompetent: `<text y="2.6" text-anchor="middle" font-size="7" font-family="IBM Plex Sans" fill="${INK}">?</text>`,
   soldier: `<path d="M-3 -.4L0 -3L3 -.4M-3 2.8L0 .2L3 2.8" fill="none" stroke="${INK}" stroke-width="1.1" stroke-linejoin="round"/>`,
-  cautious: `<path d="M0 -3.4L3 -2.3V.2C3 2 1.6 3 0 3.6C-1.6 3 -3 2 -3 .2V-2.3z" fill="none" stroke="${INK}" stroke-width=".9"/>`,
-  arbiter: `<path d="M0 -3.2V2.8M-1.6 2.8H1.6M-3.2 -1.8H3.2M-3.2 -1.8L-4 .6H-2.4zM3.2 -1.8L2.4 .6H4z" fill="none" stroke="${INK}" stroke-width=".8" stroke-linejoin="round"/>`,
-  shrewd: `<circle cx="-.7" cy="-.7" r="2" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M.8 .8L3 3" stroke="${INK}" stroke-width="1.3" stroke-linecap="round"/>`,
-  admirer: `<path d="M0 3C-3.6 .6 -3.6 -2.8 -1.6 -2.8C-.8 -2.8 -.2 -2.2 0 -1.6C.2 -2.2 .8 -2.8 1.6 -2.8C3.6 -2.8 3.6 .6 0 3z" fill="#e0453a"/>`,
-  tolerant: `<circle cx="-1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/><circle cx="1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/>`,
-  chauvinist: `<path d="M-2.4 3.4V-3.4" stroke="${INK}" stroke-width=".9"/><path d="M-2.4 -3.2L3 -1.6L-2.4 0z" fill="${INK}"/>`,
-  miser: `<rect x="-2.6" y="-.6" width="5.2" height="4" rx=".6" fill="${INK}"/><path d="M-1.6 -.6V-1.8A1.6 1.6 0 011.6 -1.8V-.6" fill="none" stroke="${INK}" stroke-width=".9"/>`,
-  dynast: `<path d="M0 3.4V-.4" stroke="${INK}" stroke-width="1"/><circle cy="-1.4" r="2.4" fill="${INK}"/>`,
   bold: `<rect x="-2.8" y="-2.8" width="5.6" height="5.6" rx="1" fill="${INK}"/><circle cx="-1.2" cy="-1.2" r=".6" fill="#1a1f26"/><circle cx="1.2" cy="1.2" r=".6" fill="#1a1f26"/><circle r=".6" fill="#1a1f26"/>`,
+  cautious: `<path d="M0 -3.4L3 -2.3V.2C3 2 1.6 3 0 3.6C-1.6 3 -3 2 -3 .2V-2.3z" fill="none" stroke="${INK}" stroke-width=".9"/>`,
+  paranoid: `<path d="M-3.4 0Q0 -3 3.4 0Q0 3 -3.4 0z" fill="none" stroke="${INK}" stroke-width="1"/><circle r="1.1" fill="${INK}"/>`,
+  builder: `<path d="M-2.6 2.8L.8 -.6" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/><path d="M-.6 -2.8l2.2 -.6 1.6 1.6-.6 2.2z" fill="${INK}"/>`,
+  stingy: `<rect x="-2.6" y="-.6" width="5.2" height="4" rx=".6" fill="${INK}"/><path d="M-1.6 -.6V-1.8A1.6 1.6 0 011.6 -1.8V-.6" fill="none" stroke="${INK}" stroke-width=".9"/>`,
+  spender: `<circle r="2.8" fill="none" stroke="#f2c94c" stroke-width="1"/><path d="M0 -1.6v3.2" stroke="#f2c94c" stroke-width="1"/>`,
+  tyrant: `<path d="M-3 2L-3.4 -2.2L-1.4 -.6L0 -3L1.4 -.6L3.4 -2.2L3 2z" fill="${INK}"/>`,
+  reformer: `<path d="M-2.4 -3h4.8v6h-4.8z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-1.4 -1.2h2.8M-1.4 .4h2.8M-1.4 2h1.8" stroke="${INK}" stroke-width=".7"/>`,
   drunk: `<path d="M-2.4 -3H2.4C2.4 -.6 1.4 .6 0 .6C-1.4 .6 -2.4 -.6 -2.4 -3zM0 .6V3M-1.6 3H1.6" fill="none" stroke="${INK}" stroke-width=".9" stroke-linejoin="round"/><path d="M-2.2 -2H2.2C2 -.8 1 0 0 0C-1 0 -2 -.8 -2.2 -2z" fill="#a04060"/>`,
-  mad: `<path d="M.4 0A.4 .4 0 01-.4 0A1.2 1.2 0 011.6 0A2 2 0 01-2.4 0A2.8 2.8 0 013.2 0" fill="none" stroke="${INK}" stroke-width=".8"/>`,
-  lecher: `<path d="M-3 .4C-2 -1.4 -.8 -1.2 0 -.4C.8 -1.2 2 -1.4 3 .4C1.6 2.2 -1.6 2.2 -3 .4z" fill="#e0453a"/><path d="M-3 .4H3" stroke="#1a1f26" stroke-width=".5"/>`,
-  child: `<path d="M0 -3.4L2.6 0L0 3.4L-2.6 0z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-2.6 0H2.6" stroke="${INK}" stroke-width=".9"/>`,
-  usurper: `<path d="M-3 2L-3.4 -2.2L-1.4 -.6L0 -3L1.4 -.6L3.4 -2.2L3 2z" fill="${INK}"/><path d="M-3.4 3.2L3.4 -3.4" stroke="#e0453a" stroke-width="1"/>`,
-  // legendary
-  conqueror: `<path d="M-.6 3.2C-3.4 2 -3.8 -1 -2.6 -3.2M.6 3.2C3.4 2 3.8 -1 2.6 -3.2" fill="none" stroke="${INK}" stroke-width="1"/><path d="M-3.2 -.8l1 .4M-2.8 1.2l1 -.1M3.2 -.8l-1 .4M2.8 1.2l-1 -.1" stroke="${INK}" stroke-width="1" stroke-linecap="round"/>`,
-  genius: `<path d="M0 -3.6L1 -1L3.6 -1L1.6 .6L2.3 3.2L0 1.7L-2.3 3.2L-1.6 .6L-3.6 -1L-1 -1z" fill="${INK}"/>`,
-  architect: `<path d="M-3.4 -1.4L0 -3.6L3.4 -1.4z" fill="${INK}"/><path d="M-2.4 -.8V2.4M0 -.8V2.4M2.4 -.8V2.4" stroke="${INK}" stroke-width=".9"/><path d="M-3.4 3H3.4" stroke="${INK}" stroke-width=".9"/>`,
-  liberator: `<rect x="-3.6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/><rect x=".6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/>`,
-  saint: `<ellipse cy="-2.4" rx="2.6" ry=".9" fill="none" stroke="${INK}" stroke-width=".9"/><circle cy=".9" r="1.9" fill="${INK}"/>`,
-  iron: `<path d="M-3.4 -1.6H2.2C3 -1.6 3.6 -1 3.4 -.4H1.2V.8L2 2.4H-2L-1.2 .8V-.4H-2.6C-3.2 -.4 -3.4 -1 -3.4 -1.6z" fill="${INK}"/>`,
-  // legendary
-  chancellor: `<path d="M-3.4 -2.6H3.4V-1.4H-3.4zM-2.6 -1.4V3M2.6 -1.4V3M-3.4 3H3.4" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M0 -3.6V-2.6" stroke="${INK}" stroke-width=".9"/><circle cy=".8" r="1.1" fill="${INK}"/>`,
-  destiny: `<path d="M-3.6 -3.2C-1.6 -1.6 -.6 0 -.4 3.2M3.6 -3.2C1.6 -1.6 .6 0 .4 3.2" fill="none" stroke="${INK}" stroke-width="1"/><path d="M0 -3.4L.9 -1.6L2.8 -1.4L1.4 -.2L1.8 1.6L0 .7L-1.8 1.6L-1.4 -.2L-2.8 -1.4L-.9 -1.6z" fill="${INK}"/>`,
-  prophet: `<path d="M0 -3.6V3.6M-2.4 -1.4H2.4" stroke="${INK}" stroke-width="1"/><path d="M-3.4 3.4H3.4" stroke="${INK}" stroke-width=".8"/><circle cy="-1.4" r="3.2" fill="none" stroke="${INK}" stroke-width=".5" opacity=".7"/>`,
-  sun: `<circle r="1.8" fill="${INK}"/><path d="M0 -3.6V-2.6M0 2.6V3.6M-3.6 0H-2.6M2.6 0H3.6M-2.5 -2.5L-1.8 -1.8M2.5 2.5L1.8 1.8M-2.5 2.5L-1.8 1.8M2.5 -2.5L1.8 -1.8" stroke="${INK}" stroke-width=".8" stroke-linecap="round"/>`,
-  navigator: `<circle cy="-2.6" r=".8" fill="none" stroke="${INK}" stroke-width=".8"/><path d="M0 -1.8V3.2M-1.6 -.6H1.6M-3 .8C-2.6 2.6 -1.4 3.2 0 3.2C1.4 3.2 2.6 2.6 3 .8" fill="none" stroke="${INK}" stroke-width=".9" stroke-linecap="round"/>`,
+  vengeful: `<path d="M0 -3.4C1.7 -1.2 2.5 0 1.8 1.7C1.3 3 -1.3 3 -1.8 1.7C-2.4 .2 -.9 -.8 0 -3.4z" fill="#e3933c"/>`,
+  flirt: `<path d="M-3 .4C-2 -1.4 -.8 -1.2 0 -.4C.8 -1.2 2 -1.4 3 .4C1.6 2.2 -1.6 2.2 -3 .4z" fill="#e0453a"/><path d="M-3 .4H3" stroke="#1a1f26" stroke-width=".5"/>`,
+  religious: `<ellipse cy="-2.4" rx="2.6" ry=".9" fill="none" stroke="${INK}" stroke-width=".9"/><circle cy=".9" r="1.9" fill="${INK}"/>`,
+  sharp: `<circle cx="-.7" cy="-.7" r="2" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M.8 .8L3 3" stroke="${INK}" stroke-width="1.3" stroke-linecap="round"/>`,
+  planner: `<path d="M0 3.4V-.4" stroke="${INK}" stroke-width="1"/><circle cy="-1.4" r="2.4" fill="${INK}"/>`,
+  tolerant: `<circle cx="-1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/><circle cx="1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/>`,
+  nationalist: `<path d="M-2.4 3.4V-3.4" stroke="${INK}" stroke-width=".9"/><path d="M-2.4 -3.2L3 -1.6L-2.4 0z" fill="${INK}"/>`,
+  strict: `<path d="M-3.4 -1.6H2.2C3 -1.6 3.6 -1 3.4 -.4H1.2V.8L2 2.4H-2L-1.2 .8V-.4H-2.6C-3.2 -.4 -3.4 -1 -3.4 -1.6z" fill="${INK}"/>`,
+  sailor: `<circle cy="-2.6" r=".8" fill="none" stroke="${INK}" stroke-width=".8"/><path d="M0 -1.8V3.2M-1.6 -.6H1.6M-3 .8C-2.6 2.6 -1.4 3.2 0 3.2C1.4 3.2 2.6 2.6 3 .8" fill="none" stroke="${INK}" stroke-width=".9" stroke-linecap="round"/>`,
 };
 // the round badge behind a quirk emblem, ringed in its rarity's colour
-const embBadge = tier => `<circle r="7" fill="#1a1f26" stroke="${(TIER[tier] || TIER[1]).color}" stroke-width="${tier >= 4 ? 1.4 : 1}"/>`;
+const embBadge = g => `<circle r="7" fill="#1a1f26" stroke="${(TIER[g] || TIER[0]).color}" stroke-width="${g >= 3 ? 1.4 : 1}"/>`;
 
 // the name of a concept, for labels
 const nm = k => REG[k].name;
@@ -154,7 +136,7 @@ const glyph = (k, style = '') => { const e = REG[k], s = e.map || .55;
 // words in copy that get their concept's icon in front (see iconize)
 const WORD_IC = { 'gold a year': 'goldYear', 'army upkeep': 'upkeep', 'sea trade': 'trade', 'civil war': 'civilWar', factories: 'factory', factory: 'factory',
   fortresses: 'fort', fortress: 'fort', unrest: 'unrest', uprisings: 'uprising', uprising: 'uprising', armies: 'army', army: 'army', alliances: 'ally', alliance: 'ally',
-  reforms: 'reform', integrates: 'settle', integrated: 'settle', landmark: 'landmark', capital: 'capital', gold: 'gold', peace: 'peace', ruler: 'ruler', war: 'war' };
+  reforms: 'reform', integrates: 'settle', integrated: 'settle', capital: 'capital', gold: 'gold', peace: 'peace', ruler: 'ruler', war: 'war' };
 const WORD_RE = new RegExp(`\\b(${Object.keys(WORD_IC).sort((a, b) => b.length - a.length).join('|')})\\b`, 'gi');
 // copy with an icon in front of the first mention of each concept it names
 const iconize = text => { const seen = new Set();
@@ -165,4 +147,4 @@ const UNREST_HOT = '--uc:#e0453a', UNREST_WARM = '--uc:#e3933c';
 const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'uprising', unify: 'proclaim', ruler: 'ruler', event: 'event', econ: 'build' };
 const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'army', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'ambition', war: 'war' };
 // map markers left by the simulation, by its own type names
-const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'proclaim', coup: 'coup', crisis: 'civilWar', landmark: 'landmark' };
+const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'proclaim', coup: 'coup', crisis: 'civilWar' };

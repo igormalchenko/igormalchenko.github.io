@@ -3,19 +3,21 @@
     "The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.",
     "The Great War breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."
   ],
-  "Heirs": ["Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game."],
+  "Heirs": [
+    "Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game.",
+    "Every heir is a rarity and a trait. A Common or Uncommon ruler has a bonus and a malus; from Rare on he also brings a one-time bonus at his coronation. The rarer he is, the bigger the bonus and the smaller the malus."
+  ],
   "Reigns": [
     "A reign lasts {rules.reign.years.0} to {rules.reign.years.1} years if nothing ends it sooner.",
-    "When a ruler leaves no heir, {rules.reign.regency} rules for {rules.reign.regencyYears.0} to {rules.reign.regencyYears.1} years.",
-    "Each year a ruler has a {rules.reign.murder|pct} chance of being assassinated, {rules.reign.hatedMurder|times} that if he is hated.",
+    "Each year a ruler has a {rules.reign.murder|pct} chance of being assassinated.",
     "A ruler beaten in a war he started, or one that cost him land, abdicates {rules.reign.abdicate|pct} of the time.",
-    "Besides the rulers whose death always brings one, {rules.reign.crisis|pct} of successions end in civil war, which lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.",
-    "In a nation whose unrest is above {rules.reign.coupUnrest}, the army stages a coup in {rules.reign.coup|pct} of seasons.",
+    "Besides a Flirt, whose reign always ends in one, {rules.reign.crisis|pct} of successions end in civil war, which adds {rules.reign.crisisUnrest} unrest everywhere and lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.",
+    "In a nation whose unrest is above {rules.reign.coupUnrest}, the army stages a coup in {rules.reign.coup|pct} of seasons and crowns a ruler of its own choosing: no heir card.",
     "A ruler plans at least {rules.horizon.min} years ahead, and up to {rules.horizon.span} more the more patient he is."
   ],
   "Armies": [
     "Every soldier is a worker lost: an army of {rules.workers}k men per million people would empty the fields and factories.",
-    "A legendary conqueror raises a great army when crowned: {rules.levy.army|times} the one he inherits, or {rules.levy.perMillion}k men per million people if that is more. Each of his men takes {rules.workers/rules.levy.workers|frac} as many workers from the fields."
+    "An army that wins a battle with more than {rules.breakthrough|times} the strength of the other side breaks through and advances twice."
   ],
   "Building": [
     "A factory takes {rules.build.factory|word} seasons to build, a fortress {rules.build.fort|word}.",

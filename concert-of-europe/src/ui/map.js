@@ -75,8 +75,6 @@ function renderMap(){
       x += it.w;
     });
   });
-  // landmarks stay on the map for good, whoever owns the province
-  S.regions.forEach(r => { if (r.landmark) { const [cx, cy] = A(r.i); icons += at(cx - 12, cy - 4, glyph('landmark')); } });
   // event markers that fade over a few seasons
   const shown = new Set();
   S.regions.forEach(r => { if (r.battle > 0) { const [cx, cy] = A(r.i); marks += at(cx, cy - 6, glyph('battle'), '', r.battle === 2); shown.add(r.i); } });

@@ -184,9 +184,9 @@ th svg.ic{margin:0}
 .heir .rar{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tc)}
 .heir svg.emb{width:68px;height:68px;margin:12px 0 8px;flex:none}
 .heir .ttl{font:400 24px/1.1 var(--display)}
-.heir .who{color:var(--muted);font-size:12.5px}
 .heir .vibe{margin:12px 2px 0;font-size:15px;font-style:italic;line-height:1.4;color:var(--muted)}
-.heir .fx{margin:auto 0 0;padding-top:12px;width:100%;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line));font-size:13.5px;line-height:1.45}
+.heir .fx{margin:0;padding:5px 0 0 9px;width:100%;text-align:left;font-size:13.5px;line-height:1.4;border-left:2px solid var(--fxc)}
+.heir .fx-main{--fxc:var(--peace);margin-top:auto;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line));padding-top:10px}.heir .fx-flat{--fxc:var(--brass)}.heir .fx-malus{--fxc:#e08070}
 .heir.tier3{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 12px -4px var(--tc)}
 .heir.tier4{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 18px -4px var(--tc)}
 .heir.tier5{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 24px -4px var(--tc);background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%),linear-gradient(180deg,#2a2c2b,#1d1f22)}
@@ -281,7 +281,7 @@ th svg.ic{margin:0}
     <p><b>The ambition.</b> Every nation has one ambition for the armistice of 1918: the great powers of 1836 want the most gold a year, a divided people wants to unite and hold together, and the small want to survive. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first. A province of the people it is uniting is worth twice its gold a year to it, and a nation that only has to survive counts every loss half again as dear.</p>
     <div class="formula">value = extra gold a year × years planned − cost − expected losses</div>
     <p>Factories pay for good but each one costs more and adds less. An army deters neighbours whose own forecast says "invade", but its men are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it is integrated, minus army losses, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
-    <p><b>What throws the plans off.</b> Rulers misjudge their odds and carry quirks. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. A people that wins its uprising brings back its fallen nation or forms a new one, which claims the provinces of the union it works toward. Russia's factories run at half speed until the serfs are freed.</p>
+    <p><b>What throws the plans off.</b> Rulers misjudge their odds, and each carries a trait with a bonus and a malus. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. A people that wins its uprising brings back its fallen nation or forms a new one, which claims the provinces of the union it works toward. Russia's factories run at half speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
     <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: 1, 2 or 3 to pick an heir, R to reroll, A for the Almanac, Space or P to play or pause, + and − to change speed. Click the world number to start a new world.</p>
@@ -327,7 +327,7 @@ th svg.ic{margin:0}
 </div>
 
 <script>
-const CONTENT = {"ambitionKinds":{"richest":{"name":"Richest great power","heading":"Richest great power","desc":"Have the most gold a year of the great powers of {rules.start} when the war ends in autumn {rules.end.year}.","who":"The great powers of {rules.start} that have no people to unite. Only the richest of them meets it."},"unite":{"name":"Unite a people","heading":"Unite a people","desc":"Proclaim {the}{title} by holding {need} of its provinces, and still hold them in autumn {rules.end.year}.","who":"The nations of a divided people. The first to proclaim it takes its name, and the rest have lost.","worth":2,"proclaimText":"<strong>A people united.</strong> Holding {n} of its people's lands, {nation} is proclaimed.","joinText":"{nation} votes to join {by}."},"survive":{"name":"Survive","heading":"Survive","aside":"small and exposed","desc":"Still be on the map in autumn {rules.end.year}.","who":"Every other nation. All who are still on the map meet it.","losses":1.5}},"ambitions":{"rich":{"kind":"richest"},"survive":{"kind":"survive"},"ger":{"kind":"unite","title":"German Empire","adj":"German","pre":"German","peoples":["German"],"need":8,"from":1850,"provinces":["bra","pom","epr","sil","rhi","wes","han","hes","sax","bav","wur","vie","tyr","als","sch"]},"ita":{"kind":"unite","title":"Kingdom of Italy","adj":"Italian","pre":"Italo","peoples":["Italian"],"need":4,"from":1836,"provinces":["pie","lom","ven","tus","rom","nap","sic"]},"sca":{"kind":"unite","title":"Kalmar Union","adj":"Scandinavian","pre":"Scando","peoples":["Swedish","Norwegian","Danish"],"need":5,"from":1845,"provinces":["sve","got","nor","jut","fin"],"note":"The old union of the three northern crowns."},"ukr":{"kind":"unite","title":"Cossack Hetmanate","adj":"Ukrainian","pre":"Ukraino","peoples":["Ukrainian"],"need":3,"from":1836,"provinces":["kie","cri","bes","gli","don"],"note":"The Cossack state of the seventeenth century."},"rom":{"kind":"unite","title":"Dacia","art":"","adj":"Dacian","pre":"Daco","peoples":["Romanian"],"need":3,"from":1836,"provinces":["wal","mol","trn","bes"],"note":"The Roman province whose name the Romanian nationalists of the age gave to a united Romania."},"bul":{"kind":"unite","title":"Tsardom of Bulgaria","adj":"Bulgarian","pre":"Bulgaro","peoples":["Bulgarian"],"need":3,"from":1836,"provinces":["bul","mac","the"]},"gre":{"kind":"unite","title":"Byzantine Empire","adj":"Byzantine","pre":"Byzantino","peoples":["Greek"],"need":3,"from":1836,"provinces":["ath","the","mac","con"],"note":"The Great Idea: Constantinople Greek again."},"yug":{"kind":"unite","title":"Kingdom of Illyria","adj":"Illyrian","pre":"Illyro","peoples":["Serb","Croat","Bosniak"],"need":3,"from":1850,"provinces":["ser","bos","cro"],"note":"The Illyrian movement of the 1830s hoped for one South Slav nation."},"pol":{"kind":"unite","title":"Polish Commonwealth","adj":"Polish","pre":"Polono","peoples":["Polish","Lithuanian"],"need":3,"from":1836,"provinces":["pol","pos","gli","lit","blr"]},"ibe":{"kind":"unite","title":"Iberian Union","adj":"Iberian","pre":"Ibero","peoples":["Spanish","Portuguese"],"need":5,"from":1860,"provinces":["cas","cat","and","gal","por"]},"hun":{"kind":"unite","title":"Crown of St Stephen","adj":"Hungarian","pre":"Magyar","peoples":["Hungarian"],"need":3,"from":1836,"provinces":["hun","trn","cro"],"note":"The lands of the Hungarian crown."}},"concepts":{"gold":{"name":"Gold","desc":"Money in the bank. Pays for factories, fortresses, recruits and reforms.","avoid":["treasury","treasuries","savings"]},"goldYear":{"name":"Gold a year","desc":"Taxes, factory output and sea trade over a year. The great power with the most in autumn {rules.end.year} meets its ambition.","avoid":["income","score","/yr"]},"taxes":{"name":"Taxes","desc":"Gold the people pay. Falls with unrest, occupation and every man in the army."},"upkeep":{"name":"Army upkeep","desc":"Gold the army costs every season."},"trade":{"name":"Sea trade","desc":"Gold from coastal provinces. Lost while the nation is at war."},"waste":{"name":"Court extravagance","desc":"Gold a spendthrift ruler wastes on the court."},"save":{"name":"Save gold","desc":"The ministers keep the gold when nothing else is expected to pay."},"province":{"name":"Provinces","desc":"Land a nation holds. Each one costs a little to run."},"capital":{"name":"Capital","desc":"Where a nation is ruled from. Its army size shows here in wartime."},"pop":{"name":"People","desc":"How many live in a province or nation, in millions."},"culture":{"name":"Nationality","desc":"The people of a province. Under a ruler of another nationality they grow restless."},"settle":{"name":"Integrated","desc":"How far a conquered province has become part of its new nation. It pays little until fully integrated.","avoid":["settles","settled","integration"]},"occupied":{"name":"Occupied","desc":"Held by an enemy army. Pays its owner nothing until freed."},"sea":{"name":"Sea crossing","desc":"Two coastal provinces close enough to invade across the water."},"claim":{"name":"Claims","desc":"Nations that want a province: its old owner, its own people, or a nation uniting it."},"factory":{"name":"Factories","desc":"Produce gold every season. Each new one costs more and adds less."},"fort":{"name":"Fortress","desc":"Stops a share of enemy advances into the province. Razed if the province falls.","avoid":["forts","fort"]},"buildFactory":{"name":"Factory being built","desc":"A factory under construction. Takes {rules.build.factory|word} seasons."},"buildFort":{"name":"Fortress being built","desc":"A fortress under construction. Takes {rules.build.fort|word} seasons."},"build":{"name":"Construction","desc":"Gold spent this season on factories and fortresses."},"ruin":{"name":"Ruin","desc":"A factory or fortress destroyed in war."},"boom":{"name":"Boom","desc":"Coal is found or a railway arrives: the province suddenly pays more."},"reform":{"name":"Reforms","desc":"Laws that calm unrest for a while. Cost gold."},"unrest":{"name":"Unrest","desc":"Anger in a province ruled by another nationality. Cuts taxes; at {rules.unrest.uprising} or more it is close to an uprising.","avoid":["restlessness"]},"uprising":{"name":"Uprising","desc":"A province rises against its ruler and may break away or join its own people.","avoid":["revolt","revolts","rebellion"]},"army":{"name":"Army","desc":"Men under arms, in thousands. Deters attack and wins wars, but every man is a worker lost.","avoid":["soldiers","troops"]},"war":{"name":"War","desc":"Nations fighting over a province. Ends when one side wins or both are exhausted."},"battle":{"name":"Battle","desc":"Fighting in a province this season."},"front":{"name":"Front line","desc":"Where the two sides of a war hold land face to face."},"goal":{"name":"War goal","desc":"The province a war is being fought for."},"peace":{"name":"Peace","desc":"A war ends and land or gold changes hands."},"dead":{"name":"Dead","desc":"Lives lost in the fighting, in millions."},"ally":{"name":"Alliance","desc":"Nations bound to join each other's defensive wars."},"rival":{"name":"Biggest threat","desc":"The neighbour a nation fears most. It arms and allies against it."},"proclaim":{"name":"Proclamation","desc":"A divided people united: the nation that holds enough of its lands takes its new name, and the smaller nations of its people join it."},"ambition":{"name":"Ambition","desc":"What a nation must achieve by the armistice of autumn {rules.end.year}: be the richest great power, unite its people, or survive.","avoid":["objective","dream","dreams"]},"leader":{"name":"Leading nation","desc":"The nation with the most gold a year right now."},"ruler":{"name":"Ruler","desc":"Who decides for the nation, with his own patience, judgment, thrift and quirk.","avoid":["sovereign"]},"patience":{"name":"Patience","desc":"How many years ahead a ruler counts gains and costs."},"thrift":{"name":"Thrift","desc":"How dear a ruler holds his gold. A thrifty one hoards it and builds little; a lavish one spends it on factories, recruits and reforms.","avoid":["frugal","frugality"]},"judgment":{"name":"Judgment","desc":"Whether a ruler sees his odds in war as better or worse than they are."},"forecast":{"name":"Forecasts","desc":"What each option is worth in gold over the ruler's horizon. Positive ones are done, best first."},"civilWar":{"name":"Civil war","desc":"A disputed succession: rival claimants split the army, which fights at {rules.reign.crisisArmy|frac} strength.","avoid":["succession crisis"]},"landmark":{"name":"Landmark","desc":"A great work raised by a legendary ruler. It stays on the map for good."},"coup":{"name":"Coup","desc":"The army deposes the ruler of a restless nation."},"event":{"name":"Event","desc":"Famines, epidemics, panics, booms and other turns of fortune."},"panel":{"name":"Side panel","desc":"Shows or hides the chronicle, rankings and details on the right."},"almanac":{"name":"Almanac","desc":"Every ruler, nation, people, ambition, event and rule in the game, read live from the game's own data (key A)."},"nation":{"name":"Nation","desc":"A realm on the map, with its own ruler, gold and army.","word":true,"avoid":["country","countries","states"]},"reroll":{"name":"Reroll","desc":"Deal {rules.heirs|word} new heirs instead of these (key R). {rules.rerolls|Word} free rerolls a game.","word":true},"rarity":{"name":"Rarity","desc":"How rare a ruler is, from Common to Legendary. The rarer he is, the more he can change the game.","word":true}},"effects":{"fight":"How hard his armies fight (multiplies army quality)","bleed":"How many men his armies lose in battle (multiplier)","land":"What a conquered province is worth to him (multiplier)","distrust":"What neighbours' distrust costs him when he weighs a war (multiplier)","revenge":"What winning back a lost province is worth to him (multiplier)","threat":"How large every threat looks to him (multiplier)","waste":"Share of all gold wasted on the court each season","factoryCost":"What a factory costs (multiplier)","buildTime":"Seasons a factory takes to build","borrow":"Gold he will borrow to build a factory","horizon":"Years he plans ahead, whatever his patience","reformCost":"Gold reforms cost","reformCalm":"Unrest reforms take away","reformWait":"Seasons before he can pass reforms again","hold":"Chance a battle in or against his land changes nothing","allies":"What an alliance is worth to him (multiplier)","broker":"Chance a season that he brokers peace in a neighbour's war","brokerAfter":"Seasons a war must have lasted before he steps in","brokerScore":"He steps in only while neither side is winning by more than this","fee":"Share of each side's gold he is paid for a peace","feeCap":"Most gold he takes from each side for a peace","friendship":"Relations he starts with his favourite great power","join":"Chance he joins a war on his favourite's side","ownPeople":"What provinces of his own people pay (multiplier)","misjudge":"How far his judgment swings each season, either way","changeEvery":"On average, seasons between his changes of quirk","charm":"Relations he gains with every neighbour when crowned","ofAge":"Seasons until he comes of age (fewest, most)","incompetent":"Chance he grows up Incompetent","earns":"What the whole nation earns (multiplier)","unrest":"Unrest he adds everywhere until he wins a war","keepGold":"Share of the gold left after his coup","calm":"Unrest taken away (at once for a usurper, every season for a saint)","legitimacy":"Yearly gold a victory is worth to him by ending the unrest of his reign, as a share of gold a year","distrusted":"Relations he loses with every neighbour when crowned","infamy":"Distrust he starts his reign with","works":"Seasons until his landmark is finished","coup":"Chance a season that the nobles depose him","garrison":"Strength of his garrisons against uprisings (multiplier)","integrate":"How fast his conquests become integrated (multiplier)","settle":"Share of the time a conquest takes to become integrated that he counts when he weighs a war","rise":"Unrest added at his death to the provinces it touches","integration":"How far integrated his conquests are left at his death, at most","trade":"What sea trade pays (multiplier)","upkeep":"What the army costs (multiplier)","debtYears":"Years of gold a year that turn into debt at his death","levy":"Raises a great army when crowned (see rules: levy)","isolates":"No ally comes to his enemy's aid and no great power steps in","keepsAll":"Every victory keeps all the occupied land he can reach","converts":"Every people he conquers counts as his own at once","crisis":"His death brings civil war (\"bastard\": his bastard son claims the throne)","hated":"Three times as likely to be assassinated (see rules: reign)"},"eras":[{"name":"Napoleonic warfare","def":1.15,"fort":0.55,"start":true},{"name":"Rifled muskets and railways favour the attacker","def":0.95,"fort":0.35},{"name":"Entrenchments and breech-loaders favour the defender","def":1.4,"fort":0.7},{"name":"Mass conscription and artillery favour the attacker","def":1,"fort":0.4},{"name":"Machine guns and barbed wire favour the defender","def":1.5,"fort":0.75}],"events":{"springtime":{"name":"The Springtime of Nations","year":1848,"season":1,"unrest":40,"text":"<strong>The Springtime of Nations.</strong> Revolution sweeps the continent; unrest soars everywhere."},"famine":{"name":"The Great Famine","years":[1845,1849],"chance":0.35,"province":"ire","pop":0.75,"unrest":30,"text":"The Great Famine devastates {province}: {pop|inv|frac} of its people die or emigrate."},"cholera":{"name":"Cholera","chance":0.06,"nations":3,"pop":0.95,"unrest":8,"text":"Cholera spreads through {nations}; {pop|inv|frac} dies."},"railway":{"name":"Railway mania","from":1840,"chance":0.2,"lasts":10,"cost":0.7,"text":"Railway mania: for {lasts|span}, factories cost {cost|down} less."},"panic":{"name":"The Panic","years":[1870,1878],"chance":0.3,"gold":0.5,"earns":0.8,"seasons":12,"unrest":10,"text":"<strong>The Panic.</strong> Banks fail across Europe: every nation loses {gold|inv|frac} its gold and earns {earns|inv|frac} less for {seasons|years}."},"compromise":{"name":"The Compromise","from":1860,"chance":0.4,"nation":"AUS","province":"hun","people":"Hungarian","unrest":40,"calm":15,"newName":"Austria-Hungary","newAdj":"Austro-Hungarian","text":"The Compromise: {nation} becomes a dual monarchy, and Hungary is calmed."},"serfdom":{"name":"The serfs are freed","from":1855,"chance":0.15,"nation":"RUS","provinces":["mos","spb"],"factories":1,"before":0.5,"text":"{nation} frees the serfs; workers pour into the factories of Moscow and St Petersburg."},"incident":{"name":"Border incident","chance":0.3,"relations":-25,"text":"A border incident sours relations between {a} and {b}."},"marriage":{"name":"Royal marriage","chance":0.1,"relations":25,"text":"A royal marriage links {a} and {b}."},"harvest":{"name":"Failed harvest","season":2,"chance":0.32,"unrest":18,"text":"A failed harvest brings bread riots to {nation}."},"shevchenko":{"name":"Ukrainian national awakening","years":[1840,1852],"chance":0.3,"people":"Ukrainian","awake":14,"text":"Shevchenko's poems spark a <strong>Ukrainian national awakening</strong>; unrest grows in Ukrainian lands."},"awakening":{"name":"National awakening","from":1845,"chance":0.07,"awake":10,"peoples":["Polish","Czech","Hungarian","Romanian","Bulgarian","Finnish","Irish","Croat","Lithuanian","Baltic","Norwegian","Albanian","Greek","Serb"],"text":"A national awakening stirs the {people} people; their provinces grow restless."},"revolution":{"name":"Military revolution","every":12,"chance":0.12,"text":"<strong>Military revolution.</strong> {era}: every war forecast in Europe shifts."},"boom":{"name":"Boom","from":1845,"chance":0.15,"factories":2,"pop":1.1,"finds":["Coal is found","A railway junction booms","Iron mines open"],"text":"{find} in {province} ({nation}): {factories|word} factories' worth of industry overnight."},"ultimatum":{"name":"Ultimatum","chance":0.25,"margin":35,"rattle":0.35,"backDown":0.45,"pay":0.2,"unrest":8,"relations":-20,"pretexts":["a border post","a newspaper insult","a railway concession","a royal snub"],"rattleText":"{a} rattles its sabre at {b} over {pretext}, then thinks better of it.","text":"<strong>Crisis.</strong> {a} sends {b} an ultimatum. {b} backs down, humiliated, and pays {gold} gold.","warText":"<strong>Crisis.</strong> {a} sends {b} an ultimatum over {province}. {b} refuses, and the <em>{war}</em> begins."},"greatWar":{"name":"The Great War","text":"<strong>The lamps go out all over Europe.</strong> A shot in the Balkans sets the alliances in motion: {a} and {b} go to war. The <em>Great War</em> begins."},"armistice":{"name":"The Armistice","text":"<strong>Armistice.</strong> At the eleventh hour the guns fall silent; peace is made on the lines as they stand."},"opening":{"name":"Europe","text":"<strong>Europe, {rules.start}.</strong> {nations|Word} nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to unite its people, or just to survive."}},"landmarks":{"railway":{"name":"the Great Railway","fx":"{factories|word} more factories in the capital","factories":2},"fortress":{"name":"the Fortress Line","fx":"a fortress in every border province"},"exhibition":{"name":"the Grand Exhibition","fx":"a factory in each of the {provinces|word} richest provinces","provinces":3}},"map":{"seaPoints":[[-11,59],[-11,54],[-11,49],[-11,44],[-11,39],[-11,35],[-6,46],[-5.5,44.3],[-6.6,50.6],[-1.6,50.1],[-5,53.4],[-6.6,55.7],[-8,57.5],[-4,59.5],[1,59.5],[2.5,53.4],[3,56.5],[6.4,55],[0,57.5],[1.5,61.8],[-2,62],[8.6,57.9],[11.8,55.9],[15.6,55.4],[18.5,56.8],[20.5,58.6],[19.8,60.9],[21.5,62.6],[-2,36.1],[3,39.2],[4.5,42.3],[8.4,40.4],[8.5,42.8],[11.5,39.5],[10,36.4],[16.5,35.6],[18.6,38.6],[20.5,35.6],[14.5,43.3],[17.3,42.2],[13.1,44.6],[25.2,38.6],[26.5,36.4],[24.5,35.6],[29,35.6],[34,35.6],[37.5,36.4],[30.8,43.2],[34.5,43],[38.5,43.6],[32,45.4],[36.2,45.6],[0.5,36.3],[6,36.5]],"seaCrossings":[["lon","par"],["lon","hol"],["lon","bel"],["ire","nth"],["ire","sco"],["jut","got"],["fin","sve"],["sic","nap"],["con","ana"],["cri","kie"],["spb","fin"]]},"nations":{"GBR":{"name":"Great Britain","adj":"British","pre":"Anglo","color":"#b8524a","people":"English","accepts":["Scottish"],"ambition":"rich","hawk":0.45,"patience":0.95,"starts":true,"army":30,"relations":{"FRA":10,"POR":50},"allies":["POR"]},"FRA":{"name":"France","adj":"French","pre":"Franco","color":"#4f72a8","people":"French","ambition":"rich","hawk":0.6,"patience":0.6,"starts":true,"army":60,"relations":{"PRU":-10,"PAP":45},"allies":["PAP"]},"PRU":{"name":"Prussia","adj":"Prussian","pre":"Prusso","color":"#5e6573","people":"German","ambition":"ger","hawk":0.85,"patience":0.8,"starts":true,"army":50},"AUS":{"name":"Austria","adj":"Austrian","pre":"Austro","color":"#cdb36a","people":"German","ambition":"ger","hawk":0.45,"patience":0.45,"starts":true,"army":60,"relations":{"SAR":-35,"SIC":45},"allies":["SIC"]},"RUS":{"name":"Russia","adj":"Russian","pre":"Russo","color":"#6b8a4f","people":"Russian","ambition":"rich","hawk":0.7,"patience":0.3,"starts":true,"army":90,"relations":{"TUR":-45,"AUS":25,"PRU":20},"serfs":true},"TUR":{"name":"Ottoman Empire","adj":"Ottoman","pre":"Turco","color":"#4b8b84","people":"Turkish","accepts":["Bosniak"],"ambition":"rich","hawk":0.35,"patience":0.2,"starts":true,"army":50},"SPA":{"name":"Spain","adj":"Spanish","pre":"Hispano","color":"#d4a043","people":"Spanish","ambition":"ibe","hawk":0.3,"patience":0.3,"starts":true,"army":25},"POR":{"name":"Portugal","adj":"Portuguese","pre":"Luso","color":"#8aa86a","people":"Portuguese","ambition":"ibe","hawk":0.2,"patience":0.3,"starts":true,"army":8},"NET":{"name":"Netherlands","adj":"Dutch","pre":"Dutch","color":"#de8a3e","people":"Dutch","ambition":"survive","hawk":0.25,"patience":0.7,"starts":true,"army":10},"BEL":{"name":"Belgium","adj":"Belgian","pre":"Belgo","color":"#a38c55","people":"Belgian","ambition":"survive","hawk":0.15,"patience":0.85,"starts":true,"army":8},"DEN":{"name":"Denmark","adj":"Danish","pre":"Dano","color":"#b06a62","people":"Danish","ambition":"sca","hawk":0.3,"patience":0.5,"starts":true,"army":10,"relations":{"PRU":-15}},"SWE":{"name":"Sweden","adj":"Swedish","pre":"Swedo","color":"#6d9fc8","people":"Swedish","accepts":["Norwegian"],"ambition":"sca","hawk":0.3,"patience":0.55,"starts":true,"army":15},"HAN":{"name":"Hanover","adj":"Hanoverian","color":"#c3b05b","people":"German","ambition":"survive","hawk":0.2,"patience":0.5,"starts":true,"army":8},"HES":{"name":"Hesse","adj":"Hessian","color":"#9d82a8","people":"German","ambition":"survive","hawk":0.2,"patience":0.5,"starts":true,"army":5},"SAX":{"name":"Saxony","adj":"Saxon","color":"#7d9a8b","people":"German","ambition":"survive","hawk":0.2,"patience":0.6,"starts":true,"army":8},"BAV":{"name":"Bavaria","adj":"Bavarian","color":"#8eb2d6","people":"German","ambition":"ger","hawk":0.3,"patience":0.5,"starts":true,"army":15},"WUR":{"name":"Württemberg","adj":"Württemberg","color":"#c69a6e","people":"German","ambition":"survive","hawk":0.2,"patience":0.5,"starts":true,"army":7},"SWI":{"name":"Switzerland","adj":"Swiss","color":"#a4465c","people":"Swiss","ambition":"survive","hawk":0.05,"patience":0.6,"starts":true,"army":6,"federal":"the Federal Council"},"SAR":{"name":"Sardinia","adj":"Sardinian","pre":"Sardo","color":"#9fbd6c","people":"Italian","ambition":"ita","hawk":0.75,"patience":0.5,"starts":true,"army":20},"TUS":{"name":"Tuscany","adj":"Tuscan","color":"#b6a06b","people":"Italian","ambition":"ita","hawk":0.1,"patience":0.4,"starts":true,"army":4},"PAP":{"name":"Papal States","adj":"Papal","color":"#ece1bb","people":"Italian","ambition":"survive","hawk":0.05,"patience":0.2,"starts":true,"army":5,"noAnnex":1,"rulerNames":["Gregory","Pius","Leo"]},"SIC":{"name":"Two Sicilies","adj":"Neapolitan","color":"#c58b8b","people":"Italian","ambition":"ita","hawk":0.35,"patience":0.25,"starts":true,"army":20},"GRE":{"name":"Greece","adj":"Greek","pre":"Greco","color":"#6ea4c8","people":"Greek","ambition":"gre","hawk":0.6,"patience":0.3,"starts":true,"army":6,"relations":{"TUR":-55}},"SER":{"name":"Serbia","adj":"Serbian","pre":"Serbo","color":"#a35d5d","people":"Serb","ambition":"yug","hawk":0.65,"patience":0.25,"starts":true,"army":6,"relations":{"TUR":-40}},"POL":{"name":"Poland","adj":"Polish","pre":"Polono","color":"#c45a6c","people":"Polish","ambition":"pol","hawk":0.65,"patience":0.45,"starts":false},"HUN":{"name":"Hungary","adj":"Hungarian","pre":"Magyar","color":"#a07d50","people":"Hungarian","ambition":"hun","hawk":0.6,"patience":0.45,"starts":false},"ROM":{"name":"Romania","adj":"Romanian","pre":"Romano","color":"#d6b84c","people":"Romanian","ambition":"rom","hawk":0.5,"patience":0.4,"starts":false},"BUL":{"name":"Bulgaria","adj":"Bulgarian","pre":"Bulgaro","color":"#7e9b58","people":"Bulgarian","ambition":"bul","hawk":0.65,"patience":0.35,"starts":false},"IRE":{"name":"Ireland","adj":"Irish","pre":"Hiberno","color":"#5aa46d","people":"Irish","ambition":"survive","hawk":0.5,"patience":0.4,"starts":false},"NOR":{"name":"Norway","adj":"Norwegian","pre":"Norwego","color":"#b46a6a","people":"Norwegian","ambition":"sca","hawk":0.4,"patience":0.5,"starts":false},"FIN":{"name":"Finland","adj":"Finnish","pre":"Finno","color":"#c9d6de","people":"Finnish","ambition":"survive","hawk":0.4,"patience":0.5,"starts":false},"CZE":{"name":"Bohemia","adj":"Bohemian","pre":"Czecho","color":"#8b6fa1","people":"Czech","ambition":"survive","hawk":0.4,"patience":0.5,"starts":false},"CRO":{"name":"Croatia","adj":"Croatian","pre":"Croato","color":"#c47e68","people":"Croat","ambition":"yug","hawk":0.55,"patience":0.4,"starts":false},"LIT":{"name":"Lithuania","adj":"Lithuanian","pre":"Lithuano","color":"#c8a55a","people":"Lithuanian","ambition":"pol","hawk":0.5,"patience":0.4,"starts":false},"UKR":{"name":"Ukraine","adj":"Ukrainian","pre":"Ukraino","color":"#2f86e6","people":"Ukrainian","ambition":"ukr","hawk":0.6,"patience":0.35,"starts":false},"BAL":{"name":"Baltic Republic","adj":"Baltic","pre":"Balto","color":"#9bb0a0","people":"Baltic","ambition":"survive","hawk":0.4,"patience":0.45,"starts":false},"ALB":{"name":"Albania","adj":"Albanian","pre":"Albano","color":"#9f515b","people":"Albanian","ambition":"survive","hawk":0.6,"patience":0.3,"starts":false},"BOS":{"name":"Bosnia","adj":"Bosnian","pre":"Bosno","color":"#8b916b","people":"Bosniak","ambition":"yug","hawk":0.55,"patience":0.35,"starts":false},"ITA":{"name":"Italian Republic","adj":"Italian","pre":"Italo","color":"#9fbd6c","people":"Italian","ambition":"ita","hawk":0.6,"patience":0.35,"starts":false},"SCO":{"name":"Scotland","adj":"Scottish","pre":"Scoto","color":"#6d7fb0","people":"Scottish","ambition":"survive","hawk":0.5,"patience":0.45,"starts":false}},"peoples":{"Scottish":{"names":["James","Robert"]},"English":{"names":["William","Victoria","Edward","George","Albert","Mary"]},"Irish":{"names":["Daniel","Charles"]},"French":{"names":["Louis","Charles","Napoléon","Henri","Philippe"]},"German":{"names":["Friedrich","Wilhelm","Ludwig","Otto","Maximilian","Karl","Franz","Joseph"]},"Spanish":{"names":["Isabella","Alfonso","Ferdinand","Amadeo"]},"Portuguese":{"names":["Maria","Pedro","Luís","Carlos","Manuel"]},"Dutch":{"names":["Willem","Wilhelmina","Emma"]},"Belgian":{"names":["Leopold","Albert"]},"Danish":{"names":["Frederik","Christian"]},"Swedish":{"names":["Karl","Oscar","Gustaf"]},"Norwegian":{"names":["Haakon","Olav"]},"Polish":{"names":["Jan","Stanisław","Józef"]},"Swiss":{},"Czech":{"names":["František","Tomáš"]},"Hungarian":{"names":["Lajos","István","Ferenc"]},"Italian":{"names":["Carlo Alberto","Vittorio Emanuele","Umberto","Ferdinando","Francesco","Leopoldo"]},"Croat":{"names":["Josip","Ante"]},"Romanian":{"names":["Alexandru","Carol","Ferdinand"]},"Russian":{"names":["Nicholas","Alexander","Paul","Peter","Michael"]},"Ukrainian":{"names":["Mykhailo","Taras"]},"Lithuanian":{"names":["Antanas","Jonas"]},"Baltic":{"names":["Kārlis","Konstantin"]},"Finnish":{"names":["Kaarlo","Pehr"]},"Turkish":{"names":["Mahmud","Abdülmecid","Abdülaziz","Murad","Abdülhamid","Mehmed"]},"Bulgarian":{"names":["Alexander","Ferdinand","Boris"]},"Bosniak":{"names":["Husein","Ali"]},"Albanian":{"names":["Skanderbeg","Ismail"]},"Greek":{"names":["Otto","George","Constantine"]},"Serb":{"names":["Miloš","Mihailo","Milan","Aleksandar","Petar"]}},"provinces":{"sco":{"name":"Scotland","lon":-4,"lat":56.6,"owner":"GBR","people":"Scottish","pop":2.6,"industry":2},"nth":{"name":"Northern England","lon":-1.6,"lat":54,"owner":"GBR","people":"English","pop":6,"industry":3},"lon":{"name":"London","lon":-0.6,"lat":51.6,"owner":"GBR","people":"English","pop":8,"industry":3},"ire":{"name":"Ireland","lon":-8,"lat":53.2,"owner":"GBR","people":"Irish","pop":8,"industry":0},"par":{"name":"Paris","lon":2.3,"lat":48.9,"owner":"FRA","people":"French","pop":7,"industry":2},"bri":{"name":"Brittany","lon":-2.9,"lat":48,"owner":"FRA","people":"French","pop":4,"industry":1},"aqu":{"name":"Aquitaine","lon":-0.3,"lat":44.6,"owner":"FRA","people":"French","pop":5,"industry":1},"lan":{"name":"Languedoc","lon":2.6,"lat":43.9,"owner":"FRA","people":"French","pop":4,"industry":1},"pro":{"name":"Provence","lon":5.9,"lat":43.8,"owner":"FRA","people":"French","pop":3,"industry":1},"lyo":{"name":"Lyonnais","lon":4.6,"lat":46.1,"owner":"FRA","people":"French","pop":5,"industry":1},"lor":{"name":"Lorraine","lon":5.7,"lat":49,"owner":"FRA","people":"French","pop":3,"industry":2},"als":{"name":"Alsace","lon":7.6,"lat":48.3,"owner":"FRA","people":"German","pop":1.2,"industry":2},"cas":{"name":"Castile","lon":-3.7,"lat":40.4,"owner":"SPA","people":"Spanish","pop":5,"industry":0},"cat":{"name":"Catalonia","lon":1.4,"lat":41.8,"owner":"SPA","people":"Spanish","pop":2,"industry":1},"and":{"name":"Andalusia","lon":-4.8,"lat":37.5,"owner":"SPA","people":"Spanish","pop":3.5,"industry":0},"gal":{"name":"Galicia","lon":-7.8,"lat":42.7,"owner":"SPA","people":"Spanish","pop":2,"industry":0},"por":{"name":"Portugal","lon":-8.6,"lat":39.5,"owner":"POR","people":"Portuguese","pop":3.5,"industry":0},"hol":{"name":"Holland","lon":5,"lat":52.4,"owner":"NET","people":"Dutch","pop":2.6,"industry":2},"bel":{"name":"Flanders","lon":4.3,"lat":50.7,"owner":"BEL","people":"Belgian","pop":4,"industry":2},"jut":{"name":"Jutland","lon":9.4,"lat":56.2,"owner":"DEN","people":"Danish","pop":1.4,"industry":1},"sch":{"name":"Schleswig-Holstein","lon":9.8,"lat":54.2,"owner":"DEN","people":"German","pop":0.8,"industry":1},"sve":{"name":"Svealand","lon":17.5,"lat":59.6,"owner":"SWE","people":"Swedish","pop":1.6,"industry":1},"got":{"name":"Götaland","lon":13.6,"lat":57.2,"owner":"SWE","people":"Swedish","pop":1.4,"industry":1},"nor":{"name":"Norway","lon":9.5,"lat":60.8,"owner":"SWE","people":"Norwegian","pop":1.2,"industry":0},"bra":{"name":"Brandenburg","lon":13.4,"lat":52.4,"owner":"PRU","people":"German","pop":2.5,"industry":2},"pom":{"name":"Pomerania","lon":15,"lat":53.9,"owner":"PRU","people":"German","pop":1.5,"industry":1},"epr":{"name":"East Prussia","lon":20.8,"lat":54.4,"owner":"PRU","people":"German","pop":2,"industry":1},"sil":{"name":"Silesia","lon":16.8,"lat":50.9,"owner":"PRU","people":"German","pop":3,"industry":2},"rhi":{"name":"Rhineland","lon":6.9,"lat":50.7,"owner":"PRU","people":"German","pop":2.8,"industry":2},"wes":{"name":"Westphalia","lon":8,"lat":52,"owner":"PRU","people":"German","pop":1.5,"industry":2},"pos":{"name":"Posen","lon":17.4,"lat":52.6,"owner":"PRU","people":"Polish","pop":1.2,"industry":0},"han":{"name":"Hanover","lon":10,"lat":52.8,"owner":"HAN","people":"German","pop":1.7,"industry":1},"hes":{"name":"Hesse","lon":9.2,"lat":50.4,"owner":"HES","people":"German","pop":1.3,"industry":1},"sax":{"name":"Saxony","lon":12.6,"lat":51,"owner":"SAX","people":"German","pop":1.6,"industry":2},"bav":{"name":"Bavaria","lon":11.7,"lat":48.6,"owner":"BAV","people":"German","pop":4,"industry":1},"wur":{"name":"Württemberg","lon":9,"lat":48.6,"owner":"WUR","people":"German","pop":1.6,"industry":1},"swi":{"name":"Switzerland","lon":8,"lat":46.8,"owner":"SWI","people":"Swiss","pop":2.2,"industry":1},"vie":{"name":"Austria","lon":15.8,"lat":47.9,"owner":"AUS","people":"German","pop":4,"industry":1},"tyr":{"name":"Tyrol","lon":11.6,"lat":47.1,"owner":"AUS","people":"German","pop":1,"industry":0},"boh":{"name":"Bohemia","lon":14.5,"lat":49.9,"owner":"AUS","people":"Czech","pop":4,"industry":1},"hun":{"name":"Hungary","lon":19.4,"lat":47.3,"owner":"AUS","people":"Hungarian","pop":9,"industry":0},"gli":{"name":"Lemberg","lon":22.6,"lat":49.9,"owner":"AUS","people":"Polish","pop":4.5,"industry":0},"lom":{"name":"Lombardy","lon":9.6,"lat":45.4,"owner":"AUS","people":"Italian","pop":2.5,"industry":1},"ven":{"name":"Venetia","lon":12.2,"lat":45.7,"owner":"AUS","people":"Italian","pop":2,"industry":1},"cro":{"name":"Croatia","lon":16,"lat":45.4,"owner":"AUS","people":"Croat","pop":1.5,"industry":0},"trn":{"name":"Transylvania","lon":24,"lat":46.6,"owner":"AUS","people":"Romanian","pop":2,"industry":0},"pie":{"name":"Piedmont","lon":7.6,"lat":44.8,"owner":"SAR","people":"Italian","pop":3.5,"industry":1},"tus":{"name":"Tuscany","lon":11.2,"lat":43.5,"owner":"TUS","people":"Italian","pop":1.6,"industry":1},"rom":{"name":"Papal States","lon":12.8,"lat":42.3,"owner":"PAP","people":"Italian","pop":2.8,"industry":0},"nap":{"name":"Naples","lon":15.2,"lat":40.8,"owner":"SIC","people":"Italian","pop":5,"industry":0},"sic":{"name":"Sicily","lon":14.2,"lat":37.5,"owner":"SIC","people":"Italian","pop":2,"industry":0},"spb":{"name":"St Petersburg","lon":30.3,"lat":59.6,"owner":"RUS","people":"Russian","pop":3,"industry":1},"vol":{"name":"Vologda","lon":37.5,"lat":60.6,"owner":"RUS","people":"Russian","pop":2,"industry":0},"mos":{"name":"Moscow","lon":37.5,"lat":55.8,"owner":"RUS","people":"Russian","pop":8,"industry":0},"vlg":{"name":"Volga","lon":41.5,"lat":52.5,"owner":"RUS","people":"Russian","pop":6,"industry":0},"blr":{"name":"Belarus","lon":28,"lat":53.5,"owner":"RUS","people":"Russian","pop":3,"industry":0},"kie":{"name":"Ukraine","lon":30.8,"lat":50.4,"owner":"RUS","people":"Ukrainian","pop":8,"industry":0},"don":{"name":"Don","lon":39.5,"lat":47.8,"owner":"RUS","people":"Russian","pop":3,"industry":0},"cau":{"name":"Caucasus","lon":41.5,"lat":44,"owner":"RUS","people":"Russian","pop":2,"industry":0},"cri":{"name":"Crimea","lon":34,"lat":45.2,"owner":"RUS","people":"Russian","pop":1,"industry":0},"bes":{"name":"Bessarabia","lon":29,"lat":47.2,"owner":"RUS","people":"Romanian","pop":0.8,"industry":0},"pol":{"name":"Poland","lon":21,"lat":52.3,"owner":"RUS","people":"Polish","pop":4,"industry":0},"lit":{"name":"Lithuania","lon":24,"lat":55,"owner":"RUS","people":"Lithuanian","pop":3,"industry":0},"liv":{"name":"Livonia","lon":25.5,"lat":57.8,"owner":"RUS","people":"Baltic","pop":1.6,"industry":0},"fin":{"name":"Finland","lon":25,"lat":61.6,"owner":"RUS","people":"Finnish","pop":1.4,"industry":0},"con":{"name":"Constantinople","lon":28.9,"lat":41.1,"owner":"TUR","people":"Turkish","pop":3,"industry":0},"ana":{"name":"Anatolia","lon":32.5,"lat":39.2,"owner":"TUR","people":"Turkish","pop":8,"industry":0},"bul":{"name":"Bulgaria","lon":25.2,"lat":42.8,"owner":"TUR","people":"Bulgarian","pop":3,"industry":0},"wal":{"name":"Wallachia","lon":25.6,"lat":44.6,"owner":"TUR","people":"Romanian","pop":2.4,"industry":0},"mol":{"name":"Moldavia","lon":27,"lat":46.8,"owner":"TUR","people":"Romanian","pop":1.4,"industry":0},"bos":{"name":"Bosnia","lon":17.9,"lat":44.1,"owner":"TUR","people":"Bosniak","pop":1.2,"industry":0},"mac":{"name":"Macedonia","lon":22,"lat":41.4,"owner":"TUR","people":"Bulgarian","pop":1.5,"industry":0},"alb":{"name":"Albania","lon":20,"lat":41,"owner":"TUR","people":"Albanian","pop":1,"industry":0},"the":{"name":"Thessaly","lon":22.2,"lat":39.6,"owner":"TUR","people":"Greek","pop":1,"industry":0},"ath":{"name":"Greece","lon":22.6,"lat":37.9,"owner":"GRE","people":"Greek","pop":0.8,"industry":0},"ser":{"name":"Serbia","lon":20.9,"lat":44,"owner":"SER","people":"Serb","pop":0.8,"industry":0}},"rarities":[{"name":"Common","color":"#cfd3d8","odds":0.46},{"name":"Uncommon","color":"#6cc070","odds":0.3},{"name":"Rare","color":"#5b9be6","odds":0.15},{"name":"Epic","color":"#a678e8","odds":0.08},{"name":"Legendary","color":"#f0c24b","odds":0.01}],"rulebook":{"The age":["The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.","The Great War breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."],"Heirs":["Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game."],"Reigns":["A reign lasts {rules.reign.years.0} to {rules.reign.years.1} years if nothing ends it sooner.","When a ruler leaves no heir, {rules.reign.regency} rules for {rules.reign.regencyYears.0} to {rules.reign.regencyYears.1} years.","Each year a ruler has a {rules.reign.murder|pct} chance of being assassinated, {rules.reign.hatedMurder|times} that if he is hated.","A ruler beaten in a war he started, or one that cost him land, abdicates {rules.reign.abdicate|pct} of the time.","Besides the rulers whose death always brings one, {rules.reign.crisis|pct} of successions end in civil war, which lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.","In a nation whose unrest is above {rules.reign.coupUnrest}, the army stages a coup in {rules.reign.coup|pct} of seasons.","A ruler plans at least {rules.horizon.min} years ahead, and up to {rules.horizon.span} more the more patient he is."],"Armies":["Every soldier is a worker lost: an army of {rules.workers}k men per million people would empty the fields and factories.","A legendary conqueror raises a great army when crowned: {rules.levy.army|times} the one he inherits, or {rules.levy.perMillion}k men per million people if that is more. Each of his men takes {rules.workers/rules.levy.workers|frac} as many workers from the fields."],"Building":["A factory takes {rules.build.factory|word} seasons to build, a fortress {rules.build.fort|word}.","Reforms cost {rules.reform.cost} gold and take away {rules.reform.calm} unrest; they can be passed again after {rules.reform.wait|years}."],"Unrest and war":["A province with unrest of {rules.unrest.restless} or more is restless; at {rules.unrest.uprising} or more it can rise.","Weighing a war, a ruler counts {rules.settle|pct} of the time a conquest takes to become integrated."],"New nations":["A nation born in an uprising starts with {rules.newNation.gold} gold and an army of {rules.newNation.armyPerMillion}k men per million people. It leans to war and plans ahead as its own entry says.","Its relations with the nation it broke from start at {rules.newNation.hostility}, but the two keep the peace for {rules.newNation.truce|span}. A great power on bad terms with the old ruler may guarantee its independence for {rules.newNation.guarantee|span}.","When an uprising wins, the province's own fallen nation comes back if it was of the same people. Otherwise the people rises as its nation that was not on the map in {rules.start}, or else as its only nation. A people with several nations and none of them new, like the Germans, finds no allies."]},"rulers":{"warmonger":{"tier":2,"label":"Warmonger","epi":"the Warlike","vibe":"Wants to bathe in the blood of his enemies.","desc":"Values conquered land {fx.land|up} more and shrugs off neighbours' distrust","fx":{"land":1.5,"distrust":0.5}},"builder":{"tier":2,"label":"Builder","epi":"the Builder","vibe":"Talks of nothing but coal, iron and railways.","desc":"Factories cost {fx.factoryCost|down} less","fx":{"factoryCost":0.7}},"paranoid":{"tier":1,"label":"Paranoid","epi":"the Suspicious","vibe":"Sleeps with a pistol and trusts no neighbour.","desc":"Sees every threat as {fx.threat|times} as large","fx":{"threat":1.8}},"revanchist":{"tier":2,"label":"Revanchist","epi":"the Avenger","vibe":"Has sworn to take back every acre ever lost.","desc":"Values winning back lost provinces {fx.revenge|x}","fx":{"revenge":2}},"spendthrift":{"tier":1,"label":"Spendthrift","epi":"the Magnificent","vibe":"Wants wine, opera and a new palace every spring.","desc":"Wastes {fx.waste|pct} of all gold on the court, and spends the rest freely","temper":{"thrift":0.15},"fx":{"waste":0.15}},"reformer":{"tier":2,"label":"Reformer","epi":"the Liberal","vibe":"Reads the liberal papers, and agrees with them.","desc":"Reforms cost {fx.reformCost/rules.reform.cost|frac} and calm more unrest","fx":{"reformCost":10,"reformCalm":26,"reformWait":10}},"soldier":{"tier":3,"label":"Soldier King","epi":"the Soldier","vibe":"Happiest on a horse at the head of a column.","desc":"His armies fight {fx.fight|harder} but lose {fx.bleed|times} as many men","fx":{"fight":1.25,"bleed":1.5}},"cautious":{"tier":1,"label":"Cautious","epi":"the Careful","vibe":"Never risks a man he cannot spare.","desc":"Loses ground less often in war, and gains it less often","fx":{"hold":0.4}},"arbiter":{"tier":2,"label":"Arbiter","epi":"the Peacemaker","vibe":"Loves a conference more than a battle.","desc":"Values alliances {fx.allies|x} and is paid to broker peace between his neighbours","fx":{"allies":2,"broker":0.08,"brokerAfter":6,"brokerScore":50,"fee":0.1,"feeCap":15}},"shrewd":{"tier":3,"label":"Shrewd","epi":"the Shrewd","vibe":"Reads every dispatch twice.","desc":"Sees his odds in war exactly as they are","temper":{"bias":0}},"admirer":{"tier":2,"label":"Admirer","epi":"the Courtier","vibe":"Dresses, dines and thinks like a foreign court.","desc":"Close friend of {friend}, and joins every war it fights","fx":{"friendship":60,"join":0.9}},"tolerant":{"tier":3,"label":"Tolerant","epi":"the Just","vibe":"Sees no difference between his peoples.","desc":"Accepts the {culture} people as his own, for good: their provinces calm down"},"chauvinist":{"tier":2,"label":"Chauvinist","epi":"the Proud","vibe":"Thinks only his own people are fit to rule.","desc":"Provinces of his own people pay {fx.ownPeople|up} more; stops accepting the {culture}, for good","fx":{"ownPeople":1.1,"hated":true}},"miser":{"tier":1,"label":"Miser","epi":"the Thrifty","vibe":"Counts the candles in the palace.","desc":"Values gold {temper.thrift|thrift|times} over: the hoard grows, little gets built","temper":{"thrift":1}},"dynast":{"tier":3,"label":"Dynast","epi":"the Wise","vibe":"Rules for his great-grandchildren.","desc":"Plans {fx.horizon} years ahead and borrows to build factories","temper":{"pat":0.95,"bias":-0.2},"fx":{"horizon":40,"borrow":40}},"bold":{"tier":2,"label":"Bold","epi":"the Bold","vibe":"A gambler at cards, in love and in war.","desc":"Plans only {temper.pat|horizon} years ahead and thinks he will win every war","temper":{"pat":0.02,"bias":0.35}},"drunk":{"tier":1,"label":"Drunkard","epi":"the Drunkard","vibe":"Never seen before noon.","desc":"Misjudges his odds in war, differently every season","fx":{"misjudge":0.9}},"mad":{"tier":1,"label":"Mad","epi":"the Mad","vibe":"Talks to the portraits in the gallery.","desc":"Takes on a new quirk every few years{mood}","fx":{"changeEvery":12}},"lecher":{"tier":1,"label":"Lecher","epi":"the Charming","vibe":"Has a mistress in every palace in Europe.","desc":"Charms every neighbour, but his bastards fight for the throne when he dies","fx":{"charm":15,"crisis":"bastard"}},"child":{"tier":1,"label":"Child King","epi":"the Young","vibe":"Six years old, and already bored.","desc":"A regent with a random quirk rules until he comes of age; then anything can happen{mood}","fx":{"ofAge":[16,44],"incompetent":0.15}},"incompetent":{"tier":1,"label":"Incompetent","epi":"the Unready","vibe":"Cannot tell a map from a menu.","desc":"The whole nation earns {fx.earns|down} less","card":false,"fx":{"earns":0.88}},"usurper":{"tier":1,"label":"Usurper","epi":"the Usurper","vibe":"Seized the throne with the army behind him.","desc":"Unrest everywhere until he wins a war","card":false,"fx":{"unrest":10,"keepGold":0.7,"calm":15,"legitimacy":0.06,"hated":true}},"conqueror":{"tier":4,"label":"Conqueror","epi":"the Conqueror","vibe":"Means to redraw the map of Europe.","desc":"His armies fight {fx.fight|harder}; every neighbour distrusts him, and his death brings civil war","fx":{"fight":1.4,"distrusted":30,"infamy":10,"crisis":true,"hated":true}},"genius":{"tier":4,"label":"Genius","epi":"the Great","vibe":"Speaks nine languages and designs his own engines.","desc":"Factories cost {fx.factoryCost|frac} and go up {rules.build.factory/fx.buildTime|times} as fast; he leaves no heir, so a council rules after him","fx":{"factoryCost":0.5,"buildTime":2}},"architect":{"tier":4,"label":"Great Builder","epi":"the Architect","vibe":"Sees the future in marble and iron.","desc":"Raises {landmark}; leaves no gold behind when he dies","temper":{"thrift":0.2},"fx":{"works":20}},"liberator":{"tier":4,"label":"Liberator","epi":"the Liberator","vibe":"Would free every serf and every people.","desc":"Accepts every people of the realm, for good; the nobles plot a coup","fx":{"coup":0.02,"hated":true}},"saint":{"tier":4,"label":"Saint","epi":"the Saint","vibe":"Prays for his enemies, and means it.","desc":"No unrest while he lives, but he starts no wars and helps no ally","fx":{"calm":8}},"iron":{"tier":4,"label":"Iron King","epi":"the Iron","vibe":"Has never pardoned anyone.","desc":"Crushes uprisings and integrates conquests {fx.integrate|times} as fast; when he dies, his subject peoples rise","fx":{"garrison":3,"integrate":2,"settle":0.3,"rise":30,"hated":true}},"navigator":{"tier":4,"label":"Navigator","epi":"the Navigator","vibe":"Happier on a quarterdeck than a throne.","desc":"Sea trade pays {fx.trade|times} and invading across the sea is easy, but the fleet {fx.upkeep|xs} army upkeep","fx":{"trade":1.5,"upkeep":2}},"chancellor":{"tier":5,"label":"Iron Chancellor","epi":"the Unifier","vibe":"Decides the great questions of the day by blood and iron.","desc":"Raises a great army that fights {fx.fight|times} as hard, one enemy at a time, and keeps all the land he wins. When he dies, his conquests rise","temper":{"pat":0.8,"bias":0},"fx":{"fight":2,"levy":true,"isolates":true,"keepsAll":true,"rise":40,"integration":0.3,"crisis":true}},"destiny":{"tier":5,"label":"Man of Destiny","epi":"the Lion","vibe":"Has never lost a battle he chose to fight.","desc":"Raises a great army that fights {fx.fight|times} as hard and keeps all the land it wins. When he dies, his conquests rise","temper":{"pat":0.6,"bias":0.4},"fx":{"fight":3,"levy":true,"keepsAll":true,"rise":40,"integration":0.3,"crisis":true}},"prophet":{"tier":5,"label":"Prophet","epi":"the Prophet","vibe":"Thousands follow him wherever he rides.","desc":"Raises a great army that fights {fx.fight|times} as hard, and every people he conquers becomes his own at once. When he dies, they are foreigners again","temper":{"pat":0.7,"bias":0.25},"fx":{"fight":2.5,"levy":true,"converts":true,"crisis":true}},"sun":{"tier":5,"label":"Sun King","epi":"the Radiant","vibe":"The age will be named after him.","desc":"The whole nation earns {fx.earns|up} more while he lives. When he dies, the bill comes: {fx.debtYears|word} years of gold a year in debt","fx":{"earns":1.6,"debtYears":3,"crisis":true}}},"rules":{"start":1836,"end":{"year":1918,"season":3},"greatWar":{"year":1914,"season":2},"rerolls":3,"reign":{"years":[8,24],"regencyYears":[6,10],"regency":"the Regency Council","murder":0.01,"hatedMurder":3,"abdicate":0.5,"crisis":0.18,"crisisYears":[1,2.25],"coupUnrest":45,"coup":0.03,"crisisArmy":0.5},"horizon":{"min":8,"span":22},"build":{"factory":4,"fort":3},"reform":{"cost":20,"calm":18,"wait":16},"unrest":{"restless":40,"uprising":65},"settle":0.6,"workers":45,"levy":{"army":1.5,"perMillion":8,"workers":90},"newNation":{"gold":60,"armyPerMillion":6,"hostility":-60,"truce":15,"guarantee":25},"heirs":3},"temperaments":{"patience":{"high":[0.6,"far-sighted"],"low":[0.4,"short-sighted"],"mid":"steady"},"judgment":{"high":[0.15,"overconfident"],"low":[-0.15,"underconfident"],"mid":"clear-eyed"},"thrift":{"high":[1.4,"thrifty"],"low":[0.7,"lavish"],"mid":"balanced"}}};
+const CONTENT = {"ambitionKinds":{"richest":{"name":"Richest great power","heading":"Richest great power","desc":"Have the most gold a year of the great powers of {rules.start} when the war ends in autumn {rules.end.year}.","who":"The great powers of {rules.start} that have no people to unite. Only the richest of them meets it."},"unite":{"name":"Unite a people","heading":"Unite a people","desc":"Proclaim {the}{title} by holding {need} of its provinces, and still hold them in autumn {rules.end.year}.","who":"The nations of a divided people. The first to proclaim it takes its name, and the rest have lost.","worth":2,"proclaimText":"<strong>A people united.</strong> Holding {n} of its people's lands, {nation} is proclaimed.","joinText":"{nation} votes to join {by}."},"survive":{"name":"Survive","heading":"Survive","aside":"small and exposed","desc":"Still be on the map in autumn {rules.end.year}.","who":"Every other nation. All who are still on the map meet it.","losses":1.5}},"ambitions":{"rich":{"kind":"richest"},"survive":{"kind":"survive"},"ger":{"kind":"unite","title":"German Empire","adj":"German","pre":"German","peoples":["German"],"need":8,"from":1850,"provinces":["bra","pom","epr","sil","rhi","wes","han","hes","sax","bav","wur","vie","tyr","als","sch"]},"ita":{"kind":"unite","title":"Kingdom of Italy","adj":"Italian","pre":"Italo","peoples":["Italian"],"need":4,"from":1836,"provinces":["pie","lom","ven","tus","rom","nap","sic"]},"sca":{"kind":"unite","title":"Kalmar Union","adj":"Scandinavian","pre":"Scando","peoples":["Swedish","Norwegian","Danish"],"need":5,"from":1845,"provinces":["sve","got","nor","jut","fin"],"note":"The old union of the three northern crowns."},"ukr":{"kind":"unite","title":"Cossack Hetmanate","adj":"Ukrainian","pre":"Ukraino","peoples":["Ukrainian"],"need":3,"from":1836,"provinces":["kie","cri","bes","gli","don"],"note":"The Cossack state of the seventeenth century."},"rom":{"kind":"unite","title":"Dacia","art":"","adj":"Dacian","pre":"Daco","peoples":["Romanian"],"need":3,"from":1836,"provinces":["wal","mol","trn","bes"],"note":"The Roman province whose name the Romanian nationalists of the age gave to a united Romania."},"bul":{"kind":"unite","title":"Tsardom of Bulgaria","adj":"Bulgarian","pre":"Bulgaro","peoples":["Bulgarian"],"need":3,"from":1836,"provinces":["bul","mac","the"]},"gre":{"kind":"unite","title":"Byzantine Empire","adj":"Byzantine","pre":"Byzantino","peoples":["Greek"],"need":3,"from":1836,"provinces":["ath","the","mac","con"],"note":"The Great Idea: Constantinople Greek again."},"yug":{"kind":"unite","title":"Kingdom of Illyria","adj":"Illyrian","pre":"Illyro","peoples":["Serb","Croat","Bosniak"],"need":3,"from":1850,"provinces":["ser","bos","cro"],"note":"The Illyrian movement of the 1830s hoped for one South Slav nation."},"pol":{"kind":"unite","title":"Polish Commonwealth","adj":"Polish","pre":"Polono","peoples":["Polish","Lithuanian"],"need":3,"from":1836,"provinces":["pol","pos","gli","lit","blr"]},"ibe":{"kind":"unite","title":"Iberian Union","adj":"Iberian","pre":"Ibero","peoples":["Spanish","Portuguese"],"need":5,"from":1860,"provinces":["cas","cat","and","gal","por"]},"hun":{"kind":"unite","title":"Crown of St Stephen","adj":"Hungarian","pre":"Magyar","peoples":["Hungarian"],"need":3,"from":1836,"provinces":["hun","trn","cro"],"note":"The lands of the Hungarian crown."}},"concepts":{"gold":{"name":"Gold","desc":"Money in the bank. Pays for factories, fortresses, recruits and reforms.","avoid":["treasury","treasuries","savings"]},"goldYear":{"name":"Gold a year","desc":"Taxes, factory output and sea trade over a year. The great power with the most in autumn {rules.end.year} meets its ambition.","avoid":["income","score","/yr"]},"taxes":{"name":"Taxes","desc":"Gold the people pay. Falls with unrest, occupation and every man in the army."},"upkeep":{"name":"Army upkeep","desc":"Gold the army costs every season."},"trade":{"name":"Sea trade","desc":"Gold from coastal provinces. Lost while the nation is at war."},"save":{"name":"Save gold","desc":"The ministers keep the gold when nothing else is expected to pay."},"province":{"name":"Provinces","desc":"Land a nation holds. Each one costs a little to run."},"capital":{"name":"Capital","desc":"Where a nation is ruled from. Its army size shows here in wartime."},"pop":{"name":"People","desc":"How many live in a province or nation, in millions."},"culture":{"name":"Nationality","desc":"The people of a province. Under a ruler of another nationality they grow restless."},"settle":{"name":"Integrated","desc":"How far a conquered province has become part of its new nation. It pays little until fully integrated.","avoid":["settles","settled","integration"]},"occupied":{"name":"Occupied","desc":"Held by an enemy army. Pays its owner nothing until freed."},"sea":{"name":"Sea crossing","desc":"Two coastal provinces close enough to invade across the water."},"claim":{"name":"Claims","desc":"Nations that want a province: its old owner, its own people, or a nation uniting it."},"factory":{"name":"Factories","desc":"Produce gold every season. Each new one costs more and adds less."},"fort":{"name":"Fortress","desc":"Stops a share of enemy advances into the province. Razed if the province falls.","avoid":["forts","fort"]},"buildFactory":{"name":"Factory being built","desc":"A factory under construction. Takes {rules.build.factory|word} seasons."},"buildFort":{"name":"Fortress being built","desc":"A fortress under construction. Takes {rules.build.fort|word} seasons."},"build":{"name":"Construction","desc":"Gold spent this season on factories and fortresses."},"ruin":{"name":"Ruin","desc":"A factory or fortress destroyed in war."},"boom":{"name":"Boom","desc":"Coal is found or a railway arrives: the province suddenly pays more."},"reform":{"name":"Reforms","desc":"Laws that calm unrest for a while. Cost gold."},"unrest":{"name":"Unrest","desc":"Anger in a province ruled by another nationality. Cuts taxes; at {rules.unrest.uprising} or more it is close to an uprising.","avoid":["restlessness"]},"uprising":{"name":"Uprising","desc":"A province rises against its ruler and may break away or join its own people.","avoid":["revolt","revolts","rebellion"]},"army":{"name":"Army","desc":"Men under arms, in thousands. Deters attack and wins wars, but every man is a worker lost.","avoid":["soldiers","troops"]},"war":{"name":"War","desc":"Nations fighting over a province. Ends when one side wins or both are exhausted."},"battle":{"name":"Battle","desc":"Fighting in a province this season."},"front":{"name":"Front line","desc":"Where the two sides of a war hold land face to face."},"goal":{"name":"War goal","desc":"The province a war is being fought for."},"peace":{"name":"Peace","desc":"A war ends and land or gold changes hands."},"dead":{"name":"Dead","desc":"Lives lost in the fighting, in millions."},"ally":{"name":"Alliance","desc":"Nations bound to join each other's defensive wars."},"rival":{"name":"Biggest threat","desc":"The neighbour a nation fears most. It arms and allies against it."},"proclaim":{"name":"Proclamation","desc":"A divided people united: the nation that holds enough of its lands takes its new name, and the smaller nations of its people join it."},"ambition":{"name":"Ambition","desc":"What a nation must achieve by the armistice of autumn {rules.end.year}: be the richest great power, unite its people, or survive.","avoid":["objective","dream","dreams"]},"leader":{"name":"Leading nation","desc":"The nation with the most gold a year right now."},"ruler":{"name":"Ruler","desc":"Who decides for the nation, with his own patience, judgment, thrift and quirk.","avoid":["sovereign"]},"patience":{"name":"Patience","desc":"How many years ahead a ruler counts gains and costs."},"thrift":{"name":"Thrift","desc":"How dear a ruler holds his gold. A thrifty one hoards it and builds little; a lavish one spends it on factories, recruits and reforms.","avoid":["frugal","frugality"]},"judgment":{"name":"Judgment","desc":"Whether a ruler sees his odds in war as better or worse than they are."},"forecast":{"name":"Forecasts","desc":"What each option is worth in gold over the ruler's horizon. Positive ones are done, best first."},"civilWar":{"name":"Civil war","desc":"A disputed succession: rival claimants split the army, which fights at {rules.reign.crisisArmy|frac} strength.","avoid":["succession crisis"]},"coup":{"name":"Coup","desc":"The army deposes the ruler of a restless nation."},"event":{"name":"Event","desc":"Famines, epidemics, panics, booms and other turns of fortune."},"panel":{"name":"Side panel","desc":"Shows or hides the chronicle, rankings and details on the right."},"almanac":{"name":"Almanac","desc":"Every ruler, nation, people, ambition, event and rule in the game, read live from the game's own data (key A)."},"nation":{"name":"Nation","desc":"A realm on the map, with its own ruler, gold and army.","word":true,"avoid":["country","countries","states"]},"reroll":{"name":"Reroll","desc":"Deal {rules.heirs|word} new heirs instead of these (key R). {rules.rerolls|Word} free rerolls a game.","word":true},"rarity":{"name":"Rarity","desc":"How rare a ruler is, from Common to Legendary. The rarer he is, the more he can change the game.","word":true}},"effects":{"recruit":{"desc":"What raising the army costs (multiplier)","none":1},"upkeep":{"desc":"What the army costs to keep (multiplier)","none":1},"fight":{"desc":"How hard his army fights (multiplier)","none":1},"bleed":{"desc":"How many men his army loses in battle (multiplier)","none":1},"breakthrough":{"desc":"The advantage his army needs to break through the enemy's lines in one battle (multiplier)","none":1},"hold":{"desc":"Share of enemy advances into his land that he stops","none":0},"homeFight":{"desc":"How hard his army fights in a war over his nation's own land (multiplier)","none":1},"garrison":{"desc":"How hard his army fights uprisings (multiplier)","none":1},"fortCost":{"desc":"What a fortress costs (multiplier)","none":1},"factoryCost":{"desc":"What a factory costs (multiplier)","none":1},"earns":{"desc":"Gold a year: taxes, factory output and sea trade (multiplier)","none":1},"taxes":{"desc":"Taxes (multiplier)","none":1},"ownTaxes":{"desc":"Taxes from his own people's provinces (multiplier)","none":1},"trade":{"desc":"Sea trade (multiplier)","none":1},"reformCalm":{"desc":"How much unrest reforms take away (multiplier)","none":1},"reformCost":{"desc":"What reforms cost (multiplier)","none":1},"unrest":{"desc":"Unrest added everywhere during his reign","none":0},"unrestOwn":{"desc":"Unrest added in his own people's provinces during his reign","none":0},"unrestOther":{"desc":"Unrest added in other peoples' provinces during his reign","none":0},"bias":{"desc":"How much better he believes his odds in war are than they are","none":0},"swing":{"desc":"How far his belief about his odds in war swings, either way, redrawn every season","none":0},"sharp":{"desc":"Share of his misjudgment of his odds in war that he sees through","none":0},"horizon":{"desc":"Years added to how far ahead he plans","none":0},"integrate":{"desc":"How fast conquests become integrated (multiplier)","none":1},"integrateOther":{"desc":"How fast other peoples' provinces become integrated (multiplier)","none":1},"army":{"desc":"Thousands of men added to the army at his coronation","none":0},"gold":{"desc":"Gold added at his coronation","none":0},"factoryCapital":{"desc":"Factories added in the capital at his coronation","none":0},"factoryRandom":{"desc":"Factories added in a random province at his coronation","none":0},"fortify":{"desc":"Random provinces fortified at his coronation","none":0},"calmAll":{"desc":"Unrest taken away everywhere at his coronation","none":0},"calmOwn":{"desc":"Unrest taken away in his own people's provinces at his coronation","none":0},"calmOther":{"desc":"Unrest taken away in other peoples' provinces at his coronation","none":0},"reforms":{"desc":"Free reforms passed at his coronation","none":0},"truce":{"desc":"Years of truce with every neighbour from his coronation","none":0},"rights":{"desc":"Random peoples of the realm accepted for good at his coronation","none":0},"province":{"desc":"Random bordering provinces that become his at his coronation","none":0},"endGold":{"desc":"Share of the gold he leaves that is spent when his reign ends","none":0},"civilWar":{"desc":"His reign always ends in civil war, adding this much unrest everywhere","none":0},"endUnrestOther":{"desc":"Unrest added in other peoples' provinces when his reign ends","none":0}},"eras":[{"name":"Napoleonic warfare","def":1.15,"fort":0.55,"start":true},{"name":"Rifled muskets and railways favour the attacker","def":0.95,"fort":0.35},{"name":"Entrenchments and breech-loaders favour the defender","def":1.4,"fort":0.7},{"name":"Mass conscription and artillery favour the attacker","def":1,"fort":0.4},{"name":"Machine guns and barbed wire favour the defender","def":1.5,"fort":0.75}],"events":{"springtime":{"name":"The Springtime of Nations","year":1848,"season":1,"unrest":40,"text":"<strong>The Springtime of Nations.</strong> Revolution sweeps the continent; unrest soars everywhere."},"famine":{"name":"The Great Famine","years":[1845,1849],"chance":0.35,"province":"ire","pop":0.75,"unrest":30,"text":"The Great Famine devastates {province}: {pop|inv|frac} of its people die or emigrate."},"cholera":{"name":"Cholera","chance":0.06,"nations":3,"pop":0.95,"unrest":8,"text":"Cholera spreads through {nations}; {pop|inv|frac} dies."},"railway":{"name":"Railway mania","from":1840,"chance":0.2,"lasts":10,"cost":0.7,"text":"Railway mania: for {lasts|span}, factories cost {cost|down} less."},"panic":{"name":"The Panic","years":[1870,1878],"chance":0.3,"gold":0.5,"earns":0.8,"seasons":12,"unrest":10,"text":"<strong>The Panic.</strong> Banks fail across Europe: every nation loses {gold|inv|frac} its gold and earns {earns|inv|frac} less for {seasons|years}."},"compromise":{"name":"The Compromise","from":1860,"chance":0.4,"nation":"AUS","province":"hun","people":"Hungarian","unrest":40,"calm":15,"newName":"Austria-Hungary","newAdj":"Austro-Hungarian","text":"The Compromise: {nation} becomes a dual monarchy, and Hungary is calmed."},"serfdom":{"name":"The serfs are freed","from":1855,"chance":0.15,"nation":"RUS","provinces":["mos","spb"],"factories":1,"before":0.5,"text":"{nation} frees the serfs; workers pour into the factories of Moscow and St Petersburg."},"incident":{"name":"Border incident","chance":0.3,"relations":-25,"text":"A border incident sours relations between {a} and {b}."},"marriage":{"name":"Royal marriage","chance":0.1,"relations":25,"text":"A royal marriage links {a} and {b}."},"harvest":{"name":"Failed harvest","season":2,"chance":0.32,"unrest":18,"text":"A failed harvest brings bread riots to {nation}."},"shevchenko":{"name":"Ukrainian national awakening","years":[1840,1852],"chance":0.3,"people":"Ukrainian","awake":14,"text":"Shevchenko's poems spark a <strong>Ukrainian national awakening</strong>; unrest grows in Ukrainian lands."},"awakening":{"name":"National awakening","from":1845,"chance":0.07,"awake":10,"peoples":["Polish","Czech","Hungarian","Romanian","Bulgarian","Finnish","Irish","Croat","Lithuanian","Baltic","Norwegian","Albanian","Greek","Serb"],"text":"A national awakening stirs the {people} people; their provinces grow restless."},"revolution":{"name":"Military revolution","every":12,"chance":0.12,"text":"<strong>Military revolution.</strong> {era}: every war forecast in Europe shifts."},"boom":{"name":"Boom","from":1845,"chance":0.15,"factories":2,"pop":1.1,"finds":["Coal is found","A railway junction booms","Iron mines open"],"text":"{find} in {province} ({nation}): {factories|word} factories' worth of industry overnight."},"ultimatum":{"name":"Ultimatum","chance":0.25,"margin":35,"rattle":0.35,"backDown":0.45,"pay":0.2,"unrest":8,"relations":-20,"pretexts":["a border post","a newspaper insult","a railway concession","a royal snub"],"rattleText":"{a} rattles its sabre at {b} over {pretext}, then thinks better of it.","text":"<strong>Crisis.</strong> {a} sends {b} an ultimatum. {b} backs down, humiliated, and pays {gold} gold.","warText":"<strong>Crisis.</strong> {a} sends {b} an ultimatum over {province}. {b} refuses, and the <em>{war}</em> begins."},"greatWar":{"name":"The Great War","text":"<strong>The lamps go out all over Europe.</strong> A shot in the Balkans sets the alliances in motion: {a} and {b} go to war. The <em>Great War</em> begins."},"armistice":{"name":"The Armistice","text":"<strong>Armistice.</strong> At the eleventh hour the guns fall silent; peace is made on the lines as they stand."},"opening":{"name":"Europe","text":"<strong>Europe, {rules.start}.</strong> {nations|Word} nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to unite its people, or just to survive."}},"map":{"seaPoints":[[-11,59],[-11,54],[-11,49],[-11,44],[-11,39],[-11,35],[-6,46],[-5.5,44.3],[-6.6,50.6],[-1.6,50.1],[-5,53.4],[-6.6,55.7],[-8,57.5],[-4,59.5],[1,59.5],[2.5,53.4],[3,56.5],[6.4,55],[0,57.5],[1.5,61.8],[-2,62],[8.6,57.9],[11.8,55.9],[15.6,55.4],[18.5,56.8],[20.5,58.6],[19.8,60.9],[21.5,62.6],[-2,36.1],[3,39.2],[4.5,42.3],[8.4,40.4],[8.5,42.8],[11.5,39.5],[10,36.4],[16.5,35.6],[18.6,38.6],[20.5,35.6],[14.5,43.3],[17.3,42.2],[13.1,44.6],[25.2,38.6],[26.5,36.4],[24.5,35.6],[29,35.6],[34,35.6],[37.5,36.4],[30.8,43.2],[34.5,43],[38.5,43.6],[32,45.4],[36.2,45.6],[0.5,36.3],[6,36.5]],"seaCrossings":[["lon","par"],["lon","hol"],["lon","bel"],["ire","nth"],["ire","sco"],["jut","got"],["fin","sve"],["sic","nap"],["con","ana"],["cri","kie"],["spb","fin"]]},"nations":{"GBR":{"name":"Great Britain","adj":"British","pre":"Anglo","color":"#b8524a","people":"English","accepts":["Scottish"],"ambition":"rich","hawk":0.45,"patience":0.95,"starts":true,"army":30,"relations":{"FRA":10,"POR":50},"allies":["POR"]},"FRA":{"name":"France","adj":"French","pre":"Franco","color":"#4f72a8","people":"French","ambition":"rich","hawk":0.6,"patience":0.6,"starts":true,"army":60,"relations":{"PRU":-10,"PAP":45},"allies":["PAP"]},"PRU":{"name":"Prussia","adj":"Prussian","pre":"Prusso","color":"#5e6573","people":"German","ambition":"ger","hawk":0.85,"patience":0.8,"starts":true,"army":50},"AUS":{"name":"Austria","adj":"Austrian","pre":"Austro","color":"#cdb36a","people":"German","ambition":"ger","hawk":0.45,"patience":0.45,"starts":true,"army":60,"relations":{"SAR":-35,"SIC":45},"allies":["SIC"]},"RUS":{"name":"Russia","adj":"Russian","pre":"Russo","color":"#6b8a4f","people":"Russian","ambition":"rich","hawk":0.7,"patience":0.3,"starts":true,"army":90,"relations":{"TUR":-45,"AUS":25,"PRU":20},"serfs":true},"TUR":{"name":"Ottoman Empire","adj":"Ottoman","pre":"Turco","color":"#4b8b84","people":"Turkish","accepts":["Bosniak"],"ambition":"rich","hawk":0.35,"patience":0.2,"starts":true,"army":50},"SPA":{"name":"Spain","adj":"Spanish","pre":"Hispano","color":"#d4a043","people":"Spanish","ambition":"ibe","hawk":0.3,"patience":0.3,"starts":true,"army":25},"POR":{"name":"Portugal","adj":"Portuguese","pre":"Luso","color":"#8aa86a","people":"Portuguese","ambition":"ibe","hawk":0.2,"patience":0.3,"starts":true,"army":8},"NET":{"name":"Netherlands","adj":"Dutch","pre":"Dutch","color":"#de8a3e","people":"Dutch","ambition":"survive","hawk":0.25,"patience":0.7,"starts":true,"army":10},"BEL":{"name":"Belgium","adj":"Belgian","pre":"Belgo","color":"#a38c55","people":"Belgian","ambition":"survive","hawk":0.15,"patience":0.85,"starts":true,"army":8},"DEN":{"name":"Denmark","adj":"Danish","pre":"Dano","color":"#b06a62","people":"Danish","ambition":"sca","hawk":0.3,"patience":0.5,"starts":true,"army":10,"relations":{"PRU":-15}},"SWE":{"name":"Sweden","adj":"Swedish","pre":"Swedo","color":"#6d9fc8","people":"Swedish","accepts":["Norwegian"],"ambition":"sca","hawk":0.3,"patience":0.55,"starts":true,"army":15},"HAN":{"name":"Hanover","adj":"Hanoverian","color":"#c3b05b","people":"German","ambition":"survive","hawk":0.2,"patience":0.5,"starts":true,"army":8},"HES":{"name":"Hesse","adj":"Hessian","color":"#9d82a8","people":"German","ambition":"survive","hawk":0.2,"patience":0.5,"starts":true,"army":5},"SAX":{"name":"Saxony","adj":"Saxon","color":"#7d9a8b","people":"German","ambition":"survive","hawk":0.2,"patience":0.6,"starts":true,"army":8},"BAV":{"name":"Bavaria","adj":"Bavarian","color":"#8eb2d6","people":"German","ambition":"ger","hawk":0.3,"patience":0.5,"starts":true,"army":15},"WUR":{"name":"Württemberg","adj":"Württemberg","color":"#c69a6e","people":"German","ambition":"survive","hawk":0.2,"patience":0.5,"starts":true,"army":7},"SWI":{"name":"Switzerland","adj":"Swiss","color":"#a4465c","people":"Swiss","ambition":"survive","hawk":0.05,"patience":0.6,"starts":true,"army":6,"federal":"the Federal Council"},"SAR":{"name":"Sardinia","adj":"Sardinian","pre":"Sardo","color":"#9fbd6c","people":"Italian","ambition":"ita","hawk":0.75,"patience":0.5,"starts":true,"army":20},"TUS":{"name":"Tuscany","adj":"Tuscan","color":"#b6a06b","people":"Italian","ambition":"ita","hawk":0.1,"patience":0.4,"starts":true,"army":4},"PAP":{"name":"Papal States","adj":"Papal","color":"#ece1bb","people":"Italian","ambition":"survive","hawk":0.05,"patience":0.2,"starts":true,"army":5,"noAnnex":1},"SIC":{"name":"Two Sicilies","adj":"Neapolitan","color":"#c58b8b","people":"Italian","ambition":"ita","hawk":0.35,"patience":0.25,"starts":true,"army":20},"GRE":{"name":"Greece","adj":"Greek","pre":"Greco","color":"#6ea4c8","people":"Greek","ambition":"gre","hawk":0.6,"patience":0.3,"starts":true,"army":6,"relations":{"TUR":-55}},"SER":{"name":"Serbia","adj":"Serbian","pre":"Serbo","color":"#a35d5d","people":"Serb","ambition":"yug","hawk":0.65,"patience":0.25,"starts":true,"army":6,"relations":{"TUR":-40}},"POL":{"name":"Poland","adj":"Polish","pre":"Polono","color":"#c45a6c","people":"Polish","ambition":"pol","hawk":0.65,"patience":0.45,"starts":false},"HUN":{"name":"Hungary","adj":"Hungarian","pre":"Magyar","color":"#a07d50","people":"Hungarian","ambition":"hun","hawk":0.6,"patience":0.45,"starts":false},"ROM":{"name":"Romania","adj":"Romanian","pre":"Romano","color":"#d6b84c","people":"Romanian","ambition":"rom","hawk":0.5,"patience":0.4,"starts":false},"BUL":{"name":"Bulgaria","adj":"Bulgarian","pre":"Bulgaro","color":"#7e9b58","people":"Bulgarian","ambition":"bul","hawk":0.65,"patience":0.35,"starts":false},"IRE":{"name":"Ireland","adj":"Irish","pre":"Hiberno","color":"#5aa46d","people":"Irish","ambition":"survive","hawk":0.5,"patience":0.4,"starts":false},"NOR":{"name":"Norway","adj":"Norwegian","pre":"Norwego","color":"#b46a6a","people":"Norwegian","ambition":"sca","hawk":0.4,"patience":0.5,"starts":false},"FIN":{"name":"Finland","adj":"Finnish","pre":"Finno","color":"#c9d6de","people":"Finnish","ambition":"survive","hawk":0.4,"patience":0.5,"starts":false},"CZE":{"name":"Bohemia","adj":"Bohemian","pre":"Czecho","color":"#8b6fa1","people":"Czech","ambition":"survive","hawk":0.4,"patience":0.5,"starts":false},"CRO":{"name":"Croatia","adj":"Croatian","pre":"Croato","color":"#c47e68","people":"Croat","ambition":"yug","hawk":0.55,"patience":0.4,"starts":false},"LIT":{"name":"Lithuania","adj":"Lithuanian","pre":"Lithuano","color":"#c8a55a","people":"Lithuanian","ambition":"pol","hawk":0.5,"patience":0.4,"starts":false},"UKR":{"name":"Ukraine","adj":"Ukrainian","pre":"Ukraino","color":"#2f86e6","people":"Ukrainian","ambition":"ukr","hawk":0.6,"patience":0.35,"starts":false},"BAL":{"name":"Baltic Republic","adj":"Baltic","pre":"Balto","color":"#9bb0a0","people":"Baltic","ambition":"survive","hawk":0.4,"patience":0.45,"starts":false},"ALB":{"name":"Albania","adj":"Albanian","pre":"Albano","color":"#9f515b","people":"Albanian","ambition":"survive","hawk":0.6,"patience":0.3,"starts":false},"BOS":{"name":"Bosnia","adj":"Bosnian","pre":"Bosno","color":"#8b916b","people":"Bosniak","ambition":"yug","hawk":0.55,"patience":0.35,"starts":false},"ITA":{"name":"Italian Republic","adj":"Italian","pre":"Italo","color":"#9fbd6c","people":"Italian","ambition":"ita","hawk":0.6,"patience":0.35,"starts":false},"SCO":{"name":"Scotland","adj":"Scottish","pre":"Scoto","color":"#6d7fb0","people":"Scottish","ambition":"survive","hawk":0.5,"patience":0.45,"starts":false}},"peoples":{"Scottish":{},"English":{},"Irish":{},"French":{},"German":{},"Spanish":{},"Portuguese":{},"Dutch":{},"Belgian":{},"Danish":{},"Swedish":{},"Norwegian":{},"Polish":{},"Swiss":{},"Czech":{},"Hungarian":{},"Italian":{},"Croat":{},"Romanian":{},"Russian":{},"Ukrainian":{},"Lithuanian":{},"Baltic":{},"Finnish":{},"Turkish":{},"Bulgarian":{},"Bosniak":{},"Albanian":{},"Greek":{},"Serb":{}},"provinces":{"sco":{"name":"Scotland","lon":-4,"lat":56.6,"owner":"GBR","people":"Scottish","pop":2.6,"industry":2},"nth":{"name":"Northern England","lon":-1.6,"lat":54,"owner":"GBR","people":"English","pop":6,"industry":3},"lon":{"name":"London","lon":-0.6,"lat":51.6,"owner":"GBR","people":"English","pop":8,"industry":3},"ire":{"name":"Ireland","lon":-8,"lat":53.2,"owner":"GBR","people":"Irish","pop":8,"industry":0},"par":{"name":"Paris","lon":2.3,"lat":48.9,"owner":"FRA","people":"French","pop":7,"industry":2},"bri":{"name":"Brittany","lon":-2.9,"lat":48,"owner":"FRA","people":"French","pop":4,"industry":1},"aqu":{"name":"Aquitaine","lon":-0.3,"lat":44.6,"owner":"FRA","people":"French","pop":5,"industry":1},"lan":{"name":"Languedoc","lon":2.6,"lat":43.9,"owner":"FRA","people":"French","pop":4,"industry":1},"pro":{"name":"Provence","lon":5.9,"lat":43.8,"owner":"FRA","people":"French","pop":3,"industry":1},"lyo":{"name":"Lyonnais","lon":4.6,"lat":46.1,"owner":"FRA","people":"French","pop":5,"industry":1},"lor":{"name":"Lorraine","lon":5.7,"lat":49,"owner":"FRA","people":"French","pop":3,"industry":2},"als":{"name":"Alsace","lon":7.6,"lat":48.3,"owner":"FRA","people":"German","pop":1.2,"industry":2},"cas":{"name":"Castile","lon":-3.7,"lat":40.4,"owner":"SPA","people":"Spanish","pop":5,"industry":0},"cat":{"name":"Catalonia","lon":1.4,"lat":41.8,"owner":"SPA","people":"Spanish","pop":2,"industry":1},"and":{"name":"Andalusia","lon":-4.8,"lat":37.5,"owner":"SPA","people":"Spanish","pop":3.5,"industry":0},"gal":{"name":"Galicia","lon":-7.8,"lat":42.7,"owner":"SPA","people":"Spanish","pop":2,"industry":0},"por":{"name":"Portugal","lon":-8.6,"lat":39.5,"owner":"POR","people":"Portuguese","pop":3.5,"industry":0},"hol":{"name":"Holland","lon":5,"lat":52.4,"owner":"NET","people":"Dutch","pop":2.6,"industry":2},"bel":{"name":"Flanders","lon":4.3,"lat":50.7,"owner":"BEL","people":"Belgian","pop":4,"industry":2},"jut":{"name":"Jutland","lon":9.4,"lat":56.2,"owner":"DEN","people":"Danish","pop":1.4,"industry":1},"sch":{"name":"Schleswig-Holstein","lon":9.8,"lat":54.2,"owner":"DEN","people":"German","pop":0.8,"industry":1},"sve":{"name":"Svealand","lon":17.5,"lat":59.6,"owner":"SWE","people":"Swedish","pop":1.6,"industry":1},"got":{"name":"Götaland","lon":13.6,"lat":57.2,"owner":"SWE","people":"Swedish","pop":1.4,"industry":1},"nor":{"name":"Norway","lon":9.5,"lat":60.8,"owner":"SWE","people":"Norwegian","pop":1.2,"industry":0},"bra":{"name":"Brandenburg","lon":13.4,"lat":52.4,"owner":"PRU","people":"German","pop":2.5,"industry":2},"pom":{"name":"Pomerania","lon":15,"lat":53.9,"owner":"PRU","people":"German","pop":1.5,"industry":1},"epr":{"name":"East Prussia","lon":20.8,"lat":54.4,"owner":"PRU","people":"German","pop":2,"industry":1},"sil":{"name":"Silesia","lon":16.8,"lat":50.9,"owner":"PRU","people":"German","pop":3,"industry":2},"rhi":{"name":"Rhineland","lon":6.9,"lat":50.7,"owner":"PRU","people":"German","pop":2.8,"industry":2},"wes":{"name":"Westphalia","lon":8,"lat":52,"owner":"PRU","people":"German","pop":1.5,"industry":2},"pos":{"name":"Posen","lon":17.4,"lat":52.6,"owner":"PRU","people":"Polish","pop":1.2,"industry":0},"han":{"name":"Hanover","lon":10,"lat":52.8,"owner":"HAN","people":"German","pop":1.7,"industry":1},"hes":{"name":"Hesse","lon":9.2,"lat":50.4,"owner":"HES","people":"German","pop":1.3,"industry":1},"sax":{"name":"Saxony","lon":12.6,"lat":51,"owner":"SAX","people":"German","pop":1.6,"industry":2},"bav":{"name":"Bavaria","lon":11.7,"lat":48.6,"owner":"BAV","people":"German","pop":4,"industry":1},"wur":{"name":"Württemberg","lon":9,"lat":48.6,"owner":"WUR","people":"German","pop":1.6,"industry":1},"swi":{"name":"Switzerland","lon":8,"lat":46.8,"owner":"SWI","people":"Swiss","pop":2.2,"industry":1},"vie":{"name":"Austria","lon":15.8,"lat":47.9,"owner":"AUS","people":"German","pop":4,"industry":1},"tyr":{"name":"Tyrol","lon":11.6,"lat":47.1,"owner":"AUS","people":"German","pop":1,"industry":0},"boh":{"name":"Bohemia","lon":14.5,"lat":49.9,"owner":"AUS","people":"Czech","pop":4,"industry":1},"hun":{"name":"Hungary","lon":19.4,"lat":47.3,"owner":"AUS","people":"Hungarian","pop":9,"industry":0},"gli":{"name":"Lemberg","lon":22.6,"lat":49.9,"owner":"AUS","people":"Polish","pop":4.5,"industry":0},"lom":{"name":"Lombardy","lon":9.6,"lat":45.4,"owner":"AUS","people":"Italian","pop":2.5,"industry":1},"ven":{"name":"Venetia","lon":12.2,"lat":45.7,"owner":"AUS","people":"Italian","pop":2,"industry":1},"cro":{"name":"Croatia","lon":16,"lat":45.4,"owner":"AUS","people":"Croat","pop":1.5,"industry":0},"trn":{"name":"Transylvania","lon":24,"lat":46.6,"owner":"AUS","people":"Romanian","pop":2,"industry":0},"pie":{"name":"Piedmont","lon":7.6,"lat":44.8,"owner":"SAR","people":"Italian","pop":3.5,"industry":1},"tus":{"name":"Tuscany","lon":11.2,"lat":43.5,"owner":"TUS","people":"Italian","pop":1.6,"industry":1},"rom":{"name":"Papal States","lon":12.8,"lat":42.3,"owner":"PAP","people":"Italian","pop":2.8,"industry":0},"nap":{"name":"Naples","lon":15.2,"lat":40.8,"owner":"SIC","people":"Italian","pop":5,"industry":0},"sic":{"name":"Sicily","lon":14.2,"lat":37.5,"owner":"SIC","people":"Italian","pop":2,"industry":0},"spb":{"name":"St Petersburg","lon":30.3,"lat":59.6,"owner":"RUS","people":"Russian","pop":3,"industry":1},"vol":{"name":"Vologda","lon":37.5,"lat":60.6,"owner":"RUS","people":"Russian","pop":2,"industry":0},"mos":{"name":"Moscow","lon":37.5,"lat":55.8,"owner":"RUS","people":"Russian","pop":8,"industry":0},"vlg":{"name":"Volga","lon":41.5,"lat":52.5,"owner":"RUS","people":"Russian","pop":6,"industry":0},"blr":{"name":"Belarus","lon":28,"lat":53.5,"owner":"RUS","people":"Russian","pop":3,"industry":0},"kie":{"name":"Ukraine","lon":30.8,"lat":50.4,"owner":"RUS","people":"Ukrainian","pop":8,"industry":0},"don":{"name":"Don","lon":39.5,"lat":47.8,"owner":"RUS","people":"Russian","pop":3,"industry":0},"cau":{"name":"Caucasus","lon":41.5,"lat":44,"owner":"RUS","people":"Russian","pop":2,"industry":0},"cri":{"name":"Crimea","lon":34,"lat":45.2,"owner":"RUS","people":"Russian","pop":1,"industry":0},"bes":{"name":"Bessarabia","lon":29,"lat":47.2,"owner":"RUS","people":"Romanian","pop":0.8,"industry":0},"pol":{"name":"Poland","lon":21,"lat":52.3,"owner":"RUS","people":"Polish","pop":4,"industry":0},"lit":{"name":"Lithuania","lon":24,"lat":55,"owner":"RUS","people":"Lithuanian","pop":3,"industry":0},"liv":{"name":"Livonia","lon":25.5,"lat":57.8,"owner":"RUS","people":"Baltic","pop":1.6,"industry":0},"fin":{"name":"Finland","lon":25,"lat":61.6,"owner":"RUS","people":"Finnish","pop":1.4,"industry":0},"con":{"name":"Constantinople","lon":28.9,"lat":41.1,"owner":"TUR","people":"Turkish","pop":3,"industry":0},"ana":{"name":"Anatolia","lon":32.5,"lat":39.2,"owner":"TUR","people":"Turkish","pop":8,"industry":0},"bul":{"name":"Bulgaria","lon":25.2,"lat":42.8,"owner":"TUR","people":"Bulgarian","pop":3,"industry":0},"wal":{"name":"Wallachia","lon":25.6,"lat":44.6,"owner":"TUR","people":"Romanian","pop":2.4,"industry":0},"mol":{"name":"Moldavia","lon":27,"lat":46.8,"owner":"TUR","people":"Romanian","pop":1.4,"industry":0},"bos":{"name":"Bosnia","lon":17.9,"lat":44.1,"owner":"TUR","people":"Bosniak","pop":1.2,"industry":0},"mac":{"name":"Macedonia","lon":22,"lat":41.4,"owner":"TUR","people":"Bulgarian","pop":1.5,"industry":0},"alb":{"name":"Albania","lon":20,"lat":41,"owner":"TUR","people":"Albanian","pop":1,"industry":0},"the":{"name":"Thessaly","lon":22.2,"lat":39.6,"owner":"TUR","people":"Greek","pop":1,"industry":0},"ath":{"name":"Greece","lon":22.6,"lat":37.9,"owner":"GRE","people":"Greek","pop":0.8,"industry":0},"ser":{"name":"Serbia","lon":20.9,"lat":44,"owner":"SER","people":"Serb","pop":0.8,"industry":0}},"rarities":[{"name":"Common","color":"#cfd3d8","odds":0.46,"main":0,"flat":null,"malus":0},{"name":"Uncommon","color":"#6cc070","odds":0.3,"main":1,"flat":null,"malus":1},{"name":"Rare","color":"#5b9be6","odds":0.15,"main":1,"flat":0,"malus":1},{"name":"Epic","color":"#a678e8","odds":0.08,"main":1,"flat":0,"malus":2},{"name":"Legendary","color":"#f0c24b","odds":0.01,"main":2,"flat":1,"malus":2}],"rulebook":{"The age":["The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.","The Great War breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."],"Heirs":["Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game.","Every heir is a rarity and a trait. A Common or Uncommon ruler has a bonus and a malus; from Rare on he also brings a one-time bonus at his coronation. The rarer he is, the bigger the bonus and the smaller the malus."],"Reigns":["A reign lasts {rules.reign.years.0} to {rules.reign.years.1} years if nothing ends it sooner.","Each year a ruler has a {rules.reign.murder|pct} chance of being assassinated.","A ruler beaten in a war he started, or one that cost him land, abdicates {rules.reign.abdicate|pct} of the time.","Besides a Flirt, whose reign always ends in one, {rules.reign.crisis|pct} of successions end in civil war, which adds {rules.reign.crisisUnrest} unrest everywhere and lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.","In a nation whose unrest is above {rules.reign.coupUnrest}, the army stages a coup in {rules.reign.coup|pct} of seasons and crowns a ruler of its own choosing: no heir card.","A ruler plans at least {rules.horizon.min} years ahead, and up to {rules.horizon.span} more the more patient he is."],"Armies":["Every soldier is a worker lost: an army of {rules.workers}k men per million people would empty the fields and factories.","An army that wins a battle with more than {rules.breakthrough|times} the strength of the other side breaks through and advances twice."],"Building":["A factory takes {rules.build.factory|word} seasons to build, a fortress {rules.build.fort|word}.","Reforms cost {rules.reform.cost} gold and take away {rules.reform.calm} unrest; they can be passed again after {rules.reform.wait|years}."],"Unrest and war":["A province with unrest of {rules.unrest.restless} or more is restless; at {rules.unrest.uprising} or more it can rise.","Weighing a war, a ruler counts {rules.settle|pct} of the time a conquest takes to become integrated."],"New nations":["A nation born in an uprising starts with {rules.newNation.gold} gold and an army of {rules.newNation.armyPerMillion}k men per million people. It leans to war and plans ahead as its own entry says.","Its relations with the nation it broke from start at {rules.newNation.hostility}, but the two keep the peace for {rules.newNation.truce|span}. A great power on bad terms with the old ruler may guarantee its independence for {rules.newNation.guarantee|span}.","When an uprising wins, the province's own fallen nation comes back if it was of the same people. Otherwise the people rises as its nation that was not on the map in {rules.start}, or else as its only nation. A people with several nations and none of them new, like the Germans, finds no allies."]},"rulers":{"warmonger":{"label":"Warmonger","vibe":"Would rather recruit an army than host a dinner.","main":{"fx":"recruit","values":[0.9,0.75,0.5],"text":"Army recruitment costs {v|down} less"},"flat":{"fx":"army","values":[5,10],"text":"+{v}k army at his coronation"},"malus":{"fx":"upkeep","values":[1.5,1.25,1.1],"text":"Army upkeep {v|up} higher"}},"soldier":{"label":"Soldier","vibe":"Lives in uniform and expects everyone else to keep up.","main":{"fx":"fight","values":[1.15,1.3,1.75],"text":"His army fights {v|up} harder"},"flat":{"fx":"army","values":[5,10],"text":"+{v}k army at his coronation"},"malus":{"fx":"bleed","values":[1.4,1.2,1.05],"text":"His army loses {v|up} more men in battle"}},"bold":{"label":"Bold","vibe":"Always bets on himself.","main":{"fx":"breakthrough","values":[0.9,0.75,0.5],"text":"Breaks through the enemy's lines with {v|down} less advantage"},"flat":{"fx":"gold","values":[30,60],"text":"+{v} gold won at cards, at his coronation"},"malus":{"fx":"bias","values":[0.2,0.1,0.05],"text":"Believes his odds in war are {v|points} better than they are"}},"cautious":{"label":"Cautious","vibe":"Would rather hold his ground than bury his men.","main":{"fx":"hold","values":[0.1,0.25,0.5],"text":"Stops {v|pct} of enemy advances into his land"},"flat":{"fx":"fortify","values":[1,2],"text":"Fortifies {v|word} random province{v|s} at his coronation"},"malus":{"fx":"breakthrough","values":[1.5,1.25,1.1],"text":"Breaks through the enemy's lines only with {v|up} more advantage"}},"paranoid":{"label":"Paranoid","vibe":"Checks the locks before checking the budget.","main":{"fx":"fortCost","values":[0.85,0.65,0.4],"text":"Fortresses cost {v|down} less"},"flat":{"fx":"fortify","values":[1,2],"text":"Fortifies {v|word} random province{v|s} at his coronation"},"malus":{"fx":"trade","values":[0.75,0.85,0.95],"text":"Sea trade {v|down} lower: he trusts no foreign ship"}},"builder":{"label":"Builder","vibe":"Talks of nothing but coal, iron and railways.","main":{"fx":"factoryCost","values":[0.9,0.75,0.5],"text":"Factories cost {v|down} less"},"flat":{"fx":"factoryCapital","values":[1,2],"text":"+{v} factor{v|ies} in the capital at his coronation"},"malus":{"fx":"fortCost","values":[1.6,1.3,1.1],"text":"Fortresses cost {v|up} more"}},"stingy":{"label":"Stingy","vibe":"Cuts every bill and argues over every building contract.","main":{"fx":"upkeep","values":[0.9,0.75,0.5],"text":"Army upkeep {v|down} lower"},"flat":{"fx":"gold","values":[30,60],"text":"+{v} gold from his hoard, at his coronation"},"malus":{"fx":"factoryCost","values":[1.3,1.15,1.05],"text":"Factories cost {v|up} more"}},"spender":{"label":"Big Spender","vibe":"Wants the whole world to see how rich his nation is.","main":{"fx":"earns","values":[1.08,1.15,1.3],"text":"Gold a year {v|up} higher"},"flat":{"fx":"factoryCapital","values":[1,2],"text":"+{v} factor{v|ies} in the capital at his coronation"},"malus":{"fx":"endGold","values":[1,0.6,0.3],"text":"Spends {v|pct} of the gold he leaves when his reign ends"}},"tyrant":{"label":"Tyrant","vibe":"Expects obedience, and expects it to pay.","main":{"fx":"taxes","values":[1.2,1.4,1.8],"text":"Taxes {v|up} higher"},"flat":{"fx":"gold","values":[30,60],"text":"+{v} gold seized at his coronation"},"malus":{"fx":"unrest","values":[12,6,2],"text":"Unrest {v|signed} everywhere during his reign"}},"reformer":{"label":"Reformer","vibe":"Thinks the old laws are the problem.","main":{"fx":"reformCalm","values":[1.25,1.5,2],"text":"Reforms take away {v|up} more unrest"},"flat":{"fx":"calmAll","values":[10,20],"text":"Unrest −{v} everywhere at his coronation"},"malus":{"fx":"taxes","values":[0.85,0.92,0.97],"text":"Taxes {v|down} lower"}},"drunk":{"label":"Drunk","vibe":"Never seen before noon; everyone knows his favourite tavern.","main":{"fx":"unrestOwn","values":[-5,-10,-20],"text":"Unrest {v|signed} in his own people's provinces during his reign"},"flat":{"fx":"calmOwn","values":[10,20],"text":"Unrest −{v} in his own people's provinces at his coronation: a feast"},"malus":{"fx":"swing","values":[0.3,0.2,0.05],"text":"Misjudges his odds in war by up to {v|points}, differently every season"}},"vengeful":{"label":"Vengeful","vibe":"Keeps a map of every province his nation has lost.","main":{"fx":"homeFight","values":[1.1,1.25,1.75],"text":"His army fights {v|up} harder in wars over his nation's own land"},"flat":{"fx":"army","values":[5,10],"text":"+{v}k army at his coronation"},"malus":{"fx":"upkeep","values":[1.4,1.2,1.1],"text":"Army upkeep {v|up} higher: the army never stands down"}},"flirt":{"label":"Flirt","vibe":"Falls in love at every foreign court.","main":{"fx":"unrestOther","values":[-5,-10,-20],"text":"Unrest {v|signed} in other peoples' provinces during his reign"},"flat":{"fx":"gold","values":[30],"text":"+{v} gold in a dowry at his coronation","big":{"fx":"province","value":1,"text":"Marries into a random bordering province at his coronation"}},"malus":{"fx":"civilWar","values":[40,25,10],"text":"His reign ends in civil war: unrest +{v} everywhere"}},"religious":{"label":"Religious","vibe":"Would rather fund a charity than a military parade.","main":{"fx":"reformCost","values":[0.85,0.65,0.4],"text":"Reforms cost {v|down} less"},"flat":{"fx":"reforms","values":[1,2],"text":"{v|Word} free reform{v|s} at his coronation"},"malus":{"fx":"fight","values":[0.7,0.85,0.95],"text":"His army fights {v|down} less hard"}},"sharp":{"label":"Sharp","vibe":"Reads every dispatch twice and spots a bad bet.","main":{"fx":"sharp","values":[0.25,0.6,0.9],"text":"Misjudges his odds in war {v|pct} less"},"flat":{"fx":"truce","values":[5,10],"text":"Truce with every neighbour for {v|span} from his coronation"},"malus":{"fx":"horizon","values":[-8,-4,-2],"text":"Plans {v|abs} fewer years ahead"}},"planner":{"label":"Planner","vibe":"Builds for a future he may never live to see.","main":{"fx":"horizon","values":[4,10,20],"text":"Plans {v|word} more years ahead"},"flat":{"fx":"factoryRandom","values":[1],"text":"+{v} factor{v|ies} in a random province at his coronation","big":{"fx":"province","value":1,"text":"Inherits a random bordering province at his coronation"}},"malus":{"fx":"earns","values":[0.8,0.9,0.95],"text":"Gold a year {v|down} lower"}},"tolerant":{"label":"Tolerant","vibe":"Sees his subjects as neighbours, whatever language they speak.","main":{"fx":"integrate","values":[1.25,1.75,3],"text":"Conquests become integrated {v|up} faster"},"flat":{"fx":"rights","values":[1,2],"text":"Equal rights for {v|word} random people{v|s} of the realm at his coronation, for good"},"malus":{"fx":"unrestOwn","values":[10,5,2],"text":"Unrest {v|signed} in his own people's provinces during his reign"}},"nationalist":{"label":"Nationalist","vibe":"Puts his own people first and makes sure everyone knows it.","main":{"fx":"ownTaxes","values":[1.2,1.5,2],"text":"His own people pay {v|up} more taxes"},"flat":{"fx":"army","values":[5,10],"text":"+{v}k army of volunteers at his coronation"},"malus":{"fx":"integrateOther","values":[0.4,0.65,0.9],"text":"Other peoples' provinces become integrated {v|down} slower"}},"strict":{"label":"Strict","vibe":"Has never let an uprising go unanswered.","main":{"fx":"garrison","values":[1.25,1.75,3],"text":"His army fights uprisings {v|up} harder"},"flat":{"fx":"calmOther","values":[10,20],"text":"Unrest −{v} in other peoples' provinces at his coronation: a crackdown"},"malus":{"fx":"endUnrestOther","values":[40,25,10],"text":"Other peoples' provinces gain {v} unrest when his reign ends"}},"sailor":{"label":"Sailor","vibe":"Happier on a ship than a throne.","main":{"fx":"trade","values":[1.25,1.5,2],"text":"Sea trade {v|up} higher"},"flat":{"fx":"gold","values":[30,60],"text":"+{v} gold in prize money at his coronation"},"malus":{"fx":"recruit","values":[1.5,1.25,1.1],"text":"Army recruitment costs {v|up} more"}}},"rules":{"start":1836,"end":{"year":1918,"season":3},"greatWar":{"year":1914,"season":2},"rerolls":3,"reign":{"years":[8,24],"murder":0.01,"abdicate":0.5,"crisis":0.18,"crisisYears":[1,2.25],"coupUnrest":45,"coup":0.03,"crisisArmy":0.5,"crisisUnrest":25},"horizon":{"min":8,"span":22},"build":{"factory":4,"fort":3},"reform":{"cost":20,"calm":18,"wait":16},"unrest":{"restless":40,"uprising":65},"settle":0.6,"workers":45,"newNation":{"gold":60,"armyPerMillion":6,"hostility":-60,"truce":15,"guarantee":25},"heirs":3,"breakthrough":2.2},"temperaments":{"patience":{"high":[0.6,"far-sighted"],"low":[0.4,"short-sighted"],"mid":"steady"},"judgment":{"high":[0.15,"overconfident"],"low":[-0.15,"underconfident"],"mid":"clear-eyed"},"thrift":{"high":[1.4,"thrifty"],"low":[0.7,"lavish"],"mid":"balanced"}}};
 // ===================== TEXT FROM CONTENT =====================
 // Every sentence that states a number takes it from content/, never types it. A template says
 // {path|format|format}: the path is looked up in the context (and in `rules`, always there),
@@ -370,6 +370,11 @@ const FORMATS = {
   xs: x => near(x, 2) ? 'doubles' : near(x, 3) ? 'triples' : `multiplies by ${x}`,
   span: x => near(x, 10) ? 'a decade' : `${numberWord(x)} years`,  // years
   season: x => ['winter', 'spring', 'summer', 'autumn'][x],
+  points: x => `${Math.round(x * 100)} points`,                // 0.25 → 25 points (of a chance)
+  signed: x => x < 0 ? `−${Math.abs(x)}` : `+${x}`,             // −5, +20
+  abs: x => Math.abs(x),
+  s: x => x === 1 ? '' : 's',                                  // province{v|s}
+  ies: x => x === 1 ? 'y' : 'ies',                             // factor{v|ies}
   years: x => { const y = x / 4; return `${numberWord(y)} year${y === 1 ? '' : 's'}`; },   // seasons as years
 };
 function lookup(path, ctx){
@@ -417,21 +422,23 @@ const GEO = {"W":1000,"H":720,"land":"M2,264.3L4.7,264.5L10.2,264.3L10.4,265.7L8
 // Each season it forecasts, in gold over its ruler's planning horizon, what every option is worth, and takes the best.
 
 const SEASONS = ['Winter', 'Spring', 'Summer', 'Autumn'];
-// the content the engine runs on (content/*.json); rulers are keyed by quirk
+// the content the engine runs on (content/*.json)
 const RULES = CONTENT.rules, EV = CONTENT.events, PEOPLES = CONTENT.peoples;
-const TRAITS = CONTENT.rulers;
+// rulers: one trait each (content/rulers.json), at one rarity (content/rarities.json, 0 = Common … 4 = Legendary).
+// A trait has a main bonus, from Rare on a one-time flat bonus, and a malus; the rarity says which of each one's values applies.
+const TRAITS = CONTENT.rulers, RARITY = CONTENT.rarities, EFFECTS = CONTENT.effects;
 const TRAIT_KEYS = Object.keys(TRAITS);
-// the number a ruler's quirk gives the engine (content/rulers.json, fx); a missing one is a bug, so it throws
-const F = (t, k) => { const v = TRAITS[t].fx && TRAITS[t].fx[k]; if (v === undefined) throw new Error(`rulers.json: ${t} has no fx.${k}`); return v; };
-// what a ruler's quirk does, in words, filled in from its own numbers (and per-ruler words in `vars`)
-const quirkDesc = (t, vars = {}) => say(TRAITS[t].desc, Object.assign({ fx: TRAITS[t].fx || {}, temper: TRAITS[t].temper || {} }, vars));
-// the chance that one heir is of each rarity (white, green, blue, purple, gold)
-const TIER_ODDS = [0, ...CONTENT.rarities.map(r => r.odds)];
-const OFFERED = TRAIT_KEYS.filter(t => TRAITS[t].card !== false);
-const OF_TIER = n => OFFERED.filter(t => TRAITS[t].tier === n);
-const FLAVOUR = OFFERED.filter(t => TRAITS[t].tier <= 2);   // what a mad king or a regent can be
-const LANDMARKS = Object.entries(CONTENT.landmarks).map(([id, l]) => ({ id, name: l.name, fx: say(l.fx, l) }));
-const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
+// the effects one trait has at one rarity, in card order: [{slot, fx, value, text}]
+function traitEffects(t, g){
+  const T = TRAITS[t], R = RARITY[g], out = [];
+  const one = (slot, e, value) => out.push({ slot, fx: e.fx, value, text: say(e.text, { v: value }) });
+  one('main', T.main, T.main.values[R.main]);
+  if (R.flat != null) { const big = R.flat === 1 && T.flat.big; if (big) one('flat', big, big.value); else one('flat', T.flat, T.flat.values[Math.min(R.flat, T.flat.values.length - 1)]); }
+  one('malus', T.malus, T.malus.values[R.malus]);
+  return out;
+}
+// what a ruler is called everywhere: his rarity and his trait ("the Rare Builder")
+const rulerTitle = (t, g) => `the ${RARITY[g].name} ${TRAITS[t].label}`;
 
 function createSim(seed, geo, opts = {}){
   const rng = mulberry32(seed);
@@ -440,12 +447,9 @@ function createSim(seed, geo, opts = {}){
   const pick = a => a[Math.floor(rng() * a.length)];
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const sig = x => 1 / (1 + Math.exp(-x));
-  // a ruler "has" his own quirk, plus the passing one of a mad king or a child king's regent
-  const has = (c, t) => !!c.ruler && (c.ruler.trait === t || c.ruler.mood === t);
-  // whether his quirk (or his passing mood) carries a flag in rulers.json, such as levy, keepsAll or hated
-  const hasFx = (c, k) => !!c.ruler && [c.ruler.trait, c.ruler.mood].some(t => t && TRAITS[t].fx && TRAITS[t].fx[k]);
-  // a people's ruler names (peoples.json); a people with none borrows the German ones
-  const namesOf = c => (PEOPLES[c.culture] && PEOPLES[c.culture].names) || PEOPLES.German.names;
+  // the reigning ruler's value for an effect (content/effects.json), or the value that changes nothing
+  const fx = (c, k) => { const v = c && c.ruler && c.ruler.fx && c.ruler.fx[k]; return v == null ? EFFECTS[k].none : v; };
+  const hasFx = (c, k) => !!(c && c.ruler && c.ruler.fx && c.ruler.fx[k] != null);
 
   const S = { seed, t: 0, year: RULES.start, q: 0, regions: [], C: {}, wars: [], log: [], history: [], flags: {}, over: false,
     marks: [], warNames: {}, railBoom: -1, era: (e => ({ name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: {}, depression: -1, majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0 } };
@@ -456,82 +460,53 @@ function createSim(seed, geo, opts = {}){
   const RB = {}; S.regions.forEach(r => RB[r.id] = r);
 
   // ---------- rulers ----------
-  const regnal = {};
   const reign = () => S.t + Math.floor(rand(RULES.reign.years[0] * 4, RULES.reign.years[1] * 4));   // unless something ends it sooner
-  // what a quirk would mean for this nation now; null if it would mean nothing (no people to accept, no great power to admire)
-  function quirkSetup(c, t){
-    if (t === 'tolerant') { const pops = {}; regionsOf(c).forEach(r => { if (!isAccepted(c, r.culture)) pops[r.culture] = (pops[r.culture] || 0) + r.pop; });
-      const best = Object.keys(pops).sort((a, b) => pops[b] - pops[a])[0]; return best ? { cul: best } : null; }
-    if (t === 'chauvinist') { const xs = [...c.acc].filter(x => regionsOf(c).some(r => r.culture === x)); return xs.length ? { cul: pick(xs) } : null; }
-    if (t === 'admirer') { const ms = S.majors.filter(m => m !== c.tag && S.C[m].alive && c.rival !== m); return ms.length ? { friend: pick(ms) } : null; }
-    if (t === 'architect') return { landmark: pick(LANDMARKS) };
-    if (t === 'mad') return { mood: pick(FLAVOUR.filter(x => x !== 'mad' && x !== 'child' && !quirkNeedsSetup(x))) };
-    if (t === 'child') return { mood: pick(FLAVOUR.filter(x => x !== 'mad' && x !== 'child' && !quirkNeedsSetup(x))), ofAge: S.t + Math.floor(rand(F('child', 'ofAge')[0], F('child', 'ofAge')[1])) };
-    return {};
+  // the same odds for every heir in Europe: roll his rarity, then any trait not already on the card
+  function drawHeir(not = []){
+    let x = rng(), g = 0; while (g < RARITY.length - 1 && x >= RARITY[g].odds) { x -= RARITY[g].odds; g++; }
+    return { trait: pick(TRAIT_KEYS.filter(t => !not.includes(t))), grade: g };
   }
-  const quirkNeedsSetup = t => t === 'tolerant' || t === 'chauvinist' || t === 'admirer';
-  // the same odds for every heir in Europe: roll his tier, then a ruler of that tier
-  function drawQuirk(c, not = []){
-    for (let k = 0; k < 60; k++) {
-      let x = rng(), n = 1; while (n < 5 && x >= TIER_ODDS[n]) { x -= TIER_ODDS[n]; n++; }
-      const t = pick(OF_TIER(n));
-      if (!not.includes(t) && quirkSetup(c, t)) return t;
-    }
-    return 'builder';
-  }
-  // makeRuler draws a ruler without crowning him; `want` fixes the name or the quirk (used for heir cards)
-  function makeRuler(c, base, want = {}){
-    const pool = c.rulerNames || (c.federal ? null : namesOf(c));
-    if (!pool || want.council) { const b0 = c.lean || { pat: 0.5, hawk: 0.5 };
-      return { name: pool ? RULES.reign.regency : c.federal, council: !!pool, pat: clamp(b0.pat + rand(-0.2, 0.2), 0.05, 0.95), thrift: clamp(0.5 + rand(-0.2, 0.2), 0.05, 0.95), trait: null, bias: rand(-0.15, 0.15), since: S.year, until: pool ? S.t + Math.floor(rand(RULES.reign.regencyYears[0] * 4, RULES.reign.regencyYears[1] * 4)) : reign() }; }
-    const nm = want.nm || pick(pool);
-    const k = c.tag + nm, num = (regnal[k] || 0) + 1;
-    const b = base || c.lean || { pat: 0.5, hawk: 0.5 };
-    const trait = want.trait || drawQuirk(c);
-    const T = TRAITS[trait];
+  // a ruler, not yet crowned: his trait and rarity (drawn, or fixed by an heir card) and his temperaments
+  function makeRuler(c, want){
+    const { trait, grade } = want || drawHeir();
+    const b = c.lean || { pat: 0.5, hawk: 0.5 };
     // patience and judgment lean the way his nation does; thrift is his own
     const pat = clamp(b.pat + rand(-0.35, 0.35), 0.05, 0.95), hawk = clamp(b.hawk + rand(-0.35, 0.35), 0.05, 0.95);
-    const temper = { pat, bias: (hawk - 0.5) * 0.9 + rand(-0.3, 0.3), thrift: rand(0.1, 0.9), ...(T.temper || {}) };
-    const given = `${nm} ${ROMAN[num] || num}`;
-    return Object.assign({ name: `${given} ${T.epi}`, given, k, trait, since: S.year, until: reign() }, temper, quirkSetup(c, trait) || {});
+    const effects = traitEffects(trait, grade);
+    return { name: rulerTitle(trait, grade), trait, grade, effects, fx: Object.fromEntries(effects.map(e => [e.fx, e.value])),
+      pat, bias: (hawk - 0.5) * 0.9 + rand(-0.3, 0.3), thrift: rand(0.1, 0.9), swing: 0, since: S.year, until: reign() };
   }
-  // what the ruler does, in words, with his own friend, people, landmark or passing mood filled in
-  function traitDesc(r){
-    if (!r || !r.trait) return '';
-    return quirkDesc(r.trait, { friend: r.friend ? S.C[r.friend].name : 'a great power', culture: r.cul || 'a minority',
-      landmark: r.landmark ? `${r.landmark.name}: ${r.landmark.fx}` : 'a landmark',
-      mood: r.mood && S.C && Object.values(S.C).some(c => c.ruler === r) ? ` (now: ${TRAITS[r.mood].label})` : '' });
+  // what the ruler does, in words
+  const traitDesc = r => r && r.effects ? r.effects.map(e => e.text).join('. ') : '';
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  function crown(c, r, quiet){ r.since = S.year; c.ruler = r; coronation(c, r, quiet); return r; }
+  // the one-time bonus of a ruler from Rare up, the moment he is crowned
+  function coronation(c, r, quiet){
+    const say1 = h => { if (!quiet) L('ruler', h); };
+    const mine = regionsOf(c), shuffled = () => mine.map(x => [rng(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
+    const own = x => isAccepted(c, x.culture);
+    const calm = (v, f) => mine.forEach(x => { if (f(x)) x.unrest = clamp(x.unrest - v, 0, 100); });
+    const v = k => r.fx[k];
+    if (v('army')) c.army += v('army');
+    if (v('gold')) c.treasury += v('gold');
+    if (v('factoryCapital') && mine.length) capitalOf(c).fac += v('factoryCapital');
+    if (v('factoryRandom') && mine.length) pick(mine).fac += v('factoryRandom');
+    if (v('fortify')) shuffled().slice(0, v('fortify')).forEach(x => x.fort = 1);
+    if (v('calmAll')) calm(v('calmAll'), () => true);
+    if (v('calmOwn')) calm(v('calmOwn'), own);
+    if (v('calmOther')) calm(v('calmOther'), x => !own(x));
+    for (let k = 0; k < (v('reforms') || 0); k++) reform(c);
+    if (v('truce')) neighborsOf(c).forEach(o => { c.truce[o.tag] = S.year + v('truce'); o.truce[c.tag] = S.year + v('truce'); });
+    if (v('rights')) { const ps = [...new Set(mine.map(x => x.culture))].map(p => [rng(), p]).sort((p, q) => p[0] - q[0]).map(x => x[1]).slice(0, v('rights'));
+      ps.forEach(p => c.acc.add(p)); if (ps.length) say1(`${cap(r.name)} of ${N(c)} declares the ${ps.join(' and ')} people equal subjects.`); }
+    for (let k = 0; k < (v('province') || 0); k++) { const bs = borderRegions(c); if (!bs.length) break;
+      const x = pick(bs), from = S.C[x.owner]; transfer(x, c, from, 'treaty');
+      L('ruler', `${cap(r.name)} of ${N(c)} ${TRAITS[r.trait].label === 'Flirt' ? 'marries into' : 'inherits'} ${Rn(x)} from ${N(from)}.`); }
   }
-  function crown(c, r, quiet){
-    if (r.k) regnal[r.k] = (regnal[r.k] || 0) + 1; r.since = S.year; c.ruler = r;
-    if (TRAITS[r.trait] && TRAITS[r.trait].tier === 5) (S.stats.legendary = S.stats.legendary || []).push(`${c.tag} ${r.trait} ${S.year}`);
-    return reignBegins(c, r, quiet);
-  }
-  // what a new reign (or a child king coming of age) changes at once
-  function reignBegins(c, r, quiet){
-    const t = r.trait, say = h => { if (!quiet) L('ruler', h); };
-    // a quirk that fixes his temperament (the Bold, the Shrewd, the Miser…) does so for a regent's or a madman's mood too
-    [t, r.mood].forEach(q => { if (q && TRAITS[q].temper) Object.assign(r, TRAITS[q].temper); });
-    if (t === 'tolerant' && r.cul) { c.acc.add(r.cul); say(`${r.name} declares the ${r.cul} people equal subjects of ${N(c)}.`); }
-    if (t === 'chauvinist' && r.cul) { c.acc.delete(r.cul); say(`${r.name} of ${N(c)} strips the ${r.cul} people of their old rights.`); }
-    if (t === 'liberator') { regionsOf(c).forEach(x => c.acc.add(x.culture)); if (c.serfs) S.flags.serf = 1; say(`${r.name} frees the serfs and declares every people of ${N(c)} equal. The nobles are furious.`); }
-    if (t === 'admirer' && r.friend) setRel(c.tag, r.friend, Math.max(F('admirer', 'friendship'), rel(c.tag, r.friend)));
-    if (t === 'lecher') neighborsOf(c).forEach(o => addRel(c.tag, o.tag, F('lecher', 'charm')));
-    if (t === 'conqueror') { neighborsOf(c).forEach(o => addRel(c.tag, o.tag, -F('conqueror', 'distrusted'))); c.infamy += F('conqueror', 'infamy'); }
-    if (t === 'architect') r.works = S.t + F('architect', 'works');
-    // volunteers flock to a legendary conqueror's banner
-    if (t && TRAITS[t].fx && TRAITS[t].fx.levy) { c.army = Math.max(c.army * RULES.levy.army, popOf(c) * RULES.levy.perMillion); say(`Volunteers flock to the banner of ${r.name}: the army of ${N(c)} swells to ${Math.round(c.army)} thousand.`); }
-    return r;
-  }
-  function newRuler(c, base, quiet){ return crown(c, makeRuler(c, base), quiet); }
-  // a heir card: three different characters, each drawn with the same odds as any heir in Europe
+  // the player's heir card: three different traits, each drawn with the same odds as any heir in Europe
   function heirCard(c, opening, why = '', crisis = false){
-    const shuffle = a => a.map(x => [rng(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
-    const pool = c.rulerNames || namesOf(c);
-    const names = shuffle(pool.slice());
-    const slots = []; for (let k = 0; k < RULES.heirs; k++) slots.push(drawQuirk(c, slots));
-    const options = slots.map((t, i) => makeRuler(c, null, { nm: names[i % names.length], trait: t }));
-    return { type: 'heir', tag: c.tag, opening, options, old: c.ruler.name, why, crisis };
+    const slots = []; for (let k = 0; k < RULES.heirs; k++) slots.push(drawHeir(slots.map(s => s.trait)));
+    return { type: 'heir', tag: c.tag, opening, options: slots.map(s => makeRuler(c, s)), old: c.ruler.name, why, crisis };
   }
   // the player may deal a card again, three times a game; AI nations pick at random and never need to
   function rerollHeirs(){
@@ -541,48 +516,50 @@ function createSim(seed, geo, opts = {}){
   function chooseHeir(i){
     const p = S.pending; if (!p || p.type !== 'heir') return;
     const c = S.C[p.tag], nr = p.options[i]; S.pending = null;
-    if (p.opening) { crown(c, nr, true); L('ruler', `${nr.name} takes the throne of ${N(c)}. ${traitDesc(nr)}.`); return; }
-    crown(c, nr, true); successionLog(c, p.why, nr, p.crisis);
+    if (p.opening) { crown(c, nr, false); L('ruler', `${cap(nr.name)} takes the throne of ${N(c)}. ${traitDesc(nr)}.`); return; }
+    successionLog(c, p.why, crown(c, nr, false), p.crisis);
   }
+  // a civil war follows some successions: rival claimants split the army and unrest soars (by `crisis` if it is a number)
   function successionLog(c, why, nr, crisis){
     if (crisis) {
       c.crisis = { until: S.t + Math.floor(rand(RULES.reign.crisisYears[0] * 4, RULES.reign.crisisYears[1] * 4)), winner: nr.name };
-      regionsOf(c).forEach(r => r.unrest = Math.min(100, r.unrest + 25)); mark(capitalOf(c).i, 'crisis');
-      L('ruler', `<strong>Civil war in ${N(c)}.</strong> ${why} ${crisis === 'bastard' ? 'His bastard son raises an army' : 'Rival claimants raise armies'} against ${nr.name}. The army is split and unrest soars.`);
-    } else L('ruler', `${why} ${TRAITS[nr.trait] && TRAITS[nr.trait].tier === 5 ? `<strong>${nr.name}</strong>` : nr.name} succeeds. ${traitDesc(nr)}.`);
+      const u = typeof crisis === 'number' ? crisis : RULES.reign.crisisUnrest;
+      regionsOf(c).forEach(r => r.unrest = Math.min(100, r.unrest + u)); mark(capitalOf(c).i, 'crisis');
+      L('ruler', `<strong>Civil war in ${N(c)}.</strong> ${why} Rival claimants raise armies against ${nr.name}. The army is split and unrest soars.`);
+    } else L('ruler', `${why} ${cap(nr.name)} succeeds. ${traitDesc(nr)}.`);
   }
   // A reign ends: by death, defeat, revolution, a bullet or the army. The player picks the heir; everyone else gets one at random.
   function endReign(c, how, ctx = ''){
     const old = c.ruler; if (!old || !c.alive) return;
-    if (c.federal) { if (how === 'death') c.ruler = makeRuler(c); return; }   // the council simply rotates
     if (c.player && S.pending) return;
+    // what his reign leaves behind: a spent treasury, restless subject peoples
+    if (fx(c, 'endGold') && c.treasury > 0) c.treasury *= 1 - fx(c, 'endGold');
+    if (fx(c, 'endUnrestOther')) regionsOf(c).forEach(r => { if (!isAccepted(c, r.culture)) r.unrest = Math.min(100, r.unrest + fx(c, 'endUnrestOther')); });
+    if (c.federal) { if (how === 'death') crown(c, makeRuler(c), true); return; }   // the council simply rotates
     S.stats.rulers++; c.reigns = (c.reigns || 0) + 1;
-    const was = old.name.charAt(0).toUpperCase() + old.name.slice(1);
-    if (old.trait === 'architect' && c.treasury > 0) c.treasury = 0;
-    if (old.trait === 'iron') regionsOf(c).forEach(r => { if (!isAccepted(c, r.culture)) r.unrest = Math.min(100, r.unrest + F('iron', 'rise')); });
-    // a legendary reign ends: the conquered rise, a prophet's converts are foreigners again, the Sun King's bills arrive
-    if (old.trait === 'chancellor' || old.trait === 'destiny') regionsOf(c).forEach(r => { if (r.wonUnder === old) { r.unrest = Math.min(100, r.unrest + TRAITS[old.trait].fx.rise); r.integ = Math.min(r.integ, TRAITS[old.trait].fx.integration); } });
-    if (old.trait === 'prophet') (old.added || []).forEach(cul => { if (cul !== c.culture) c.acc.delete(cul); });
-    if (old.trait === 'sun') c.treasury -= income(c) * 4 * F('sun', 'debtYears');
-    if (how === 'coup') {
-      const nr = crown(c, makeRuler(c, null, { trait: 'usurper' })); c.treasury *= F('usurper', 'keepGold'); regionsOf(c).forEach(r => r.unrest = Math.max(0, r.unrest - F('usurper', 'calm'))); mark(capitalOf(c).i, 'coup');
-      L('ruler', `Coup in ${N(c)}: ${old.name} is deposed by the army${ctx}; ${nr.name} takes power.`); return;
+    const was = cap(old.name);
+    if (how === 'coup') {   // the army doesn't ask: no heir card
+      const nr = crown(c, makeRuler(c), true); mark(capitalOf(c).i, 'coup');
+      L('ruler', `Coup in ${N(c)}: ${old.name} is deposed by the army${ctx}; ${nr.name} takes power. ${traitDesc(nr)}.`); return;
     }
-    const why = { death: `${was} of ${N(c)} dies.`, council: `The regency council of ${N(c)} hands over power.`,
+    const why = { death: `${was} of ${N(c)} dies.`,
       abdicate: `Beaten in the <em>${ctx}</em>, ${old.name} of ${N(c)} abdicates.`, revolution: `Revolution in ${ctx}! ${was} of ${N(c)} is overthrown.`,
       murder: `${was} of ${N(c)} is assassinated${S.year >= 1870 ? ' by an anarchist' : ' by a conspirator'}.` }[how];
-    if (old.trait === 'genius') { const nr = crown(c, makeRuler(c, null, { council: true })); L('ruler', `${why} With no heir, ${nr.name} rules until one is found.`); return; }
-    const cr = old.trait && TRAITS[old.trait].fx && TRAITS[old.trait].fx.crisis;
-    const crisis = how === 'revolution' || c.federal ? false : cr === 'bastard' ? 'bastard' : !!cr || chance(RULES.reign.crisis);
+    const crisis = how === 'revolution' ? false : fx(c, 'civilWar') || chance(RULES.reign.crisis);
     if (c.player) { S.pending = heirCard(c, false, why, crisis); return; }
-    successionLog(c, why, newRuler(c, null, true), crisis);
+    successionLog(c, why, crown(c, makeRuler(c), true), crisis);
   }
-  const horizon = c => has(c, 'dynast') ? F('dynast', 'horizon') : Math.round(RULES.horizon.min + c.ruler.pat * RULES.horizon.span);
+  // how far ahead he plans: by his patience, plus or minus what his trait adds, never below the minimum
+  const horizon = c => Math.max(RULES.horizon.min, Math.round(RULES.horizon.min + c.ruler.pat * RULES.horizon.span + fx(c, 'horizon')));
   // Gold only matters for what it can buy: a country with a full treasury treats spending as cheap.
-  // Thrift: how dear the ruler holds his gold, from a third (lavish) to three times (the Miser)
-  const fixedThrift = c => [c.ruler.trait, c.ruler.mood].map(t => t && TRAITS[t].temper && TRAITS[t].temper.thrift).find(v => v != null);
-  const thriftOf = c => Math.pow(3, ((fixedThrift(c) ?? c.ruler.thrift ?? 0.5) - 0.5) * 2);
+  // Thrift: how dear the ruler holds his gold, from a third (lavish) to three times (thrifty)
+  const thriftOf = c => Math.pow(3, ((c.ruler.thrift ?? 0.5) - 0.5) * 2);
   const goldValue = c => clamp((80 + c.army * 0.5) / Math.max(1, c.treasury), 0.1, 1) * thriftOf(c);
+  // what he believes his chance of winning is: his judgment, a Bold or Drunk ruler's misreading, a Sharp ruler seeing through it
+  const believe = (c, ratio) => { const pTrue = pWin(ratio);
+    const p = clamp(pWin(ratio * Math.exp(c.ruler.bias)) + fx(c, 'bias') + c.ruler.swing, 0, 1);
+    return pTrue + (p - pTrue) * (1 - fx(c, 'sharp')); };
+  const newRuler = (c, quiet) => crown(c, makeRuler(c), quiet);
 
   function makeCountry(tag, d){
     const c = { tag, name: d.name, adj: d.adj, pre: d.pre || null, color: d.color, culture: d.culture, acc: new Set(d.acc || []),
@@ -621,7 +598,7 @@ function createSim(seed, geo, opts = {}){
   const facAvg = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.fac * r.pop, 0) / p; };
   const unrestOf = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.unrest * r.pop, 0) / p; };
   // how well the armies fight: industry, and a soldier or conqueror at their head
-  const quality = c => (1 + 0.15 * facAvg(c)) * (has(c, 'destiny') ? F('destiny', 'fight') : has(c, 'prophet') ? F('prophet', 'fight') : has(c, 'chancellor') ? F('chancellor', 'fight') : has(c, 'conqueror') ? F('conqueror', 'fight') : has(c, 'soldier') ? F('soldier', 'fight') : 1);
+  const quality = c => (1 + 0.15 * facAvg(c)) * fx(c, 'fight');
   const inCrisis = c => c.crisis && S.t < c.crisis.until;
   const strength = c => c.army * quality(c) * (1 - unrestOf(c) / 250) * (inCrisis(c) ? RULES.reign.crisisArmy : 1);
   const warOf = c => S.wars.find(w => w.att.includes(c.tag) || w.def.includes(c.tag));
@@ -633,24 +610,23 @@ function createSim(seed, geo, opts = {}){
   // Big states are harder to run: every province beyond six trims the yield of all of them.
   const admin = n => clamp(1 - 0.03 * Math.max(0, n - 6), 0.55, 1);
   const adminOf = c => admin(regionsOf(c).length);
-  // a legendary conqueror's volunteers take half as many workers from the fields
-  const workforce = (c, army = c.army) => clamp(1 - army / (Math.max(0.5, popOf(c)) * (hasFx(c, 'levy') ? RULES.levy.workers : RULES.workers)), 0.55, 1);
+  const workforce = (c, army = c.army) => clamp(1 - army / (Math.max(0.5, popOf(c)) * RULES.workers), 0.55, 1);
   // income of one province in a season, broken down
   function regionIncome(r, c = S.C[r.owner], opts = {}){
     if (r.occ && !opts.ignoreOcc) return { tax: 0, fac: 0, trade: 0 };
     const u = opts.unrest != null ? opts.unrest : r.unrest;
     const integ = opts.integ != null ? opts.integ : r.integ;
-    const m = (1 - u / 200) * (0.1 + 0.9 * integ) * (opts.admin != null ? opts.admin : adminOf(c)) * (has(c, 'incompetent') ? F('incompetent', 'earns') : 1) * (S.depression > S.t ? EV.panic.earns : 1)
-      * (has(c, 'chauvinist') && r.culture === c.culture ? F('chauvinist', 'ownPeople') : 1) * (has(c, 'sun') ? F('sun', 'earns') : 1);
+    const m = (1 - u / 200) * (0.1 + 0.9 * integ) * (opts.admin != null ? opts.admin : adminOf(c)) * fx(c, 'earns') * (S.depression > S.t ? EV.panic.earns : 1);
+    const taxed = fx(c, 'taxes') * (isAccepted(c, r.culture) ? fx(c, 'ownTaxes') : 1);
     const serf = c.serfs && !S.flags.serf ? EV.serfdom.before : 1;
     const wf = opts.wf != null ? opts.wf : workforce(c);
     const atWar = opts.war != null ? opts.war : !!warOf(c);
-    return { tax: r.pop * 0.06 * m * wf, fac: r.pop * 0.7 * (1 - Math.pow(0.8, opts.fac != null ? opts.fac : r.fac)) * m * wf * serf, trade: r.coast && !atWar ? (r.pop * 0.04 + r.fac * 0.25) * m * (has(c, 'navigator') ? F('navigator', 'trade') : 1) : 0 };
+    return { tax: r.pop * 0.06 * m * wf * taxed, fac: r.pop * 0.7 * (1 - Math.pow(0.8, opts.fac != null ? opts.fac : r.fac)) * m * wf * serf, trade: r.coast && !atWar ? (r.pop * 0.04 + r.fac * 0.25) * m * fx(c, 'trade') : 0 };
   }
   const sumInc = x => x.tax + x.fac + x.trade;
   const income = c => regionsOf(c).reduce((s, r) => s + sumInc(regionIncome(r, c)), 0);
   const score = c => income(c) * 4;
-  const upkeep = c => c.army * 0.04 * (has(c, 'navigator') ? F('navigator', 'upkeep') : 1);
+  const upkeep = c => c.army * 0.04 * fx(c, 'upkeep');
   const power = c => regionsOf(c).reduce((s, r) => s + r.pop * (1 + 0.5 * r.fac), 0) + c.army * 0.5;
   const isMajor = c => S.majors.includes(c.tag);
   const maxBuilds = c => 1 + Math.floor(regionsOf(c).length / 3);
@@ -662,7 +638,7 @@ function createSim(seed, geo, opts = {}){
   }
   // what a province would be worth to c per year once settled
   function provYearly(r, c){
-    const foreign = !isAccepted(c, r.culture) && !hasFx(c, 'converts');
+    const foreign = !isAccepted(c, r.culture);
     if (r.owner === c.tag) return sumInc(regionIncome(r, c, { ignoreOcc: true, war: false, integ: 1 })) * 4;
     const n = regionsOf(c).length, a0 = admin(n), a1 = admin(n + 1);
     const own = income(c) * 4;
@@ -672,7 +648,8 @@ function createSim(seed, geo, opts = {}){
   const ambitionW = (c, r) => inClaimedUnion(c, r) ? KINDS.unite.worth : 1;
   // a nation that only has to survive counts every loss half again as dear
   const surviveW = c => c.ambition && c.ambition.kind === 'survive' ? KINDS.survive.losses : 1;
-  const settleYears = (r, c) => (!isAccepted(c, r.culture) && !hasFx(c, 'converts') && r.core !== c.tag) ? 9 : 4;
+  // years until a conquest is integrated, as his trait speeds or slows it
+  const settleYears = (r, c) => (!isAccepted(c, r.culture) && r.core !== c.tag) ? 9 / fx(c, 'integrateOther') / fx(c, 'integrate') : 4 / fx(c, 'integrate');
   Object.assign(S, { adminOf, regionsOf, popOf, facOf, facAvg, unrestOf, power, income, score, upkeep, regionIncome, sumInc, strength, warOf, claim, RB, isAccepted, maxBuilds, workforce, horizon });
 
   const N = c => `<b class="cn" data-tag="${c.tag}" style="--c:${c.color}">${c.name}</b>`;
@@ -688,7 +665,7 @@ function createSim(seed, geo, opts = {}){
   computeMajors();
   S.ready = true;
   // the player's nation gets a stand-in who never reigns: its real ruler of 1836 comes from the first heir card
-  alive().forEach(c => { if (c.tag === opts.player && !c.federal) c.ruler = makeRuler(c); else newRuler(c, null, true); });
+  alive().forEach(c => { if (c.tag === opts.player && !c.federal) c.ruler = makeRuler(c); else newRuler(c, true); });
 
   function pickRival(c){ // the neighbour that most threatens c's income
     let best = null, bs = 0;
@@ -736,14 +713,12 @@ function createSim(seed, geo, opts = {}){
       const v = chanceAttack * loss;
       total += v; if (v > topV) { topV = v; top = o; }
     });
-    if (has(c, 'paranoid')) total *= F('paranoid', 'threat');
     total *= surviveW(c);
     return (RISK[key] = { total, top });
   }
   // a's forecast of attacking d for province r (gold over a's horizon)
   // Great powers that would step in to stop a from growing at d's expense, with the chance each joins.
   function interveners(a, d){
-    if (hasFx(a, 'isolates')) return [];   // he isolates every enemy before he strikes
     const leader = S.leader === a.tag;
     return S.majors.map(t => S.C[t]).filter(m => m.alive && m !== a && m !== d && !a.allies.has(m.tag) && !d.allies.has(m.tag) && !warOf(m)
       && (leader || isNeighbor(m, a) || isNeighbor(m, d)) && (leader || rel(m.tag, a.tag) < 10 || m.rival === a.tag))
@@ -752,27 +727,26 @@ function createSim(seed, geo, opts = {}){
   const bySeaOnly = (a, r) => !r.nb.some(j => S.regions[j].owner === a.tag && !geoNaval(j, r.i));
   function geoNaval(i, j){ return (S.navalSet || (S.navalSet = new Set((geo.naval || []).flatMap(([x, y]) => [x + '-' + y, y + '-' + x])))).has(i + '-' + j); }
   function warEval(a, d, r, dExtra = 0, dAlly = null){
-    if (a.allies.has(d.tag) || ((a.truce[d.tag] || 0) > S.year && !hasFx(a, 'levy'))) return null;   // he ignores old truces
+    if (a.allies.has(d.tag) || (a.truce[d.tag] || 0) > S.year) return null;
     let their = theirSide(d, a.tag) + dExtra * quality(d);
     if (warOf(d)) their *= 0.5;   // its armies are busy elsewhere
     interveners(a, d).forEach(({ m, q }) => { their += strength(m) * q * 0.45; });
-    if (bySeaOnly(a, r) && !has(a, 'navigator')) their *= 2;  // invading across the sea is hard
+    if (bySeaOnly(a, r)) their *= 2;  // invading across the sea is hard
+    if (r.core === d.tag) their *= fx(d, 'homeFight');   // a Vengeful defender fights harder for his own land
     if (dAlly && !d.allies.has(dAlly.tag)) their += strength(dAlly) * 0.8;
-    const ratio = mySide(a) / Math.max(1, their * S.era.def);
-    const pTrue = pWin(ratio), p = pWin(ratio * Math.exp(a.ruler.bias));   // what the ruler believes
+    const ratio = mySide(a) * (r.core === a.tag ? fx(a, 'homeFight') : 1) / Math.max(1, their * S.era.def);
+    const pTrue = pWin(ratio), p = believe(a, ratio);   // what the ruler believes
     if (p < 0.5) return null;
     const H = horizon(a), T = a.treasury;
     const years = clamp(1 + 1.6 / (Math.abs(Math.log(ratio)) + 0.35), 1, 4.5);
-    const yearly = provYearly(r, a) * (has(a, 'revanchist') && r.core === a.tag ? F('revanchist', 'revenge') : 1) * (has(a, 'warmonger') ? F('warmonger', 'land') : 1) * ambitionW(a, r);
+    const yearly = provYearly(r, a) * ambitionW(a, r);
     const gv = goldValue(a);
-    // a usurper's victory also ends the unrest that dogs his reign
-    const legit = has(a, 'usurper') && !a.ruler.legit ? income(a) * 4 * F('usurper', 'legitimacy') * Math.min(H, 12) : 0;
-    const gain = yearly * Math.max(0, H - years - settleYears(r, a) * (has(a, 'iron') ? F('iron', 'settle') : RULES.settle)) + Math.max(0, d.treasury) * 0.3 * gv + legit;
-    const losses = a.army * 0.05 * years * 2 * gv;
+    const gain = yearly * Math.max(0, H - years - settleYears(r, a) * RULES.settle) + Math.max(0, d.treasury) * 0.3 * gv;
+    const losses = a.army * 0.05 * years * 2 * fx(a, 'bleed') * gv;
     const disruption = years * (regionsOf(a).reduce((s, x) => s + regionIncome(x, a, { war: false }).trade, 0) * 4 + income(a) * 4 * 0.05);
     const lose = Math.max(0, T) * 0.3 * gv + 0.3 * (borderRegions(d).filter(x => x.owner === a.tag).map(x => provYearly(x, a)).sort((x, y) => y - x)[0] || 0) * H;
     const swallow = regionsOf(d).length === 1 ? (S.year < 1860 ? 16 : 8) : 0;
-    const infamyCost = ((claim(a, r) >= 2.5 ? 3 : 9) + swallow) * (1.5 + landNeighbors(a) * 0.5) * (has(a, 'warmonger') ? F('warmonger', 'distrust') : 1);
+    const infamyCost = ((claim(a, r) >= 2.5 ? 3 : 9) + swallow) * (1.5 + landNeighbors(a) * 0.5);
     // a lost war costs more than the gold: a beaten ruler may lose his throne
     const ev = p * gain - (1 - p) * lose * 1.25 * surviveW(a) - losses - disruption - infamyCost;
     return { ev, p, pTrue, yearly, cost: losses + disruption };
@@ -787,12 +761,8 @@ function createSim(seed, geo, opts = {}){
   function declareWar(a, d, goal, opts = {}){
     const w = { id: S.stats.wars, name: opts.name || warName(a, d), att: [a.tag], def: [d.tag], goal: goal.id, score: 0, quarters: 0,
       battles: 0, start: S.year, great: !!opts.great };
-    if (!hasFx(a, 'isolates')) [...d.allies].forEach(t => { const o = S.C[t]; const sure = d.guarantee && d.guarantee.by === t && S.year < d.guarantee.until; if (o.alive && !warOf(o) && !has(o, 'saint') && t !== a.tag && !a.allies.has(t) && (sure || chance(0.85))) w.def.push(t); });
-    [...a.allies].forEach(t => { const o = S.C[t]; if (o.alive && !warOf(o) && !has(o, 'saint') && !w.def.includes(t) && rel(a.tag, t) > 25 && chance(0.6)) w.att.push(t); });
-    // an admirer follows his favourite court into any war
-    alive().forEach(o => { if (!has(o, 'admirer') || warOf(o) || w.att.includes(o.tag) || w.def.includes(o.tag)) return;
-      const side = w.att.includes(o.ruler.friend) ? w.att : w.def.includes(o.ruler.friend) ? w.def : null;
-      if (side && chance(F('admirer', 'join'))) side.push(o.tag); });
+    [...d.allies].forEach(t => { const o = S.C[t]; const sure = d.guarantee && d.guarantee.by === t && S.year < d.guarantee.until; if (o.alive && !warOf(o) && t !== a.tag && !a.allies.has(t) && (sure || chance(0.85))) w.def.push(t); });
+    [...a.allies].forEach(t => { const o = S.C[t]; if (o.alive && !warOf(o) && !w.def.includes(t) && rel(a.tag, t) > 25 && chance(0.6)) w.att.push(t); });
     S.wars.push(w); S.stats.wars++; a.lastWar = S.year;
     const cl = claim(a, goal);
     a.infamy += (cl >= 2.5 ? 3 : 9) + (regionsOf(d).length === 1 ? 8 : 0);
@@ -822,8 +792,7 @@ function createSim(seed, geo, opts = {}){
   function transfer(r, to, from, how = 'war'){
     const kin = isAccepted(to, r.culture) || r.core === to.tag;
     r.owner = to.tag; r.occ = null; r.build = null; invalidate();
-    if (how === 'war') { if (r.fac > 0) r.fac--; r.integ = kin ? 0.4 : 0.1; r.unrest = Math.max(r.unrest, kin ? 25 : 45); r.wonUnder = to.ruler;
-      if (hasFx(to, 'converts') && !kin) { to.acc.add(r.culture); (to.ruler.added = to.ruler.added || []).push(r.culture); r.integ = 1; r.unrest = 20; } }
+    if (how === 'war') { if (r.fac > 0) r.fac--; r.integ = kin ? 0.4 : 0.1; r.unrest = Math.max(r.unrest, kin ? 25 : 45); }
     else r.integ = Math.min(r.integ, 0.6);
     killIfEmpty(from);
   }
@@ -839,8 +808,8 @@ function createSim(seed, geo, opts = {}){
     r.pop *= 0.985; S.stats.dead = (S.stats.dead || 0) + r.pop * 0.015;
     if (r.fac > 0 && chance(0.22)) { r.fac--; mark(r.i, 'ruin'); }
     if (r.fort && chance(S.era.fort)) return;
-    // a cautious ruler holds his ground, and is slow to take the enemy's
-    if ((has(S.C[r.owner], 'cautious') || has(S.C[win[0]], 'cautious')) && chance(F('cautious', 'hold'))) return;
+    // a Cautious ruler stops some advances into his land
+    if (chance(fx(S.C[r.owner], 'hold'))) return;
     if (r.fort) { r.fort = 0; mark(r.i, 'ruin'); L('war', `The fortress of ${Rn(r)} falls and is razed.`); }
     // credit the ally whose land (or occupied land) actually borders it
     const counts = {};
@@ -869,12 +838,11 @@ function createSim(seed, geo, opts = {}){
       // the war goal goes to the attacker if it won and can reach it
       if (outcome === 'att' && w.def.includes(goal.owner)) { const holder = goal.occ && w.att.includes(goal.occ) ? goal.occ : A.tag; give(goal, reachable(goal, holder) ? holder : A.tag); }
       // occupied land the occupier can reach and has a reason to keep
-      const sweep = winners.some(t => hasFx(S.C[t], 'keepsAll'));
-      const cap = sweep ? 99 : w.great ? 3 : 1;
+      const most = w.great ? 3 : 1;
       let extra = 0;
       occupied.filter(r => r.owner && losers.includes(r.owner) && winners.includes(r.occ) && r !== goal)
         .sort((x, y) => (claim(S.C[y.occ], y) - claim(S.C[x.occ], x)) || y.pop - x.pop)
-        .forEach(r => { if (extra >= cap) return; const occ = r.occ; if ((sweep || claim(S.C[occ], r) > 0 || w.score >= 85 || w.score <= -85 || w.great) && give(r, occ)) extra++; });
+        .forEach(r => { if (extra >= most) return; const occ = r.occ; if ((claim(S.C[occ], r) > 0 || w.score >= 85 || w.score <= -85 || w.great) && give(r, occ)) extra++; });
       // reparations: a third of the loser's treasury, shared by winners who gained no land (or by all)
       const rep = Math.max(0, loser.treasury * 0.3); loser.treasury -= rep;
       const gainers = new Set(taken.map(x => x[1]));
@@ -891,7 +859,6 @@ function createSim(seed, geo, opts = {}){
     all.forEach(t => all.forEach(u => { if (t !== u && S.C[t]) S.C[t].truce[u] = S.year + 10; }));
     S.wars = S.wars.filter(x => x !== w);
     if (outcome === 'white') return;
-    winners.forEach(t => { const c = S.C[t]; if (c.alive && has(c, 'usurper') && !c.ruler.legit) { c.ruler.legit = true; L('ruler', `Victory in the <em>${w.name}</em> makes ${c.ruler.name} of ${N(c)} a lawful king in his people's eyes.`); } });
     // a ruler who led his nation into defeat may have to go (not at the armistice: the age is over)
     const beaten = S.C[losers[0]];
     if (beaten && beaten.alive && !(S.year === RULES.end.year && S.q === RULES.end.season) && (taken.some(x => x[2] === beaten.tag) || beaten.tag === w.att[0]) && chance(RULES.reign.abdicate))
@@ -907,8 +874,9 @@ function createSim(seed, geo, opts = {}){
       w.battles = clamp(w.battles + (aWin ? 1 : -1), -14, 14);
       const [win, lose] = aWin ? [w.att, w.def] : [w.def, w.att];
       frontMove(win, lose, w, aWin);
-      if (ratio > 2.2) frontMove(win, lose, w, aWin);
-      const bleed = t => has(S.C[t], 'soldier') ? F('soldier', 'bleed') : 1;
+      // a crushing advantage breaks through twice; a Bold leader needs less of one, a Cautious one more
+      if (ratio > RULES.breakthrough * fx(S.C[win[0]], 'breakthrough')) frontMove(win, lose, w, aWin);
+      const bleed = t => fx(S.C[t], 'bleed');
       win.forEach(t => { S.C[t].army *= 1 - rand(0.01, 0.025) * bleed(t); });
       lose.forEach(t => { S.C[t].army *= 1 - rand(0.025, 0.045) * bleed(t); });
       w.score = warScore(w);
@@ -939,8 +907,8 @@ function createSim(seed, geo, opts = {}){
     const maxFac = 10;
     if (building < maxBuilds(c)) {
       mine.filter(r => r.fac < maxFac && !r.build && !r.occ).forEach(r => {
-        const cost = 22 * Math.pow(1.55, r.fac) * catchup * (has(c, 'genius') ? F('genius', 'factoryCost') : has(c, 'builder') ? F('builder', 'factoryCost') : 1) * (S.railBoom > S.year ? EV.railway.cost : 1);
-        if (cost > T + (has(c, 'dynast') ? F('dynast', 'borrow') : 0)) return;   // a dynast borrows to build
+        const cost = 22 * Math.pow(1.55, r.fac) * catchup * fx(c, 'factoryCost') * (S.railBoom > S.year ? EV.railway.cost : 1);
+        if (cost > T) return;
         const gain = (sumInc(regionIncome(r, c, { fac: r.fac + 1, war: false, ignoreOcc: true })) - sumInc(regionIncome(r, c, { war: false, ignoreOcc: true }))) * 4;
         const ev = gain * (H - 1) - cost * gv;
         add({ type: 'factory', r, cost, ev, label: `Build a factory in ${r.name}`,
@@ -957,12 +925,12 @@ function createSim(seed, geo, opts = {}){
     const armyEV = delta => {
       const r1 = riskOf(c, delta).total + gwLoss(delta) - gwLoss(0);
       const incLoss = (inc0 / Math.max(0.01, wf0)) * (wf0 - workforce(c, c.army + delta)) * 0.85; // tax and factory part
-      const upk = delta * 0.04 * 4 * (has(c, 'navigator') ? F('navigator', 'upkeep') : 1);
-      return (baseRisk.total - r1) - (incLoss + upk * gv) * H - (delta > 0 ? delta * 3 * gv : 0);
+      const upk = delta * 0.04 * 4 * fx(c, 'upkeep');
+      return (baseRisk.total - r1) - (incLoss + upk * gv) * H - (delta > 0 ? delta * 3 * fx(c, 'recruit') * gv : 0);
     };
     const step = Math.max(5, c.army * 0.15, popOf(c) * 0.5);
     let bestA = null;
-    [step, step * 2.5].forEach(st => { if (T < st * 3 + 5) return;
+    [step, step * 2.5].forEach(st => { if (T < st * 3 * fx(c, 'recruit') + 5) return;
       const ev = armyEV(st) + (war ? 30 + st : 0);
       if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Grow the army by ${Math.round(st)}k`,
         why: war ? 'At war: the army needs every man' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(st * 0.16).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
@@ -976,16 +944,17 @@ function createSim(seed, geo, opts = {}){
     if (baseRisk.top && building < maxBuilds(c) && T >= 25) {
       const o = baseRisk.top, t = threatOf(o, c);
       const fs = mine.filter(r => !r.fort && !r.build && !r.occ && r.nb.some(j => S.regions[j].owner === o.tag)).sort((a, b) => provYearly(b, c) - provYearly(a, c))[0];
-      if (fs) add({ type: 'fort', r: fs, cost: 25, ev: Math.min(1.5, t.p * H) * pWin(t.ratio) * 0.45 * (provYearly(fs, c) * H * 0.6 + 25) - 25 * gv,
+      const fc = 25 * fx(c, 'fortCost');
+      if (fs) add({ type: 'fort', r: fs, cost: fc, ev: Math.min(1.5, t.p * H) * pWin(t.ratio) * 0.45 * (provYearly(fs, c) * H * 0.6 + 25) - fc * gv,
         label: `Fortify ${fs.name}`, why: `Guards the richest border with ${o.name}` });
     }
 
     // reform: income recovered from unrest, plus revolts avoided
     if (T >= 20 && c.reformCd <= S.t) {
       let gain = 0;
-      mine.forEach(r => { const now = sumInc(regionIncome(r, c)), calm = sumInc(regionIncome(r, c, { unrest: Math.max(0, r.unrest - RULES.reform.calm) }));
+      mine.forEach(r => { const now = sumInc(regionIncome(r, c)), calm = sumInc(regionIncome(r, c, { unrest: Math.max(0, r.unrest - RULES.reform.calm * fx(c, 'reformCalm')) }));
         gain += (calm - now) * 4 * 1.6; if (r.unrest > 55) gain += 0.35 * provYearly(r, c) * Math.min(H, 12); });
-      if (gain > 1) add({ type: 'reform', ev: gain - (has(c, 'reformer') ? F('reformer', 'reformCost') : RULES.reform.cost) * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
+      if (gain > 1) add({ type: 'reform', ev: gain - RULES.reform.cost * fx(c, 'reformCost') * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
     }
 
     // diplomacy: alliances cut expected losses; courting makes them possible
@@ -995,7 +964,7 @@ function createSim(seed, geo, opts = {}){
       const mine2 = baseRisk.total - riskOf(c, 0, o).total;
       const theirs = riskOf(o).total - riskOf(o, 0, c).total;
       const drag = riskOf(o).total * 0.12;
-      const ev = (mine2 - drag) * (has(c, 'arbiter') ? F('arbiter', 'allies') : 1);
+      const ev = mine2 - drag;
       if (ev < 3) return;
       const r = rel(c.tag, o.tag);
       const guard = baseRisk.top ? baseRisk.top.name : 'trouble';
@@ -1015,7 +984,7 @@ function createSim(seed, geo, opts = {}){
     });
 
     // war: chance of winning x what the province pays once settled, minus the price of fighting and of losing
-    if (!war && T > -10 && unrestOf(c) < 50 && !has(c, 'saint')) {
+    if (!war && T > -10 && unrestOf(c) < 50) {
       let best = null;
       borderRegions(c).forEach(r => {
         const o = S.C[r.owner];
@@ -1033,11 +1002,11 @@ function createSim(seed, geo, opts = {}){
   function act(c, a){
     const spend = (k, v) => { c.treasury -= v; c.spent[k] = (c.spent[k] || 0) + v; };
     switch (a.type) {
-      case 'factory': spend('build', a.cost); a.r.build = { type: 'factory', left: has(c, 'genius') ? F('genius', 'buildTime') : RULES.build.factory }; return;
+      case 'factory': spend('build', a.cost); a.r.build = { type: 'factory', left: RULES.build.factory }; return;
       case 'fort': spend('build', a.cost); a.r.build = { type: 'fort', left: RULES.build.fort }; return;
-      case 'army': spend('army', a.amt * 3); c.army += a.amt; return;
+      case 'army': spend('army', a.amt * 3 * fx(c, 'recruit')); c.army += a.amt; return;
       case 'demob': c.army = Math.max(3, c.army - a.amt); return;
-      case 'reform': { const rf = has(c, 'reformer'); spend('reform', rf ? F('reformer', 'reformCost') : RULES.reform.cost); c.reformCd = S.t + (rf ? F('reformer', 'reformWait') : RULES.reform.wait); regionsOf(c).forEach(r => r.unrest = Math.max(0, r.unrest - (rf ? F('reformer', 'reformCalm') : RULES.reform.calm))); return; }
+      case 'reform': spend('reform', RULES.reform.cost * fx(c, 'reformCost')); reform(c); return;
       case 'court': addRel(c.tag, a.o.tag, 6 + rand(0, 4)); return;
       case 'ally':
         if (a.theirs > 0 && rel(c.tag, a.o.tag) >= 30 && a.o.rival !== c.tag) { ally(c.tag, a.o.tag); addRel(c.tag, a.o.tag, 10);
@@ -1071,7 +1040,7 @@ function createSim(seed, geo, opts = {}){
     S.regions.forEach(r => {
       if (r.battle > 0) r.battle--;
       if (r.flash > 0) r.flash--;
-      if (r.integ < 1 && !r.occ) { const o = S.C[r.owner]; r.integ = Math.min(1, r.integ + ((isAccepted(o, r.culture) || r.core === o.tag) ? 0.08 : 0.028) * (has(o, 'iron') ? F('iron', 'integrate') : 1));
+      if (r.integ < 1 && !r.occ) { const o = S.C[r.owner]; r.integ = Math.min(1, r.integ + ((isAccepted(o, r.culture) || r.core === o.tag) ? 0.08 : 0.028 * fx(o, 'integrateOther')) * fx(o, 'integrate'));
         if (r.integ >= 1) L('econ', `${Rn(r)} is now fully integrated into ${N(o)}.`); }
       if (!r.build || r.occ) return;
       if (--r.build.left > 0) return;
@@ -1086,8 +1055,8 @@ function createSim(seed, geo, opts = {}){
     S.regions.forEach(r => {
       const o = S.C[r.owner];
       const foreign = !isAccepted(o, r.culture);
-      const target = 8 + (foreign ? 25 + 36 * nationalism() + (S.awake[r.culture] || 0) : 0) + (inCrisis(o) ? 12 : 0) + Math.min(18, r.fac * 3) * clamp((S.year - 1848) / 45, 0, 1) + (warOf(o) ? 10 : 0) + (r.occ ? 25 : 0) + (o.treasury < 0 ? 15 : 0) + 15 * (1 - r.integ) + (has(o, 'usurper') && !o.ruler.legit ? F('usurper', 'unrest') : 0);
-      r.unrest = has(o, 'saint') ? Math.max(0, r.unrest - F('saint', 'calm')) : clamp(r.unrest + (target - r.unrest) * 0.07 + rand(-2, 2.5), 0, 100);
+      const target = 8 + (foreign ? 25 + 36 * nationalism() + (S.awake[r.culture] || 0) : 0) + (inCrisis(o) ? 12 : 0) + Math.min(18, r.fac * 3) * clamp((S.year - 1848) / 45, 0, 1) + (warOf(o) ? 10 : 0) + (r.occ ? 25 : 0) + (o.treasury < 0 ? 15 : 0) + 15 * (1 - r.integ) + fx(o, 'unrest') + (foreign ? fx(o, 'unrestOther') : fx(o, 'unrestOwn'));
+      r.unrest = clamp(r.unrest + (target - r.unrest) * 0.07 + rand(-2, 2.5), 0, 100);
     });
   }
   function revolts(){
@@ -1097,7 +1066,7 @@ function createSim(seed, geo, opts = {}){
       const o = S.C[r.owner];
       S.stats.revolts++; r.flash = 3; mark(r.i, 'revolt');
       const rebels = r.pop * 2.2 * rand(0.5, 1.6) * (1 + (S.year - RULES.start) / 80) * (1 + (S.awake[r.culture] || 0) / 10);
-      const garrison = o.army * quality(o) * (warOf(o) ? 0.6 : 2.2) / Math.max(1, regionsOf(o).length) * (inCrisis(o) ? RULES.reign.crisisArmy : 1) * rand(0.6, 1.3) * (r.fort ? 1.6 : 1) * (has(o, 'iron') ? F('iron', 'garrison') : 1);
+      const garrison = o.army * quality(o) * (warOf(o) ? 0.6 : 2.2) / Math.max(1, regionsOf(o).length) * (inCrisis(o) ? RULES.reign.crisisArmy : 1) * rand(0.6, 1.3) * (r.fort ? 1.6 : 1) * fx(o, 'garrison');
       if (rebels < garrison) { r.unrest = 35; o.army *= 0.96; L('revolt', `Riots in ${Rn(r)} are put down by the ${o.adj} army.`); return; }
       if (isAccepted(o, r.culture)) {
         o.treasury *= 0.5; regionsOf(o).forEach(x => x.unrest = Math.max(15, x.unrest - 30)); o.army *= 0.85;
@@ -1213,49 +1182,32 @@ function createSim(seed, geo, opts = {}){
     () => { const e = EV.boom; if (S.year >= e.from && Q(e.chance)) { const r = pick(S.regions.filter(x => !x.occ)); r.fac += e.factories; r.pop *= e.pop; mark(r.i, 'boom');
       L('event', say(e.text, { ...e, find: pick(e.finds), province: Rn(r), nation: N(S.C[r.owner]) })); } },
     // diplomatic crisis: an ultimatum to a rival
-    () => { const e = EV.ultimatum; if (Q(e.chance)) { const cs = alive().filter(c => c.rival && !has(c, 'saint') && S.C[c.rival].alive && !warOf(c) && !warOf(S.C[c.rival]) && isNeighbor(c, S.C[c.rival])); if (!cs.length) return;
+    () => { const e = EV.ultimatum; if (Q(e.chance)) { const cs = alive().filter(c => c.rival && S.C[c.rival].alive && !warOf(c) && !warOf(S.C[c.rival]) && isNeighbor(c, S.C[c.rival])); if (!cs.length) return;
       const c = pick(cs), o = S.C[c.rival];
       let best = null; borderRegions(c).filter(r => r.owner === o.tag).forEach(r => { const ev = warEval(c, o, r); if (ev && (!best || ev.ev > best.ev)) best = { ...ev, r }; });
       if (!best || best.ev + e.margin < 0) { if (chance(e.rattle)) L('diplo', say(e.rattleText, { a: N(c), b: N(o), pretext: pick(e.pretexts) })); return; }
-      const oFears = pWin(theirSide(o, c.tag) * S.era.def / Math.max(1, mySide(c)) * Math.exp(o.ruler.bias)) < e.backDown;
+      const oFears = believe(o, theirSide(o, c.tag) * S.era.def / Math.max(1, mySide(c))) < e.backDown;
       if (oFears) { const pay = Math.max(0, o.treasury * e.pay); o.treasury -= pay; c.treasury += pay; regionsOf(o).forEach(r => r.unrest += e.unrest); addRel(c.tag, o.tag, e.relations);
         L('diplo', say(e.text, { a: N(c), b: N(o), gold: Math.round(pay) })); }
       else { const name = warName(c, o); declareWar(c, o, best.r, { p: best.p, pTrue: best.pTrue, name, text: say(e.warText, { a: N(c), b: N(o), province: Rn(best.r), war: name }) }); } } },
     // coups in restless countries (rules.json: reign)
     () => { alive().forEach(c => { if (c.federal) return;
-      if (unrestOf(c) > RULES.reign.coupUnrest && chance(RULES.reign.coup)) endReign(c, 'coup');
-      else if (has(c, 'liberator') && chance(F('liberator', 'coup'))) endReign(c, 'coup', ' at the bidding of the nobles'); }); },
+      if (unrestOf(c) > RULES.reign.coupUnrest && chance(RULES.reign.coup)) endReign(c, 'coup'); }); },
   ];
   function successions(){
     alive().forEach(c => {
-      if (S.t >= c.ruler.until) endReign(c, c.ruler.council ? 'council' : 'death');
-      else if (!c.federal && !c.ruler.council && chance(RULES.reign.murder / 4 * (hasFx(c, 'hated') ? RULES.reign.hatedMurder : 1))) endReign(c, 'murder');
+      if (S.t >= c.ruler.until) endReign(c, 'death');
+      else if (!c.federal && chance(RULES.reign.murder / 4)) endReign(c, 'murder');
     });
   }
-  // what changes during a reign: a drunk's judgment, a madman's mood, a child growing up, a great work finished, a peace brokered
+  // what changes during a reign: a Drunk's judgment swings anew every season
   function tickRulers(){
-    alive().forEach(c => { const r = c.ruler; if (!r) return;
-      if (has(c, 'drunk')) r.bias = rand(-F('drunk', 'misjudge'), F('drunk', 'misjudge'));
-      if (r.trait === 'mad' && chance(1 / F('mad', 'changeEvery'))) { r.mood = quirkSetup(c, 'mad').mood; Object.assign(r, TRAITS[r.mood].temper || {}); L('ruler', `${r.name} of ${N(c)} changes again: ${quirkDesc(r.mood).charAt(0).toLowerCase() + quirkDesc(r.mood).slice(1)}.`); }
-      if (r.trait === 'child' && S.t >= r.ofAge) {
-        const was = r.name, t = chance(F('child', 'incompetent')) ? 'incompetent' : drawQuirk(c, ['child', 'mad', ...OF_TIER(4), ...OF_TIER(5)]);
-        Object.assign(r, { trait: t, mood: null, name: `${r.given} ${TRAITS[t].epi}` }, quirkSetup(c, t) || {}); reignBegins(c, r, true);
-        L('ruler', `${was.charAt(0).toUpperCase() + was.slice(1)} of ${N(c)} comes of age and becomes ${r.name}. ${traitDesc(r)}.`);
-      }
-      if (r.trait === 'architect' && r.works === S.t) {
-        const lm = r.landmark, cap = capitalOf(c);
-        if (lm.id === 'railway') cap.fac += CONTENT.landmarks.railway.factories;
-        else if (lm.id === 'fortress') regionsOf(c).filter(x => x.nb.some(j => S.regions[j].owner !== c.tag)).forEach(x => x.fort = 1);
-        else regionsOf(c).slice().sort((a, b) => sumInc(regionIncome(b, c)) - sumInc(regionIncome(a, c))).slice(0, CONTENT.landmarks.exhibition.provinces).forEach(x => x.fac++);
-        cap.landmark = lm.name.replace(/^the /, ''); mark(cap.i, 'landmark');
-        L('econ', `<strong>${lm.name.charAt(0).toUpperCase() + lm.name.slice(1)}</strong> is completed in ${N(c)} under ${r.name}: ${lm.fx}.`);
-      }
-      if (has(c, 'arbiter') && !warOf(c)) S.wars.slice().forEach(w => {
-        if (w.great || w.quarters < F('arbiter', 'brokerAfter') || Math.abs(w.score) > F('arbiter', 'brokerScore') || !(isNeighbor(c, S.C[w.att[0]]) || isNeighbor(c, S.C[w.def[0]])) || !chance(F('arbiter', 'broker'))) return;
-        const fee = [S.C[w.att[0]], S.C[w.def[0]]].reduce((s, x) => { const f = Math.max(0, Math.min(F('arbiter', 'feeCap'), x.treasury * F('arbiter', 'fee'))); x.treasury -= f; return s + f; }, 0); c.treasury += fee;
-        endWar(w, 'white', `${N(c)} brokers the Peace of ${capitalOf(c).name}: the <em>${w.name}</em> ends where it stands, and ${c.ruler.name} is paid ${Math.round(fee)} gold for his trouble.`);
-      });
-    });
+    alive().forEach(c => { if (c.ruler && hasFx(c, 'swing')) c.ruler.swing = rand(-fx(c, 'swing'), fx(c, 'swing')); });
+  }
+  // reforms: unrest falls everywhere, and can only be passed again after a wait
+  function reform(c){
+    c.reformCd = S.t + RULES.reform.wait;
+    regionsOf(c).forEach(r => r.unrest = Math.max(0, r.unrest - RULES.reform.calm * fx(c, 'reformCalm')));
   }
 
   function greatWar(){
@@ -1291,10 +1243,9 @@ function createSim(seed, geo, opts = {}){
       let tax = 0, fac = 0, trade = 0; regionsOf(c).forEach(r => { const x = regionIncome(r, c); tax += x.tax; fac += x.fac; trade += x.trade; });
       const lostWork = (tax + fac) / Math.max(0.01, workforce(c)) * (1 - workforce(c));
       const lostAdmin = (tax + fac + trade) / adminOf(c) * (1 - adminOf(c));
-      const waste = has(c, 'spendthrift') ? (tax + fac + trade) * 0.15 : 0;
-      c.ledger = { tax, fac, trade, upkeep: upkeep(c), lostWork, lostAdmin, waste, spent: c.spent }; c.spent = {};
-      c.treasury += tax + fac + trade - upkeep(c) - waste;
-      if (c.crisis && S.t === c.crisis.until && c.ruler.name === c.crisis.winner) L('ruler', `${c.crisis.winner} wins the civil war in ${N(c)}.`);
+      c.ledger = { tax, fac, trade, upkeep: upkeep(c), lostWork, lostAdmin, spent: c.spent }; c.spent = {};
+      c.treasury += tax + fac + trade - upkeep(c);
+      if (c.crisis && S.t === c.crisis.until && c.ruler.name === c.crisis.winner) L('ruler', `${cap(c.crisis.winner)} wins the civil war in ${N(c)}.`);
       regionsOf(c).forEach(r => r.pop *= 1 + 0.0015 + r.fac * 0.0003);
       c.infamy = Math.max(0, c.infamy - 0.3);
       if (c.treasury < -40) c.army *= 0.97;
@@ -1367,7 +1318,6 @@ const DRAW = {
   taxes: { draw: P('<path d="M5.2 2.2h5.6L9.6 5c3 1 4.6 4 4.2 7-.2 1.6-1.6 2.5-3.2 2.5H5.4c-1.6 0-3-.9-3.2-2.5-.4-3 1.2-6 4.2-7z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M6.4 5h3.2" stroke="#5c4320" stroke-width="1.2"/><path d="M8 7.6v5M6.6 8.8h2.1a.9.9 0 010 1.8H7.3a.9.9 0 000 1.8h2.1" fill="none" stroke="#5c4320" stroke-width=".9"/>') },
   upkeep: { draw: P('<circle cx="7" cy="8" r="5.5" fill="#d98a6a" stroke="#7a3a22" stroke-width="1.1"/><path d="M4.5 8h5" stroke="#7a3a22" stroke-width="1.6"/>') },
   trade: { draw: P('<circle cx="8" cy="3.2" r="1.7" fill="none" stroke="#6fa8dc" stroke-width="1.3"/><path d="M8 5v9.5M5 7.5h6M2.5 10c0 2.6 2.5 4.5 5.5 4.5s5.5-1.9 5.5-4.5" fill="none" stroke="#6fa8dc" stroke-width="1.4" stroke-linecap="round"/>') },
-  waste: { draw: P('<path d="M4 4h8l-1 10.5H5z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M3 4h10M6.5 2h3" stroke="#5c4320" stroke-width="1.3"/>') },
   save: { draw: P('<path d="M2.5 6.5h11v7.5h-11z" fill="#b08a4a" stroke="#5c4320"/><path d="M2 6.5L8 2l6 4.5" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><circle cx="8" cy="10" r="1.6" fill="#e9c35a" stroke="#5c4320" stroke-width=".8"/>') },
 
   // ----- land and people -----
@@ -1434,8 +1384,6 @@ const DRAW = {
   forecast: { draw: P('<path d="M2 13.5h12" stroke="#97a0aa" stroke-width="1.2"/><path d="M2.5 11l3.5-3.5 2.5 2 5-5.5" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5h3v3" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>') },
   civilWar: { box: 7.5, map: 1,
     draw: `<path d="M-7 3L-7.4 -3.5L-4 -.5L-1.6 -4.6L-.4 -2.2L-1.4 -.4L-.4 1.2L-1 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M1 3L1.6 1.2L.6 -.4L1.6 -2.2L2.4 -4.6L4.6 -.5L7.4 -3.5L7 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
-  landmark: { box: 7.5, map: .9,
-    draw: `<path d="M-6.5 -2L0 -6.5L6.5 -2z" fill="#c9a45c" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M-4.4 -1.2V4M-1.5 -1.2V4M1.5 -1.2V4M4.4 -1.2V4" stroke="#c9a45c" stroke-width="1.6"/><path d="M-6.5 5H6.5" stroke="#c9a45c" stroke-width="1.6"/>` },
   coup: { box: 7.5, map: 1,
     draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M-7 4L7 -5" stroke="${DARK}" stroke-width="2.2"/><path d="M-7 4L7 -5" stroke="#e0453a" stroke-width="1.2"/>` },
 
@@ -1448,48 +1396,33 @@ const DRAW = {
 // descriptions filled in from content), with its drawing from DRAW. Concepts marked `word` have no icon.
 const REG = {}, WORDS = {};
 Object.entries(CONTENT.concepts).forEach(([k, c]) => { const e = Object.assign({}, c, { desc: say(c.desc) }, DRAW[k] || {}); (c.word ? WORDS : REG)[k] = e; });
-// ruler rarity, white to gold (content/rarities.json; TIER[1] is Common)
-const TIER = [null, ...CONTENT.rarities];
-// ruler quirk emblems, drawn inside a round badge (names and descriptions come from TRAITS in sim.js)
+// ruler rarity, white to gold (content/rarities.json; TIER[0] is Common)
+const TIER = CONTENT.rarities;
+// ruler quirk emblems, drawn inside a round badge (names and descriptions come from content/rulers.json)
 const EMB = {
   warmonger: `<path d="M-2.6 2.6L2.8 -2.8M-2.4 -.2L.2 2.4M-3.2 3.2l1-1" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/>`,
-  builder: `<path d="M-2.6 2.8L.8 -.6" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/><path d="M-.6 -2.8l2.2 -.6 1.6 1.6-.6 2.2z" fill="${INK}"/>`,
-  paranoid: `<path d="M-3.4 0Q0 -3 3.4 0Q0 3 -3.4 0z" fill="none" stroke="${INK}" stroke-width="1"/><circle r="1.1" fill="${INK}"/>`,
-  revanchist: `<path d="M0 -3.4C1.7 -1.2 2.5 0 1.8 1.7C1.3 3 -1.3 3 -1.8 1.7C-2.4 .2 -.9 -.8 0 -3.4z" fill="#e3933c"/>`,
-  spendthrift: `<circle r="2.8" fill="none" stroke="#f2c94c" stroke-width="1"/><path d="M0 -1.6v3.2" stroke="#f2c94c" stroke-width="1"/>`,
-  reformer: `<path d="M-2.4 -3h4.8v6h-4.8z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-1.4 -1.2h2.8M-1.4 .4h2.8M-1.4 2h1.8" stroke="${INK}" stroke-width=".7"/>`,
-  incompetent: `<text y="2.6" text-anchor="middle" font-size="7" font-family="IBM Plex Sans" fill="${INK}">?</text>`,
   soldier: `<path d="M-3 -.4L0 -3L3 -.4M-3 2.8L0 .2L3 2.8" fill="none" stroke="${INK}" stroke-width="1.1" stroke-linejoin="round"/>`,
-  cautious: `<path d="M0 -3.4L3 -2.3V.2C3 2 1.6 3 0 3.6C-1.6 3 -3 2 -3 .2V-2.3z" fill="none" stroke="${INK}" stroke-width=".9"/>`,
-  arbiter: `<path d="M0 -3.2V2.8M-1.6 2.8H1.6M-3.2 -1.8H3.2M-3.2 -1.8L-4 .6H-2.4zM3.2 -1.8L2.4 .6H4z" fill="none" stroke="${INK}" stroke-width=".8" stroke-linejoin="round"/>`,
-  shrewd: `<circle cx="-.7" cy="-.7" r="2" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M.8 .8L3 3" stroke="${INK}" stroke-width="1.3" stroke-linecap="round"/>`,
-  admirer: `<path d="M0 3C-3.6 .6 -3.6 -2.8 -1.6 -2.8C-.8 -2.8 -.2 -2.2 0 -1.6C.2 -2.2 .8 -2.8 1.6 -2.8C3.6 -2.8 3.6 .6 0 3z" fill="#e0453a"/>`,
-  tolerant: `<circle cx="-1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/><circle cx="1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/>`,
-  chauvinist: `<path d="M-2.4 3.4V-3.4" stroke="${INK}" stroke-width=".9"/><path d="M-2.4 -3.2L3 -1.6L-2.4 0z" fill="${INK}"/>`,
-  miser: `<rect x="-2.6" y="-.6" width="5.2" height="4" rx=".6" fill="${INK}"/><path d="M-1.6 -.6V-1.8A1.6 1.6 0 011.6 -1.8V-.6" fill="none" stroke="${INK}" stroke-width=".9"/>`,
-  dynast: `<path d="M0 3.4V-.4" stroke="${INK}" stroke-width="1"/><circle cy="-1.4" r="2.4" fill="${INK}"/>`,
   bold: `<rect x="-2.8" y="-2.8" width="5.6" height="5.6" rx="1" fill="${INK}"/><circle cx="-1.2" cy="-1.2" r=".6" fill="#1a1f26"/><circle cx="1.2" cy="1.2" r=".6" fill="#1a1f26"/><circle r=".6" fill="#1a1f26"/>`,
+  cautious: `<path d="M0 -3.4L3 -2.3V.2C3 2 1.6 3 0 3.6C-1.6 3 -3 2 -3 .2V-2.3z" fill="none" stroke="${INK}" stroke-width=".9"/>`,
+  paranoid: `<path d="M-3.4 0Q0 -3 3.4 0Q0 3 -3.4 0z" fill="none" stroke="${INK}" stroke-width="1"/><circle r="1.1" fill="${INK}"/>`,
+  builder: `<path d="M-2.6 2.8L.8 -.6" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/><path d="M-.6 -2.8l2.2 -.6 1.6 1.6-.6 2.2z" fill="${INK}"/>`,
+  stingy: `<rect x="-2.6" y="-.6" width="5.2" height="4" rx=".6" fill="${INK}"/><path d="M-1.6 -.6V-1.8A1.6 1.6 0 011.6 -1.8V-.6" fill="none" stroke="${INK}" stroke-width=".9"/>`,
+  spender: `<circle r="2.8" fill="none" stroke="#f2c94c" stroke-width="1"/><path d="M0 -1.6v3.2" stroke="#f2c94c" stroke-width="1"/>`,
+  tyrant: `<path d="M-3 2L-3.4 -2.2L-1.4 -.6L0 -3L1.4 -.6L3.4 -2.2L3 2z" fill="${INK}"/>`,
+  reformer: `<path d="M-2.4 -3h4.8v6h-4.8z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-1.4 -1.2h2.8M-1.4 .4h2.8M-1.4 2h1.8" stroke="${INK}" stroke-width=".7"/>`,
   drunk: `<path d="M-2.4 -3H2.4C2.4 -.6 1.4 .6 0 .6C-1.4 .6 -2.4 -.6 -2.4 -3zM0 .6V3M-1.6 3H1.6" fill="none" stroke="${INK}" stroke-width=".9" stroke-linejoin="round"/><path d="M-2.2 -2H2.2C2 -.8 1 0 0 0C-1 0 -2 -.8 -2.2 -2z" fill="#a04060"/>`,
-  mad: `<path d="M.4 0A.4 .4 0 01-.4 0A1.2 1.2 0 011.6 0A2 2 0 01-2.4 0A2.8 2.8 0 013.2 0" fill="none" stroke="${INK}" stroke-width=".8"/>`,
-  lecher: `<path d="M-3 .4C-2 -1.4 -.8 -1.2 0 -.4C.8 -1.2 2 -1.4 3 .4C1.6 2.2 -1.6 2.2 -3 .4z" fill="#e0453a"/><path d="M-3 .4H3" stroke="#1a1f26" stroke-width=".5"/>`,
-  child: `<path d="M0 -3.4L2.6 0L0 3.4L-2.6 0z" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M-2.6 0H2.6" stroke="${INK}" stroke-width=".9"/>`,
-  usurper: `<path d="M-3 2L-3.4 -2.2L-1.4 -.6L0 -3L1.4 -.6L3.4 -2.2L3 2z" fill="${INK}"/><path d="M-3.4 3.2L3.4 -3.4" stroke="#e0453a" stroke-width="1"/>`,
-  // legendary
-  conqueror: `<path d="M-.6 3.2C-3.4 2 -3.8 -1 -2.6 -3.2M.6 3.2C3.4 2 3.8 -1 2.6 -3.2" fill="none" stroke="${INK}" stroke-width="1"/><path d="M-3.2 -.8l1 .4M-2.8 1.2l1 -.1M3.2 -.8l-1 .4M2.8 1.2l-1 -.1" stroke="${INK}" stroke-width="1" stroke-linecap="round"/>`,
-  genius: `<path d="M0 -3.6L1 -1L3.6 -1L1.6 .6L2.3 3.2L0 1.7L-2.3 3.2L-1.6 .6L-3.6 -1L-1 -1z" fill="${INK}"/>`,
-  architect: `<path d="M-3.4 -1.4L0 -3.6L3.4 -1.4z" fill="${INK}"/><path d="M-2.4 -.8V2.4M0 -.8V2.4M2.4 -.8V2.4" stroke="${INK}" stroke-width=".9"/><path d="M-3.4 3H3.4" stroke="${INK}" stroke-width=".9"/>`,
-  liberator: `<rect x="-3.6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/><rect x=".6" y="-1.2" width="3" height="2.4" rx="1.2" fill="none" stroke="${INK}" stroke-width=".9" transform="rotate(-20)"/>`,
-  saint: `<ellipse cy="-2.4" rx="2.6" ry=".9" fill="none" stroke="${INK}" stroke-width=".9"/><circle cy=".9" r="1.9" fill="${INK}"/>`,
-  iron: `<path d="M-3.4 -1.6H2.2C3 -1.6 3.6 -1 3.4 -.4H1.2V.8L2 2.4H-2L-1.2 .8V-.4H-2.6C-3.2 -.4 -3.4 -1 -3.4 -1.6z" fill="${INK}"/>`,
-  // legendary
-  chancellor: `<path d="M-3.4 -2.6H3.4V-1.4H-3.4zM-2.6 -1.4V3M2.6 -1.4V3M-3.4 3H3.4" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M0 -3.6V-2.6" stroke="${INK}" stroke-width=".9"/><circle cy=".8" r="1.1" fill="${INK}"/>`,
-  destiny: `<path d="M-3.6 -3.2C-1.6 -1.6 -.6 0 -.4 3.2M3.6 -3.2C1.6 -1.6 .6 0 .4 3.2" fill="none" stroke="${INK}" stroke-width="1"/><path d="M0 -3.4L.9 -1.6L2.8 -1.4L1.4 -.2L1.8 1.6L0 .7L-1.8 1.6L-1.4 -.2L-2.8 -1.4L-.9 -1.6z" fill="${INK}"/>`,
-  prophet: `<path d="M0 -3.6V3.6M-2.4 -1.4H2.4" stroke="${INK}" stroke-width="1"/><path d="M-3.4 3.4H3.4" stroke="${INK}" stroke-width=".8"/><circle cy="-1.4" r="3.2" fill="none" stroke="${INK}" stroke-width=".5" opacity=".7"/>`,
-  sun: `<circle r="1.8" fill="${INK}"/><path d="M0 -3.6V-2.6M0 2.6V3.6M-3.6 0H-2.6M2.6 0H3.6M-2.5 -2.5L-1.8 -1.8M2.5 2.5L1.8 1.8M-2.5 2.5L-1.8 1.8M2.5 -2.5L1.8 -1.8" stroke="${INK}" stroke-width=".8" stroke-linecap="round"/>`,
-  navigator: `<circle cy="-2.6" r=".8" fill="none" stroke="${INK}" stroke-width=".8"/><path d="M0 -1.8V3.2M-1.6 -.6H1.6M-3 .8C-2.6 2.6 -1.4 3.2 0 3.2C1.4 3.2 2.6 2.6 3 .8" fill="none" stroke="${INK}" stroke-width=".9" stroke-linecap="round"/>`,
+  vengeful: `<path d="M0 -3.4C1.7 -1.2 2.5 0 1.8 1.7C1.3 3 -1.3 3 -1.8 1.7C-2.4 .2 -.9 -.8 0 -3.4z" fill="#e3933c"/>`,
+  flirt: `<path d="M-3 .4C-2 -1.4 -.8 -1.2 0 -.4C.8 -1.2 2 -1.4 3 .4C1.6 2.2 -1.6 2.2 -3 .4z" fill="#e0453a"/><path d="M-3 .4H3" stroke="#1a1f26" stroke-width=".5"/>`,
+  religious: `<ellipse cy="-2.4" rx="2.6" ry=".9" fill="none" stroke="${INK}" stroke-width=".9"/><circle cy=".9" r="1.9" fill="${INK}"/>`,
+  sharp: `<circle cx="-.7" cy="-.7" r="2" fill="none" stroke="${INK}" stroke-width=".9"/><path d="M.8 .8L3 3" stroke="${INK}" stroke-width="1.3" stroke-linecap="round"/>`,
+  planner: `<path d="M0 3.4V-.4" stroke="${INK}" stroke-width="1"/><circle cy="-1.4" r="2.4" fill="${INK}"/>`,
+  tolerant: `<circle cx="-1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/><circle cx="1.2" r="2.2" fill="none" stroke="${INK}" stroke-width=".9"/>`,
+  nationalist: `<path d="M-2.4 3.4V-3.4" stroke="${INK}" stroke-width=".9"/><path d="M-2.4 -3.2L3 -1.6L-2.4 0z" fill="${INK}"/>`,
+  strict: `<path d="M-3.4 -1.6H2.2C3 -1.6 3.6 -1 3.4 -.4H1.2V.8L2 2.4H-2L-1.2 .8V-.4H-2.6C-3.2 -.4 -3.4 -1 -3.4 -1.6z" fill="${INK}"/>`,
+  sailor: `<circle cy="-2.6" r=".8" fill="none" stroke="${INK}" stroke-width=".8"/><path d="M0 -1.8V3.2M-1.6 -.6H1.6M-3 .8C-2.6 2.6 -1.4 3.2 0 3.2C1.4 3.2 2.6 2.6 3 .8" fill="none" stroke="${INK}" stroke-width=".9" stroke-linecap="round"/>`,
 };
 // the round badge behind a quirk emblem, ringed in its rarity's colour
-const embBadge = tier => `<circle r="7" fill="#1a1f26" stroke="${(TIER[tier] || TIER[1]).color}" stroke-width="${tier >= 4 ? 1.4 : 1}"/>`;
+const embBadge = g => `<circle r="7" fill="#1a1f26" stroke="${(TIER[g] || TIER[0]).color}" stroke-width="${g >= 3 ? 1.4 : 1}"/>`;
 
 // the name of a concept, for labels
 const nm = k => REG[k].name;
@@ -1506,7 +1439,7 @@ const glyph = (k, style = '') => { const e = REG[k], s = e.map || .55;
 // words in copy that get their concept's icon in front (see iconize)
 const WORD_IC = { 'gold a year': 'goldYear', 'army upkeep': 'upkeep', 'sea trade': 'trade', 'civil war': 'civilWar', factories: 'factory', factory: 'factory',
   fortresses: 'fort', fortress: 'fort', unrest: 'unrest', uprisings: 'uprising', uprising: 'uprising', armies: 'army', army: 'army', alliances: 'ally', alliance: 'ally',
-  reforms: 'reform', integrates: 'settle', integrated: 'settle', landmark: 'landmark', capital: 'capital', gold: 'gold', peace: 'peace', ruler: 'ruler', war: 'war' };
+  reforms: 'reform', integrates: 'settle', integrated: 'settle', capital: 'capital', gold: 'gold', peace: 'peace', ruler: 'ruler', war: 'war' };
 const WORD_RE = new RegExp(`\\b(${Object.keys(WORD_IC).sort((a, b) => b.length - a.length).join('|')})\\b`, 'gi');
 // copy with an icon in front of the first mention of each concept it names
 const iconize = text => { const seen = new Set();
@@ -1517,7 +1450,7 @@ const UNREST_HOT = '--uc:#e0453a', UNREST_WARM = '--uc:#e3933c';
 const TYPE_IC = { war: 'war', peace: 'peace', diplo: 'ally', revolt: 'uprising', unify: 'proclaim', ruler: 'ruler', event: 'event', econ: 'build' };
 const OPT_IC = { save: 'save', factory: 'factory', army: 'army', demob: 'army', fort: 'fort', reform: 'reform', court: 'ally', ally: 'ally', annex: 'ambition', war: 'war' };
 // map markers left by the simulation, by its own type names
-const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'proclaim', coup: 'coup', crisis: 'civilWar', landmark: 'landmark' };
+const MARK_IC = { revolt: 'uprising', boom: 'boom', ruin: 'ruin', crown: 'proclaim', coup: 'coup', crisis: 'civilWar' };
 
 const $ = id => document.getElementById(id);
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -1596,8 +1529,6 @@ function renderMap(){
       x += it.w;
     });
   });
-  // landmarks stay on the map for good, whoever owns the province
-  S.regions.forEach(r => { if (r.landmark) { const [cx, cy] = A(r.i); icons += at(cx - 12, cy - 4, glyph('landmark')); } });
   // event markers that fade over a few seasons
   const shown = new Set();
   S.regions.forEach(r => { if (r.battle > 0) { const [cx, cy] = A(r.i); marks += at(cx, cy - 6, glyph('battle'), '', r.battle === 2); shown.add(r.i); } });
@@ -1700,8 +1631,8 @@ function renderLog(){
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
-// a ruler's quirk as a badge; hover names it and says what it does for this ruler
-const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(TRAITS[r.trait].label, S.traitDesc(r) + '.')}>${embBadge(TRAITS[r.trait].tier)}${EMB[r.trait]}</svg>` : '';
+// a ruler's trait as a badge ringed in his rarity; hover names him and says what he does
+const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(cap1(r.name), S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[r.trait]}</svg>` : '';
 
 // ---------- the player's choices ----------
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
@@ -1709,14 +1640,16 @@ const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 const nm2 = k => WORDS[k].name;
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
-  const card = (r, i) => { const t = TRAITS[r.trait].tier;
-    return `<button class="heir tier${t}" data-i="${i}" style="--tc:${TIER[t].color};animation-delay:${i * 90}ms">
+  // one line per effect: the main bonus, the flat bonus from Rare up, the malus
+  const fxLine = e => `<p class="fx fx-${e.slot}">${iconize(e.text)}</p>`;
+  const card = (r, i) => { const g = r.grade;
+    return `<button class="heir tier${g + 1}" data-i="${i}" style="--tc:${TIER[g].color};animation-delay:${i * 90}ms">
       <span class="key">${i + 1}</span>
-      <span class="rar" ${tipOf('rarity')}>${TIER[t].name}</span>
+      <span class="rar" ${tipOf('rarity')}>${TIER[g].name}</span>
       ${emblem(r)}
-      <b class="ttl">${cap1(TRAITS[r.trait].epi)}</b><span class="who">${r.given}</span>
+      <b class="ttl">${TRAITS[r.trait].label}</b>
       <p class="vibe">${TRAITS[r.trait].vibe}</p>
-      <p class="fx">${iconize(S.traitDesc(r))}.</p>
+      ${r.effects.map(fxLine).join('')}
     </button>`; };
   const why = p.why ? p.why.replace(/<[^>]*>/g, '') : '';
   $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in ${RULES.start}?` : `Who rules ${c.name} now?`;
@@ -1801,9 +1734,9 @@ function renderNation(){
   const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
   const d = ago != null ? Math.round(now - ago) : 0;
   const scoreTip = tipAttr(`${nm('goldYear')}: #${rank} of ${ranked.length}`, `${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year. ${REG.goldYear.desc}`);
-  const lg = c.ledger || { tax: 0, fac: 0, trade: 0, upkeep: 0, lostWork: 0, lostAdmin: 0, waste: 0, spent: {} };
+  const lg = c.ledger || { tax: 0, fac: 0, trade: 0, upkeep: 0, lostWork: 0, lostAdmin: 0, spent: {} };
   const sp = lg.spent || {};
-  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (lg.waste || 0) - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0);
+  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0);
   const lost = `Already reduced by ${lg.lostWork.toFixed(1)} for men in the army, who aren't working, and ${lg.lostAdmin.toFixed(1)} for running ${rs.length} provinces.`;
   const line = (icon, k, v, cls = '', tip = '') => `<div class="lg ${cls}"${tip ? ' ' + tipAttr(k, tip) : ''}><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
   const H = S.horizon(c);
@@ -1821,7 +1754,7 @@ function renderNation(){
     <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
       <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
     ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div class="war" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}${nm('civilWar')}</div>` : ''}
-    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${r.name}</b></div>
+    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)}>${cap1(r.name)}</b></div>
     <div class="pers">
       <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${temperTag('patience', r.pat)}</span>
       <span ${tipOf('judgment')}>${ic('judgment')}${temperTag('judgment', r.bias)}</span>
@@ -1847,7 +1780,7 @@ function renderNation(){
     <h3>Budget</h3>
     <div class="ledger">
       ${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
-      ${lg.waste ? line('waste', nm('waste'), -lg.waste) : ''}${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
+      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
       ${line('gold', 'Net', net, 'net')}
     </div>
     <h3>Provinces</h3><div class="provs">${rs.map(prov).join('') || '<span class="muted">none</span>'}</div>`;
@@ -1913,7 +1846,7 @@ function showEnd(){
 
 // ---------- the Almanac: every piece of content in the game, read live from CONTENT ----------
 // Nothing here is written by hand: every name, number and sentence comes from content/*.json, filled in by
-// the same say() and quirkDesc() the game uses, so what the Almanac shows is what the engine runs on.
+// the same say() and traitEffects() the game uses, so what the Almanac shows is what the engine runs on.
 const AL = { section: 'rulers', q: '' };
 const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const swatch = color => `<span class="sw" style="background:${color}"></span>`;
@@ -1927,22 +1860,16 @@ const listOf = xs => xs.join(', ');
 const entry = (title, body, opts) => { opts = opts || {}; return `<div class="al-e"${opts.style ? ` style="${opts.style}"` : ''}>
   <div class="al-h">${opts.lead || ''}<div><b class="al-t">${title}</b>${opts.sub ? `<span class="muted"> ${opts.sub}</span>` : ''}</div></div>${body}</div>`; };
 const facts = rows => `<dl class="al-f">${rows.filter(r => r && r[1] !== '' && r[1] != null).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
-// a quirk's numbers, each named by content/effects.json
-const numbers = (fx = {}, temper = {}) => facts([
-  ...Object.entries(fx).map(([k, v]) => [CONTENT.effects[k] || `<b style="color:var(--war)">${k}: not in effects.json</b>`, v === true ? 'yes' : Array.isArray(v) ? v.join(' to ') : v]),
-  ...Object.entries(temper).map(([k, v]) => [`Fixed ${{ pat: 'patience', bias: 'judgment', thrift: 'thrift' }[k]}`, v])]);
 // sample words for the parts of a sentence that are only known in a running world
 const SAMPLE = { a: '<i>a nation</i>', b: '<i>another nation</i>', nation: '<i>a nation</i>', nations: '<i>three nations</i>', province: '<i>a province</i>',
   people: '<i>a people</i>', era: '<i>a new way of war</i>', find: '<i>coal is found</i>', pretext: '<i>a pretext</i>', gold: '<i>some</i>', war: '<i>war</i>' };
 
 const SECTIONS = {
   rulers: { name: 'Rulers', file: 'rulers', count: () => Object.keys(CONTENT.rulers).length, render(){
-    return CONTENT.rarities.map((rar, i) => { const tier = i + 1, ids = Object.keys(CONTENT.rulers).filter(t => CONTENT.rulers[t].tier === tier);
-      const offered = ids.filter(t => CONTENT.rulers[t].card !== false);
-      return `<h3 class="al-g" style="color:${rar.color}">${rar.name} <span class="muted">${pctOf(rar.odds)} of heirs · ${offered.length} on cards</span></h3>
-        ${ids.map(t => { const q = CONTENT.rulers[t], card = q.card !== false;
-          return entry(q.label, `<p class="vibe">${q.vibe}</p><p>${iconize(quirkDesc(t, { friend: '<i>a great power</i>', culture: '<i>a people</i>', landmark: '<i>a landmark</i>', mood: '' }))}.</p>
-            ${facts([['Chance per heir', card ? `1 in ${Math.round(offered.length / rar.odds)}` : 'never on a card']])}${numbers(q.fx, q.temper)}`, { sub: q.epi, lead: `<svg class="emb" viewBox="-8 -8 16 16">${embBadge(tier)}${EMB[t] || ''}</svg>`, style: `--tc:${rar.color}` }); }).join('')}`; }).join(''); } },
+    const odds = CONTENT.rarities.map(r => `${r.name} ${pctOf(r.odds)}`).join(', ');
+    return `<p class="muted">Every heir is a rarity and a trait. Of every heir in Europe: ${odds}; then any trait, all equally likely. A card never shows one trait twice.</p>` +
+      Object.entries(CONTENT.rulers).map(([t, q]) => entry(q.label, `<p class="vibe">${q.vibe}</p>${facts(CONTENT.rarities.map((rar, g) => [`<span style="color:${rar.color}">${rar.name}</span>`,
+        traitEffects(t, g).map(e => iconize(e.text)).join('<br>')]))}`, { lead: `<svg class="emb" viewBox="-8 -8 16 16">${embBadge(0)}${EMB[t] || ''}</svg>` })).join(''); } },
   nations: { name: 'Nations', file: 'nations', count: () => Object.keys(CONTENT.nations).length, render(){
     return Object.entries(CONTENT.nations).map(([tag, n]) => { const live = S && S.C[tag];
       const amb = ambitionName(n.ambition) + (live && live.ambition && live.ambition.id !== n.ambition ? ` (in this world: ${ambitionName(live.ambition.id)})` : '');
@@ -1955,7 +1882,7 @@ const SECTIONS = {
         ['Rises from', rises.length ? `an uprising of the ${listOf(rises)} people` : ''],
         ['Allies', n.allies ? listOf(n.allies.map(nationName)) : ''],
         ['Relations', n.relations ? listOf(Object.entries(n.relations).map(([o, v]) => `${nationName(o)} ${v > 0 ? '+' : ''}${v}`)) : ''],
-        ['Rulers', n.federal ? n.federal : listOf(n.rulerNames || (CONTENT.peoples[n.people].names || CONTENT.peoples.German.names))],
+        ['Government', n.federal || ''],
         ['In this world', live ? (live.alive ? (live.name !== n.name ? `now ${live.name}` : 'on the map') : 'gone from the map') : S && !n.starts ? 'not yet born' : ''],
       ]), { sub: n.adj, lead: swatch(n.color) }); }).join(''); } },
   peoples: { name: 'Peoples', file: 'peoples', count: () => Object.keys(CONTENT.peoples).length, render(){
@@ -1963,7 +1890,6 @@ const SECTIONS = {
       const unions = Object.values(CONTENT.ambitions).filter(x => x.peoples && x.peoples.includes(p)).map(x => x.title);
       return entry(p, facts([['Lives in', listOf(home.map(x => x.name)) || '<span class="muted">no province of its own</span>'],
         ['People', `${Math.round(home.reduce((s, x) => s + x.pop, 0) * 10) / 10}m in ${CONTENT.rules.start}`],
-        ['Ruler names', d.names ? listOf(d.names) : '<span class="muted">none: borrows the German ones</span>'],
         ['Unites in', listOf(unions)], ['Rises as', risesAs(p) ? nationName(risesAs(p)) : '<span class="muted">no nation: its rebels find no allies</span>'],
         ['Can awaken', CONTENT.events.awakening.peoples.includes(p) || CONTENT.events.shevchenko.people === p ? 'yes' : '']])); }).join(''); } },
   ambitions: { name: 'Ambitions', count: () => Object.keys(CONTENT.ambitions).length, render(){
@@ -1992,14 +1918,12 @@ const SECTIONS = {
       return entry(e.name, lines + facts([['When', when], ['Chance', e.chance != null ? yearly(e.chance) : ''], ['Peoples', e.peoples ? listOf(e.peoples) : '']]), { lead: ic('event') }); }).join(''); } },
   eras: { name: 'Ways of war', file: 'eras', count: () => CONTENT.eras.length, render(){
     return CONTENT.eras.map((e, i) => entry(e.name, facts([['Defender fights', `${e.def}× as hard`], ['A fortress stops an advance', pctOf(e.fort)], ['Begins', e.start ? `in ${CONTENT.rules.start}` : 'with a military revolution']]), { lead: ic('war') })).join(''); } },
-  landmarks: { name: 'Landmarks', file: 'landmarks', count: () => Object.keys(CONTENT.landmarks).length, render(){
-    return `<p class="muted">Raised by a ${CONTENT.rulers.architect.label} ${say('{works|years}', CONTENT.rulers.architect.fx)} into his reign.</p>` +
-      Object.entries(CONTENT.landmarks).map(([id, l]) => entry(l.name.charAt(0).toUpperCase() + l.name.slice(1), `<p>${say(l.fx, l)}.</p>`, { lead: ic('landmark') })).join(''); } },
   concepts: { name: 'Concepts', file: 'concepts', count: () => Object.keys(CONTENT.concepts).length, render(){
     return Object.entries(CONTENT.concepts).map(([k, c]) => entry(c.name, `<p>${esc(say(c.desc))}</p>`, { lead: REG[k] ? ic(k) : '<span class="al-noic"></span>' })).join(''); } },
   effects: { name: 'Ruler effects', file: 'effects', count: () => Object.keys(CONTENT.effects).length, render(){
-    return Object.entries(CONTENT.effects).map(([k, d]) => { const who = Object.entries(CONTENT.rulers).filter(([, q]) => q.fx && k in q.fx);
-      return entry(d, facts([['Rulers', listOf(who.map(([, q]) => `${q.label} ${q.fx[k] === true ? '' : `(${Array.isArray(q.fx[k]) ? q.fx[k].join(' to ') : q.fx[k]})`}`))]])); }).join(''); } },
+    const slots = { main: 'main bonus', flat: 'flat bonus', malus: 'malus' };
+    return Object.entries(CONTENT.effects).map(([k, d]) => entry(d.desc, facts([['Rulers', listOf(Object.entries(CONTENT.rulers).flatMap(([, q]) =>
+      Object.keys(slots).filter(sl => q[sl].fx === k || (q[sl].big && q[sl].big.fx === k)).map(sl => `${q.label} (${slots[sl]})`)))]]))).join(''); } },
   rules: { name: 'Rules', file: 'rules', count: () => Object.values(CONTENT.rulebook).flat().length, render(){
     return Object.entries(CONTENT.rulebook).map(([group, lines]) => entry(group, lines.map(l => `<p>${iconize(say(l))}</p>`).join(''))).join(''); } },
 };
@@ -2076,12 +2000,12 @@ $('gCells').addEventListener('mousemove', e => {
   const rank = S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1;
   const war = S.warOf(c);
   tip.innerHTML = `<div class="hd"><span class="fl" style="background:${c.color}"></span><b>${c.name}</b><span class="muted" style="margin-left:auto">#${rank} · ${ic('goldYear')}${fmt(S.score(c))} a year</span></div>
-    <div class="tipr">${ic('ruler')}${c.ruler.name}${c.ruler.trait ? ` ${emblem(c.ruler)}<span class="muted">${S.TRAITS[c.ruler.trait].label}</span>` : ''}</div>
+    <div class="tipr">${ic('ruler')}${emblem(c.ruler)}${cap1(c.ruler.name)}</div>
     ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div style="color:#b9a3d6">${ic('civilWar')}${nm('civilWar')}</div>` : ''}
     <hr><b>${r.name}</b> <span class="muted">${r.culture}</span><br>
     ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('goldYear')}${(inc * 4).toFixed(1)} gold a year<br>
     <span style="color:${r.unrest >= UNREST.uprising ? '#e0453a' : r.unrest >= UNREST.restless ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}${nm('unrest')} ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">${nm('settle')} ${Math.round(r.integ * 100)}%</span>` : ''}
-    ${r.landmark ? `<br>${ic('landmark')}${r.landmark}` : ''}${r.occ ? `<br><span style="color:var(--war)">${ic('occupied')}${nm('occupied')} by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
+    ${r.occ ? `<br><span style="color:var(--war)">${ic('occupied')}${nm('occupied')} by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
   const box = $('mapwrap').getBoundingClientRect();
   let x = e.clientX - box.left + 14, y = e.clientY - box.top + 14;
   if (x > box.width - 265) x -= 280; if (y > box.height - 200) y -= 200;
@@ -2123,7 +2047,7 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
     [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} ${UNREST.restless}+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} ${UNREST.uprising}+: close to an uprising`],
     [sv(glyph('battle')), `${nm('battle')} this season`], [sv(glyph('uprising')), nm('uprising')], [sv(glyph('boom')), `${nm('boom')}: coal or railway`],
     [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('proclaim')), nm('proclaim')], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
-    [sv(REG.capital.draw), nm('capital')], [sv(glyph('landmark')), nm('landmark')],
+    [sv(REG.capital.draw), nm('capital')], 
     [sv(`<rect x="-10" y="-7" width="20" height="14" rx="3" fill="rgba(20,24,30,.92)" stroke="#c9a45c" stroke-width="1.2"/><g transform="translate(-4.5,0)">${glyph('army')}</g><text x="1" y="3" font-size="7" font-family="IBM Plex Sans" fill="${INK}">80</text>`), `${nm('army')} in thousands, at the capital in wartime`],
     [sv(REG.front.draw), nm('front')],
     [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#settle)"/>`), `Not yet ${nm('settle').toLowerCase()}: pays little`],

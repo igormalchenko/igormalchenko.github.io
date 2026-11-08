@@ -8,12 +8,12 @@ When a change is done, commit it and push it to `master` without asking for conf
 
 ## Rule 1: content lives in content/, and only there
 
-Every piece of content (rulers, rarities, temperaments, nations (those of 1836 and those born in uprisings, in one table), peoples, provinces, sea crossings, ambitions, events, ways of war, landmarks, concepts, and the rules of the age the player is told about) lives in `content/*.json`. The engine (`src/sim.js`), the interface and the Almanac read it from `CONTENT`; nothing else may hold a copy.
+Every piece of content (rulers, rarities, temperaments, nations (those of 1836 and those born in uprisings, in one table), peoples, provinces, sea crossings, ambitions, events, ways of war, concepts, and the rules of the age the player is told about) lives in `content/*.json`. The engine (`src/sim.js`), the interface and the Almanac read it from `CONTENT`; nothing else may hold a copy.
 
 - **To change content, change the content file.** A ruler's strength, an event's odds, a union's provinces, a concept's name: edit the JSON, run `npm run build`, and the engine, the cards, the chronicle, the help text and the Almanac all follow.
-- **Never type a number into text.** A sentence that states a number takes it from the data with a placeholder: `"His armies fight {fx.fight|harder}"`, `"Takes {rules.build.factory|word} seasons."`. The formats (`word`, `pct`, `up`, `down`, `frac`, `times`, `harder`, `x`, `xs`, `span`, `years`, `inv`, `thrift`, `horizon`) are in `src/text.js`; add one there if a phrase needs it. In the HTML template use `{{path|format}}`.
-- **Never type a content number into the engine.** The engine reads a ruler's numbers with `F('ruler', 'key')` and his flags with `hasFx(c, 'flag')`, rules with `RULES.x`, events with `EV.id`. A new effect gets a key in the ruler's `fx` and a line in `content/effects.json`. The tuning of the forecast itself (tax rates, the win-chance curve) is engine, not content.
-- **The build enforces it** (`tools/check.js`): every reference in the content points at something that exists, every template fills in and states no typed number, every `F(...)`, `hasFx`, `RULES.` and `EV.` the code reads exists, and every number in the content is read by something. A failing check means the data and the engine disagree: fix one of them, never the check.
+- **Never type a number into text.** A sentence that states a number takes it from the data with a placeholder: `"His army fights {v|up} harder"`, `"Takes {rules.build.factory|word} seasons."`. The formats (`word`, `pct`, `up`, `down`, `frac`, `times`, `harder`, `x`, `xs`, `span`, `years`, `inv`, `thrift`, `horizon`, `points`, `signed`, `abs`, `s`, `ies`) are in `src/text.js`; add one there if a phrase needs it. In the HTML template use `{{path|format}}`.
+- **Never type a content number into the engine.** The engine reads the reigning ruler's effects with `fx(c, 'key')` (and `hasFx`), rules with `RULES.x`, events with `EV.id`. A new effect gets a line in `content/effects.json` (what it does, and the value that changes nothing) and a place in a trait in `content/rulers.json`. The tuning of the forecast itself (tax rates, the win-chance curve) is engine, not content.
+- **The build enforces it** (`tools/check.js`): every reference in the content points at something that exists, every template fills in and states no typed number, every `fx(...)`, `hasFx`, `RULES.` and `EV.` the code reads exists, and every number in the content is read by something. A failing check means the data and the engine disagree: fix one of them, never the check.
 - **The Almanac is the proof.** Press A in the game (or the book button) to see every entry exactly as the engine has it, in plain words: no file names, keys or raw data. Every rule gets a sentence in `content/rulebook.json` (the build checks). If something looks wrong there, it is wrong in the game.
 - **After moving or reshaping content,** compare full chronicles and final states before and after (the sweep alone can hide a change). Keep the files tidy with `npm run content`.
 - The numbers quoted in this file (the ruler pool, the ambitions) describe the design and can lag behind; `content/` and the Almanac are the truth.
@@ -24,7 +24,7 @@ Every piece of content (rulers, rarities, temperaments, nations (those of 1836 a
 2. **Every decision is a forecast in gold.** In `considerations(c)` each option gets `ev` = extra or protected income over the ruler's horizon (8–30 years) minus its cost. The country does every option with positive `ev`, best first, up to 4 a season. Do not reintroduce hand-tuned "urge" scores.
 3. **Same rules for everyone.** No per-country stat bonuses. Countries differ only by starting data, ruler tendencies, a few historical special rules (unifiers, serfdom, accepted cultures) and luck.
 4. **Visible or hidden, never in between.** Any stat shown to the player must visibly change something on the map or in the budget. Infamy and relations maths are hidden plumbing. Prestige, colonies and great-power status were removed on purpose.
-5. **Rational core, chaotic inputs.** The forecasting AI stays rational. Variety comes from what it is fed: misjudgment (`ruler.bias`), quirks (`TRAITS`), crises, ultimatums, military eras, awakenings, coups. Add chaos as new inputs, not as irrational decisions.
+5. **Rational core, chaotic inputs.** The forecasting AI stays rational. Variety comes from what it is fed: misjudgment (`ruler.bias`), traits (`TRAITS`), crises, ultimatums, military eras, awakenings, coups. Add chaos as new inputs, not as irrational decisions.
 6. **Counterweights over caps.** Growth must cost something visible: integration time for conquests, administration cost for big states, soldiers taken from the workforce, trade lost in war, great powers ganging up on the leader. Prefer these to hard limits.
 7. **Reachable conquest only.** Peace deals transfer land only to a winner bordering it by land or a sea crossing; distant allies get gold. Occupation is credited to the ally actually adjacent.
 8. **The game ends in autumn 1918.** The Great War starts summer 1914; any war still running at the armistice is settled on the current lines.
@@ -35,14 +35,14 @@ Every piece of content (rulers, rarities, temperaments, nations (those of 1836 a
 
 - **One mandatory choice from three, at each succession.** The game pauses until the player picks. Aim for 6–10 successions a game (see "How a reign ends").
 - **No managing between turns.** No policies, sliders or standing orders, and a choice can never be revisited or changed later.
-- **Distinct and readable at once.** Three heirs should feel like three different characters (the lecher, the drunk, the butcher), never shades of one policy. One line of character plus one line of effect.
+- **Distinct and readable at once.** Three heirs should feel like three different characters (the flirt, the drunk, the tyrant), never shades of one policy: a card never shows one trait twice. One line of character, then two or three short effect lines.
 - **What you see is what you get.** Every heir is shown face up; no hidden or sealed heirs.
 - **No suggested pick.** Don't mark what the ministers would choose.
 - **Rerolls.** The player may deal a heir card again three times a game, the opening card included (`rerollHeirs`). The fourth reroll is meant to be sold for $1.99; there is no payment yet, so its button only says "Coming soon". Player only: AI nations pick at random, so they have nothing to reroll for. Rerolls only change which cards are shown, so watch-mode sweeps are unaffected.
-- **A deck with rarities.** Most heirs are flavour; a few are strong; a very few can swallow Europe. No stacking, levelling or evolutions: the thrill is the pull, not progression. The rarer the ruler, the bigger his upside and the bigger the visible price (usually paid when he dies).
-- **AI countries draw from the same pool by the same odds, and pick at random.** No forecast for heirs: a random pick gives more variety than an AI that always takes the best ruler, and the rules stay the same for everyone (rule 3). (`drawQuirk` gives one heir the odds of a random pick from a card.)
-- **Every ruler has a quirk.** No blank rulers: patience and nerve still vary per heir, but the quirk is what the card is about. The only rulers without one are councils (Switzerland's, and the regency after a Genius).
-- **Every ruler visibly changes something** on the map or in the budget (rule 4), and the chronicle should echo him later ("the Butcher's war", "the Miser's hoard").
+- **A deck with rarities.** The same trait comes at five rarities: the rarer, the bigger the bonus and the smaller the malus, and from Rare on a one-time bonus at coronation. No stacking, levelling or evolutions: the thrill is the pull, not progression. A higher rarity improves the card, not the outcome: which trait suits the nation stays the real choice.
+- **AI countries draw from the same pool by the same odds, and pick at random.** No forecast for heirs: a random pick gives more variety than an AI that always takes the best ruler, and the rules stay the same for everyone (rule 3). (`drawHeir` gives one heir the odds of a random pick from a card.)
+- **Every ruler has a trait.** No blank rulers, councils included: Switzerland's federal council rotates to a random ruler from the pool without a card.
+- **Every ruler visibly changes something** on the map or in the budget (rule 4), and the chronicle names him by rarity and trait.
 
 ### How a reign ends
 
@@ -50,81 +50,59 @@ Reigns last 8–24 years if nothing ends them sooner. A reign also ends by (`end
 
 - **Abdication after a lost war.** Half the time, when the beaten side's leader lost land or started the war.
 - **Revolution.** An uprising of the ruler's own people topples him.
-- **Assassination.** 1% a year, three times that for the Chauvinist, Iron King, Conqueror, Liberator and Usurper.
-- **Coup.** The army installs a Usurper. This is the one succession with no card: the army doesn't ask.
+- **Assassination.** 1% a year.
+- **Coup.** The army installs a random ruler from the pool. This is the one succession with no card: the army doesn't ask.
 
-This gives the choice stakes: pick the Conqueror, and if he loses his war he loses his throne. Measured: a surviving great power sees about 6 cards a game counting the opening one; small nations that die early see fewer.
+This gives the choice stakes: pick the Bold, and if he loses his war he loses his throne. Measured: a surviving great power sees about 6 cards a game counting the opening one; small nations that die early see fewer.
 
 ### The ruler pool (built)
 
-Each ruler changes what the forecast values, how it sees the odds, how far ahead it plans, or how the reign begins and ends. Never an irrational decision (rule 5). Every heir in Europe is rolled the same way (`content/rarities.json`): first his rarity, then a ruler of that rarity. The card shows the rarity's colour and name, and the emblem badge is ringed in it (`content/rarities.json`); epic and legendary cards glow gently, the legendary one with a slow sheen.
+Every ruler is **one trait at one rarity**: "the Rare Builder", "the Common Drunk". That label is his whole name, on the card, in the panel, the Almanac and the chronicle; there are no personal names, regnal numbers or titles per rarity. 20 traits × 5 rarities = 100 cards, all generated from `content/rulers.json` (each trait's three effects and their values) and `content/rarities.json` (the odds, and which value of each effect a rarity gets). Never author a card by hand.
 
-**Common (white, 46%).** Flavour, mostly sideways or a mixed blessing.
-- **Drunkard.** His misjudgment is re-rolled every season.
-- **Lecher.** Charms every neighbour; at his death a bastard claims the throne (a civil war).
-- **Spendthrift.** Wastes 15% of all gold on the court, and is lavish with the rest.
-- **Paranoid.** The original.
-- **Cautious.** Loses ground less often in war, and gains it less often.
-- **Mad.** Takes a new common or uncommon quirk every few years.
-- **Child King.** A regent with a random quirk rules until he comes of age; then he takes his own, which can be anything up to rare or, 15% of the time, Incompetent.
-- **Miser.** Values gold three times over (the top of Thrift), so the hoard grows and little gets built.
-- Never on a card: **Usurper** (only from a coup; unrest everywhere until he wins a war) and **Incompetent** (only a Child King grows up into one).
+Each trait has three effects, each read through `fx(c, key)` from `content/effects.json`:
 
-**Uncommon (green, 30%).** A clear lean.
-- **Builder, Reformer, Revanchist, Warmonger.** The originals.
-- **Bold.** Plans 8 years ahead and thinks he will win every war (overconfident).
-- **Admirer.** Close to one great power's court; joins every war it fights.
-- **Chauvinist.** His own people's provinces pay 10% more; drops an accepted culture, whose provinces turn restless.
-- **Arbiter.** Values alliances double; is paid to broker peace between his neighbours.
+| Rarity (odds) | Main bonus | Flat bonus, at his coronation | Malus | Lines on the card |
+|---|---|---|---|---|
+| Common (46%) | small | none | big | 2 |
+| Uncommon (30%) | medium | none | medium | 2 |
+| Rare (15%) | medium | small | medium | 3 |
+| Epic (8%) | medium | small | small | 3 |
+| Legendary (1%) | big | medium | small | 3 |
 
-**Rare (blue, 15%).** Good rulers.
-- **Dynast.** Plans 40 years ahead and borrows to build factories.
-- **Shrewd.** Sees his odds in war exactly as they are.
-- **Soldier King.** His armies fight 25% harder but lose half again as many men.
-- **Tolerant.** Accepts one more people, for good.
+- **The main bonus is always a percentage, the flat bonus always a fixed amount, on purpose.** A percentage is worth more to a big nation, a fixed grant more to a small one, so nation size is part of the choice. Don't scale grants to the nation.
+- **No two traits share a main bonus** (the build refuses it). Flat bonuses and maluses may share a resource, never the whole character.
+- **The flat bonus is the one-time version of what the trait is about**: soldiers for the Warmonger, a dowry for the Flirt, a free reform for the Religious, a truce with every neighbour for the Sharp. Gold only where the character says where it came from (hoard, seizure, dowry, prize money, cards).
+- **Legendary Flirt and Planner** take a random bordering province (sea crossings count) at coronation instead of their medium flat bonus, by the ordinary non-war transfer. It can be an ally's, or a nation's last province: ending a nation that way is intended.
+- **A Flirt's reign always ends in civil war**, no roll; his rarity sets only how much unrest it adds.
+- **Effects apply in three places only**: at coronation (`coronation`, grants that change ordinary state once), in the ordinary formulas while he reigns (`fx` reads, the same value in the matching forecast), and in `endReign` (Big Spender's spent gold, Strict's restless subject peoples, Flirt's civil war). No ledger, no scheduler, no targeting: a grant that lands on nothing is wasted.
+- Coronation grants also apply to the rulers of 1836. Drawing, showing and rerolling cards change nothing.
 
-**Epic (purple, 8%).** A big upside paid for with a big downside.
-- **Conqueror.** Armies fight 40% harder; every neighbour distrusts him; his death brings a civil war.
-- **Genius.** Factories cost half and go up twice as fast; no heir, so a regency council follows.
-- **Great Builder.** Five years in, raises a landmark that stays on the map: the Great Railway (two factories in the capital), the Fortress Line (a fortress in every border province) or the Grand Exhibition (a factory in each of the three richest provinces). Lavish, and leaves no gold when he dies.
-- **Liberator.** Frees the serfs and accepts every culture at once, for good; the nobles plot a coup (2% a season).
-- **Saint.** No unrest while he lives; starts no wars, sends no ultimatums and joins no ally's war. He still defends himself.
-- **Iron King.** Crushes uprisings (triple garrison) and integrates conquests twice as fast; subject peoples rise when he dies.
-- **Navigator.** Sea trade pays half again and invading across the sea is easy, but the fleet doubles army upkeep.
+The traits (character line in the content): Warmonger, Soldier, Bold, Cautious, Paranoid, Builder, Stingy, Big Spender, Tyrant, Reformer, Drunk, Vengeful, Flirt, Religious, Sharp, Planner, Tolerant, Nationalist, Strict, Sailor. Mirrors on purpose: Bold breaks through the enemy's lines with less advantage, Cautious only with more; the Drunk calms his own people, the Flirt other peoples.
 
-**Legendary (gold, 1%).** The jackpot: can swallow Europe while he lives, and his empire pays for it when he dies (a civil war every time). About one heir in a hundred, so roughly one player game in six offers one, and most watch-mode games crown one somewhere.
-- **Iron Chancellor (the Unifier).** Armies fight twice as hard; he fights one enemy at a time (no one comes to its aid, no great power intervenes); every victory keeps all the occupied land he can reach. When he dies, every province won in his reign rises (+40 unrest, integration back to 30%).
-- **Man of Destiny (the Lion).** Armies fight three times as hard and keep all the land they win; believes in his star (overconfident). Same collapse at his death.
-- **Prophet.** Armies fight two and a half times as hard; every people he conquers counts as his own at once. When he dies, they are foreigners again.
-- **Sun King (the Radiant).** The nation earns 60% more while he lives; when he dies, three years of gold a year turn into debt.
-- All three conquerors raise a great army when crowned (at least 8k men per million people, or half again what he inherits), take half as many workers into it, and ignore old truces. Without the levy, a legendary ruler of a poor nation never dared a war.
-
-Measured (12 worlds, and forced into Sardinia, Bavaria and Spain): about half of legendary conquerors go on a run, typically 1 → 10–16 provinces, and most empires crumble within a decade of their death. One legendary Spain won its world. Small one-province nations often fizzle or are swallowed first; that's the gamble.
-
-Rule 7 still holds for legendary conquerors: they keep only land they can reach.
+Measured at replacement (40 worlds, seeds 1–40, old pool → new): wars 42.1 → 33.1, uprisings 35.6 → 34.0, Ukraine alive 22 → 27, richest great power France 26 / Britain 10 / Russia 4 → France 24 / Britain 12 / Russia 4, Italy proclaimed 28 → 27, Survive nations alive 166/456 → 183/453. Wars fell because the old pool's hidden war "wants" (land worth more, revenge, legendary levies, isolated enemies) are gone. A nation's share of Europe's gold a year over one reign, by rarity: Common ×0.97, Uncommon ×1.02, Rare ×1.03, Epic ×1.01, Legendary ×1.09. Per trait it swings about ±5% between runs, so only bigger gaps mean anything; the first tuning pass softened Tyrant, Stingy, Paranoid, Soldier, Bold, Reformer and Tolerant.
 
 ## Interface rules
 
 - **Every concept the player sees is one entry in `content/concepts.json`** (one name, one line of description, the words to `avoid`) with its drawing under the same key in `DRAW` in `src/ui/registry.js`. `REG` joins the two; the map, panel, map key, Almanac and tooltips all draw from it (`ic`, `glyph`, `nm`). Concepts with no icon (like Nation) are marked `word` and live in `WORDS`. Add new concepts there, never ad hoc.
 - One icon means one thing. Two different concepts never share an icon, and a label beside an icon uses the icon's own name.
-- **Icons in copy.** When a sentence names a registry concept (Gold, Factories, Fortress, Unrest, Army…), its icon goes in front of the word, on its first mention in that text. Don't place them by hand: run the text through `iconize` (`registry.js`), which reads the word list `WORD_IC`; add new words there. Hover text (`data-desc`) stays plain, because it can't hold icons. Done so far for the heir cards and the start screen; the chronicle and older copy don't follow it yet.
+- **Icons in copy.** When a sentence names a registry concept (Gold, Factories, Fortress, Unrest, Army…), its icon goes in front of the word, on its first mention in that text. Don't place them by hand: run the text through `iconize` (`registry.js`), which reads the word list `WORD_IC`; add new words there. Hover text (`data-desc`) stays plain, because it can't hold icons. Done so far for the heir cards, the Almanac's rulers and the start screen; the chronicle and older copy don't follow it yet.
 - `npm run build` runs `tools/check.js` first and fails on an unknown icon, a shape drawn outside the registry, or an avoided word in visible text (UI strings, the HTML template and chronicle lines in `sim.js`). Fix the text, or change the registry on purpose; never weaken the check to get a build through.
 - Settled words: Gold (money held), Gold a year (the score), Army, Fortress, Uprising, Integrated, Nation, Ruler.
 - Plain, short labels. If a label needs explaining, rename it (for example "Gold a year", not "Yields").
-- The map stays mostly clean: ruler quirks belong in the panel, not on country labels.
+- The map stays mostly clean: ruler traits belong in the panel, not on country labels.
 - Clicking the sea or pressing Escape clears the selection.
 
 ## Ruler temperament (settled)
 
-Besides his quirk, every ruler has three temperaments, shown as tags in the panel. Each is an input to the same rational forecast (rule 5), and each acts on a different part of it:
+Besides his trait, every ruler has three temperaments, shown as tags in the panel. Each is an input to the same rational forecast (rule 5), and each acts on a different part of it:
 
 - **Patience** (`ruler.pat`): far-sighted / steady / short-sighted. The horizon of every forecast, 8 to 30 years.
 - **Judgment** (`ruler.bias`): overconfident / clear-eyed / underconfident. Skews the odds he believes in war (`warEval`) and whether he backs down to an ultimatum. Seen in the forecast line "believes X% (truly Y%)" and the chronicle's "his generals privately think N%". It leans the way his nation does (`lean.hawk`, from `data.js` `p[0]`).
-- **Thrift** (`ruler.thrift`, read through `thriftOf`): thrifty / balanced / lavish. Multiplies `goldValue`, so it touches every cost in every forecast, from about a third (lavish) to three times (the Miser). Measured over 6 worlds: lavish rulers hold about 5 years of gold a year and spend about 4 times as much on building as thrifty ones, which hold about 10 years.
+- **Thrift** (`ruler.thrift`, read through `thriftOf`): thrifty / balanced / lavish. Multiplies `goldValue`, so it touches every cost in every forecast, from about a third (lavish) to three times (thrifty). Measured over 6 worlds: lavish rulers hold about 5 years of gold a year and spend about 4 times as much on building as thrifty ones, which hold about 10 years.
 
 Risk (`ruler.risk`, `lossW`) was removed on purpose: it was a second copy of Judgment that no player could tell apart. In its place the loss term of `warEval` carries a fixed weight of 1.25 (a beaten ruler may lose his throne), and the neighbour-threat formulas use the old average. Don't bring back a second war temperament; a new one must act on something other than war.
 
-Quirks that fix a temperament do it through `temper` in `content/rulers.json`, also for a regent's or a madman's mood: Bold (patience 0.02, overconfident), Dynast (patience 0.95, a little underconfident), Shrewd and the Iron Chancellor (judgment exactly right), Man of Destiny and Prophet (overconfident), Miser (thrift ×3), Spendthrift and Great Builder (lavish).
+Traits never fix a temperament: Sharp, Bold, Drunk and Planner act on judgment and patience through their own effects (`believe`, `horizon`), on top of the temperament.
 
 The heir cards don't show temperaments yet; only the panel does, once he reigns. Undecided.
 
@@ -179,16 +157,12 @@ The survive weight doesn't save small nations: they die slightly more often with
 
 ## Future work (agreed, not built)
 
-### Ruler quirks × grades (replacement scoped, not built)
-
-Replace all old leader content and its exclusive mechanics with 20 traits × 5 grades; no legacy special rulers, landmarks, compatibility pool or additional traits. One trait per ruler, labelled only by rarity + trait (for example Rare Builder); no personal names, regnal numbers or grade-specific titles. Common: small bonus and big malus; Uncommon: medium bonus and medium malus; Rare: medium bonus, small flat bonus and medium malus; Epic: medium bonus, small flat bonus and small malus; Legendary: big bonus, medium flat bonus and small malus. Names and the table are reviewed; values are starting points for automated tuning owned by the agent, not manual user work. Additional bonuses apply immediately at coronation. Legendary Flirt and Legendary Planner replace their additional bonus with ownership of one random bordering province through the ordinary transfer rules; it is not a fourth effect. Apply effects through ordinary state changes and existing formulas; an already-satisfied or irrelevant effect may do nothing, with no compensation, target ranking, eligibility rerolls or bookkeeping system. Keep current grade odds. Full table, simplified application rules and replacement scope: `specs/ruler-grades.md`. The built-pool descriptions above remain accurate until implementation.
-
 ### Metaprogression
 
 The "no stacking, levelling or evolutions" rule stays within a game. Across games:
 
 - **Yes: nations to play.** New nations unlock as you play, for example by uniting a people.
-- **Yes: new rulers in the deck.** AI nations draw from the same pool, so an unlock changes the world for everyone (rule 3 still holds). Sweeps should run with a fixed pool so they stay comparable.
+- **Yes: new traits in the deck.** AI nations draw from the same pool, so an unlock changes the world for everyone (rule 3 still holds). Sweeps should run with a fixed pool so they stay comparable.
 - **No:** start dates other than 1836, a ruler book, or permanent stat bonuses.
 
 ### Crisis cards
@@ -216,15 +190,15 @@ Moments that already exist in the code:
 
 ## Map of the code (src/sim.js)
 
-- Content: `CONTENT` (all of `content/`), `RULES`, `EV` (events), `TRAITS` (rulers), `F(t, k)` (a ruler's number), `hasFx(c, k)` (a ruler's flag), `quirkDesc` (a ruler's text), `say` (any template, `src/text.js`).
+- Content: `CONTENT` (all of `content/`), `RULES`, `EV` (events), `TRAITS` (rulers), `RARITY`, `EFFECTS`, `traitEffects(t, g)` (a card's effects and text), `fx(c, k)` (the reigning ruler's value for an effect), `hasFx(c, k)`, `say` (any template, `src/text.js`).
 
 - `createSim(seed, geo)` builds state `S`; `S.step()` advances one season.
 - Economy: `regionIncome`, `income`, `score`, `workforce`, `admin`.
 - AI: `considerations`, `act`, `decide`; military forecasts `warEval`, `riskOf`, `interveners`.
 - War: `declareWar`, `frontMove`, `warScore`, `endWar`, `tickWars`.
 - Provinces: `tickProvinces` (construction, integration), `tickUnrest`, `revolts`.
-- Rulers and chaos: `newRuler`, `TRAITS`, `successions`, `EVENTS`.
+- Rulers and chaos: `drawHeir`, `makeRuler`, `crown` and `coronation` (flat bonuses), `endReign` (end-of-reign maluses), `believe` (judgment), `successions`, `EVENTS`.
 - Ambitions: `AMBITIONS`, `UNIONS`, `unionOf` (the union a nation works toward), `unification`.
 - Ambitions: `setAmbition` (at birth), `ambitionOf` (how it stands), `ambitionW` and `surviveW` (what they add to the forecast), the closing line of the armistice block.
-- Player: `createSim(seed, geo, { player })`; `heirCard` builds a choice of three heirs and parks it in `S.pending` (which halts `step()`), `chooseHeir(i)` resolves it. Every reign ends through `endReign`; AI countries get a random heir from `drawQuirk`. `tickRulers` runs what changes during a reign (the Drunk, the Mad, the Child King growing up, the Great Builder's landmark, the Arbiter's peace deals). `tools/load.js` passes `{ player }` through for headless tests.
+- Player: `createSim(seed, geo, { player })`; `heirCard` builds a choice of three heirs and parks it in `S.pending` (which halts `step()`), `chooseHeir(i)` resolves it. Every reign ends through `endReign`; AI countries get a random heir from `drawHeir`. `tickRulers` redraws a Drunk's misjudgment every season. `tools/load.js` passes `{ player }` through for headless tests.
 - End: the armistice block at the end of `step()`.

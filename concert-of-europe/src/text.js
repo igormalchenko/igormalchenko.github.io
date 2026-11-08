@@ -40,6 +40,11 @@ const FORMATS = {
   xs: x => near(x, 2) ? 'doubles' : near(x, 3) ? 'triples' : `multiplies by ${x}`,
   span: x => near(x, 10) ? 'a decade' : `${numberWord(x)} years`,  // years
   season: x => ['winter', 'spring', 'summer', 'autumn'][x],
+  points: x => `${Math.round(x * 100)} points`,                // 0.25 → 25 points (of a chance)
+  signed: x => x < 0 ? `−${Math.abs(x)}` : `+${x}`,             // −5, +20
+  abs: x => Math.abs(x),
+  s: x => x === 1 ? '' : 's',                                  // province{v|s}
+  ies: x => x === 1 ? 'y' : 'ies',                             // factor{v|ies}
   years: x => { const y = x / 4; return `${numberWord(y)} year${y === 1 ? '' : 's'}`; },   // seasons as years
 };
 function lookup(path, ctx){

@@ -52,12 +52,12 @@ $('gCells').addEventListener('mousemove', e => {
   const rank = S.alive().sort((a, b) => S.score(b) - S.score(a)).indexOf(c) + 1;
   const war = S.warOf(c);
   tip.innerHTML = `<div class="hd"><span class="fl" style="background:${c.color}"></span><b>${c.name}</b><span class="muted" style="margin-left:auto">#${rank} · ${ic('goldYear')}${fmt(S.score(c))} a year</span></div>
-    <div class="tipr">${ic('ruler')}${c.ruler.name}${c.ruler.trait ? ` ${emblem(c.ruler)}<span class="muted">${S.TRAITS[c.ruler.trait].label}</span>` : ''}</div>
+    <div class="tipr">${ic('ruler')}${emblem(c.ruler)}${cap1(c.ruler.name)}</div>
     ${war ? `<div style="color:var(--war)">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div style="color:#b9a3d6">${ic('civilWar')}${nm('civilWar')}</div>` : ''}
     <hr><b>${r.name}</b> <span class="muted">${r.culture}</span><br>
     ${ic('pop')}${r.pop.toFixed(1)}m ${ic('factory')}${r.fac}${r.fort ? ' ' + ic('fort') : ''}${r.coast ? ' ' + ic('trade') : ''} ${ic('goldYear')}${(inc * 4).toFixed(1)} gold a year<br>
     <span style="color:${r.unrest >= UNREST.uprising ? '#e0453a' : r.unrest >= UNREST.restless ? '#e3933c' : 'var(--muted)'}">${ic('unrest')}${nm('unrest')} ${Math.round(r.unrest)}</span>${r.integ < 1 ? ` · ${ic('settle')}<span style="color:var(--revolt)">${nm('settle')} ${Math.round(r.integ * 100)}%</span>` : ''}
-    ${r.landmark ? `<br>${ic('landmark')}${r.landmark}` : ''}${r.occ ? `<br><span style="color:var(--war)">${ic('occupied')}${nm('occupied')} by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
+    ${r.occ ? `<br><span style="color:var(--war)">${ic('occupied')}${nm('occupied')} by ${S.C[r.occ].name}</span>` : ''}${r.core !== r.owner && S.C[r.core] && S.C[r.core].alive ? `<br><span class="muted">${S.C[r.core].name} wants it back</span>` : ''}`;
   const box = $('mapwrap').getBoundingClientRect();
   let x = e.clientX - box.left + 14, y = e.clientY - box.top + 14;
   if (x > box.width - 265) x -= 280; if (y > box.height - 200) y -= 200;
@@ -99,7 +99,7 @@ document.addEventListener('mousedown', () => qtip.style.display = 'none');
     [sv(glyph('unrest', UNREST_WARM)), `${nm('unrest')} ${UNREST.restless}+`], [sv(glyph('unrest', UNREST_HOT)), `${nm('unrest')} ${UNREST.uprising}+: close to an uprising`],
     [sv(glyph('battle')), `${nm('battle')} this season`], [sv(glyph('uprising')), nm('uprising')], [sv(glyph('boom')), `${nm('boom')}: coal or railway`],
     [sv(glyph('civilWar')), nm('civilWar')], [sv(glyph('coup')), nm('coup')], [sv(glyph('leader')), nm('leader')], [sv(glyph('proclaim')), nm('proclaim')], [sv(glyph('ruin')), `${nm('ruin')}: factory or fortress destroyed`],
-    [sv(REG.capital.draw), nm('capital')], [sv(glyph('landmark')), nm('landmark')],
+    [sv(REG.capital.draw), nm('capital')], 
     [sv(`<rect x="-10" y="-7" width="20" height="14" rx="3" fill="rgba(20,24,30,.92)" stroke="#c9a45c" stroke-width="1.2"/><g transform="translate(-4.5,0)">${glyph('army')}</g><text x="1" y="3" font-size="7" font-family="IBM Plex Sans" fill="${INK}">80</text>`), `${nm('army')} in thousands, at the capital in wartime`],
     [sv(REG.front.draw), nm('front')],
     [sv(`<rect x="-9" y="-6" width="18" height="12" fill="#8a8f99"/><rect x="-9" y="-6" width="18" height="12" fill="url(#settle)"/>`), `Not yet ${nm('settle').toLowerCase()}: pays little`],
