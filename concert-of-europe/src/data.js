@@ -7,14 +7,16 @@ const REGIONS = Object.entries(CONTENT.provinces).map(([id, p]) => [id, p.name, 
 // sea anchor points shape the coastline of the map; sea crossings join two coasts across the water
 const SEA = CONTENT.map.seaPoints;
 const NAVAL = CONTENT.map.seaCrossings;
-// the nations of 1836
-const COUNTRIES = Object.fromEntries(Object.entries(CONTENT.nations).map(([tag, n]) => [tag, Object.assign({}, n,
+// every nation (content/nations.json): those that start are on the map in 1836, the rest can only be born in an uprising
+const NATIONS = Object.fromEntries(Object.entries(CONTENT.nations).map(([tag, n]) => [tag, Object.assign({}, n,
   { culture: n.people, acc: n.accepts, p: [n.hawk, n.patience] })]));
-// nations that can appear through an uprising, by the people that rises; some restore a nation of 1836
-const TEMPLATES = Object.fromEntries(Object.entries(CONTENT.breakaways).map(([people, b]) => {
-  const n = b.restores && CONTENT.nations[b.restores];
-  return [people, n ? { tag: b.restores, name: n.name, adj: n.adj, pre: n.pre, color: n.color, ambition: n.ambition, programme: b.programme } : b];
-}));
+const COUNTRIES = Object.fromEntries(Object.entries(NATIONS).filter(([, n]) => n.starts));
+// the nation a people rises as when its uprising wins (unless the province's own fallen nation comes back):
+// its nation that was not on the map at the start, else its only nation, else none
+function risesAs(people){
+  const of = Object.keys(NATIONS).filter(t => NATIONS[t].culture === people);
+  return of.find(t => !NATIONS[t].starts) || (of.length === 1 ? of[0] : null);
+}
 
 function proj(lon, lat){ return [(lon + 10.5) * 18.7, (62.5 - lat) * 25.5]; }
 const MAP_W = 1000, MAP_H = 720;

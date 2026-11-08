@@ -85,7 +85,7 @@ function checkText(file, text, line){
 const C = ctx.CONTENT;
 (function words(v, where){
   // proper names (the Papal States) are names, not words; placeholders are paths, not words
-  if (typeof v === 'string') { if (!/^[\w.\-#]*$/.test(v) && !/^content\.(nations|provinces|breakaways)\.[^.]+\.name$/.test(where)) checkText(where, visible(v.replace(/\{[^}]*\}/g, ' ')), 0); return; }
+  if (typeof v === 'string') { if (!/^[\w.\-#]*$/.test(v) && !/^content\.(nations|provinces)\.[^.]+\.name$/.test(where)) checkText(where, visible(v.replace(/\{[^}]*\}/g, ' ')), 0); return; }
   if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => { if (k !== 'avoid') words(x, `${where}.${k}`); });
 })(C, 'content');
 const tpl = read('src/ui/index.template.html').replace(/<(style|script)[\s\S]*?<\/\1>/g, m => m.replace(/[^\n]/g, ''));
@@ -96,21 +96,28 @@ const bad = (where, what) => problems.push(`content/${where}: ${what}`);
 const prov = (w, id) => { if (!C.provinces[id]) bad(w, `no province "${id}"`); };
 const nation = (w, t) => { if (!C.nations[t]) bad(w, `no nation "${t}"`); };
 const people = (w, p) => { if (!C.peoples[p]) bad(w, `no people "${p}" in peoples.json`); };
-Object.entries(C.provinces).forEach(([id, p]) => { nation(`provinces.json ${id}`, p.owner); people(`provinces.json ${id}`, p.people); });
+Object.entries(C.provinces).forEach(([id, p]) => { nation(`provinces.json ${id}`, p.owner); people(`provinces.json ${id}`, p.people);
+  if (C.nations[p.owner] && !C.nations[p.owner].starts) bad(`provinces.json ${id}`, `${p.owner} is not on the map at the start, so it can't hold a province then`); });
 C.map.seaCrossings.forEach(x => x.forEach(id => prov('map.json seaCrossings', id)));
+// one table of nations: every one has the same fields, and says whether it is on the map at the start
+const NATION_FIELDS = ['name', 'adj', 'color', 'people', 'ambition', 'hawk', 'patience', 'starts'];
 Object.entries(C.nations).forEach(([t, n]) => { const w = `nations.json ${t}`; people(w, n.people); (n.accepts || []).forEach(p => people(w, p));
-  (n.programme || []).forEach(id => prov(w, id)); (n.allies || []).forEach(o => nation(w, o)); Object.keys(n.relations || {}).forEach(o => nation(w, o));
-  if (!Object.values(C.provinces).some(p => p.owner === t)) bad(w, 'holds no province'); });
-Object.entries(C.breakaways).forEach(([p, b]) => { const w = `breakaways.json ${p}`; people(w, p); if (b.restores) nation(w, b.restores); (b.programme || []).forEach(id => prov(w, id)); });
+  NATION_FIELDS.forEach(k => { if (n[k] == null) bad(w, `has no "${k}"`); });
+  if (typeof n.starts !== 'boolean') bad(w, '"starts" must be true or false');
+  (n.allies || []).forEach(o => nation(w, o)); Object.keys(n.relations || {}).forEach(o => nation(w, o));
+  if (n.starts && !Object.values(C.provinces).some(p => p.owner === t)) bad(w, 'starts on the map but holds no province');
+  if (!n.starts && ['army', 'allies', 'relations'].some(k => k in n)) bad(w, 'a nation born in an uprising gets its army and relations from rules.json newNation, not its own entry'); });
+// an uprising rises as its people's one nation that was not on the map at the start: two would be a tie
+Object.keys(C.peoples).forEach(p => { const born = Object.keys(C.nations).filter(t => C.nations[t].people === p && !C.nations[t].starts);
+  if (born.length > 1) bad('nations.json', `the ${p} people have ${born.length} nations born in uprisings (${born.join(', ')}); an uprising could rise as either`); });
 const ambition = (w, id) => { if (!C.ambitions[id]) bad(w, `no ambition "${id}"`); };
 Object.entries(C.nations).forEach(([t, n]) => ambition(`nations.json ${t}`, n.ambition));
-Object.entries(C.breakaways).forEach(([p, b]) => { if (!b.restores) ambition(`breakaways.json ${p}`, b.ambition); else if (b.ambition) bad(`breakaways.json ${p}`, 'a restored nation takes the ambition of the nation it restores; remove this one'); });
 Object.entries(C.ambitions).forEach(([id, d]) => { const w = `ambitions.json ${id}`;
   if (!C.ambitionKinds[d.kind]) bad(w, `no kind "${d.kind}" in ambitionKinds.json`);
   if (d.kind !== 'unite') return;
   d.peoples.forEach(p => people(w, p)); d.provinces.forEach(x => prov(w, x));
   if (d.need > d.provinces.length) bad(w, `needs ${d.need} of only ${d.provinces.length} provinces`);
-  if (!Object.values(C.nations).some(n => n.ambition === id) && !Object.values(C.breakaways).some(b => b.ambition === id)) bad(w, 'no nation holds it'); });
+  if (!Object.values(C.nations).some(n => n.ambition === id)) bad(w, 'no nation holds it'); });
 Object.keys(C.ambitionKinds).forEach(k => { if (!Object.values(C.ambitions).some(a => a.kind === k)) bad('ambitionKinds.json', `no ambition is of kind "${k}"`); });
 ['famine', 'compromise'].forEach(k => prov(`events.json ${k}`, C.events[k].province)); C.events.serfdom.provinces.forEach(x => prov('events.json serfdom', x));
 ['compromise', 'serfdom'].forEach(k => nation(`events.json ${k}`, C.events[k].nation));

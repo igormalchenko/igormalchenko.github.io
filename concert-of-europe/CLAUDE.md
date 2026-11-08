@@ -8,7 +8,7 @@ When a change is done, commit it and push it to `master` without asking for conf
 
 ## Rule 1: content lives in content/, and only there
 
-Every piece of content (rulers, rarities, temperaments, nations, breakaways, peoples, provinces, sea crossings, ambitions, events, ways of war, landmarks, concepts, and the rules of the age the player is told about) lives in `content/*.json`. The engine (`src/sim.js`), the interface and the Almanac read it from `CONTENT`; nothing else may hold a copy.
+Every piece of content (rulers, rarities, temperaments, nations (those of 1836 and those born in uprisings, in one table), peoples, provinces, sea crossings, ambitions, events, ways of war, landmarks, concepts, and the rules of the age the player is told about) lives in `content/*.json`. The engine (`src/sim.js`), the interface and the Almanac read it from `CONTENT`; nothing else may hold a copy.
 
 - **To change content, change the content file.** A ruler's strength, an event's odds, a union's provinces, a concept's name: edit the JSON, run `npm run build`, and the engine, the cards, the chronicle, the help text and the Almanac all follow.
 - **Never type a number into text.** A sentence that states a number takes it from the data with a placeholder: `"His armies fight {fx.fight|harder}"`, `"Takes {rules.build.factory|word} seasons."`. The formats (`word`, `pct`, `up`, `down`, `frac`, `times`, `harder`, `x`, `xs`, `span`, `years`, `inv`, `thrift`, `horizon`) are in `src/text.js`; add one there if a phrase needs it. In the HTML template use `{{path|format}}`.
@@ -22,7 +22,7 @@ Every piece of content (rulers, rarities, temperaments, nations, breakaways, peo
 
 1. **One ambition for every nation, judged in autumn 1918.** Each nation is born with one of three (`setAmbition`, see "Ambitions" below): the great powers of 1836 want the most income per year (taxes + factory output + sea trade) among themselves; a nation whose people are divided wants to unite them and still hold them together; every other nation wants to survive. The forecast still counts everything in gold (rule 2); the ambition only changes what some provinces and losses are worth.
 2. **Every decision is a forecast in gold.** In `considerations(c)` each option gets `ev` = extra or protected income over the ruler's horizon (8–30 years) minus its cost. The country does every option with positive `ev`, best first, up to 4 a season. Do not reintroduce hand-tuned "urge" scores.
-3. **Same rules for everyone.** No per-country stat bonuses. Countries differ only by starting data, ruler tendencies, a few historical special rules (unifiers, serfdom, accepted cultures, programmes) and luck.
+3. **Same rules for everyone.** No per-country stat bonuses. Countries differ only by starting data, ruler tendencies, a few historical special rules (unifiers, serfdom, accepted cultures) and luck.
 4. **Visible or hidden, never in between.** Any stat shown to the player must visibly change something on the map or in the budget. Infamy and relations maths are hidden plumbing. Prestige, colonies and great-power status were removed on purpose.
 5. **Rational core, chaotic inputs.** The forecasting AI stays rational. Variety comes from what it is fed: misjudgment (`ruler.bias`), quirks (`TRAITS`), crises, ultimatums, military eras, awakenings, coups. Add chaos as new inputs, not as irrational decisions.
 6. **Counterweights over caps.** Growth must cost something visible: integration time for conquests, administration cost for big states, soldiers taken from the workforce, trade lost in war, great powers ganging up on the leader. Prefer these to hard limits.
@@ -130,21 +130,23 @@ The heir cards don't show temperaments yet; only the panel does, once he reigns.
 
 ## Ambitions (built)
 
-Every nation has exactly one ambition for the armistice of autumn 1918 (shown as **Ambition** in the panel, the start screen and the end screen), and several nations can share one. There are no "national dreams" any more: a people to unite is simply an ambition, and the build refuses the word "dream" in visible text. Each nation names its ambition in its own entry (`ambition` in `content/nations.json` and `content/breakaways.json`; a restored nation takes its old one). The ambitions are in `content/ambitions.json`, and what each kind means, its wording and its weights in `content/ambitionKinds.json`. `setAmbition` fixes it at birth and `ambitionOf` says how it stands (`open`, `met` or `lost`):
+Every nation has exactly one ambition for the armistice of autumn 1918 (shown as **Ambition** in the panel, the start screen and the end screen), and several nations can share one. There are no "national dreams" any more: a people to unite is simply an ambition, and the build refuses the word "dream" in visible text. Each nation names its ambition in its own entry (`ambition` in `content/nations.json`). The ambitions are in `content/ambitions.json`, and what each kind means, its wording and its weights in `content/ambitionKinds.json`. `setAmbition` fixes it at birth and `ambitionOf` says how it stands (`open`, `met` or `lost`):
 
 - **Richest great power** (kind `richest`). Great Britain, France, Russia and the Ottoman Empire race for it; the one with the most Gold a year meets it. Only a nation that existed in 1836 can hold it (a restored one gets Survive).
 - **Unite a people** (kind `unite`, one ambition per union: the German Empire, the Iberian Union…). Its nations race to hold `need` of its provinces from the year `from`; the first proclaims it, takes its name, and the smaller nations of its `peoples` vote to join. It is met if the proclaimer still holds `need` of them at the armistice; for everyone else who held it, it is lost. A union someone already proclaimed gives a newborn nation Survive. Prussia and Austria (great powers) race for the German Empire on purpose.
 - **Survive** (kind `survive`). Still be on the map.
 
-A nation only works toward its own ambition. Since the merge, a nation whose people have a union but whose ambition is something else (only the Papal States, which are Italian) no longer counts that union's provinces as its programme or values them more, and can't proclaim it.
+A nation only works toward its own ambition. Since the merge, a nation whose people have a union but whose ambition is something else (only the Papal States, which are Italian) doesn't claim that union's provinces or value them more, and can't proclaim it.
+
+**Claims.** A nation claims a province it doesn't own if it once held it (a core), if its people or an accepted people live there, or if it lies in the union the nation works toward or has proclaimed. When a rival proclaims the union, those claims go with it. A claim makes a war for the province cheaper in distrust; only a core or an accepted people makes it quick to integrate (4 years in the forecast instead of 9). There are no programmes any more: Lithuania's one extra province, Belarus, is now part of the Polish Commonwealth.
 
 Measured when dreams merged into ambitions (40 worlds, seeds 1–40, before → after): wars 39.1 → 40.9, uprisings 35.2 → 33.8, Survive nations alive 170/464 → 176/460, Ukraine alive 22 → 27. Italy is proclaimed in 27 worlds instead of 37: before, the Papal States (ambition Survive) proclaimed Italy in about a quarter of the worlds where it formed; now they can't. The Papal States keep Survive on purpose: the Pope opposes unification, and Italy forming in two worlds of three is close to the union-balance target.
 
 The AI acts on it in gold (rule 2): a province of the union a nation works toward is worth `worth` (2) times its gold a year to it, to win and to keep (`ambitionW`), and a Survive nation counts every expected loss and the loss term of its own wars `losses` (1.5) times (`surviveW`). Great powers are unchanged.
 
-Every nation that can exist, 24 at the start and 16 that can break away (`content/breakaways.json`):
+Every nation that can exist is one entry in `content/nations.json`, with the same fields for all and `starts` saying whether it is on the map in 1836: 24 start, 16 can only be born in an uprising. What a nation born in an uprising gets (gold, an army sized by its people, hostility and a truce with the nation it broke from, perhaps a guarantor) is `newNation` in `content/rules.json`. When an uprising wins, the engine picks the nation to rise as (`risesAs` in `src/data.js`): the province's own fallen nation if it was of the same people; else that people's nation that doesn't start on the map (the Italians rise as the Italian Republic); else that people's only nation (the Greeks restore Greece); else none (German rebels outside a fallen German state find no allies). The build refuses two nations of one people that don't start.
 
-| Ambition | At the start | Breakaways |
+| Ambition | At the start | Born in an uprising |
 |---|---|---|
 | Richest great power | Great Britain, France, Russia, Ottoman Empire | none |
 | German Empire | Prussia, Austria, Bavaria | |

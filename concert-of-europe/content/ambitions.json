@@ -95,7 +95,7 @@
     "peoples": ["Polish", "Lithuanian"],
     "need": 3,
     "from": 1836,
-    "provinces": ["pol", "pos", "gli", "lit"]
+    "provinces": ["pol", "pos", "gli", "lit", "blr"]
   },
   "ibe": {
     "kind": "unite",

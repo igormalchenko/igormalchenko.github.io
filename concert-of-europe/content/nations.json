@@ -9,6 +9,7 @@
     "ambition": "rich",
     "hawk": 0.45,
     "patience": 0.95,
+    "starts": true,
     "army": 30,
     "relations": {"FRA": 10, "POR": 50},
     "allies": ["POR"]
@@ -22,6 +23,7 @@
     "ambition": "rich",
     "hawk": 0.6,
     "patience": 0.6,
+    "starts": true,
     "army": 60,
     "relations": {"PRU": -10, "PAP": 45},
     "allies": ["PAP"]
@@ -35,6 +37,7 @@
     "ambition": "ger",
     "hawk": 0.85,
     "patience": 0.8,
+    "starts": true,
     "army": 50
   },
   "AUS": {
@@ -46,6 +49,7 @@
     "ambition": "ger",
     "hawk": 0.45,
     "patience": 0.45,
+    "starts": true,
     "army": 60,
     "relations": {"SAR": -35, "SIC": 45},
     "allies": ["SIC"]
@@ -59,6 +63,7 @@
     "ambition": "rich",
     "hawk": 0.7,
     "patience": 0.3,
+    "starts": true,
     "army": 90,
     "relations": {"TUR": -45, "AUS": 25, "PRU": 20},
     "serfs": true
@@ -73,6 +78,7 @@
     "ambition": "rich",
     "hawk": 0.35,
     "patience": 0.2,
+    "starts": true,
     "army": 50
   },
   "SPA": {
@@ -84,6 +90,7 @@
     "ambition": "ibe",
     "hawk": 0.3,
     "patience": 0.3,
+    "starts": true,
     "army": 25
   },
   "POR": {
@@ -95,6 +102,7 @@
     "ambition": "ibe",
     "hawk": 0.2,
     "patience": 0.3,
+    "starts": true,
     "army": 8
   },
   "NET": {
@@ -106,6 +114,7 @@
     "ambition": "survive",
     "hawk": 0.25,
     "patience": 0.7,
+    "starts": true,
     "army": 10
   },
   "BEL": {
@@ -117,6 +126,7 @@
     "ambition": "survive",
     "hawk": 0.15,
     "patience": 0.85,
+    "starts": true,
     "army": 8
   },
   "DEN": {
@@ -128,6 +138,7 @@
     "ambition": "sca",
     "hawk": 0.3,
     "patience": 0.5,
+    "starts": true,
     "army": 10,
     "relations": {"PRU": -15}
   },
@@ -141,6 +152,7 @@
     "ambition": "sca",
     "hawk": 0.3,
     "patience": 0.55,
+    "starts": true,
     "army": 15
   },
   "HAN": {
@@ -151,6 +163,7 @@
     "ambition": "survive",
     "hawk": 0.2,
     "patience": 0.5,
+    "starts": true,
     "army": 8
   },
   "HES": {
@@ -161,6 +174,7 @@
     "ambition": "survive",
     "hawk": 0.2,
     "patience": 0.5,
+    "starts": true,
     "army": 5
   },
   "SAX": {
@@ -171,6 +185,7 @@
     "ambition": "survive",
     "hawk": 0.2,
     "patience": 0.6,
+    "starts": true,
     "army": 8
   },
   "BAV": {
@@ -181,6 +196,7 @@
     "ambition": "ger",
     "hawk": 0.3,
     "patience": 0.5,
+    "starts": true,
     "army": 15
   },
   "WUR": {
@@ -191,6 +207,7 @@
     "ambition": "survive",
     "hawk": 0.2,
     "patience": 0.5,
+    "starts": true,
     "army": 7
   },
   "SWI": {
@@ -201,6 +218,7 @@
     "ambition": "survive",
     "hawk": 0.05,
     "patience": 0.6,
+    "starts": true,
     "army": 6,
     "federal": "the Federal Council"
   },
@@ -213,6 +231,7 @@
     "ambition": "ita",
     "hawk": 0.75,
     "patience": 0.5,
+    "starts": true,
     "army": 20
   },
   "TUS": {
@@ -223,6 +242,7 @@
     "ambition": "ita",
     "hawk": 0.1,
     "patience": 0.4,
+    "starts": true,
     "army": 4
   },
   "PAP": {
@@ -233,6 +253,7 @@
     "ambition": "survive",
     "hawk": 0.05,
     "patience": 0.2,
+    "starts": true,
     "army": 5,
     "noAnnex": 1,
     "rulerNames": ["Gregory", "Pius", "Leo"]
@@ -245,6 +266,7 @@
     "ambition": "ita",
     "hawk": 0.35,
     "patience": 0.25,
+    "starts": true,
     "army": 20
   },
   "GRE": {
@@ -256,8 +278,8 @@
     "ambition": "gre",
     "hawk": 0.6,
     "patience": 0.3,
+    "starts": true,
     "army": 6,
-    "programme": ["the", "mac", "con"],
     "relations": {"TUR": -55}
   },
   "SER": {
@@ -269,8 +291,184 @@
     "ambition": "yug",
     "hawk": 0.65,
     "patience": 0.25,
+    "starts": true,
     "army": 6,
-    "programme": ["bos"],
     "relations": {"TUR": -40}
+  },
+  "POL": {
+    "name": "Poland",
+    "adj": "Polish",
+    "pre": "Polono",
+    "color": "#c45a6c",
+    "people": "Polish",
+    "ambition": "pol",
+    "hawk": 0.65,
+    "patience": 0.45,
+    "starts": false
+  },
+  "HUN": {
+    "name": "Hungary",
+    "adj": "Hungarian",
+    "pre": "Magyar",
+    "color": "#a07d50",
+    "people": "Hungarian",
+    "ambition": "hun",
+    "hawk": 0.6,
+    "patience": 0.45,
+    "starts": false
+  },
+  "ROM": {
+    "name": "Romania",
+    "adj": "Romanian",
+    "pre": "Romano",
+    "color": "#d6b84c",
+    "people": "Romanian",
+    "ambition": "rom",
+    "hawk": 0.5,
+    "patience": 0.4,
+    "starts": false
+  },
+  "BUL": {
+    "name": "Bulgaria",
+    "adj": "Bulgarian",
+    "pre": "Bulgaro",
+    "color": "#7e9b58",
+    "people": "Bulgarian",
+    "ambition": "bul",
+    "hawk": 0.65,
+    "patience": 0.35,
+    "starts": false
+  },
+  "IRE": {
+    "name": "Ireland",
+    "adj": "Irish",
+    "pre": "Hiberno",
+    "color": "#5aa46d",
+    "people": "Irish",
+    "ambition": "survive",
+    "hawk": 0.5,
+    "patience": 0.4,
+    "starts": false
+  },
+  "NOR": {
+    "name": "Norway",
+    "adj": "Norwegian",
+    "pre": "Norwego",
+    "color": "#b46a6a",
+    "people": "Norwegian",
+    "ambition": "sca",
+    "hawk": 0.4,
+    "patience": 0.5,
+    "starts": false
+  },
+  "FIN": {
+    "name": "Finland",
+    "adj": "Finnish",
+    "pre": "Finno",
+    "color": "#c9d6de",
+    "people": "Finnish",
+    "ambition": "survive",
+    "hawk": 0.4,
+    "patience": 0.5,
+    "starts": false
+  },
+  "CZE": {
+    "name": "Bohemia",
+    "adj": "Bohemian",
+    "pre": "Czecho",
+    "color": "#8b6fa1",
+    "people": "Czech",
+    "ambition": "survive",
+    "hawk": 0.4,
+    "patience": 0.5,
+    "starts": false
+  },
+  "CRO": {
+    "name": "Croatia",
+    "adj": "Croatian",
+    "pre": "Croato",
+    "color": "#c47e68",
+    "people": "Croat",
+    "ambition": "yug",
+    "hawk": 0.55,
+    "patience": 0.4,
+    "starts": false
+  },
+  "LIT": {
+    "name": "Lithuania",
+    "adj": "Lithuanian",
+    "pre": "Lithuano",
+    "color": "#c8a55a",
+    "people": "Lithuanian",
+    "ambition": "pol",
+    "hawk": 0.5,
+    "patience": 0.4,
+    "starts": false
+  },
+  "UKR": {
+    "name": "Ukraine",
+    "adj": "Ukrainian",
+    "pre": "Ukraino",
+    "color": "#2f86e6",
+    "people": "Ukrainian",
+    "ambition": "ukr",
+    "hawk": 0.6,
+    "patience": 0.35,
+    "starts": false
+  },
+  "BAL": {
+    "name": "Baltic Republic",
+    "adj": "Baltic",
+    "pre": "Balto",
+    "color": "#9bb0a0",
+    "people": "Baltic",
+    "ambition": "survive",
+    "hawk": 0.4,
+    "patience": 0.45,
+    "starts": false
+  },
+  "ALB": {
+    "name": "Albania",
+    "adj": "Albanian",
+    "pre": "Albano",
+    "color": "#9f515b",
+    "people": "Albanian",
+    "ambition": "survive",
+    "hawk": 0.6,
+    "patience": 0.3,
+    "starts": false
+  },
+  "BOS": {
+    "name": "Bosnia",
+    "adj": "Bosnian",
+    "pre": "Bosno",
+    "color": "#8b916b",
+    "people": "Bosniak",
+    "ambition": "yug",
+    "hawk": 0.55,
+    "patience": 0.35,
+    "starts": false
+  },
+  "ITA": {
+    "name": "Italian Republic",
+    "adj": "Italian",
+    "pre": "Italo",
+    "color": "#9fbd6c",
+    "people": "Italian",
+    "ambition": "ita",
+    "hawk": 0.6,
+    "patience": 0.35,
+    "starts": false
+  },
+  "SCO": {
+    "name": "Scotland",
+    "adj": "Scottish",
+    "pre": "Scoto",
+    "color": "#6d7fb0",
+    "people": "Scottish",
+    "ambition": "survive",
+    "hawk": 0.5,
+    "patience": 0.45,
+    "starts": false
   }
 }

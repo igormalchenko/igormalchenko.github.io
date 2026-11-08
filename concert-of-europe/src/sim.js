@@ -174,7 +174,7 @@ function createSim(seed, geo, opts = {}){
     const c = { tag, name: d.name, adj: d.adj, pre: d.pre || null, color: d.color, culture: d.culture, acc: new Set(d.acc || []),
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(0.9, 1.1), treasury: 30 + rand(0, 20), infamy: 0, allies: new Set(), rival: null, truce: {},
-      programme: new Set(d.programme || []), guarantee: null,
+      guarantee: null,
       alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, federal: d.federal || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', thoughts: [], born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
@@ -243,7 +243,7 @@ function createSim(seed, geo, opts = {}){
   function claim(c, r){
     if (r.owner === c.tag) return 0;
     if (r.core === c.tag) return 3;
-    if (isAccepted(c, r.culture) || c.programme.has(r.id)) return 2.5;
+    if (isAccepted(c, r.culture) || inClaimedUnion(c, r)) return 2.5;
     return 0;
   }
   // what a province would be worth to c per year once settled
@@ -255,11 +255,10 @@ function createSim(seed, geo, opts = {}){
     return sumInc(regionIncome(r, c, { ignoreOcc: true, unrest: foreign ? 25 + 36 * nationalism() : 10, integ: 1, war: false, admin: a1 })) * 4 - own * (a0 - a1) / a0;
   }
   // a province of the union a nation works toward (or has proclaimed) is worth more to it, to win and to keep (ambitionKinds.json)
-  const ambitionW = (c, r) => { const a = c.ambition && AMBITIONS[c.ambition.id];
-    return a && a.kind === 'unite' && a.pset.has(r.id) && (!a.done || a.done === c.tag) ? KINDS.unite.worth : 1; };
+  const ambitionW = (c, r) => inClaimedUnion(c, r) ? KINDS.unite.worth : 1;
   // a nation that only has to survive counts every loss half again as dear
   const surviveW = c => c.ambition && c.ambition.kind === 'survive' ? KINDS.survive.losses : 1;
-  const settleYears = (r, c) => (!isAccepted(c, r.culture) && !hasFx(c, 'converts') && r.core !== c.tag && !c.programme.has(r.id)) ? 9 : 4;
+  const settleYears = (r, c) => (!isAccepted(c, r.culture) && !hasFx(c, 'converts') && r.core !== c.tag) ? 9 : 4;
   Object.assign(S, { adminOf, regionsOf, popOf, facOf, facAvg, unrestOf, power, income, score, upkeep, regionIncome, sumInc, strength, warOf, claim, RB, isAccepted, maxBuilds, workforce, horizon });
 
   const N = c => `<b class="cn" data-tag="${c.tag}" style="--c:${c.color}">${c.name}</b>`;
@@ -387,7 +386,8 @@ function createSim(seed, geo, opts = {}){
     w.att.forEach(t => w.def.forEach(u => addRel(t, u, -30)));
     let txt = opts.text;
     if (!txt) {
-      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would integrate quickly` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
+      const why = cl === 3 ? `to win back ${Rn(goal)}` : cl && isAccepted(a, goal.culture) ? `for ${Rn(goal)}, whose ${goal.culture}-speaking people would integrate quickly`
+        : cl ? `to bring ${Rn(goal)} into ${theTitle(claimedUnion(a))}` : `for ${Rn(goal)} and its ${Math.round(provYearly(goal, a))} gold a year`;
       const mis = opts.pTrue != null && opts.p - opts.pTrue > 0.08 ? `, though his generals privately think ${Math.round(opts.pTrue * 100)}%` : '';
       txt = `${N(a)} invades ${N(d)} ${why}. ${a.ruler.name.charAt(0).toUpperCase() + a.ruler.name.slice(1)} rates the odds at ${Math.round(opts.p * 100)}%${mis}. The <em>${w.name}</em> begins.`;
     }
@@ -691,26 +691,25 @@ function createSim(seed, geo, opts = {}){
       const kin = r.nb.map(j => S.C[S.regions[j].owner]).find(k => k.alive && k.culture === r.culture && k !== o && !warOf(k));
       const spread = () => regionsOf(o).forEach(x => { if (!isAccepted(o, x.culture) && x.core !== o.tag) x.unrest = Math.min(100, x.unrest + 15); });
       if (kin) { L('revolt', `${Rn(r)} rises against ${N(o)} and declares for ${N(kin)}.`); transfer(r, kin, o, 'treaty'); r.core = kin.tag; r.unrest = 20; spread(); return; }
-      // who the rebels fight for: the province's own fallen state if it was of their people, else the template nation
-      const home = COUNTRIES[r.core] && COUNTRIES[r.core].culture === r.culture && !S.C[r.core].alive ? r.core : null;
-      const t = home ? null : TEMPLATES[r.culture];
-      const tag = home || (t && t.tag);
+      // who the rebels fight for: the province's own fallen nation if it was of their people, else the nation their people rises as
+      const home = NATIONS[r.core] && NATIONS[r.core].culture === r.culture && !S.C[r.core].alive ? r.core : null;
+      const tag = home || risesAs(r.culture);
       if (!tag || (S.C[tag] && S.C[tag].alive)) {
         r.unrest = 40; o.army *= 0.93; if (o.treasury > 0) o.treasury *= 0.85;
         L('revolt', `Rebels seize ${Rn(r)} but find no allies; ${N(o)} retakes it at a heavy cost in gold and men.`); return; }
       const restored = !!S.C[tag], wasPlayer = restored && S.C[tag].player;
-      const nc = home ? makeCountry(tag, Object.assign({}, COUNTRIES[tag], { army: r.pop * RULES.breakaway.armyPerMillion }))
-        : makeCountry(tag, { name: t.name, adj: t.adj, pre: t.pre, color: t.color, culture: r.culture, p: [RULES.breakaway.hawk, RULES.breakaway.patience], army: r.pop * RULES.breakaway.armyPerMillion, programme: t.programme, ambition: t.ambition });
-      nc.treasury = RULES.breakaway.gold; nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
-      setAmbition(nc); if (unionOf(nc)) unionOf(nc).provinces.forEach(id => nc.programme.add(id)); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
+      // what every nation born in an uprising gets (rules.json newNation): gold, an army sized by its people, an old enemy, perhaps a guarantor
+      const nc = makeCountry(tag, Object.assign({}, NATIONS[tag], { army: r.pop * RULES.newNation.armyPerMillion }));
+      nc.treasury = RULES.newNation.gold; nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
+      setAmbition(nc); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
       const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ && (!home || x.core === home)));
       invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = 15; x.build = null; x.flash = 3; x.integ = 1; });
       killIfEmpty(o);
-      tags.forEach(u => u !== tag && setRel(tag, u, u === o.tag ? -60 : rand(-5, 20)));
-      nc.truce[o.tag] = S.year + 15; o.truce[tag] = S.year + 15;
+      tags.forEach(u => u !== tag && setRel(tag, u, u === o.tag ? RULES.newNation.hostility : rand(-5, 20)));
+      nc.truce[o.tag] = S.year + RULES.newNation.truce; o.truce[tag] = S.year + RULES.newNation.truce;
       spread();
       const guard = S.majors.map(t2 => S.C[t2]).filter(m => m.alive && m !== o && !warOf(m) && m.allies.size < 3 && (rel(m.tag, o.tag) < 0 || m.rival === o.tag)).sort((x, y) => strength(y) - strength(x))[0];
-      if (guard) { ally(guard.tag, tag); setRel(guard.tag, tag, 70); nc.guarantee = { by: guard.tag, until: S.year + 25 }; }
+      if (guard) { ally(guard.tag, tag); setRel(guard.tag, tag, 70); nc.guarantee = { by: guard.tag, until: S.year + RULES.newNation.guarantee }; }
       L('revolt', `Independence! ${rlist(group)} break${group.length > 1 ? '' : 's'} away from ${N(o)} and ${restored ? 'restore' : 'form'}${group.length > 1 ? '' : 's'} ${N(nc)} under ${nc.ruler.name}.${guard ? ` ${N(guard)} guarantees its independence.` : ''}`);
       o.army *= 0.85;
     });
@@ -725,8 +724,11 @@ function createSim(seed, geo, opts = {}){
   // the union a nation is still working toward, if any
   const unionOf = c => { const a = c.ambition && AMBITIONS[c.ambition.id]; return a && a.kind === 'unite' && !a.done ? a : null; };
   const inUnion = (c, r) => { const u = unionOf(c); return !!u && u.pset.has(r.id); };
+  // the union whose provinces a nation claims: the one it works toward, or has proclaimed; when a rival proclaims it, the claims go with it
+  const claimedUnion = c => { const a = c.ambition && AMBITIONS[c.ambition.id]; return a && a.kind === 'unite' && (!a.done || a.done === c.tag) ? a : null; };
+  const inClaimedUnion = (c, r) => { const u = claimedUnion(c); return !!u && u.pset.has(r.id); };
   const theTitle = u => `${u.art ?? 'the '}${u.title}`;
-  S.UNIONS = UNIONS; S.unionOf = unionOf;
+  S.UNIONS = UNIONS; S.unionOf = unionOf; S.claimedUnion = claimedUnion; S.theTitle = theTitle;
   S.unionProgress = () => UNIONS.map(d => {
     const lead = alive().filter(c => d.done ? c.tag === d.done : unionOf(c) === d).map(c => ({ c, n: regionsOf(c).filter(r => d.pset.has(r.id)).length })).sort((a, b) => b.n - a.n)[0];
     return { id: d.id, title: d.title, need: d.need, done: d.done && S.C[d.done].alive ? S.C[d.done] : null, lead: lead ? lead.c : null, n: lead ? lead.n : 0, peoples: d.peoples.join(', ') };
@@ -739,7 +741,7 @@ function createSim(seed, geo, opts = {}){
         const own = regionsOf(c).filter(r => d.pset.has(r.id)).length;
         if (own < d.need) return;
         d.done = c.tag; c.name = d.title; c.adj = d.adj; c.pre = d.pre;
-        d.peoples.forEach(x => c.acc.add(x)); d.provinces.forEach(id => c.programme.add(id));
+        d.peoples.forEach(x => c.acc.add(x));
         regionsOf(c).forEach(r => { r.unrest = Math.max(0, r.unrest - 25); if (d.peoples.includes(r.culture)) r.integ = 1; });
         mark(capitalOf(c).i, 'crown');
         L('unify', say(KINDS.unite.proclaimText, { n: own, nation: N(c) }));
@@ -756,8 +758,6 @@ function createSim(seed, geo, opts = {}){
     c.ambition = gone ? { id: 'survive', kind: 'survive' } : { id: a.id, kind: a.kind };
   }
   alive().forEach(setAmbition);
-  // a nation counts the provinces of the union it works toward as its programme
-  alive().forEach(c => { const u = unionOf(c); if (u) u.provinces.forEach(id => { if (RB[id].owner !== c.tag) c.programme.add(id); }); });
   // how the ambition stands: 'open', 'met' (so far, or for good at the armistice) or 'lost'
   function ambitionOf(c){
     const a = c.ambition || { id: 'survive', kind: 'survive' };

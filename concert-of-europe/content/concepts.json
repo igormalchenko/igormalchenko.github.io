@@ -25,11 +25,7 @@
   },
   "occupied": {"name": "Occupied", "desc": "Held by an enemy army. Pays its owner nothing until freed."},
   "sea": {"name": "Sea crossing", "desc": "Two coastal provinces close enough to invade across the water."},
-  "claim": {
-    "name": "Claims",
-    "desc": "Nations that want a province: its old owner, its own people, a people it is uniting, or a programme."
-  },
-  "programme": {"name": "Programme", "desc": "The provinces a new nation is founded to win. They count as its own when it weighs a war."},
+  "claim": {"name": "Claims", "desc": "Nations that want a province: its old owner, its own people, or a nation uniting it."},
   "factory": {"name": "Factories", "desc": "Produce gold every season. Each new one costs more and adds less."},
   "fort": {
     "name": "Fortress",

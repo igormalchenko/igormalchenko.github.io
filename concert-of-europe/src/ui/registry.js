@@ -29,7 +29,6 @@ const DRAW = {
   sea: { box: 9,
     draw: `<line x1="-9" y1="0" x2="9" y2="0" stroke="#9fb1c2" stroke-width="1.4" stroke-dasharray="2 3"/>` },
   claim: { draw: `<path d="M-4.5 7V-7" stroke="#c9ced6" stroke-width="1.6" stroke-linecap="round"/><path d="M-3.8 -6.6h9l-2.3 3.2 2.3 3.2h-9z" fill="#d65a4d" stroke="#5e221c" stroke-width=".9" stroke-linejoin="round"/>` },
-  programme: { draw: P('<path d="M3.5 1.5h7l2.5 2.5v10.5h-9.5z" fill="#efe2bf" stroke="#7a6a3c" stroke-linejoin="round"/><path d="M6 6h5M6 8.5h5M6 11h3" stroke="#7a6a3c"/><path d="M10.5 1.5V4H13" fill="none" stroke="#7a6a3c"/>') },
 
   // ----- building -----
   factory: { box: 5.5, map: 1,

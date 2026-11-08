@@ -26,6 +26,8 @@
     "Weighing a war, a ruler counts {rules.settle|pct} of the time a conquest takes to become integrated."
   ],
   "New nations": [
-    "A nation born in an uprising starts with {rules.breakaway.gold} gold and an army of {rules.breakaway.armyPerMillion}k men per million people. It leans to war at {rules.breakaway.hawk|pct} and its patience is {rules.breakaway.patience|pct}."
+    "A nation born in an uprising starts with {rules.newNation.gold} gold and an army of {rules.newNation.armyPerMillion}k men per million people. It leans to war and plans ahead as its own entry says.",
+    "Its relations with the nation it broke from start at {rules.newNation.hostility}, but the two keep the peace for {rules.newNation.truce|span}. A great power on bad terms with the old ruler may guarantee its independence for {rules.newNation.guarantee|span}.",
+    "When an uprising wins, the province's own fallen nation comes back if it was of the same people. Otherwise the people rises as its nation that was not on the map in {rules.start}, or else as its only nation. A people with several nations and none of them new, like the Germans, finds no allies."
   ]
 }

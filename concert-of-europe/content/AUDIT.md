@@ -11,7 +11,7 @@ Every kind of thing the player can meet in the game, where it was defined before
 | Temperaments | 3 (9 tags) | tag words and thresholds in panel.js | CLAUDE.md | `temperaments.json` |
 | How a reign ends | 6 ways | `endReign`, `successions`, the coup event, `endWar` (sim.js) | CLAUDE.md "How a reign ends" | `rules.json` (`reign`) |
 | Nations of 1836 | 24 | `COUNTRIES`, data.js | starting relations and alliances in sim.js; papal names twice in sim.js; Switzerland's council special-cased by tag in six places | `nations.json` |
-| Breakaway nations | 22 (16 new, 6 restorations) | `TEMPLATES`, data.js | six of them copy a 1836 nation's name, adjective, prefix and colour | `breakaways.json` |
+| Breakaway nations | 22 (16 new, 6 restorations) | `TEMPLATES`, data.js | six of them copy a 1836 nation's name, adjective, prefix and colour | `breakaways.json`, since folded into `nations.json` |
 | Peoples | 30 | nowhere: bare strings in provinces, nations, dreams, `NAMES`, the awakening event | | `peoples.json` |
 | Provinces | 76 | `REGIONS`, data.js (positional arrays) | `COASTAL` list in sim.js (dead: the map decides) | `provinces.json` |
 | Sea crossings, sea points | 11, 54 | `NAVAL`, `SEA`, data.js | | `map.json` |
@@ -79,9 +79,13 @@ Now every number lives in `content/` and the text is filled in from it.
 - **Dreams merged into ambitions.** A nation has exactly one ambition, named in its own entry; several nations can share one. "National dream" is gone as a concept and as a word, and the build refuses it. The one behaviour change: the Papal States (ambition Survive) can no longer proclaim Italy, which they did in about a quarter of the worlds where Italy formed.
 - **The Papal States keep Survive** (decided): the Pope opposes unification, as he did historically, and Italy forming in 27 of 40 worlds is close to the target of a third to two thirds.
 
+- **Programmes are gone.** Every programme but Lithuania's only repeated its union. A nation now claims its cores, the provinces of its own or accepted peoples, and the provinces of the union it works toward or has proclaimed; when a rival proclaims the union, those claims go with it. Belarus joined the Polish Commonwealth (the Grand Duchy of Lithuania held it). A union province of another people is no longer forecast to integrate quickly, and the chronicle says "to bring X into the Polish Commonwealth" instead of "whose people would integrate quickly". The "Programme" concept is deleted.
+- **One table of nations.** `breakaways.json` is folded into `nations.json`: every nation has the same fields and `starts` says whether it is on the map in 1836. The six restorations are gone (Greece is just the one Greek nation), each nation born in an uprising has its own leanings instead of the shared default, and what any nation born in an uprising gets is `newNation` in `rules.json`. The nation an uprising rises as is derived from the data (`risesAs`). One new behaviour: a people with a single nation of 1836 (Swedes, French, English, Russians, Turks, Spaniards, Swiss) now restores it when it rises outside its old provinces, where before its rebels found no allies.
+
+Measured for both together (40 worlds, seeds 1–40, before → after): wars 40.9 → 42.1, uprisings 33.8 → 35.6, nations born or restored in uprisings 12.7 → 12.9 a world, Ukraine alive in 1918 27 → 22, Survive nations alive 176/460 → 166/456. Unions proclaimed: German 40 → 40, Iberian 37 → 35, Italy 27 → 28, Polish 19 → 18, Dacia 17 → 18, Bulgaria 11 → 12, Hetmanate 5 → 12, Kalmar 5 → 6, Byzantine 3 → 6, Illyria 5 → 2, Hungary 2 → 2. Unions held in 1918: 106 → 117 (Polish 5 → 12, Iberian 25 → 29, Italy 19 → 25, Bulgaria 9 → 4). The chronicle's "would integrate quickly" fell from 605 lines to 405; the other 200 or so now read "to bring X into" a union (152 lines).
+
 ## Open drifts, to settle one at a time
 
-- **Programmes repeat unions.** Every programme except Lithuania's (Belarus) lists only provinces its nation's union already lists, and the engine adds the union's provinces to the programme anyway. Two lists for one thing; the programme could shrink to the provinces outside the union.
 - **A nation's "hawk" is a ruler's judgment.** Nations carry `hawk`, shown as "Leans to war", but the engine only uses it to tilt each new ruler's judgment (over- or underconfident). The player sees Judgment on the ruler and "leans to war" on the nation for the same number.
 - **Admirer** says "joins every war" his favourite fights; he joins 90% of the time.
 - **Ultimatums never become wars** (see above).

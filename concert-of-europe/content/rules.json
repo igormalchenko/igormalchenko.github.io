@@ -23,6 +23,6 @@
   "settle": 0.6,
   "workers": 45,
   "levy": {"army": 1.5, "perMillion": 8, "workers": 90},
-  "breakaway": {"hawk": 0.55, "patience": 0.4, "armyPerMillion": 6, "gold": 60},
+  "newNation": {"gold": 60, "armyPerMillion": 6, "hostility": -60, "truce": 15, "guarantee": 25},
   "heirs": 3
 }

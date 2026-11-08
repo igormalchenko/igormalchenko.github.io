@@ -176,7 +176,7 @@ function renderProvince(){
   const inc = S.regionIncome(r), yr = S.sumInc(inc) * 4;
   const u = Math.round(r.unrest);
   const claims = S.alive().filter(o => o !== c && S.claim(o, r) > 0).map(o => {
-    const why = r.core === o.tag ? 'lost province' : o.culture === r.culture || o.acc.has(r.culture) ? `same people (${r.culture})` : S.unionOf(o) && S.unionOf(o).pset.has(r.id) ? `for ${S.unionOf(o).title}` : `${ic('programme')}national programme`;
+    const why = r.core === o.tag ? 'lost province' : o.culture === r.culture || o.acc.has(r.culture) ? `same people (${r.culture})` : `for ${S.theTitle(S.claimedUnion(o))}`;
     return `<div>${nameSpan(o.tag)} <span class="muted">${why}</span></div>`; }).join('');
   const nb = r.nb.map(j => { const x = S.regions[j]; const sea = GEO.naval.some(([a, b]) => (a === r.i && b === j) || (b === r.i && a === j));
     return `<span class="nbx click" data-prov="${j}">${sea ? ic('sea') : ''}${x.name} <span class="sw" style="background:${S.C[x.owner].color}"></span></span>`; }).join('');

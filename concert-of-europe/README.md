@@ -52,7 +52,7 @@ npm run content      # rewrite content/*.json in the house layout
 ## Project layout
 
 ```
-content/*.json         every piece of content: rulers, rarities, nations, breakaways, peoples,
+content/*.json         every piece of content: rulers, rarities, nations, peoples,
                        provinces, ambitions, events, ways of war, landmarks, concepts, rules
 content/rulebook.json  the rules of the age in plain sentences, for the Almanac
 content/AUDIT.md       what was found when the content moved there, and what is still open
