@@ -263,6 +263,7 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
   C.eras.forEach((e, i) => nm(e.name, `way of war ${i}`));
   Object.entries(C.rulers).forEach(([t, q]) => nm(q.label, `trait ${t}`));
   C.rarities.forEach((r, i) => nm(r.name, `rarity ${i}`));
+  C.rules.seasons.forEach((x, i) => { nm(x, `season ${i}`); nm(x.toLowerCase(), `season ${i}`); });
   const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const RE = new RegExp(`(?<![\\w-])(${NAMES.map(x => x.n).sort((a, b) => b.length - a.length).map(esc).join('|')})(?![\\w-])`, 'g');
   const whatOf = n => NAMES.filter(x => x.n === n).map(x => x.what).join(' / ');

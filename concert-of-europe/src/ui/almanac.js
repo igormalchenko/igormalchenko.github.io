@@ -68,8 +68,8 @@ const SECTIONS = {
         return `<tr class="al-e"><td>${p.name}</td><td>${nationName(p.owner)}</td><td>${peopleName(p.people)}</td><td>${p.pop}m</td><td>${p.industry}</td><td>${g && g.coast ? 'coast' : ''}</td>
           <td>${listOf(sea.filter(x => x.includes(id)).map(x => provName(x[0] === id ? x[1] : x[0])))}</td></tr>`; }).join('')}</tbody></table>`; } },
   events: { name: 'Events', file: 'events', count: () => Object.keys(CONTENT.events).length, render(){
-    return Object.entries(CONTENT.events).map(([id, e]) => { const when = e.year ? `${['Winter', 'Spring', 'Summer', 'Autumn'][e.season]} ${e.year}`
-        : e.years ? `${e.years[0]} to ${e.years[1]}` : e.from ? `from ${e.from}` : e.every ? `at least ${e.every} years after the last` : e.season != null ? `${['winter', 'spring', 'summer', 'autumn'][e.season]}s` : '';
+    return Object.entries(CONTENT.events).map(([id, e]) => { const when = e.year ? `${RULES.seasons[e.season]} ${e.year}`
+        : e.years ? `${e.years[0]} to ${e.years[1]}` : e.from ? `from ${e.from}` : e.every ? `at least ${e.every} years after the last` : e.season != null ? `${say('{s|season}', { s: e.season })}s` : '';
       const lines = ['text', 'rattleText', 'warText'].filter(k => e[k]).map(k => `<p>${say(e[k], Object.assign({}, SAMPLE, e, { province: e.province ? `<i>${provName(e.province)}</i>` : SAMPLE.province, people: e.people || (e.peoples ? e.peoples[0] : SAMPLE.people), nations: typeof e.nations === 'number' ? `<i>${numberWord(e.nations)} nations</i>` : SAMPLE.nations, count: Object.values(CONTENT.nations).filter(n => n.starts).length, find: e.finds ? e.finds[0] : SAMPLE.find, pretext: e.pretexts ? e.pretexts[0] : SAMPLE.pretext, nation: e.nation ? `<i>${nationName(e.nation)}</i>` : SAMPLE.nation }))}</p>`).join('');
       return entry(e.name, lines + facts([['When', when], ['Chance', e.chance != null ? yearly(e.chance) : ''], ['Peoples', e.peoples ? listOf(e.peoples.map(peopleName)) : '']]), { lead: ic('event') }); }).join(''); } },
   eras: { name: 'Ways of war', file: 'eras', count: () => CONTENT.eras.length, render(){

@@ -5,13 +5,15 @@
 // printed in seed order, is the same whatever the number of jobs.
 const { Worker, isMainThread, parentPort } = require('worker_threads');
 const os = require('os');
+// the nation whose survival the sweep follows (Ukraine), and the content's own names for it and the end year
+const CONTENT = require('./content').load(), WATCH = 'UKR', WATCHED = CONTENT.nations[WATCH].name, END = CONTENT.rules.end.year;
 
 // one world, start to armistice: its line and what the averages need
 function playWorld(createSim, seed){
   const t0 = Date.now();
   const S = createSim(seed); while (!S.over) S.step();
   const cs = S.alive().sort((a, b) => S.score(b) - S.score(a));
-  const ua = S.C.UKR, uaAlive = !!(ua && ua.alive);
+  const ua = S.C[WATCH], uaAlive = !!(ua && ua.alive);
   const unions = S.UNIONS.filter(d => d.done).map(d => d.id);
   // ambitions: the richest great power, unions still held at the armistice, survivors of those who only had to survive
   const all = Object.values(S.C), amb = c => S.ambitionOf(c);
@@ -19,7 +21,7 @@ function playWorld(createSim, seed){
   const held = all.filter(c => amb(c).kind === 'unite' && amb(c).state === 'met').map(c => amb(c).id);
   const survK = all.filter(c => amb(c).kind === 'survive'), surv = survK.filter(c => c.alive);
   const line = `seed ${seed}  ${S.year} ${S.SEASONS[S.q]}  wars ${S.stats.wars}  revolts ${S.stats.revolts}  dead ${Math.round(S.stats.dead || 0)}m  ` +
-    `Ukraine ${ua ? (uaAlive ? 'alive' : 'died') : 'never'}  unions ${unions.join(',') || '-'} (held ${held.join(',') || '-'})  survived ${surv.length}/${survK.length}  ` +
+    `${WATCHED} ${ua ? (uaAlive ? 'alive' : 'died') : 'never'}  unions ${unions.join(',') || '-'} (held ${held.join(',') || '-'})  survived ${surv.length}/${survK.length}  ` +
     `richest power ${rich ? rich.name : '-'}  top ${cs[0].name} (${Math.round(S.score(cs[0]))})  ${Date.now() - t0}ms`;
   return { seed, line, wars: S.stats.wars, revolts: S.stats.revolts, uaAlive, top: cs[0].name, rich: rich ? rich.name : null,
     unions, held, surv: surv.length, survOf: survK.length };
@@ -47,8 +49,8 @@ if (!isMainThread) {
       r.unions.forEach(d => agg.proclaimed[d] = (agg.proclaimed[d] || 0) + 1); r.held.forEach(d => agg.held[d] = (agg.held[d] || 0) + 1);
       agg.surv += r.surv; agg.survOf += r.survOf;
     });
-    console.log(`\n${n} worlds: avg wars ${(agg.wars / n).toFixed(1)}, avg revolts ${(agg.revolts / n).toFixed(1)}, Ukraine alive in ${agg.ua}, top ${JSON.stringify(agg.winners)}`);
-    console.log(`ambitions: richest power ${JSON.stringify(agg.rich)}; unions proclaimed ${JSON.stringify(agg.proclaimed)}, held in 1918 ${JSON.stringify(agg.held)}; survive-ambition nations alive ${agg.surv} of ${agg.survOf}`);
+    console.log(`\n${n} worlds: avg wars ${(agg.wars / n).toFixed(1)}, avg revolts ${(agg.revolts / n).toFixed(1)}, ${WATCHED} alive in ${agg.ua}, top ${JSON.stringify(agg.winners)}`);
+    console.log(`ambitions: richest power ${JSON.stringify(agg.rich)}; unions proclaimed ${JSON.stringify(agg.proclaimed)}, held in ${END} ${JSON.stringify(agg.held)}; survive-ambition nations alive ${agg.surv} of ${agg.survOf}`);
   }
   for (let k = 0; k < jobs; k++) {
     const w = new Worker(__filename);

@@ -188,6 +188,18 @@ Proven unchanged: final states of eight worlds (two of them player games) match,
 **Geography outside content**
 - `build-map.js` has five hand corrections (`con–bul`, `con–mac` by land; `lon–hol`, `sco–nor`, `nth–jut` by sea) and the Anatolia/Caucasus cut.
 
+**Done (step 4).** With steps 1–3 this settles section 2:
+- Copied names: event prose, ambition notes, the rulebook, the Rarity concept, the help and start text, the map chips and the Great War all read their names from the content (step 2, enforced by the check). The sweep tool names the nation it follows and the end year from the content.
+- Seasons: one list, `rules.seasons`, read by the engine (`SEASONS`), the `season` format, the Almanac and the page's first date. Season names count as content names in the check, so "autumn 1918" can't be typed again; the ambitions and concepts say `{rules.end.season|season}`.
+- Copied numbers: the map chips, the treaty-union threshold, the heir keys and the cholera sample (step 2). What a province pays while it becomes integrated is one function (`paysWhile`), read by the engine and the province panel.
+- Serfdom: only the event names its nation; `nations.json` no longer repeats it.
+- Labels: beside an icon, the panel now uses the concept's own name: Alliance (not "Allies"), Factories (not "Factory output"), Army (not "Recruiting"), Gold (not "Net"), Sea trade (not "seaport"). Two new word concepts: **Guarantor** (the "Independence guaranteed by" row) and **Great power** (so the Almanac can say what one is).
+- Geography: the hand corrections moved to `map.json` (step 1). The Anatolia/Caucasus cut stays in the builder: it is how the shapes are drawn, not a fact a player reads.
+
+Left on purpose: the integration timings in the forecast (`settleYears`, 4 or 9 years) are the AI's estimate, not a rule; the seasonal rates the world uses (0.08 and 0.028) move to `rules.json` in step 5. The start-screen and help prose stay where they are: each lives in one place, and the check keeps names and numbers out of it.
+
+Proven unchanged: final states and chronicles of eight worlds match the code before.
+
 ## 3. Not in the Almanac
 
 - **Temperaments:** `temperaments.json` (the nine words and their thresholds) appears nowhere.

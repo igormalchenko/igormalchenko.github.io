@@ -178,17 +178,17 @@ function renderNation(){
     <div class="ledger">
       <div class="lg" ${tipAttr(nm('ambition'), ambitionDesc(amb.a))}><span>${ic('ambition')}${nm('ambition')}</span><span style="color:${amb.color}">${amb.what}</span></div>
       <div class="lg" ${tipOf('rival')}><span>${ic('rival')}${nm('rival')}</span><span>${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}</span></div>
-      <div class="lg" ${tipOf('ally')}><span>${ic('ally')}Allies</span><span>${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}</span></div>
-      ${c.guarantee && S.year < c.guarantee.until ? `<div class="lg"><span>Independence guaranteed by</span><span>${nameSpan(c.guarantee.by)}</span></div>` : ''}
+      <div class="lg" ${tipOf('ally')}><span>${ic('ally')}${nm('ally')}</span><span>${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}</span></div>
+      ${c.guarantee && S.year < c.guarantee.until ? `<div class="lg" ${tipOf('guarantee')}><span>${nm2('guarantee')}</span><span>${nameSpan(c.guarantee.by)}</span></div>` : ''}
     </div>
     <h3>This season</h3>
     <div class="acts">${now1}</div>
     ${running ? `<div class="sub">Under way</div><div class="acts dim">${running}</div>` : ''}
     <h3>Budget</h3>
     <div class="ledger">
-      ${allBudget ? `${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
-      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}` : ''}
-      ${line('gold', 'Net', net, allBudget ? 'net' : 'net only')}
+      ${allBudget ? `${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', nm('factory'), lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
+      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', nm('army'), -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}` : ''}
+      ${line('gold', nm('gold'), net, allBudget ? 'net' : 'net only')}
     </div>
     <button class="btn more" id="allBudget" aria-expanded="${allBudget}">${allBudget ? 'Hide the budget' : 'Show the budget'}</button>
     <h3 class="hcol">Provinces${ic('goldYear')}</h3><div class="provs" style="--nc:${c.color}">${shown.map(prov).join('') || '<span class="muted">none</span>'}</div>
@@ -211,7 +211,7 @@ function renderProvince(){
   const foreign = !S.isAccepted(c, r.culture);
   box.innerHTML = `
     <div class="nation-head"><div class="flag" style="background:${c.color}"></div><div><h2>${r.name}</h2>
-      <div class="muted" style="font-size:12px">Held by ${nameSpan(c.tag)}${r.coast ? ` · ${ic('trade')}seaport` : ''}</div></div></div>
+      <div class="muted" style="font-size:12px">Held by ${nameSpan(c.tag)}${r.coast ? ` · ${ic('trade')}${nm('trade')}` : ''}</div></div></div>
     <div class="stats">
       ${statTile('pop', r.pop.toFixed(1) + 'm')}
       ${statTile('factory', r.fac + (r.build && r.build.type === 'factory' ? ' +1' : ''))}
@@ -223,9 +223,9 @@ function renderProvince(){
     <h3>Where its gold comes from</h3>
     <div class="ledger">
       <div class="lg"><span>${ic('taxes')}${nm('taxes')}</span><span>${(inc.tax * 4).toFixed(1)}</span></div>
-      <div class="lg"><span>${ic('factory')}Factory output</span><span>${(inc.fac * 4).toFixed(1)}</span></div>
+      <div class="lg"><span>${ic('factory')}${nm('factory')}</span><span>${(inc.fac * 4).toFixed(1)}</span></div>
       <div class="lg"><span>${ic('trade')}${nm('trade')}</span><span>${(inc.trade * 4).toFixed(1)}</span></div>
-      <div class="lgnote">${r.integ < 1 ? `${ic('settle')}Newly conquered: pays ${Math.round((0.1 + 0.9 * r.integ) * 100)}% until fully integrated. ` : ''}${ic('culture')}${peopleName(r.culture)} · ${foreign ? 'restless minority' : 'content'}.${r.occ ? ` ${ic('occupied')}<span style="color:var(--war)">Occupied by ${S.C[r.occ].name}: pays nothing until freed (normally ${(S.sumInc(S.regionIncome(r, c, { ignoreOcc: true })) * 4).toFixed(1)} a year).</span>` : ''}${r.build ? ` ${ic('build')}Building a ${r.build.type === 'factory' ? 'factory' : 'fortress'}, ${r.build.left} season${r.build.left > 1 ? 's' : ''} left.` : ''}</div>
+      <div class="lgnote">${r.integ < 1 ? `${ic('settle')}Newly conquered: pays ${Math.round(S.paysWhile(r.integ) * 100)}% until fully integrated. ` : ''}${ic('culture')}${peopleName(r.culture)} · ${foreign ? 'restless minority' : 'content'}.${r.occ ? ` ${ic('occupied')}<span style="color:var(--war)">Occupied by ${S.C[r.occ].name}: pays nothing until freed (normally ${(S.sumInc(S.regionIncome(r, c, { ignoreOcc: true })) * 4).toFixed(1)} a year).</span>` : ''}${r.build ? ` ${ic('build')}Building a ${r.build.type === 'factory' ? 'factory' : 'fortress'}, ${r.build.left} season${r.build.left > 1 ? 's' : ''} left.` : ''}</div>
     </div>
     ${claims ? `<h3>${nm('claim')}</h3><div class="claims">${claims}</div>` : ''}
     <h3>Neighbours</h3><div class="nbs">${nb}</div>

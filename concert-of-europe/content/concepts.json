@@ -6,7 +6,7 @@
   },
   "goldYear": {
     "name": "Gold a year",
-    "desc": "Taxes, factory output and sea trade over a year. The great power with the most in autumn {rules.end.year} meets its ambition.",
+    "desc": "Taxes, factory output and sea trade over a year. The great power with the most in {rules.end.season|season} {rules.end.year} meets its ambition.",
     "avoid": ["income", "score", "/yr"]
   },
   "taxes": {"name": "Taxes", "desc": "Gold the people pay. Falls with unrest, occupation and every man in the army."},
@@ -66,7 +66,7 @@
   },
   "ambition": {
     "name": "Ambition",
-    "desc": "What a nation must achieve by the armistice of autumn {rules.end.year}: be the richest great power, unite its people, or survive.",
+    "desc": "What a nation must achieve by the armistice of {rules.end.season|season} {rules.end.year}: be the richest great power, unite its people, or survive.",
     "avoid": ["objective", "dream", "dreams"]
   },
   "leader": {"name": "Leading nation", "desc": "The nation with the most gold a year right now."},
@@ -112,6 +112,16 @@
   "rarity": {
     "name": "Rarity",
     "desc": "How rare a ruler is, from {rarities.0.name} to {rarities.4.name}. The rarer he is, the more he can change the game.",
+    "word": true
+  },
+  "guarantee": {
+    "name": "Guarantor",
+    "desc": "A great power sworn to defend a nation born in an uprising for {rules.newNation.guarantee|span}: it always joins its wars.",
+    "word": true
+  },
+  "major": {
+    "name": "Great power",
+    "desc": "One of the strongest nations, recounted every few years. Great powers step in against a nation that grows too strong, guarantee nations born in uprisings and fight the {events.greatWar.name}. The great powers of {rules.start} race to be the richest.",
     "word": true
   }
 }

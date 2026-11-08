@@ -2,9 +2,8 @@
 // Every nation pursues one goal: the highest yearly income when the Great War ends.
 // Each season it forecasts, in gold over its ruler's planning horizon, what every option is worth, and takes the best.
 
-const SEASONS = ['Winter', 'Spring', 'Summer', 'Autumn'];
 // the content the engine runs on (content/*.json)
-const RULES = CONTENT.rules, EV = CONTENT.events, PEOPLES = CONTENT.peoples;
+const RULES = CONTENT.rules, EV = CONTENT.events, PEOPLES = CONTENT.peoples, SEASONS = RULES.seasons;
 // rulers: one trait each (content/rulers.json), at one rarity (content/rarities.json, 0 = Common … 4 = Legendary).
 // A trait has a main bonus, from Rare on a one-time flat bonus, and a malus; the rarity says which of each one's values applies.
 const TRAITS = CONTENT.rulers, RARITY = CONTENT.rarities, EFFECTS = CONTENT.effects;
@@ -156,7 +155,7 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(0.9, 1.1), treasury: (g => d.gold != null ? d.gold : g)(30 + rand(0, 20)), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
-      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', didThisSeason: [], born: S.year,
+      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: tag === EV.serfdom.nation, ambitionId: d.ambition || 'survive', didThisSeason: [], born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
@@ -201,12 +200,14 @@ function createSim(seed, geo, opts = {}){
   const admin = n => clamp(1 - 0.03 * Math.max(0, n - 6), 0.55, 1);
   const adminOf = c => admin(regionsOf(c).length);
   const workforce = (c, army = c.army) => clamp(1 - army / (Math.max(0.5, popOf(c)) * RULES.workers), RULES.workersMin, 1);
+  // the share of its gold a province pays while it becomes integrated
+  const paysWhile = integ => 0.1 + 0.9 * integ;
   // income of one province in a season, broken down
   function regionIncome(r, c = S.C[r.owner], opts = {}){
     if (r.occ && !opts.ignoreOcc) return { tax: 0, fac: 0, trade: 0 };
     const u = opts.unrest != null ? opts.unrest : r.unrest;
     const integ = opts.integ != null ? opts.integ : r.integ;
-    const m = (1 - u / 200) * (0.1 + 0.9 * integ) * (opts.admin != null ? opts.admin : adminOf(c)) * fx(c, 'earns') * (S.depression > S.t ? EV.panic.earns : 1);
+    const m = (1 - u / 200) * paysWhile(integ) * (opts.admin != null ? opts.admin : adminOf(c)) * fx(c, 'earns') * (S.depression > S.t ? EV.panic.earns : 1);
     const taxed = fx(c, 'taxes') * (isAccepted(c, r.culture) ? fx(c, 'ownTaxes') : 1);
     const serf = c.serfs && !S.flags.serf ? EV.serfdom.before : 1;
     const wf = opts.wf != null ? opts.wf : workforce(c);
@@ -242,7 +243,7 @@ function createSim(seed, geo, opts = {}){
   const surviveW = c => c.ambition && c.ambition.kind === 'survive' ? KINDS.survive.losses : 1;
   // years until a conquest is integrated, as his trait speeds or slows it
   const settleYears = (r, c) => (!isAccepted(c, r.culture) && r.core !== c.tag) ? 9 / fx(c, 'integrateOther') / fx(c, 'integrate') : 4 / fx(c, 'integrate');
-  Object.assign(S, { adminOf, regionsOf, popOf, facOf, facAvg, unrestOf, power, income, score, upkeep, regionIncome, sumInc, strength, warOf, claim, RB, isAccepted, maxBuilds, workforce, horizon });
+  Object.assign(S, { paysWhile, adminOf, regionsOf, popOf, facOf, facAvg, unrestOf, power, income, score, upkeep, regionIncome, sumInc, strength, warOf, claim, RB, isAccepted, maxBuilds, workforce, horizon });
 
   const N = c => `<b class="cn" data-tag="${c.tag}" style="--c:${c.color}">${c.name}</b>`;
   const Rn = r => `<i data-p="${r.i}">${r.name}</i>`;

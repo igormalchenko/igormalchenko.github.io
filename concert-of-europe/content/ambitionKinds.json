@@ -2,13 +2,13 @@
   "richest": {
     "name": "Richest great power",
     "heading": "Richest great power",
-    "desc": "Have the most gold a year of the great powers of {rules.start} when the war ends in autumn {rules.end.year}.",
+    "desc": "Have the most gold a year of the great powers of {rules.start} when the war ends in {rules.end.season|season} {rules.end.year}.",
     "who": "The great powers of {rules.start} that have no people to unite. Only the richest of them meets it."
   },
   "unite": {
     "name": "Unite a people",
     "heading": "Unite a people",
-    "desc": "Proclaim {the}{title} by holding {need} of its provinces, and still hold them in autumn {rules.end.year}.",
+    "desc": "Proclaim {the}{title} by holding {need} of its provinces, and still hold them in {rules.end.season|season} {rules.end.year}.",
     "who": "The nations of a divided people. The first to proclaim it takes its name, and the rest have lost.",
     "worth": 2,
     "proclaimText": "<strong>A people united.</strong> Holding {n} of its people's lands, {nation} is proclaimed.",
@@ -18,7 +18,7 @@
     "name": "Survive",
     "heading": "Survive",
     "aside": "small and exposed",
-    "desc": "Still be on the map in autumn {rules.end.year}.",
+    "desc": "Still be on the map in {rules.end.season|season} {rules.end.year}.",
     "who": "Every other nation. All who are still on the map meet it.",
     "losses": 1.5
   }

@@ -1,6 +1,7 @@
 {
   "The age": [
     "The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.",
+    "The year runs {rules.seasons|list}, and every nation decides once a season.",
     "The {events.greatWar.name} breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."
   ],
   "Heirs": [
