@@ -179,9 +179,9 @@ The survive weight doesn't save small nations: they die slightly more often with
 
 ## Future work (agreed, not built)
 
-### Ruler quirks × grades (proposed, not agreed)
+### Ruler quirks × grades (structure agreed, not built)
 
-Every quirk at every grade (20 × 5 cards). Each quirk is one strength and one flaw from a shared list of stats; a common ruler is all flaw, a legendary one has turned his flaw into his strength. Full matrix and open questions: `specs/ruler-grades.md`.
+One trait per ruler, at every grade. Common: small bonus and big malus; Uncommon: medium bonus and medium malus; Rare: medium bonus, small thematic flat bonus and medium malus; Epic: medium bonus, small flat bonus and small malus; Legendary: big bonus, medium flat bonus and small malus. Two or three effect lines per card, with explicit timing. Rarer rulers have a better benefit/cost balance; this replaces the old increasing-price rule when implemented. Plain-language names replace obscure ones. The complete draft has 20 traits × 5 grades; its names, effects, numbers and treatment of existing special rulers remain proposals. Full matrix, semantics and open decisions: `specs/ruler-grades.md`.
 
 ### Metaprogression
 
