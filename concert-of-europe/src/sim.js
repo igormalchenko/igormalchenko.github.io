@@ -728,7 +728,8 @@ function createSim(seed, geo, opts = {}){
   // how the ambition stands: 'open', 'met' (so far, or for good at the armistice) or 'lost'
   function ambitionOf(c){
     const a = c.ambition || { id: 'survive', kind: 'survive' };
-    if (!c.alive) return { ...a, state: 'lost' };
+    // a nation that is gone has lost, but its ambition still names its union
+    if (!c.alive) return a.kind === 'unite' ? { ...a, title: AMBITIONS[a.id].title, the: AMBITIONS[a.id].art ?? 'the ', n: 0, need: AMBITIONS[a.id].need, state: 'lost' } : { ...a, state: 'lost' };
     if (a.kind === 'survive') return { ...a, state: S.over ? 'met' : 'open' };
     if (a.kind === 'richest') { const rich = alive().filter(o => o.ambition && o.ambition.kind === 'richest').sort((x, y) => score(y) - score(x));
       return { ...a, rank: rich.indexOf(c) + 1, of: rich.length, state: rich[0] === c ? (S.over ? 'met' : 'open') : S.over ? 'lost' : 'open' }; }
