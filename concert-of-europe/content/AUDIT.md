@@ -77,6 +77,7 @@ Now every number lives in `content/` and the text is filled in from it.
 
 - **Civil war** is the one name for a disputed succession.
 - **Dreams merged into ambitions.** A nation has exactly one ambition, named in its own entry; several nations can share one. "National dream" is gone as a concept and as a word, and the build refuses it. The one behaviour change: the Papal States (ambition Survive) can no longer proclaim Italy, which they did in about a quarter of the worlds where Italy formed.
+- **The Papal States keep Survive** (decided): the Pope opposes unification, as he did historically, and Italy forming in 27 of 40 worlds is close to the target of a third to two thirds.
 
 ## Open drifts, to settle one at a time
 
@@ -85,5 +86,4 @@ Now every number lives in `content/` and the text is filled in from it.
 - **Admirer** says "joins every war" his favourite fights; he joins 90% of the time.
 - **Ultimatums never become wars** (see above).
 - **The uprising threshold is two numbers.** A province can rise at 65 unrest (`rules.unrest.uprising`), but the chance formula counts from a hidden 60 (`(unrest - 60) / 40` in `revolts`).
-- **The Papal States and Italy.** Their ambition is Survive, but their people are Italian; should they hold the Italy ambition instead?
 - **The chronicle puts the cause after the effect.** "X has ceased to exist" is written before the peace treaty that ended it.

@@ -138,7 +138,7 @@ Every nation has exactly one ambition for the armistice of autumn 1918 (shown as
 
 A nation only works toward its own ambition. Since the merge, a nation whose people have a union but whose ambition is something else (only the Papal States, which are Italian) no longer counts that union's provinces as its programme or values them more, and can't proclaim it.
 
-Measured when dreams merged into ambitions (40 worlds, seeds 1–40, before → after): wars 39.1 → 40.9, uprisings 35.2 → 33.8, Survive nations alive 170/464 → 176/460, Ukraine alive 22 → 27. Italy is proclaimed in 27 worlds instead of 37: before, the Papal States (ambition Survive) proclaimed Italy in about a quarter of the worlds where it formed; now they can't. Whether the Papal States should hold the Italy ambition is open.
+Measured when dreams merged into ambitions (40 worlds, seeds 1–40, before → after): wars 39.1 → 40.9, uprisings 35.2 → 33.8, Survive nations alive 170/464 → 176/460, Ukraine alive 22 → 27. Italy is proclaimed in 27 worlds instead of 37: before, the Papal States (ambition Survive) proclaimed Italy in about a quarter of the worlds where it formed; now they can't. The Papal States keep Survive on purpose: the Pope opposes unification, and Italy forming in two worlds of three is close to the union-balance target.
 
 The AI acts on it in gold (rule 2): a province of the union a nation works toward is worth `worth` (2) times its gold a year to it, to win and to keep (`ambitionW`), and a Survive nation counts every expected loss and the loss term of its own wars `losses` (1.5) times (`surviveW`). Great powers are unchanged.
 
