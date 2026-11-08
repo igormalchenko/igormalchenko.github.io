@@ -41,7 +41,7 @@ To work on it you need Node 18 or later:
 ```bash
 npm install          # only needed for regenerating the map
 npm run build        # check, then assemble index.html from content/, src/ and map/geo.json
-npm run sweep -- 1 13    # play worlds 1..12 headlessly, one summary line each
+npm run sweep -- 1 41    # play worlds 1..40 headlessly on every core, one summary line each
 npm run chronicle -- 7   # print the full history of world 7
 npm run map          # regenerate map/geo.json from the coastline data, then build
 npm run content      # rewrite content/*.json in the house layout
