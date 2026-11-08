@@ -222,7 +222,7 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(0.9, 1.1), treasury: 30 + rand(0, 20), infamy: 0, allies: new Set(), rival: null, truce: {},
       programme: new Set(d.programme || []), guarantee: null,
-      alive: true, unifier: !!d.unifier, noAnnex: !!d.noAnnex, thoughts: [], unified: false, born: S.year,
+      alive: true, unifier: !!d.unifier, noAnnex: !!d.noAnnex, fixedAmbition: d.ambition || null, thoughts: [], unified: false, born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
@@ -302,6 +302,11 @@ function createSim(seed, geo, opts = {}){
     const own = income(c) * 4;
     return sumInc(regionIncome(r, c, { ignoreOcc: true, unrest: foreign ? 25 + 36 * nationalism() : 10, integ: 1, war: false, admin: a1 })) * 4 - own * (a0 - a1) / a0;
   }
+  // a province of the dream a nation lives for is worth twice its gold a year to it, to win and to keep (see ambitions)
+  const ambitionW = (c, r) => { const a = c.ambition; if (a && a.kind === 'dream') { const d = dreamById(a.dream); if (d.pset.has(r.id) && (!d.done || d.done === c.tag)) return 2; }
+    return inDream(c, r) ? 1.35 : 1; };
+  // a nation that only has to survive counts every loss half again as dear
+  const surviveW = c => c.ambition && c.ambition.kind === 'survive' ? 1.5 : 1;
   const settleYears = (r, c) => (!isAccepted(c, r.culture) && !has(c, 'prophet') && r.core !== c.tag && !c.programme.has(r.id)) ? 9 : 4;
   Object.assign(S, { adminOf, regionsOf, popOf, facOf, facAvg, unrestOf, power, income, score, upkeep, regionIncome, sumInc, strength, warOf, claim, RB, isAccepted, maxBuilds, workforce, horizon });
 
@@ -362,11 +367,12 @@ function createSim(seed, geo, opts = {}){
         const e = warEval(o, c, r, extraArmy, extraAlly); if (e && (!best || e.ev > best.ev)) best = { ...e, r }; });
       if (!best) return;
       const chanceAttack = Math.min(1, sig((best.ev - 5) / 12) * 0.77);
-      const loss = best.p * (provYearly(best.r, c) * H + Math.max(0, c.treasury) * 0.3 + 20) + c.army * 0.1 * 3;
+      const loss = best.p * (provYearly(best.r, c) * ambitionW(c, best.r) * H + Math.max(0, c.treasury) * 0.3 + 20) + c.army * 0.1 * 3;
       const v = chanceAttack * loss;
       total += v; if (v > topV) { topV = v; top = o; }
     });
     if (has(c, 'paranoid')) total *= 1.8;
+    total *= surviveW(c);
     return (RISK[key] = { total, top });
   }
   // a's forecast of attacking d for province r (gold over a's horizon)
@@ -392,7 +398,7 @@ function createSim(seed, geo, opts = {}){
     if (p < 0.5) return null;
     const H = horizon(a), T = a.treasury;
     const years = clamp(1 + 1.6 / (Math.abs(Math.log(ratio)) + 0.35), 1, 4.5);
-    const yearly = provYearly(r, a) * (has(a, 'revanchist') && r.core === a.tag ? 2 : 1) * (has(a, 'warmonger') ? 1.5 : 1) * (inDream(a, r) ? 1.35 : 1);
+    const yearly = provYearly(r, a) * (has(a, 'revanchist') && r.core === a.tag ? 2 : 1) * (has(a, 'warmonger') ? 1.5 : 1) * ambitionW(a, r);
     const gv = goldValue(a);
     // a usurper's victory also ends the unrest that dogs his reign
     const legit = has(a, 'usurper') && !a.ruler.legit ? income(a) * 4 * 0.06 * Math.min(H, 12) : 0;
@@ -403,7 +409,7 @@ function createSim(seed, geo, opts = {}){
     const swallow = regionsOf(d).length === 1 ? (S.year < 1860 ? 16 : 8) : 0;
     const infamyCost = ((claim(a, r) >= 2.5 ? 3 : 9) + swallow) * (1.5 + landNeighbors(a) * 0.5) * (has(a, 'warmonger') ? 0.5 : 1);
     // a lost war costs more than the gold: a beaten ruler may lose his throne
-    const ev = p * gain - (1 - p) * lose * 1.25 - losses - disruption - infamyCost;
+    const ev = p * gain - (1 - p) * lose * 1.25 * surviveW(a) - losses - disruption - infamyCost;
     return { ev, p, pTrue, yearly, cost: losses + disruption };
   }
 
@@ -634,7 +640,7 @@ function createSim(seed, geo, opts = {}){
     // peaceful union of a fellow-national minor
     if (dreamsOf(c).length && !war) neighborsOf(c).forEach(o => {
       if (isMajor(o) || o.noAnnex || warOf(o) || !dreamsOf(c).some(d => d.cultures.includes(o.culture))) return;
-      const val = regionsOf(o).reduce((s, r) => s + provYearly(r, c), 0) * (H - 1.5);
+      const val = regionsOf(o).reduce((s, r) => s + provYearly(r, c) * ambitionW(c, r), 0) * (H - 1.5);
       const r = rel(c.tag, o.tag);
       const ok = r >= 70 && power(c) > 2 * power(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]));
       if (ok) add({ type: 'annex', o, ev: val, label: `Unite with ${o.name} by treaty`, why: `Toward ${dreamsOf(c)[0].title}; adds ${Math.round(val / (H - 1.5))} a year with no war` });
@@ -743,7 +749,7 @@ function createSim(seed, geo, opts = {}){
       const nc = home ? makeCountry(tag, Object.assign({}, COUNTRIES[tag], { army: r.pop * 6 }))
         : makeCountry(tag, { name: t.name, adj: t.adj, pre: t.pre, color: t.color, culture: r.culture, p: [0.55, 0.4, 0.5], army: r.pop * 6, programme: t.programme });
       nc.treasury = 60; nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
-      dreamsOf(nc).forEach(d => d.provinces.forEach(id => nc.programme.add(id))); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
+      dreamsOf(nc).forEach(d => d.provinces.forEach(id => nc.programme.add(id))); setAmbition(nc); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
       const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ && (!home || x.core === home)));
       invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = 15; x.build = null; x.flash = 3; x.integ = 1; });
       killIfEmpty(o);
@@ -762,14 +768,21 @@ function createSim(seed, geo, opts = {}){
     { id: 'ger', title: 'German Empire', adj: 'German', pre: 'German', cultures: ['German'], leaders: ['PRU', 'AUS', 'BAV'], need: 8, from: 1850,
       provinces: ['bra','pom','epr','sil','rhi','wes','han','hes','sax','bav','wur','vie','tyr','als','sch'] },
     { id: 'ita', title: 'Kingdom of Italy', adj: 'Italian', pre: 'Italo', cultures: ['Italian'], need: 4, from: 1836, provinces: ['pie','lom','ven','tus','rom','nap','sic'] },
-    { id: 'sca', title: 'United Scandinavia', adj: 'Scandinavian', pre: 'Scando', cultures: ['Swedish', 'Norwegian', 'Danish'], need: 5, from: 1845, provinces: ['sve','got','nor','jut','fin'] },
-    { id: 'ukr', title: 'Greater Ukraine', adj: 'Ukrainian', pre: 'Ukraino', cultures: ['Ukrainian'], need: 3, from: 1836, provinces: ['kie','cri','bes','gli','don'] },
-    { id: 'rom', title: 'Greater Romania', adj: 'Romanian', pre: 'Romano', cultures: ['Romanian'], need: 3, from: 1836, provinces: ['wal','mol','trn','bes'] },
-    { id: 'bul', title: 'Greater Bulgaria', adj: 'Bulgarian', pre: 'Bulgaro', cultures: ['Bulgarian'], need: 3, from: 1836, provinces: ['bul','mac','the'] },
-    { id: 'gre', title: 'Greater Greece', adj: 'Greek', pre: 'Greco', cultures: ['Greek'], need: 3, from: 1836, provinces: ['ath','the','mac','con'] },
-    { id: 'yug', title: 'Yugoslavia', adj: 'Yugoslav', pre: 'Yugo', cultures: ['Serb', 'Croat', 'Bosniak'], need: 3, from: 1850, provinces: ['ser','bos','cro'] },
+    // the old union of the three northern crowns
+    { id: 'sca', title: 'Kalmar Union', adj: 'Scandinavian', pre: 'Scando', cultures: ['Swedish', 'Norwegian', 'Danish'], need: 5, from: 1845, provinces: ['sve','got','nor','jut','fin'] },
+    // the Cossack state of the seventeenth century
+    { id: 'ukr', title: 'Cossack Hetmanate', adj: 'Ukrainian', pre: 'Ukraino', cultures: ['Ukrainian'], need: 3, from: 1836, provinces: ['kie','cri','bes','gli','don'] },
+    // the Roman province the Romanian nationalists of the age named their dream after
+    { id: 'rom', title: 'Dacia', art: '', adj: 'Dacian', pre: 'Daco', cultures: ['Romanian'], need: 3, from: 1836, provinces: ['wal','mol','trn','bes'] },
+    { id: 'bul', title: 'Tsardom of Bulgaria', adj: 'Bulgarian', pre: 'Bulgaro', cultures: ['Bulgarian'], need: 3, from: 1836, provinces: ['bul','mac','the'] },
+    // the Great Idea: Constantinople Greek again
+    { id: 'gre', title: 'Byzantine Empire', adj: 'Byzantine', pre: 'Byzantino', cultures: ['Greek'], need: 3, from: 1836, provinces: ['ath','the','mac','con'] },
+    // the Illyrian movement of the 1830s dreamed of one South Slav nation
+    { id: 'yug', title: 'Kingdom of Illyria', adj: 'Illyrian', pre: 'Illyro', cultures: ['Serb', 'Croat', 'Bosniak'], need: 3, from: 1850, provinces: ['ser','bos','cro'] },
     { id: 'pol', title: 'Polish Commonwealth', adj: 'Polish', pre: 'Polono', cultures: ['Polish', 'Lithuanian'], need: 3, from: 1836, provinces: ['pol','pos','gli','lit'] },
     { id: 'ibe', title: 'Iberian Union', adj: 'Iberian', pre: 'Ibero', cultures: ['Spanish', 'Portuguese'], need: 5, from: 1860, provinces: ['cas','cat','and','gal','por'] },
+    // the lands of the Hungarian crown
+    { id: 'hun', title: 'Crown of St Stephen', adj: 'Hungarian', pre: 'Magyar', cultures: ['Hungarian'], need: 3, from: 1836, provinces: ['hun','trn','cro'] },
   ];
   DREAMS.forEach(d => d.pset = new Set(d.provinces));
   function dreamsOf(c){ return DREAMS.filter(d => !d.done && d.cultures.includes(c.culture) && (!d.leaders || d.leaders.includes(c.tag))); }
@@ -792,11 +805,34 @@ function createSim(seed, geo, opts = {}){
         mark(capitalOf(c).i, 'crown');
         L('unify', `<strong>A dream fulfilled.</strong> Holding ${own} of its people's lands, ${N(c)} is proclaimed.`);
         alive().filter(o => o !== c && d.cultures.includes(o.culture) && !isMajor(o) && !o.noAnnex && !warOf(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]))).forEach(o => {
-          L('unify', `${N(o)} votes to join the ${N(c)}.`); regionsOf(o).forEach(r => transfer(r, c, o, 'treaty')); });
+          L('unify', `${N(o)} votes to join ${N(c)}.`); regionsOf(o).forEach(r => transfer(r, c, o, 'treaty')); });
       });
     });
   }
   alive().forEach(c => dreamsOf(c).forEach(d => d.provinces.forEach(id => { if (RB[id].owner !== c.tag) c.programme.add(id); })));
+
+  // ---------- ambitions: what each nation must achieve by the armistice ----------
+  // Fixed at birth: build its people's dream if it has one, else be the richest great power (the great powers of 1836), else survive.
+  const GREAT_1836 = S.majors.slice();
+  const dreamById = id => DREAMS.find(d => d.id === id);
+  function setAmbition(c){
+    const d = c.fixedAmbition !== 'survive' && dreamsOf(c)[0];
+    c.ambition = d ? { kind: 'dream', dream: d.id } : GREAT_1836.includes(c.tag) && c.born === 1836 ? { kind: 'rich' } : { kind: 'survive' };
+  }
+  alive().forEach(setAmbition);
+  // how the ambition stands: 'open', 'met' (so far, or for good at the armistice) or 'lost'
+  function ambitionOf(c){
+    const a = c.ambition || { kind: 'survive' };
+    if (!c.alive) return { ...a, state: 'lost' };
+    if (a.kind === 'survive') return { ...a, state: S.over ? 'met' : 'open' };
+    if (a.kind === 'rich') { const rich = alive().filter(o => o.ambition && o.ambition.kind === 'rich').sort((x, y) => score(y) - score(x));
+      return { ...a, rank: rich.indexOf(c) + 1, of: rich.length, state: rich[0] === c ? (S.over ? 'met' : 'open') : S.over ? 'lost' : 'open' }; }
+    const d = dreamById(a.dream), n = regionsOf(c).filter(r => d.pset.has(r.id)).length, base = { ...a, title: d.title, the: d.art ?? 'the ', n, need: d.need };
+    if (d.done && d.done !== c.tag) return { ...base, state: 'lost', by: d.done };
+    if (d.done) return { ...base, state: n >= d.need ? 'met' : S.over ? 'lost' : 'open', proclaimed: true };
+    return { ...base, state: S.over ? 'lost' : 'open' };
+  }
+  S.ambitionOf = ambitionOf;
 
   // ---------- events ----------
   const Q = p => chance(p / 4);
@@ -940,14 +976,19 @@ function createSim(seed, geo, opts = {}){
     if (S.year === 1918 && S.q === 3) {   // the armistice: every world ends in autumn 1918
       if (S.greatWar && S.wars.includes(S.greatWar)) L('peace', '<strong>Armistice.</strong> At the eleventh hour the guns fall silent; peace is made on the lines as they stand.');
       S.wars.slice().forEach(w => endWar(w, w.score > 10 ? 'att' : w.score < -10 ? 'def' : 'white'));
-      S.over = true; return;
+      S.over = true;
+      const rich = alive().filter(c => c.ambition.kind === 'rich').sort((a, b) => score(b) - score(a))[0];
+      const dreamt = alive().filter(c => c.ambition.kind === 'dream' && ambitionOf(c).state === 'met');
+      const survivors = alive().filter(c => c.ambition.kind === 'survive');
+      L('event', `<strong>The age ends.</strong> ${rich ? `${N(rich)} is the richest great power. ` : ''}${dreamt.length ? `${list(dreamt)} ${dreamt.length > 1 ? 'hold their dreams' : 'holds its dream'}. ` : 'No dream outlives the war. '}${survivors.length ? `${list(survivors)} survive${survivors.length > 1 ? '' : 's'}.` : ''}`);
+      return;
     }
     S.t++; S.year = 1836 + Math.floor(S.t / 4); S.q = S.t % 4;
   }
 
   alive().forEach(pickRival);
   S.history.push({ y: 1835, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
-  L('event', '<strong>Europe, 1836.</strong> Twenty-four nations, one ambition: to be the richest when the guns of the coming great war fall silent.');
+  L('event', '<strong>Europe, 1836.</strong> Twenty-four nations, each with its own ambition for the day the guns of the coming great war fall silent: to be the richest great power, to build its people\'s dream, or just to survive.');
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
   if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true; S.rerolls = 3;
     // vary the draw by country, so two countries in the same world are not offered the same three characters

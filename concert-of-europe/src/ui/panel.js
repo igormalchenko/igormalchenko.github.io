@@ -47,14 +47,28 @@ function showHeir(){
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
 }
+// a nation's ambition: a short label, what it takes (for hover text), and how it stands now
+function ambitionDesc(a){
+  return a.kind === 'rich' ? 'Have the most gold a year of the great powers of 1836 when the war ends in autumn 1918.'
+    : a.kind === 'dream' ? `Proclaim ${a.the}${a.title} by holding ${a.need} of its provinces, and still hold them in autumn 1918.`
+    : 'Still be on the map in autumn 1918.';
+}
+function ambitionText(c){
+  const a = S.ambitionOf(c);
+  const what = a.kind === 'rich' ? `Richest great power${a.rank ? ` (#${a.rank} of ${a.of})` : ''}`
+    : a.kind === 'dream' ? `${a.title}${a.by ? `, proclaimed by ${S.C[a.by].name}` : ` (${a.proclaimed ? 'proclaimed, ' : ''}${a.n} of ${a.need})`}` : 'Survive';
+  return { a, what, color: a.state === 'met' ? 'var(--peace)' : a.state === 'lost' ? 'var(--war)' : 'inherit' };
+}
 function showStart(){
-  $('startIntro').innerHTML = `<p>${iconize('Europe, 1836 to 1918. Every nation is after one thing: the most gold a year when the Great War ends.')}</p>
-    <p>${iconize('Pick a nation to rule. You never give orders: each time the throne passes, you choose the next ruler from three heirs, and the ministers run the nation the way he sees the world. Choose well, and it prospers. Or just watch.')}</p>`;
+  $('startIntro').innerHTML = `<p>${iconize('Europe, 1836 to 1918. Every nation has one ambition for the day the Great War ends: the great powers want the most gold a year, a divided people wants to unite, and the small just want to survive.')}</p>
+    <p>${iconize('Pick a nation to rule. You never give orders: each time the throne passes, you choose the next ruler from three heirs, and the ministers run the nation the way he sees the world. Choose well, and it meets its ambition. Or just watch.')}</p>`;
   const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
-  const big = ['GBR', 'FRA', 'PRU', 'AUS', 'RUS', 'TUR'];
-  const btn = c => `<button class="pick" data-play="${c.tag}"><span class="fl" style="background:${c.color}"></span>${c.name}</button>`;
-  $('startBody').innerHTML = `<h3>Great powers</h3><div class="picks">${cs.filter(c => big.includes(c.tag)).map(btn).join('')}</div>
-    <h3>Smaller nations <span class="muted" style="font:12px var(--body)">harder</span></h3><div class="picks">${cs.filter(c => !big.includes(c.tag)).map(btn).join('')}</div>`;
+  const of = k => cs.filter(c => S.ambitionOf(c).kind === k);
+  const btn = c => { const a = S.ambitionOf(c);
+    return `<button class="pick" data-play="${c.tag}" ${tipAttr(c.name, ambitionDesc(a))}><span class="fl" style="background:${c.color}"></span>${c.name}${a.kind === 'dream' ? ` <span class="muted">${a.title}</span>` : ''}</button>`; };
+  $('startBody').innerHTML = `<h3>Richest great power</h3><div class="picks">${of('rich').map(btn).join('')}</div>
+    <h3>Build a national dream</h3><div class="picks">${of('dream').sort((x, y) => S.ambitionOf(x).title.localeCompare(S.ambitionOf(y).title)).map(btn).join('')}</div>
+    <h3>Survive <span class="muted" style="font:12px var(--body)">small and exposed</span></h3><div class="picks">${of('survive').map(btn).join('')}</div>`;
   $('startModal').classList.add('on');
 }
 
@@ -110,7 +124,7 @@ function renderNation(){
   const thoughts = c.thoughts || [], done = thoughts.filter(t => t.chosen);
   const evTip = tipAttr(nm('forecast'), `Gold over the ${H} years this ruler plans ahead, after costs.`);
   const thought = (t, mark) => `<div class="th ${mark && t.chosen ? 'chosen' : ''}"><div class="row"><b>${ic(OPT_IC[t.type])}${t.label}</b><span class="evn" ${evTip} style="color:${t.ev > 0 ? 'var(--peace)' : t.ev < 0 ? '#e08070' : 'var(--muted)'}">${t.ev > 0 ? '+' : ''}${t.ev}</span></div><div class="why">${t.why}</div></div>`;
-  const dreams = S.dreamsOf(c);
+  const dreams = S.dreamsOf(c), amb = ambitionText(c);
   const prov = r => { const u = Math.round(r.unrest);
     return `<div class="prov click" data-prov="${r.i}"><span>${r.name}${r.culture !== c.culture && !c.acc.has(r.culture) ? ` <span class="muted">${r.culture}</span>` : ''}${r.integ < 1 ? ` ${ic('settle')}` : ''}${r.occ ? ` ${ic('occupied')}` : ''}</span>
       <span>${r.fac ? `${ic('factory')}${r.fac}` : ''}${r.fort ? ic('fort') : ''}${r.build ? ic('build') : ''}</span><span class="un" style="color:${u >= 65 ? '#e0453a' : u >= 40 ? '#e3933c' : 'var(--muted)'}">${u >= 40 ? ic('unrest') : ''}${u}</span></div>`; };
@@ -135,10 +149,11 @@ function renderNation(){
       ${statTile('province', rs.length)}
     </div>
     <div class="ledger">
+      <div class="lg" ${tipAttr(nm('ambition'), ambitionDesc(amb.a))}><span>${ic('ambition')}${nm('ambition')}</span><span style="color:${amb.color}">${amb.what}</span></div>
       <div class="lg" ${tipOf('rival')}><span>${ic('rival')}${nm('rival')}</span><span>${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}</span></div>
       <div class="lg" ${tipOf('ally')}><span>${ic('ally')}Allies</span><span>${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}</span></div>
       ${c.guarantee && S.year < c.guarantee.until ? `<div class="lg"><span>Independence guaranteed by</span><span>${nameSpan(c.guarantee.by)}</span></div>` : ''}
-      ${dreams.length ? `<div class="lg" ${tipOf('dream')}><span>${ic('dream')}Dreams of</span><span>${dreams.map(d => d.title).join(', ')}</span></div>` : ''}
+      ${dreams.length && amb.a.kind !== 'dream' ? `<div class="lg" ${tipOf('dream')}><span>${ic('dream')}Dreams of</span><span>${dreams.map(d => d.title).join(', ')}</span></div>` : ''}
     </div>
     <h3>What the ministers did</h3>
     <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet.</div>'}</div>
@@ -197,11 +212,16 @@ function showEnd(){
   const dead = Object.values(S.C).filter(c => !c.alive);
   const rows = cs.slice(0, 8).map((c, i) => { const d = S.regionsOf(c).length - c.startRegions;
     return `<tr><td>${i + 1}</td><td>${nameSpan(c.tag)}</td><td><b>${fmt(S.score(c))}</b></td><td>${S.regionsOf(c).length} <span style="color:${d > 0 ? 'var(--peace)' : d < 0 ? 'var(--war)' : 'var(--muted)'}">(${d > 0 ? '+' : ''}${d})</span></td><td>${S.facOf(c)}</td><td>${fmt(c.army)}</td></tr>`; }).join('');
-  const me = S.player && S.C[S.player], myRank = me ? cs.indexOf(me) + 1 : 0;
-  $('endTitle').innerHTML = me ? (myRank === 1 ? `${me.name} wins` : `${cs[0].name} wins; you finish ${myRank ? '#' + myRank : 'gone from the map'}`) : `${cs[0].name} wins`;
-  $('endBody').innerHTML = `<p>The armistice of ${S.year}. ${nameSpan(cs[0].tag)} ends the age with the most gold a year in Europe, ${ic('goldYear')}${fmt(S.score(cs[0]))} gold a year, under ${cs[0].ruler.name}.</p>
+  const me = S.player && S.C[S.player];
+  const rich = cs.filter(c => S.ambitionOf(c).kind === 'rich')[0];
+  const met = k => cs.filter(c => { const a = S.ambitionOf(c); return a.kind === k && a.state === 'met'; });
+  const dreamt = met('dream'), survivors = met('survive');
+  const mine = me && ambitionText(me);
+  $('endTitle').innerHTML = me ? (mine.a.state === 'met' ? `${me.name} meets its ambition` : `${me.name} falls short`) : rich ? `${rich.name} is the richest great power` : 'The armistice';
+  $('endBody').innerHTML = `${me ? `<p>${ic('ambition')}Your ambition: <span style="color:${mine.color}">${mine.what}</span>. ${ambitionDesc(mine.a)}</p>` : ''}
+    <p>The armistice of ${S.year}. ${rich ? `${nameSpan(rich.tag)} is the richest great power, with ${ic('goldYear')}${fmt(S.score(rich))} gold a year under ${rich.ruler.name}. ` : ''}${dreamt.length ? `${ic('dream')}Dreams held: ${dreamt.map(c => nameSpan(c.tag)).join(', ')}. ` : 'No dream outlives the war. '}${survivors.length ? `Survived: ${survivors.map(c => nameSpan(c.tag)).join(', ')}.` : ''}</p>
     <table><thead><tr><th>#</th><th>Nation</th><th>${ic('goldYear')}</th><th>${ic('province')}</th><th>${ic('factory')}</th><th>${ic('army')}</th></tr></thead><tbody>${rows}</tbody></table>
     <p style="margin-top:12px">${ic('war')}${S.stats.wars} wars · ${ic('war')}${S.stats.battles} battles · ${ic('uprising')}${S.stats.revolts} uprisings · ${ic('dead')}${Math.round(S.stats.dead || 0)} million dead in the fighting · ${ic('ruler')}${S.stats.rulers} changes of ruler</p>
-    <p>${S.DREAMS.filter(d => d.done).length ? `${ic('dream')}Dreams fulfilled: ${S.DREAMS.filter(d => d.done).map(d => d.title).join(', ')}. ` : ''}${born.length ? `Born in an uprising: ${born.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${restored.length ? `Restored by an uprising: ${restored.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${dead.length ? `Gone from the map: ${dead.map(c => c.name).join(', ')}.` : ''}</p>`;
+    <p>${born.length ? `Born in an uprising: ${born.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${restored.length ? `Restored by an uprising: ${restored.map(c => nameSpan(c.tag)).join(', ')}. ` : ''}${dead.length ? `Gone from the map: ${dead.map(c => c.name).join(', ')}.` : ''}</p>`;
   $('endModal').classList.add('on');
 }

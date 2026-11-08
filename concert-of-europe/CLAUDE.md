@@ -8,7 +8,7 @@ When a change is done, commit it and push it to `master` without asking for conf
 
 ## Design rules
 
-1. **One goal for every nation.** The score is income per year (taxes + factory output + sea trade). Whoever has the most in autumn 1918 wins. Everything else (provinces, factories, soldiers, alliances) is a means to income.
+1. **One ambition for every nation, judged in autumn 1918.** Each nation is born with one of three (`setAmbition`, see "Ambitions" below): the great powers of 1836 want the most income per year (taxes + factory output + sea trade) among themselves; a nation whose people have a national dream wants to proclaim it and still hold it; every other nation wants to survive. The forecast still counts everything in gold (rule 2); the ambition only changes what some provinces and losses are worth.
 2. **Every decision is a forecast in gold.** In `considerations(c)` each option gets `ev` = extra or protected income over the ruler's horizon (8–30 years) minus its cost. The country does every option with positive `ev`, best first, up to 4 a season. Do not reintroduce hand-tuned "urge" scores.
 3. **Same rules for everyone.** No per-country stat bonuses. Countries differ only by starting data, ruler tendencies, a few historical special rules (unifiers, serfdom, accepted cultures, programmes) and luck.
 4. **Visible or hidden, never in between.** Any stat shown to the player must visibly change something on the map or in the budget. Infamy and relations maths are hidden plumbing. Prestige, colonies and great-power status were removed on purpose.
@@ -116,75 +116,52 @@ Quirks that fix a temperament do it through `temper` in `TRAITS`, also for a reg
 
 The heir cards don't show temperaments yet; only the panel does, once he reigns. Undecided.
 
+## Ambitions (built)
+
+Every nation has one ambition for the armistice of autumn 1918 (shown as **Ambition** in the panel, the start screen and the end screen). It is fixed at birth, in 1836 or at independence, by `setAmbition` in `sim.js`, and `ambitionOf` says how it stands (`open`, `met` or `lost`):
+
+- **Richest great power.** The great powers of 1836 (`GREAT_1836`, the top six by power) without a dream: Great Britain, France, Russia, the Ottoman Empire. The one with the most Gold a year meets it.
+- **National dream.** Any nation whose people have a dream in `DREAMS`: proclaim it and still hold at least `need` of its provinces at the armistice. A dream proclaimed by a rival is lost. Prussia and Austria (great powers, but leaders of the German dream) get the dream on purpose.
+- **Survive.** Everyone else, and the Papal States (`ambition: 'survive'` in `data.js`): still be on the map.
+
+The AI acts on it in gold (rule 2): a province of its dream is worth twice its gold a year to it, to win and to keep (`ambitionW`; other dreamers keep the old 1.35), and a Survive nation counts every expected loss and the loss term of its own wars half again (`surviveW`). Great powers are unchanged.
+
+Every nation that can exist, 24 at the start and 16 that can break away (`TEMPLATES`):
+
+| Ambition | At the start | Breakaways |
+|---|---|---|
+| Richest great power | Great Britain, France, Russia, Ottoman Empire | none |
+| German Empire | Prussia, Austria, Bavaria | |
+| Kingdom of Italy | Sardinia, Two Sicilies, Tuscany | Italian Republic |
+| Iberian Union | Spain, Portugal | |
+| Kalmar Union | Sweden, Denmark | Norway |
+| Byzantine Empire | Greece | |
+| Kingdom of Illyria | Serbia | Croatia, Bosnia |
+| Polish Commonwealth | | Poland, Lithuania |
+| Cossack Hetmanate | | Ukraine |
+| Dacia | | Romania |
+| Tsardom of Bulgaria | | Bulgaria |
+| Crown of St Stephen | | Hungary |
+| Survive | Hanover, Hesse, Saxony, Württemberg, Switzerland, Belgium, Netherlands, Papal States | Bohemia, Ireland, Finland, Baltic Republic, Albania, Scotland |
+
+A breakaway whose dream someone else already proclaimed gets Survive. Restored nations get their ambition again at rebirth.
+
+Dream names follow historical precedent (the Kalmar Union of the northern crowns, the Cossack Hetmanate, Dacia of the Romanian nationalists, the Byzantine Empire of the Greek Great Idea, the Illyrian movement, the Crown of St Stephen). Dacia takes no article (`art: ''`).
+
+Not done yet: **dream balance.** Some dreams form in nearly every world and some in none (measured below); tune `need` and `from` per dream so each forms in roughly a third to two thirds of worlds.
+
+Measured (12 worlds, seeds 1–12, end year always autumn 1918). Before ambitions: 34.5 wars and 33.5 uprisings a world. With them: 37.3 and 35.4. The same scoring with the AI weights switched off (`ambitionW` back to 1.35, `surviveW` 1): 35.2 and 34.4, so the weights add about two wars a world.
+
+| | Weights on | Weights off |
+|---|---|---|
+| Richest great power | France 7, Britain 4, Russia 1 | France 9, Britain 2, Russia 1 |
+| Dreams proclaimed (worlds out of 12) | German 12, Italy 11, Iberia 11, Bulgaria 6, Dacia 5, Poland 5, Hungary 2, Kalmar 2, Byzantine 2, Hetmanate 1, Illyria 0 | German 12, Italy 11, Iberia 9, Dacia 4, Poland 4, Bulgaria 2, Kalmar 2, Illyria 1, Hetmanate 1, Byzantine 0, Hungary 0 |
+| Dreams still held in 1918 | 34 (German 11, Italy 6, Iberia 6, Bulgaria 4, Dacia 4, Hungary, Byzantine, Poland 1 each) | 33 |
+| Survive nations alive in 1918 | 48 of 134 (36%) | 57 of 140 (41%) |
+
+The survive weight doesn't save small nations: they die slightly more often with it on, probably because the dream weight makes the German dreamers swallow Hanover, Hesse, Saxony and Württemberg faster. Tune this together with dream balance.
+
 ## Future work (agreed, not built)
-
-### A goal for every nation
-
-Each nation gets one goal for the armistice of autumn 1918, instead of everyone racing for the most Gold a year. Great powers keep today's goal; secondary powers either build their national dream or survive. The nation's AI acts on its goal, but the core logic stays the same: one forecast in gold, the same rules for everyone. When this is built, rule 1 changes from "most income wins" to "meet your goal".
-
-The three goals:
-
-- **Richest.** Most Gold a year in autumn 1918, ranked against the other great powers.
-- **Dream.** Proclaim the national dream (`DREAMS`) and still hold it at the armistice.
-- **Survive.** Still exist at the armistice.
-
-Every nation that can exist. There are 24 at the start (the README says 25; `COUNTRIES` has 24) and 16 more can break away (`TEMPLATES`):
-
-| Nation | At start | Great power in 1836 | Dream it qualifies for | Proposed goal |
-|---|---|---|---|---|
-| Great Britain | yes | yes | none | Richest |
-| France | yes | yes | none | Richest |
-| Russia | yes | yes | none | Richest |
-| Ottoman Empire | yes | yes | none | Richest |
-| Prussia | yes | yes | German Empire (leader) | Richest or Dream: decide |
-| Austria | yes | yes | German Empire (leader) | Richest or Dream: decide |
-| Bavaria | yes | | German Empire (leader) | Dream |
-| Hanover | yes | | none (German, but not a leader) | Survive |
-| Hesse | yes | | none (German, but not a leader) | Survive |
-| Saxony | yes | | none (German, but not a leader) | Survive |
-| Württemberg | yes | | none (German, but not a leader) | Survive |
-| Sardinia | yes | | Kingdom of Italy | Dream |
-| Two Sicilies | yes | | Kingdom of Italy | Dream |
-| Tuscany | yes | | Kingdom of Italy | Dream |
-| Papal States | yes | | Kingdom of Italy (Italian culture) | Survive? A pope unifying Italy is odd: decide |
-| Spain | yes | | Iberian Union (from 1860) | Dream |
-| Portugal | yes | | Iberian Union | Dream or Survive: decide |
-| Sweden | yes | | United Scandinavia | Dream |
-| Denmark | yes | | United Scandinavia | Dream |
-| Greece | yes | | Greater Greece | Dream |
-| Serbia | yes | | Yugoslavia (from 1850) | Dream |
-| Switzerland | yes | | none | Survive |
-| Belgium | yes | | none | Survive |
-| Netherlands | yes | | none | Survive |
-| Poland | breakaway | | Polish Commonwealth | Dream |
-| Lithuania | breakaway | | Polish Commonwealth | Dream |
-| Ukraine | breakaway | | Greater Ukraine | Dream |
-| Romania | breakaway | | Greater Romania | Dream |
-| Bulgaria | breakaway | | Greater Bulgaria | Dream |
-| Croatia | breakaway | | Yugoslavia | Dream |
-| Bosnia | breakaway | | Yugoslavia | Dream |
-| Norway | breakaway | | United Scandinavia | Dream |
-| Italian Republic | breakaway | | Kingdom of Italy | Dream |
-| Hungary | breakaway | | none (its `programme` points at Transylvania and Croatia) | Survive, or add a Greater Hungary dream |
-| Bohemia | breakaway | | none | Survive |
-| Ireland | breakaway | | none | Survive |
-| Finland | breakaway | | none (Finland is in the Scandinavian dream, but Finns are not a Scandinavian culture) | Survive |
-| Baltic Republic | breakaway | | none | Survive |
-| Albania | breakaway | | none | Survive |
-| Scotland | breakaway | | none | Survive |
-
-Restored states (Greece, Serbia, Belgium, Denmark, Netherlands, Portugal, or any start nation reborn from its own provinces) keep their row's goal.
-
-Still to decide:
-
-- **How the AI acts on its goal while staying a forecast in gold** (rule 2). For example, provinces in its dream are valued at a multiple of their income, and a Survive nation counts losing its last province as losing everything. No hand-tuned urges.
-- **Prussia and Austria** qualify both as great powers and as leaders of the German dream.
-- **Whether a goal is fixed at birth** (in 1836, or at independence) or changes. Great powers are recomputed every 5 years (`computeMajors`). A nation that proclaims its dream may become a great power; does its goal switch to Richest?
-- **Shared dreams.** Only one nation can win each: Italy has five candidates; Germany, Scandinavia and Yugoslavia have three; the Polish Commonwealth and Iberia have two.
-- **Overlapping provinces.** Bessarabia (Ukraine, Romania), Galicia (Ukraine, Poland), Macedonia and Thessaly (Greece, Bulgaria).
-- **Poland and Ukraine have no state in 1836,** so they can't be played from the start.
-- **The end screen.** It has to compare goals that differ: who met theirs, with Gold a year to break ties.
-- **Measure first.** Before committing, sweep how often each dream is proclaimed today, and how often it is still held in 1918. A dream that never happens is just a slower loss.
 
 ### Metaprogression
 
@@ -210,7 +187,7 @@ Moments that already exist in the code:
 ## Workflow
 
 - Edit `src/` or `map/`, then `npm run build`. Never hand-edit the root `index.html`; it is generated.
-- After any simulation change run `npm run sweep -- 1 13` and compare: wars, revolts, Ukraine survival, spread of winners, end year (always 1918 Autumn). Read at least one `npm run chronicle` for oddities; the chronicle is the best bug detector.
+- After any simulation change run `npm run sweep -- 1 13` and compare: wars, revolts, Ukraine survival, richest great power, dreams proclaimed and held, Survive nations alive, end year (always 1918 Autumn). Read at least one `npm run chronicle` for oddities; the chronicle is the best bug detector.
 - After any map change run `npm run map` and read the audit table it prints (coastal flags, land neighbours, sea crossings) before trusting it. Coastlines and adjacency come from the shapes; do not hand-type geography from memory.
 - Sweeps are deterministic per seed, so before/after comparisons are fair.
 - Report test results precisely: say whether a number counts an event happening or surviving to the end.
@@ -224,5 +201,6 @@ Moments that already exist in the code:
 - Provinces: `tickProvinces` (construction, integration), `tickUnrest`, `revolts`.
 - Rulers and chaos: `newRuler`, `TRAITS`, `successions`, `EVENTS`.
 - Dreams: `DREAMS`, `dreamsOf`, `unification`.
+- Ambitions: `setAmbition` (at birth), `ambitionOf` (how it stands), `ambitionW` and `surviveW` (what they add to the forecast), the closing line of the armistice block.
 - Player: `createSim(seed, geo, { player })`; `heirCard` builds a choice of three heirs and parks it in `S.pending` (which halts `step()`), `chooseHeir(i)` resolves it. Every reign ends through `endReign`; AI countries get a random heir from `drawQuirk`. `tickRulers` runs what changes during a reign (the Drunk, the Mad, the Child King growing up, the Great Builder's landmark, the Arbiter's peace deals). `tools/load.js` passes `{ player }` through for headless tests.
 - End: the armistice block at the end of `step()`.

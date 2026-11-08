@@ -115,7 +115,7 @@ const COUNTRIES = {
   SWI:{name:'Switzerland',adj:'Swiss',color:'#a4465c',culture:'Swiss',p:[0.05,0.6,0.3,0],army:6},
   SAR:{name:'Sardinia',adj:'Sardinian',pre:'Sardo',color:'#9fbd6c',culture:'Italian',p:[0.75,0.5,0.6,0.1],army:20,unifier:1,coastal:1},
   TUS:{name:'Tuscany',adj:'Tuscan',color:'#b6a06b',culture:'Italian',p:[0.1,0.4,0.5,0],army:4},
-  PAP:{name:'Papal States',adj:'Papal',color:'#ece1bb',culture:'Italian',p:[0.05,0.2,0.5,0],army:5,noAnnex:1},
+  PAP:{name:'Papal States',adj:'Papal',color:'#ece1bb',culture:'Italian',p:[0.05,0.2,0.5,0],army:5,noAnnex:1,ambition:'survive'},
   SIC:{name:'Two Sicilies',adj:'Neapolitan',color:'#c58b8b',culture:'Italian',p:[0.35,0.25,0.5,0],army:20,unifier:1,coastal:1},
   GRE:{name:'Greece',adj:'Greek',pre:'Greco',color:'#6ea4c8',culture:'Greek',p:[0.6,0.3,0.4,0],army:6,coastal:1,programme:['the','mac','con']},
   SER:{name:'Serbia',adj:'Serbian',pre:'Serbo',color:'#a35d5d',culture:'Serb',p:[0.65,0.25,0.4,0],army:6,programme:['bos']},

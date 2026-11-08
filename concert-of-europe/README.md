@@ -1,6 +1,6 @@
 # Concert of Europe
 
-A grand strategy game that plays itself. Europe, 1836 to the armistice of 1918: twenty-five states, each run by the same small AI with its own ruler and temperament, compete to have the largest income when the Great War ends. You watch, one season per click.
+A grand strategy game that plays itself. Europe, 1836 to the armistice of 1918: twenty-four nations, each run by the same small AI with its own ruler and temperament, chase one ambition each for the day the Great War ends: the great powers want the largest income, divided peoples want their national dream, and the small want to survive. You watch, one season per click.
 
 ## Why this exists
 
@@ -26,7 +26,7 @@ Each season, every country:
 2. forecasts the value of every option (build a factory, fortify a border, recruit, reform, court an ally, unite by treaty, invade a neighbour) as gold over its ruler's planning horizon;
 3. does every option that pays, best first.
 
-Around that loop: wars are fought province by province (occupation, front lines, peace terms), unrest builds among subject peoples and factory workers until provinces revolt or break away, national dreams (German Empire, Greater Ukraine, United Scandinavia, and others) can be proclaimed, and a deck of dated and random events shakes things up. In summer 1914 the two most hostile powers go to war, the alliances drag everyone in, and in autumn 1918 the armistice ends the game. The richest nation wins.
+Around that loop: wars are fought province by province (occupation, front lines, peace terms), unrest builds among subject peoples and factory workers until provinces revolt or break away, national dreams (the German Empire, the Kalmar Union, the Cossack Hetmanate, Dacia and others) can be proclaimed, and a deck of dated and random events shakes things up. In summer 1914 the two most hostile powers go to war, the alliances drag everyone in, and in autumn 1918 the armistice ends the game. Each nation is judged by its ambition: the richest great power, the dreams still held, the small nations still on the map.
 
 Click any province or country to see its ruler, budget, forecasts and history.
 
@@ -74,7 +74,9 @@ In a typical sweep of 10–12 worlds:
 | Wars per game | 15–40 |
 | Uprisings per game | 20–40 |
 | Ukraine alive in 1918 | about 7 in 10 worlds |
-| Winners | mostly France and Britain, sometimes Russia or Germany |
+| Richest great power | mostly France and Britain, sometimes Russia |
+| Dreams held in 1918 | about 3 a world; the German Empire nearly always, Italy and Iberia half the time |
+| Survive nations still alive | about a third |
 
 Each world takes 10–25 seconds to play headlessly.
 

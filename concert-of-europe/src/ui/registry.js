@@ -14,7 +14,7 @@ const REG = {
   // ----- money -----
   gold: { name: 'Gold', desc: 'Money in the bank. Pays for factories, fortresses, recruits and reforms.', avoid: ['treasury', 'treasuries', 'savings'],
     draw: P('<circle cx="5.3" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="10.7" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="8" cy="4.6" r="2.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><path d="M3.4 8c-1.3 1.1-1.8 2.6-1.4 4 .5 1.7 2.6 2.6 6 2.6s5.5-.9 6-2.6c.4-1.4-.1-2.9-1.4-4z" fill="#4b4038" stroke="#a8957a" stroke-linejoin="round"/><path d="M2.2 7.6h11.6" stroke="#a8957a" stroke-width="1.6" stroke-linecap="round"/>') },
-  goldYear: { name: 'Gold a year', desc: 'Taxes, factory output and sea trade over a year. The nation with the most in autumn 1918 wins.', avoid: ['income', 'score', '/yr'],
+  goldYear: { name: 'Gold a year', desc: 'Taxes, factory output and sea trade over a year. The great power with the most in autumn 1918 meets its ambition.', avoid: ['income', 'score', '/yr'],
     draw: P('<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>') },
   taxes: { name: 'Taxes', desc: 'Gold the people pay. Falls with unrest, occupation and every man in the army.',
     draw: P('<path d="M5.2 2.2h5.6L9.6 5c3 1 4.6 4 4.2 7-.2 1.6-1.6 2.5-3.2 2.5H5.4c-1.6 0-3-.9-3.2-2.5-.4-3 1.2-6 4.2-7z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M6.4 5h3.2" stroke="#5c4320" stroke-width="1.2"/><path d="M8 7.6v5M6.6 8.8h2.1a.9.9 0 010 1.8H7.3a.9.9 0 000 1.8h2.1" fill="none" stroke="#5c4320" stroke-width=".9"/>') },
@@ -94,6 +94,8 @@ const REG = {
     draw: P('<circle cx="8" cy="8" r="6.3" fill="#f2ece6" stroke="#8a2a20" stroke-width="1"/><circle cx="8" cy="8" r="4.2" fill="#d65a4d"/><circle cx="8" cy="8" r="2.2" fill="#f2ece6"/><circle cx="8" cy="8" r=".9" fill="#8a2a20"/>') },
   dream: { name: 'National dream', desc: 'A people divided among several nations hoping to unite, like Germany or Italy.', map: .85,
     draw: P('<path d="M8 1.2l2 4.6 5 .4-3.8 3.2 1.2 4.9L8 11.7l-4.4 2.6 1.2-4.9L1 6.2l5-.4z" fill="#e9c35a" stroke="#8a6a1c" stroke-linejoin="round"/>') },
+  ambition: { name: 'Ambition', desc: 'What a nation must achieve by the armistice of autumn 1918: be the richest great power, build its national dream, or survive.', avoid: ['objective'],
+    draw: P('<path d="M8 14.6C4.6 14.4 2.8 11.4 3.2 3.6M8 14.6c3.4-.2 5.2-3.2 4.8-11" fill="none" stroke="#3d5a26" stroke-width=".9"/><g fill="#7fae7a" stroke="#3d5a26" stroke-width=".6"><path d="M4.4 13c-1.7-.1-2.8-1.1-3-2.6 1.5 0 2.7.9 3 2.6z"/><path d="M3 9.6C1.5 9 .8 7.8 1 6.3c1.4.5 2.1 1.8 2 3.3z"/><path d="M2.8 6.2C1.9 5 2 3.6 2.8 2.4c.9 1.1 1 2.5 0 3.8z"/><path d="M11.6 13c1.7-.1 2.8-1.1 3-2.6-1.5 0-2.7.9-3 2.6z"/><path d="M13 9.6c1.5-.6 2.2-1.8 2-3.3-1.4.5-2.1 1.8-2 3.3z"/><path d="M13.2 6.2c.9-1.2.8-2.6 0-3.8-.9 1.1-1 2.5 0 3.8z"/></g><circle cx="8" cy="14.4" r="1.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".5"/>') },
   leader: { name: 'Leading nation', desc: 'The nation with the most gold a year right now.', box: 7.5, map: 1,
     draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#c9a45c" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
 
