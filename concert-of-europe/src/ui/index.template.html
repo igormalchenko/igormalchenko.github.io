@@ -203,10 +203,12 @@ th svg.ic{margin:0}
 .modal.title{background:radial-gradient(ellipse at 50% 50%,rgba(8,10,13,.86),rgba(8,10,13,.97) 70%);padding:28px 24px}
 .tbox{width:100%;max-width:1120px;max-height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:26px}
 .t-hd{text-align:center}
-.title-emblem{display:block;width:auto;height:clamp(110px,19vh,180px);max-width:100%;object-fit:contain;margin:0 auto 12px}
+.t-brand{display:flex;align-items:center;justify-content:center;gap:20px}
+.t-wordmark{min-width:0;text-align:left}
+.title-emblem{display:block;width:auto;height:clamp(90px,14vh,128px);max-width:30%;object-fit:contain;flex:none}
 .t-hd h2{font:400 56px/1 var(--display);color:var(--brass);margin:0;letter-spacing:.01em}
 .t-years{font:400 22px/1 var(--display);color:var(--brass);margin-top:10px}
-.t-hd p{max-width:52ch;margin:16px auto 0;color:#cfc9bb;font-size:15px;line-height:1.5;text-wrap:balance}
+.t-hd p{max-width:64ch;margin:12px auto 0;color:#cfc9bb;font-size:15px;line-height:1.5;text-wrap:balance}
 .t-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start}
 .t-races{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px}
 .t-col{background:rgba(25,30,37,.92);border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px}
@@ -222,7 +224,8 @@ th svg.ic{margin:0}
 .t-ft{display:flex;align-items:center;justify-content:center;gap:10px}
 .t-ft .muted{font-size:12.5px;margin-left:4px}
 @media (max-width:860px){.t-cols,.t-races{grid-template-columns:1fr}.t-race:nth-child(2){border-top:1px solid var(--line);padding-top:8px}.t-hd h2{font-size:40px}}
-@media (max-height:760px){.title-emblem{height:110px}.tbox{gap:20px}.modal.title{padding:20px 24px}}
+@media (max-height:760px){.title-emblem{height:90px}.tbox{gap:20px}.modal.title{padding:20px 24px}}
+@media (max-width:600px){.t-brand{gap:12px}.title-emblem{height:80px}.t-hd h2{font-size:clamp(26px,6vw,36px)}.t-years{font-size:18px;margin-top:7px}}
 .picks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .pick{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
 .pick:hover{border-color:var(--brass)}.pick .fl{width:14px;height:10px;border-radius:2px}
@@ -352,9 +355,13 @@ th svg.ic{margin:0}
 <div class="modal sticky title" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
   <div class="tbox">
     <header class="t-hd">
-      <img class="title-emblem" src="@@BRAND_HERO@@" width="960" height="640" alt="" aria-hidden="true" fetchpriority="high">
-      <h2 id="startTitle">Concert of Europe</h2>
-      <div class="t-years">{{rules.start}} – {{rules.end.year}}</div>
+      <div class="t-brand">
+        <img class="title-emblem" src="@@BRAND_HERO@@" width="960" height="640" alt="" aria-hidden="true" fetchpriority="high">
+        <div class="t-wordmark">
+          <h2 id="startTitle">Concert of Europe</h2>
+          <div class="t-years">{{rules.start}} – {{rules.end.year}}</div>
+        </div>
+      </div>
       <p id="startIntro"></p>
     </header>
     <div class="t-cols" id="startBody"></div>
