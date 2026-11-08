@@ -371,6 +371,7 @@ function createSim(seed, geo, opts = {}){
     L('war', `${N(c)} has ceased to exist.`);
     tags.forEach(t => S.C[t].allies.delete(c.tag)); c.allies.clear();
     S.wars.forEach(w => { w.att = w.att.filter(x => x !== c.tag); w.def = w.def.filter(x => x !== c.tag); });
+    S.wars = S.wars.filter(w => w.att.length && w.def.length);   // a war with no one left on a side is over now, not next season
     S.regions.forEach(r => { if (r.occ === c.tag) r.occ = null; });
   }
   function transfer(r, to, from, how = 'war'){
