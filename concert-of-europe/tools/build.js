@@ -8,7 +8,20 @@ const sim = content.source() + r('src/text.js') + '\n' + r('src/data.js') + '\nc
 const ui = ['src/ui/registry.js', 'src/ui/map.js', 'src/ui/panel.js', 'src/ui/almanac.js', 'src/ui/main.js'].map(r).join('\n');
 // the template's own numbers, from the content
 const ctx = {}; vm.createContext(ctx); vm.runInContext(content.source() + r('src/text.js') + '\nthis.say = say; this.CONTENT = CONTENT;', ctx);
-const tpl = r('src/ui/index.template.html').replace(/\{\{([^}]+)\}\}/g, (_, t) => ctx.say(`{${t}}`, ctx.CONTENT));
+// Embed the branding too: the built game still opens as one file, including offline.
+const brand = {
+  HERO: ['congress-table.webp', 'image/webp'],
+  MARK: ['congress-table-small.svg', 'image/svg+xml'],
+  ICON: ['favicon.svg', 'image/svg+xml'],
+  PNG: ['favicon-32.png', 'image/png'],
+};
+const tpl = r('src/ui/index.template.html')
+  .replace(/\{\{([^}]+)\}\}/g, (_, t) => ctx.say(`{${t}}`, ctx.CONTENT))
+  .replace(/@@BRAND_(\w+)@@/g, (_, key) => {
+    if (!brand[key]) throw new Error(`Unknown brand asset: ${key}`);
+    const [file, mime] = brand[key];
+    return `data:${mime};base64,${fs.readFileSync(path.join(__dirname, '../assets/brand', file)).toString('base64')}`;
+  });
 const html = tpl.replace('/*SIM*/', () => sim).replace('/*UI*/', () => ui);
 fs.writeFileSync(path.join(__dirname, '../index.html'), html);
 console.log(`index.html written (${Math.round(html.length / 1024)} KB)`);

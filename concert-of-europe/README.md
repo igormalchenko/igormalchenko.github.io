@@ -67,6 +67,8 @@ src/ui/map.js          map rendering: provinces, icons, markers, front lines, ov
 src/ui/panel.js        nation column on the left; Chronicle, Powers and Province tabs; end screen
 src/ui/main.js         controls, hover card, selection, map key
 src/ui/index.template.html   page layout and styles; build.js fills in the scripts
+assets/brand/          title emblem, small menu mark and favicon; build.js embeds the shipping assets
+design/logo-drafts/    original logo explorations and the approved congress-table proof
 map/build-map.js       generates map/geo.json (provinces, borders, coastlines, sea crossings)
 map/geo.json           generated map data (committed so building needs no dependencies)
 tools/                 build, sweep and chronicle scripts

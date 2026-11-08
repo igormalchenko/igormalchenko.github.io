@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Concert of Europe</title>
+<link rel="icon" type="image/png" sizes="32x32" href="@@BRAND_PNG@@">
+<link rel="icon" type="image/svg+xml" href="@@BRAND_ICON@@">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,7 +24,8 @@ button,select{font:inherit;color:inherit}
 button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 
 .bar{height:46px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px;border-bottom:1px solid var(--line);background:#14181e}
-.bar h1{font:400 20px/1 var(--display);margin:0 6px 0 0;white-space:nowrap}
+.bar h1{font:400 20px/1 var(--display);margin:0 6px 0 0;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand-mark{display:block;width:36px;height:24px;flex:none}
 .date{display:flex;align-items:baseline;gap:6px;min-width:120px}
 .date span{font-size:13px;color:var(--muted)}
 .date b{font:400 24px/1 var(--display);color:var(--brass);font-variant-numeric:tabular-nums}
@@ -40,7 +43,7 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .pip.on i{background:var(--brass)}.pip:hover i{outline:1px solid #46505c}
 .seed{color:var(--muted);font:11.5px var(--body);background:none;border:0;border-radius:6px;height:30px;padding:0 8px;cursor:pointer}
 .seed:hover{color:var(--ink);background:var(--panel2)}
-@media (max-width:760px){.bar h1{display:none}}
+@media (max-width:760px){.bar{gap:6px}.bar h1{margin-right:2px}.bar .brand-name{display:none}.brand-mark{width:30px;height:20px}.date{min-width:100px}}
 
 .main{flex:1;display:flex;min-height:0}
 .mapwrap{position:relative;flex:1;min-width:0;background:#0f1317}
@@ -200,7 +203,8 @@ th svg.ic{margin:0}
 .modal.title{background:radial-gradient(ellipse at 50% 50%,rgba(8,10,13,.86),rgba(8,10,13,.97) 70%);padding:28px 24px}
 .tbox{width:100%;max-width:1120px;max-height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:26px}
 .t-hd{text-align:center}
-.t-hd h2{font:400 56px/1 var(--display);color:var(--ink);margin:0;letter-spacing:.01em}
+.title-emblem{display:block;width:auto;height:clamp(110px,19vh,180px);max-width:100%;object-fit:contain;margin:0 auto 12px}
+.t-hd h2{font:400 56px/1 var(--display);color:var(--brass);margin:0;letter-spacing:.01em}
 .t-years{font:400 22px/1 var(--display);color:var(--brass);margin-top:10px}
 .t-hd p{max-width:52ch;margin:16px auto 0;color:#cfc9bb;font-size:15px;line-height:1.5;text-wrap:balance}
 .t-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start}
@@ -218,6 +222,7 @@ th svg.ic{margin:0}
 .t-ft{display:flex;align-items:center;justify-content:center;gap:10px}
 .t-ft .muted{font-size:12.5px;margin-left:4px}
 @media (max-width:860px){.t-cols,.t-races{grid-template-columns:1fr}.t-race:nth-child(2){border-top:1px solid var(--line);padding-top:8px}.t-hd h2{font-size:40px}}
+@media (max-height:760px){.title-emblem{height:110px}.tbox{gap:20px}.modal.title{padding:20px 24px}}
 .picks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .pick{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
 .pick:hover{border-color:var(--brass)}.pick .fl{width:14px;height:10px;border-radius:2px}
@@ -284,7 +289,7 @@ th svg.ic{margin:0}
 </head>
 <body>
 <div class="bar">
-  <h1>Concert of Europe</h1>
+  <h1 aria-label="Concert of Europe"><img class="brand-mark" src="@@BRAND_MARK@@" width="96" height="64" alt="" aria-hidden="true"><span class="brand-name">Concert of Europe</span></h1>
   <div class="date"><span id="season">{{rules.seasons.0}}</span><b id="year">{{rules.start}}</b></div>
   <button class="btn primary" id="auto" data-tip="Play or pause (Space)">Play</button>
   <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" data-tip="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" data-tip="Faster (+)" aria-label="Faster">+</button></div>
@@ -347,6 +352,7 @@ th svg.ic{margin:0}
 <div class="modal sticky title" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
   <div class="tbox">
     <header class="t-hd">
+      <img class="title-emblem" src="@@BRAND_HERO@@" width="960" height="640" alt="" aria-hidden="true" fetchpriority="high">
       <h2 id="startTitle">Concert of Europe</h2>
       <div class="t-years">{{rules.start}} – {{rules.end.year}}</div>
       <p id="startIntro"></p>
