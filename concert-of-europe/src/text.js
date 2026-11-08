@@ -39,6 +39,7 @@ const FORMATS = {
   x: x => near(x, 2) ? 'double' : near(x, 3) ? 'triple' : `${timesWord(x)} over`,
   xs: x => near(x, 2) ? 'doubles' : near(x, 3) ? 'triples' : `multiplies by ${x}`,
   span: x => near(x, 10) ? 'a decade' : `${numberWord(x)} years`,  // years
+  season: x => ['winter', 'spring', 'summer', 'autumn'][x],
   years: x => { const y = x / 4; return `${numberWord(y)} year${y === 1 ? '' : 's'}`; },   // seasons as years
 };
 function lookup(path, ctx){

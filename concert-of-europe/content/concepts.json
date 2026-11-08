@@ -87,7 +87,8 @@
   },
   "civilWar": {
     "name": "Civil war",
-    "desc": "A disputed succession: rival claimants split the army, which fights at {rules.reign.crisisArmy|frac} strength."
+    "desc": "A disputed succession: rival claimants split the army, which fights at {rules.reign.crisisArmy|frac} strength.",
+    "avoid": ["succession crisis"]
   },
   "landmark": {"name": "Landmark", "desc": "A great work raised by a legendary ruler. It stays on the map for good."},
   "coup": {"name": "Coup", "desc": "The army deposes the ruler of a restless nation."},

@@ -43,7 +43,7 @@ After the move, the same runs match character for character, and so does `npm ru
 Now every number lives in `content/` and the text is filled in from it.
 
 **Two names for one thing.**
-- A disputed succession is "Civil war" in the registry, on the map and in the Conqueror's card, but "Succession crisis" in the chronicle heading and CLAUDE.md. Kept as-is in the text for now, since the chronicle shows both (crisis → civil war). Flagged for a decision.
+- A disputed succession was "Civil war" in the registry, on the map and on the Conqueror's card, but "Succession crisis" in the chronicle heading and CLAUDE.md. **Resolved:** it is "Civil war" everywhere, and the build now refuses "succession crisis" in visible text.
 - "Kingdom of Italy" (the dream) and "Italian Republic" (the breakaway) are both Italian nations. That's intended, not a bug.
 
 **Text that says more than the engine does.**

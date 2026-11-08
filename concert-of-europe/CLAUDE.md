@@ -14,7 +14,7 @@ Every piece of content (rulers, rarities, temperaments, nations, breakaways, peo
 - **Never type a number into text.** A sentence that states a number takes it from the data with a placeholder: `"His armies fight {fx.fight|harder}"`, `"Takes {rules.build.factory|word} seasons."`. The formats (`word`, `pct`, `up`, `down`, `frac`, `times`, `harder`, `x`, `xs`, `span`, `years`, `inv`, `thrift`, `horizon`) are in `src/text.js`; add one there if a phrase needs it. In the HTML template use `{{path|format}}`.
 - **Never type a content number into the engine.** The engine reads a ruler's numbers with `F('ruler', 'key')` and his flags with `hasFx(c, 'flag')`, rules with `RULES.x`, events with `EV.id`. A new effect gets a key in the ruler's `fx` and a line in `content/effects.json`. The tuning of the forecast itself (tax rates, the win-chance curve) is engine, not content.
 - **The build enforces it** (`tools/check.js`): every reference in the content points at something that exists, every template fills in and states no typed number, every `F(...)`, `hasFx`, `RULES.` and `EV.` the code reads exists, and every number in the content is read by something. A failing check means the data and the engine disagree: fix one of them, never the check.
-- **The Almanac is the proof.** Press A in the game (or the book button) to see every entry exactly as the engine has it, with its raw data and file. If something looks wrong there, it is wrong in the game.
+- **The Almanac is the proof.** Press A in the game (or the book button) to see every entry exactly as the engine has it, in plain words: no file names, keys or raw data. Every rule gets a sentence in `content/rulebook.json` (the build checks). If something looks wrong there, it is wrong in the game.
 - **After moving or reshaping content,** compare full chronicles and final states before and after (the sweep alone can hide a change). Keep the files tidy with `npm run content`.
 - The numbers quoted in this file (the ruler pool, the ambitions) describe the design and can lag behind; `content/` and the Almanac are the truth.
 
@@ -61,7 +61,7 @@ Each ruler changes what the forecast values, how it sees the odds, how far ahead
 
 **Common (white, 46%).** Flavour, mostly sideways or a mixed blessing.
 - **Drunkard.** His misjudgment is re-rolled every season.
-- **Lecher.** Charms every neighbour; at his death a bastard claims the throne (a succession crisis).
+- **Lecher.** Charms every neighbour; at his death a bastard claims the throne (a civil war).
 - **Spendthrift.** Wastes 15% of all gold on the court, and is lavish with the rest.
 - **Paranoid.** The original.
 - **Cautious.** Loses ground less often in war, and gains it less often.
@@ -84,7 +84,7 @@ Each ruler changes what the forecast values, how it sees the odds, how far ahead
 - **Tolerant.** Accepts one more people, for good.
 
 **Epic (purple, 8%).** A big upside paid for with a big downside.
-- **Conqueror.** Armies fight 40% harder; every neighbour distrusts him; his death brings a succession crisis.
+- **Conqueror.** Armies fight 40% harder; every neighbour distrusts him; his death brings a civil war.
 - **Genius.** Factories cost half and go up twice as fast; no heir, so a regency council follows.
 - **Great Builder.** Five years in, raises a landmark that stays on the map: the Great Railway (two factories in the capital), the Fortress Line (a fortress in every border province) or the Grand Exhibition (a factory in each of the three richest provinces). Lavish, and leaves no gold when he dies.
 - **Liberator.** Frees the serfs and accepts every culture at once, for good; the nobles plot a coup (2% a season).
@@ -92,7 +92,7 @@ Each ruler changes what the forecast values, how it sees the odds, how far ahead
 - **Iron King.** Crushes uprisings (triple garrison) and integrates conquests twice as fast; subject peoples rise when he dies.
 - **Navigator.** Sea trade pays half again and invading across the sea is easy, but the fleet doubles army upkeep.
 
-**Legendary (gold, 1%).** The jackpot: can swallow Europe while he lives, and his empire pays for it when he dies (a succession crisis every time). About one heir in a hundred, so roughly one player game in six offers one, and most watch-mode games crown one somewhere.
+**Legendary (gold, 1%).** The jackpot: can swallow Europe while he lives, and his empire pays for it when he dies (a civil war every time). About one heir in a hundred, so roughly one player game in six offers one, and most watch-mode games crown one somewhere.
 - **Iron Chancellor (the Unifier).** Armies fight twice as hard; he fights one enemy at a time (no one comes to its aid, no great power intervenes); every victory keeps all the occupied land he can reach. When he dies, every province won in his reign rises (+40 unrest, integration back to 30%).
 - **Man of Destiny (the Lion).** Armies fight three times as hard and keep all the land they win; believes in his star (overconfident). Same collapse at his death.
 - **Prophet.** Armies fight two and a half times as hard; every people he conquers counts as his own at once. When he dies, they are foreigners again.

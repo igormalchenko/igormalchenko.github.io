@@ -1,0 +1,31 @@
+{
+  "The age": [
+    "The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.",
+    "The Great War breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}."
+  ],
+  "Heirs": ["Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game."],
+  "Reigns": [
+    "A reign lasts {rules.reign.years.0} to {rules.reign.years.1} years if nothing ends it sooner.",
+    "When a ruler leaves no heir, {rules.reign.regency} rules for {rules.reign.regencyYears.0} to {rules.reign.regencyYears.1} years.",
+    "Each year a ruler has a {rules.reign.murder|pct} chance of being assassinated, {rules.reign.hatedMurder|times} that if he is hated.",
+    "A ruler beaten in a war he started, or one that cost him land, abdicates {rules.reign.abdicate|pct} of the time.",
+    "Besides the rulers whose death always brings one, {rules.reign.crisis|pct} of successions end in civil war, which lasts {rules.reign.crisisYears.0} to {rules.reign.crisisYears.1} years; meanwhile the army fights at {rules.reign.crisisArmy|frac} strength.",
+    "In a nation whose unrest is above {rules.reign.coupUnrest}, the army stages a coup in {rules.reign.coup|pct} of seasons.",
+    "A ruler plans at least {rules.horizon.min} years ahead, and up to {rules.horizon.span} more the more patient he is."
+  ],
+  "Armies": [
+    "Every soldier is a worker lost: an army of {rules.workers}k men per million people would empty the fields and factories.",
+    "A legendary conqueror raises a great army when crowned: {rules.levy.army|times} the one he inherits, or {rules.levy.perMillion}k men per million people if that is more. Each of his men takes {rules.workers/rules.levy.workers|frac} as many workers from the fields."
+  ],
+  "Building": [
+    "A factory takes {rules.build.factory|word} seasons to build, a fortress {rules.build.fort|word}.",
+    "Reforms cost {rules.reform.cost} gold and take away {rules.reform.calm} unrest; they can be passed again after {rules.reform.wait|years}."
+  ],
+  "Unrest and war": [
+    "A province with unrest of {rules.unrest.restless} or more is restless; at {rules.unrest.uprising} or more it can rise.",
+    "Weighing a war, a ruler counts {rules.settle|pct} of the time a conquest takes to become integrated."
+  ],
+  "New nations": [
+    "A nation born in an uprising starts with {rules.breakaway.gold} gold and an army of {rules.breakaway.armyPerMillion}k men per million people. It leans to war at {rules.breakaway.hawk|pct} and its patience is {rules.breakaway.patience|pct}."
+  ]
+}

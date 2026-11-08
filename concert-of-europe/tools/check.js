@@ -14,6 +14,10 @@ vm.runInContext(require('./content').source() + read('src/text.js') + read('src/
 const REG = ctx.REG, problems = [];
 const lineOf = (src, i) => src.slice(0, i).split('\n').length;
 
+// ---- 0: every source file parses (a syntax error would otherwise only show in the browser) ----
+['src/text.js', 'src/data.js', 'src/sim.js', 'src/ui/registry.js', 'src/ui/map.js', 'src/ui/panel.js', 'src/ui/almanac.js', 'src/ui/main.js'].forEach(f => {
+  try { new vm.Script(read(f), { filename: f }); } catch (e) { problems.push(`${f}: ${e.message}`); } });
+
 // ---- 1 and 2: icons ----
 const UI = ['src/ui/map.js', 'src/ui/panel.js', 'src/ui/almanac.js', 'src/ui/main.js'];
 ctx.maps.forEach(m => Object.values(m).forEach(k => { if (!REG[k]) problems.push(`registry.js: icon map points at "${k}", which is not in REG`); }));
@@ -131,6 +135,13 @@ Object.entries(C).forEach(([file, data]) => {
   Object.entries(data).forEach(([id, e]) => { if (!e || typeof e !== 'object') return;
     TEXT_FIELDS.forEach(f => template(`${file}.json ${id}.${f}`, e[f], Object.assign({}, e, own[file] ? own[file](e) : {}))); });
 });
+
+// the rulebook: plain sentences for the Almanac, one or more for every rule
+Object.entries(C.rulebook).forEach(([g, lines]) => lines.forEach((l, i) => template(`rulebook.json "${g}" ${i + 1}`, l, {})));
+{ const book = JSON.stringify(C.rulebook);
+  (function leaves(o, pre){ Object.entries(o).forEach(([k, v]) => { const p = pre + k;
+    if (v && typeof v === 'object' && !Array.isArray(v)) return leaves(v, p + '.');
+    if (!book.includes('{' + p + '|') && !book.includes('{' + p + '}') && !book.includes('{' + p + '/') && !book.includes('/' + p + '|') && !book.includes('{' + p + '.')) bad('rulebook.json', `no sentence explains ${p.slice(6)}`); }); })(C.rules, 'rules.'); }
 
 // ---- 7: engine and content, both ways ----
 const SRC = ['src/sim.js', 'src/data.js', ...UI, 'src/ui/registry.js'].map(f => [f, read(f)]);

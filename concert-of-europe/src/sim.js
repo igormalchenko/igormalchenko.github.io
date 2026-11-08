@@ -134,7 +134,7 @@ function createSim(seed, geo, opts = {}){
     if (crisis) {
       c.crisis = { until: S.t + Math.floor(rand(RULES.reign.crisisYears[0] * 4, RULES.reign.crisisYears[1] * 4)), winner: nr.name };
       regionsOf(c).forEach(r => r.unrest = Math.min(100, r.unrest + 25)); mark(capitalOf(c).i, 'crisis');
-      L('ruler', `<strong>Succession crisis in ${N(c)}.</strong> ${why} ${crisis === 'bastard' ? 'His bastard son raises an army' : 'Rival claimants raise armies'} against ${nr.name}. The army is split and unrest soars.`);
+      L('ruler', `<strong>Civil war in ${N(c)}.</strong> ${why} ${crisis === 'bastard' ? 'His bastard son raises an army' : 'Rival claimants raise armies'} against ${nr.name}. The army is split and unrest soars.`);
     } else L('ruler', `${why} ${TRAITS[nr.trait] && TRAITS[nr.trait].tier === 5 ? `<strong>${nr.name}</strong>` : nr.name} succeeds. ${traitDesc(nr)}.`);
   }
   // A reign ends: by death, defeat, revolution, a bullet or the army. The player picks the heir; everyone else gets one at random.
