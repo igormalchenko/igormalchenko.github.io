@@ -76,14 +76,50 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline
 .qtip{position:fixed;pointer-events:none;background:rgba(14,17,21,.96);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:12px;line-height:1.35;max-width:260px;display:none;z-index:20}
 .qtip b{font-weight:600}.qtip .d{color:var(--muted);margin-top:1px}
 
-.side{width:330px;flex:none;border-right:1px solid var(--line);background:var(--panel);padding:14px 14px 12px;overflow-y:auto}
-.side .nation-head{margin-bottom:8px}
-.side .inc{margin-bottom:12px}
-.side .inc .num{display:flex;align-items:center;gap:8px}.side .inc b{font:500 30px/1 var(--body);color:var(--brass)}.side .inc .num span{color:var(--muted);font-size:13px;margin-left:auto}.side .inc svg.ic.lg{width:26px;height:26px}
-.side .inc .sub{display:flex;justify-content:space-between;color:var(--muted);font-size:11.5px;margin-top:4px}
-.side .spark{display:block;width:100%;height:38px;margin-top:6px}
-.side .war{font-size:12px;color:var(--war);display:flex;align-items:center;gap:2px;margin:-4px 0 10px}
-.btn.more{width:100%;justify-content:space-between;margin:-4px 0 12px;font-size:12.5px}
+/* The nation panel. Its head is a small card in the ruler's rarity, like the heir cards; below it, plain sections under brass headings. */
+.side{width:340px;flex:none;border-right:1px solid var(--line);background:var(--panel);padding:16px 16px 28px;overflow-y:auto;font-size:13px}
+.side .btn.back{background:none;border:0;padding:0;height:auto;margin:0 0 10px;color:var(--muted)}.side .btn.back:hover{color:var(--ink)}
+.crest{position:relative;padding:18px 18px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--tc) 45%,var(--line));
+  background:radial-gradient(120% 55% at 50% 0%,color-mix(in srgb,var(--tc) 12%,transparent),transparent 70%),linear-gradient(180deg,#242b34,#1a1f26);
+  box-shadow:0 8px 20px -10px rgba(0,0,0,.8)}
+.crest::before{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--tc) 20%,transparent);border-radius:10px;pointer-events:none}
+.crest .nation-head{gap:10px;margin:0 0 12px}
+.crest .nation-head .flag{width:30px;height:21px}
+.crest .nation-head h2{font-size:26px}
+.crest .inc .num{display:flex;align-items:center;gap:8px}.crest .inc b{font:500 34px/1 var(--body);color:var(--brass)}.crest .inc .num span{color:var(--muted);font-size:13px;margin-left:auto}.crest .inc svg.ic.lg{width:24px;height:24px}
+.crest .spark{display:block;width:100%;height:32px;margin-top:8px}
+.crest .reign{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line))}
+.crest .reign svg.emb{width:52px;height:52px}
+.crest .reign .rar{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tc);margin-bottom:2px}
+.crest .reign b{display:block;font:400 20px/1.15 var(--display);cursor:default}
+.crest .pers{margin:5px 0 0;gap:2px 12px;font-size:12px}
+.figs{display:grid;grid-template-columns:repeat(6,1fr);margin-top:14px;padding-top:12px;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line))}
+.fig{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:default}
+.fig svg.ic{margin:0;width:16px;height:16px}
+.fig b{font:500 14px var(--body)}
+.side .crest + .ledger{margin-top:16px}
+.side h3{font-size:18px;color:var(--brass);margin:26px 0 10px}
+.side .ledger{margin-bottom:0;font-size:13px}
+.side .lg{padding:3px 0}
+.side .lg.only{border-top:0;margin-top:0;padding-top:3px}
+.side .acts{display:flex;flex-direction:column;gap:6px}
+.side .act{display:flex;align-items:center;gap:2px}.side .act svg.ic{margin-right:8px}
+.side .act .when{margin-left:auto;padding-left:10px;color:var(--muted);font-size:12px;white-space:nowrap}
+.side .acts.dim{color:#cfc9bb}
+.side .sub{margin:16px 0 8px;font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.side h3.hcol{display:flex;justify-content:space-between;align-items:center}.side h3.hcol svg.ic{margin:0 0 0 auto;opacity:.8}
+.side .provs{margin:0 -8px;font-size:13px}
+.side .prov{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 62px 32px 42px 34px;gap:6px;align-items:center;padding:5px 8px;border:0;border-radius:5px}
+.side .provs{display:flex;flex-direction:column;gap:3px}
+.side .prov::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);border-radius:5px;background:color-mix(in srgb,var(--nc) 16%,transparent);pointer-events:none}
+.side .prov > *{position:relative}
+.side .prov.click:hover{background:var(--panel2)}
+.side .prov .pn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side .prov .pf,.side .prov .pk{display:flex;align-items:center;justify-content:flex-end;gap:1px}.side .prov svg.ic{margin:0;width:14px;height:14px}
+.side .prov .pu{text-align:right;font-size:12px;white-space:nowrap}.side .prov .pu svg.ic{margin-right:2px}
+.side .prov .pn-x{font-size:11.5px;color:var(--muted);margin-left:1px}
+.side .prov .pv{text-align:right;color:var(--brass);font-weight:500}
+.btn.more{width:auto;background:none;border:0;padding:0;height:auto;margin:12px 0 0;font-size:12.5px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}.btn.more:hover{color:var(--ink)}
 @media (max-width:900px){.side{display:none}}
 .panel{width:380px;flex:none;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0;transition:width .2s}
 .panel.closed{width:0;border-left:0;overflow:hidden}
@@ -125,7 +161,7 @@ h3{font:400 17px var(--display);margin:4px 0 8px}
 .pers{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted);margin:0 0 12px}.pers span{display:inline-flex;align-items:center;cursor:default}
 .rulerline{display:flex;align-items:center;gap:10px;margin:2px 0 6px}.rulerline b{font:400 20px/1.15 var(--display);cursor:default}.rulerline svg.emb{width:34px;height:34px}
 .btn.back{height:26px;font-size:12px;margin-bottom:10px;color:var(--muted)}
-.stat{cursor:default}.th .evn{cursor:default}
+.stat{cursor:default}
 .trait{font-size:12px;margin-top:6px;color:#d9d2c0}.trait b{font-weight:600;color:var(--brass)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
 .stat{background:var(--panel2);border-radius:6px;padding:6px 8px}
@@ -134,15 +170,6 @@ h3{font:400 17px var(--display);margin:4px 0 8px}
 .lg{display:flex;justify-content:space-between;padding:2px 0}.lg span:last-child{font-family:var(--body)}
 .lg.net{border-top:1px solid var(--line);margin-top:3px;padding-top:4px;font-weight:600}
 .lgnote{color:var(--muted);font-size:11.5px;margin-top:5px;line-height:1.35}
-.think{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.th{background:var(--panel2);border-radius:6px;padding:6px 8px;border:1px solid transparent;font-size:12px}
-.th.chosen{border-color:var(--brass)}
-.th .row{display:flex;justify-content:space-between;gap:8px}
-.th .row b{font-weight:500}
-.th .row span{font-family:var(--body)}
-.th .why{color:var(--muted);font-size:11.5px;margin-top:2px}
-.th .barx{margin-top:5px;height:4px}
-.th.chosen .tag{font-size:10px;color:#1a1408;background:var(--brass);border-radius:3px;padding:0 4px;margin-left:6px}
 .provs{margin-bottom:12px;font-size:12.5px}
 .prov{display:grid;grid-template-columns:1fr 78px 48px;gap:8px;padding:3px 0;border-bottom:1px solid #222830}
 .prov.head{color:var(--muted);font-size:11px}
@@ -570,7 +597,7 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(0.9, 1.1), treasury: 30 + rand(0, 20), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
-      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', thoughts: [], born: S.year,
+      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', didThisSeason: [], born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
@@ -904,7 +931,7 @@ function createSim(seed, geo, opts = {}){
     const baseRisk = riskOf(c);
     const gv = goldValue(c);
     const add = o => { o.ev = Math.round(o.ev); out.push(o); };
-    add({ type: 'save', ev: 0, label: 'Save gold', why: 'Nothing else is expected to pay off' });
+    add({ type: 'save', ev: 0, label: 'Saving gold', why: 'Nothing else is expected to pay off' });
 
     // factory: pays back over the horizon
     const leaderFac = Math.max(0.5, ...alive().map(facAvg));
@@ -916,7 +943,7 @@ function createSim(seed, geo, opts = {}){
         if (cost > T) return;
         const gain = (sumInc(regionIncome(r, c, { fac: r.fac + 1, war: false, ignoreOcc: true })) - sumInc(regionIncome(r, c, { war: false, ignoreOcc: true }))) * 4;
         const ev = gain * (H - 1) - cost * gv;
-        add({ type: 'factory', r, cost, ev, label: `Build a factory in ${r.name}`,
+        add({ type: 'factory', r, cost, ev, label: `Building a factory in ${r.name}`,
           why: `Costs ${Math.round(cost)}${catchup < 0.95 ? ' (cheap: copying richer nations)' : ''}, adds ${gain.toFixed(1)} a year; pays back in ${Math.max(1, Math.round(cost / Math.max(0.1, gain)) + 1)} years` });
       });
     }
@@ -937,12 +964,12 @@ function createSim(seed, geo, opts = {}){
     let bestA = null;
     [step, step * 2.5].forEach(st => { if (T < st * 3 * fx(c, 'recruit') + 5) return;
       const ev = armyEV(st) + (war ? 30 + st : 0);
-      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Grow the army by ${Math.round(st)}k`,
+      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Growing the army by ${Math.round(st)}k`,
         why: war ? 'At war: the army needs every man' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(st * 0.16).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
     if (bestA) add(bestA);
     if (!war && c.army - step >= popOf(c) * 0.8) {
       const ev = armyEV(-step);
-      add({ type: 'demob', amt: step, ev, label: `Shrink the army by ${Math.round(step)}k`, why: `Workers back in factories and fields; expected losses rise by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
+      add({ type: 'demob', amt: step, ev, label: `Shrinking the army by ${Math.round(step)}k`, why: `Workers back in factories and fields; expected losses rise by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
     }
 
     // fortress facing the most dangerous neighbour
@@ -951,7 +978,7 @@ function createSim(seed, geo, opts = {}){
       const fs = mine.filter(r => !r.fort && !r.build && !r.occ && r.nb.some(j => S.regions[j].owner === o.tag)).sort((a, b) => provYearly(b, c) - provYearly(a, c))[0];
       const fc = 25 * fx(c, 'fortCost');
       if (fs) add({ type: 'fort', r: fs, cost: fc, ev: Math.min(1.5, t.p * H) * pWin(t.ratio) * 0.45 * (provYearly(fs, c) * H * 0.6 + 25) - fc * gv,
-        label: `Fortify ${fs.name}`, why: `Guards the richest border with ${o.name}` });
+        label: `Fortifying ${fs.name}`, why: `Guards the richest border with ${o.name}` });
     }
 
     // reform: income recovered from unrest, plus revolts avoided
@@ -959,7 +986,7 @@ function createSim(seed, geo, opts = {}){
       let gain = 0;
       mine.forEach(r => { const now = sumInc(regionIncome(r, c)), calm = sumInc(regionIncome(r, c, { unrest: Math.max(0, r.unrest - RULES.reform.calm * fx(c, 'reformCalm')) }));
         gain += (calm - now) * 4 * 1.6; if (r.unrest > 55) gain += 0.35 * provYearly(r, c) * Math.min(H, 12); });
-      if (gain > 1) add({ type: 'reform', ev: gain - RULES.reform.cost * fx(c, 'reformCost') * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
+      if (gain > 1) add({ type: 'reform', ev: gain - RULES.reform.cost * fx(c, 'reformCost') * gv, label: 'Passing reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
     }
 
     // diplomacy: alliances cut expected losses; courting makes them possible
@@ -974,8 +1001,8 @@ function createSim(seed, geo, opts = {}){
       const r = rel(c.tag, o.tag);
       const guard = baseRisk.top ? baseRisk.top.name : 'trouble';
       if (r >= 30 && theirs - riskOf(c).total * 0.12 <= 0) return;
-      if (r >= 30) add({ type: 'ally', o, ev, guard: baseRisk.top, theirs: theirs - riskOf(c).total * 0.12, label: `Ally with ${o.name}`, why: `Cuts expected losses to ${guard} by ${Math.round(mine2)}` });
-      else add({ type: 'court', o, ev: ev * 0.25, label: `Court ${o.name}`, why: `A future ally against ${guard} (relations ${Math.round(r)})` });
+      if (r >= 30) add({ type: 'ally', o, ev, guard: baseRisk.top, theirs: theirs - riskOf(c).total * 0.12, label: `Allying with ${o.name}`, why: `Cuts expected losses to ${guard} by ${Math.round(mine2)}` });
+      else add({ type: 'court', o, ev: ev * 0.25, label: `Courting ${o.name}`, why: `A future ally against ${guard} (relations ${Math.round(r)})` });
     });
     // peaceful union of a fellow-national minor
     const union = unionOf(c);
@@ -984,8 +1011,8 @@ function createSim(seed, geo, opts = {}){
       const val = regionsOf(o).reduce((s, r) => s + provYearly(r, c) * ambitionW(c, r), 0) * (H - 1.5);
       const r = rel(c.tag, o.tag);
       const ok = r >= 70 && power(c) > 2 * power(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]));
-      if (ok) add({ type: 'annex', o, ev: val, label: `Unite with ${o.name} by treaty`, why: `Toward ${theTitle(union)}; adds ${Math.round(val / (H - 1.5))} a year with no war` });
-      else if (r < 75) add({ type: 'court', o, ev: val * 0.08, label: `Court ${o.name}`, why: `Toward ${theTitle(union)} (relations ${Math.round(r)} of 70 needed)` });
+      if (ok) add({ type: 'annex', o, ev: val, label: `Uniting with ${o.name} by treaty`, why: `Toward ${theTitle(union)}; adds ${Math.round(val / (H - 1.5))} a year with no war` });
+      else if (r < 75) add({ type: 'court', o, ev: val * 0.08, label: `Courting ${o.name}`, why: `Toward ${theTitle(union)} (relations ${Math.round(r)} of 70 needed)` });
     });
 
     // war: chance of winning x what the province pays once settled, minus the price of fighting and of losing
@@ -995,7 +1022,7 @@ function createSim(seed, geo, opts = {}){
         const o = S.C[r.owner];
         if (!o.alive) return;
         const e = warEval(c, o, r); if (!e || e.p < 0.55) return;
-        if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invade ${o.name} for ${r.name}`,
+        if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invading ${o.name} for ${r.name}`,
           why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inUnion(c, r) ? `; toward ${theTitle(unionOf(c))}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once integrated${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
       });
       if (best) add(best);
@@ -1024,20 +1051,17 @@ function createSim(seed, geo, opts = {}){
   }
   // Do every affordable option that is expected to pay off, best first (up to 4 a season).
   function decide(c){
-    let first = null; const done = [];
+    const done = [];
     for (let k = 0; k < 4 && c.alive; k++) {
       RISK = {};
       const cands = considerations(c);
       const choice = cands[0];
-      if (!first) first = cands;
       if (!choice || choice.type === 'save' || choice.ev <= 0) break;
-      done.push(choice.label);
+      done.push({ type: choice.type, label: choice.label, r: choice.r ? choice.r.i : null });
       act(c, choice);
       if (choice.type === 'war' || choice.type === 'annex' || choice.type === 'ally') break;
     }
-    c.thoughts = first.slice(0, 8).map(x => ({ label: x.label, why: x.why, ev: x.ev, type: x.type, chosen: done.includes(x.label) || (!done.length && x.type === 'save') }));
     c.didThisSeason = done;
-    c.thoughtsWhen = `${SEASONS[S.q]} ${S.year}`;
   }
 
   // ---------- construction, settling, unrest, revolts ----------
@@ -1637,6 +1661,8 @@ function renderLog(){
   const allowed = new Set(Object.values(FILTERS).filter(f => f.on).flatMap(f => f.types));
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
+// one figure in the nation's row of six: its icon over its number
+const fig = (icon, value, color) => `<div class="fig" ${tipOf(icon)}>${ic(icon)}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 // a ruler's trait as a badge ringed in his rarity; hover names him and says what he does
 const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(`${r.name} (${TIER[r.grade].name})`, S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[r.trait]}</svg>` : '';
@@ -1727,7 +1753,8 @@ function renderPowers(){
 }
 
 // the left column: one nation in full. The selected one, else yours, else the leader.
-let allForecasts = false, shownNation = null;
+let allBudget = false, allProvs = false, shownNation = null;
+const PROVS_SHOWN = 6;
 function focusNation(){ return S.C[selected] && S.C[selected].alive ? S.C[selected] : S.player ? S.C[S.player] : S.C[S.leader] || S.alive()[0]; }
 function renderNation(){
   const c = focusNation(); const box = $('side'); if (!c) return;
@@ -1747,50 +1774,71 @@ function renderNation(){
   const lost = `Already reduced by ${lg.lostWork.toFixed(1)} for men in the army, who aren't working, and ${lg.lostAdmin.toFixed(1)} for running ${rs.length} provinces.`;
   const line = (icon, k, v, cls = '', tip = '') => `<div class="lg ${cls}"${tip ? ' ' + tipAttr(k, tip) : ''}><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
   const H = S.horizon(c);
-  const thoughts = c.thoughts || [], done = thoughts.filter(t => t.chosen);
-  const evTip = tipAttr(nm('forecast'), `Gold over the ${H} years this ruler plans ahead, after costs.`);
-  const thought = (t, mark) => `<div class="th ${mark && t.chosen ? 'chosen' : ''}"><div class="row"><b>${ic(OPT_IC[t.type])}${t.label}</b><span class="evn" ${evTip} style="color:${t.ev > 0 ? 'var(--peace)' : t.ev < 0 ? '#e08070' : 'var(--muted)'}">${t.ev > 0 ? '+' : ''}${t.ev}</span></div><div class="why">${t.why}</div></div>`;
+  // this season: what the ministers did, one sentence each; under way: what is still running, with how long it has left
+  const did = c.didThisSeason || [];
+  const act = (icon, text, when = '', color = '') => `<div class="act"${color ? ` style="color:${color}"` : ''}>${ic(icon)}<span>${text}</span>${when ? `<span class="when">${when}</span>` : ''}</div>`;
+  const now1 = did.length ? did.map(d => act(OPT_IC[d.type], d.label)).join('') : act('save', 'Saving gold');
+  const startedNow = new Set(did.filter(d => d.r != null).map(d => d.r));
+  const left = n => `${n} season${n > 1 ? 's' : ''} left`;
+  const running = [
+    war ? act('war', war.name, '', 'var(--war)') : '',
+    S.inCrisis(c) ? `<div class="act" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}<span>${nm('civilWar')}</span></div>` : '',
+    ...rs.filter(x => x.build && !startedNow.has(x.i)).map(x => act(x.build.type === 'factory' ? 'factory' : 'fort', `${x.build.type === 'factory' ? 'Building a factory in' : 'Fortifying'} ${x.name}`, left(x.build.left))),
+    ...rs.filter(x => x.integ < 1).map(x => act('settle', x.name, `${Math.round(x.integ * 100)}% ${nm('settle').toLowerCase()}`)),
+  ].join('');
   const amb = ambitionText(c);
-  const prov = r => { const u = Math.round(r.unrest);
-    return `<div class="prov click" data-prov="${r.i}"><span>${r.name}${r.culture !== c.culture && !c.acc.has(r.culture) ? ` <span class="muted">${r.culture}</span>` : ''}${r.integ < 1 ? ` ${ic('settle')}` : ''}${r.occ ? ` ${ic('occupied')}` : ''}</span>
-      <span>${r.fac ? `${ic('factory')}${r.fac}` : ''}${r.fort ? ic('fort') : ''}${r.build ? ic('build') : ''}</span><span class="un" style="color:${u >= UNREST.uprising ? '#e0453a' : u >= UNREST.restless ? '#e3933c' : 'var(--muted)'}">${u >= UNREST.restless ? ic('unrest') : ''}${u}</span></div>`; };
+  // provinces, richest first: gold a year on the right, a bar in the nation's colour behind, what stands there as marks, unrest only when it matters
+  const pv = new Map(rs.map(x => [x, S.sumInc(S.regionIncome(x)) * 4]));
+  const byGold = [...rs].sort((x, y) => pv.get(y) - pv.get(x)), topV = Math.max(0.1, ...pv.values());
+  const prov = x => { const u = Math.round(x.unrest), v = pv.get(x);
+    const facs = x.fac > 4 ? `${ic('factory')}<span class="pn-x">×${x.fac}</span>` : ic('factory').repeat(x.fac);
+    const restless = u >= UNREST.restless ? `<span style="color:${u >= UNREST.uprising ? '#e0453a' : '#e3933c'}">${ic('unrest')}${u}</span>` : '';
+    return `<div class="prov click" data-prov="${x.i}" style="--w:${Math.max(0, v / topV * 100).toFixed(1)}%">
+      <span class="pn">${x.name}${x.culture !== c.culture && !c.acc.has(x.culture) ? ` <span class="muted">${x.culture}</span>` : ''}</span>
+      <span class="pf">${facs}</span><span class="pk">${x.fort ? ic('fort') : ''}${x.build ? ic('build') : ''}${x.integ < 1 ? ic('settle') : ''}${x.occ ? ic('occupied') : ''}</span><span class="pu">${restless}</span>
+      <span class="pv">${v.toFixed(1)}</span></div>`; };
   const r = c.ruler;
   const back = S.player && c.tag !== S.player && S.C[S.player].alive ? `<button class="btn back" data-tag="${S.player}">← ${S.C[S.player].name}</button>` : '';
+  const unrest = Math.round(S.unrestOf(c)), shown = allProvs ? byGold : byGold.slice(0, PROVS_SHOWN);
   box.innerHTML = `${back}
-    <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leader === c.tag ? ic('leader', 'lg') : ''}</div>
-    <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
-      <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
-    ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div class="war" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}${nm('civilWar')}</div>` : ''}
-    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)} style="color:${TIER[r.grade].color}">${r.name}</b></div>
-    <div class="pers">
-      <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${temperTag('patience', r.pat)}</span>
-      <span ${tipOf('judgment')}>${ic('judgment')}${temperTag('judgment', r.bias)}</span>
-      <span ${tipOf('thrift')}>${ic('thrift')}${temperTag('thrift', S.thriftOf(c))}</span></div>
-    <div class="stats">
-      ${statTile('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
-      ${statTile('army', fmt(c.army) + 'k')}
-      ${statTile('factory', S.facOf(c))}
-      ${statTile('pop', S.popOf(c).toFixed(1) + 'm')}
-      ${statTile('unrest', Math.round(S.unrestOf(c)), S.unrestOf(c) >= UNREST.restless ? 'var(--revolt)' : '')}
-      ${statTile('province', rs.length)}
-    </div>
+    <header class="crest" style="--tc:${TIER[r.grade].color}">
+      <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leader === c.tag ? ic('leader', 'lg') : ''}</div>
+      <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
+        <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
+      <div class="reign">${emblem(r)}<div>
+        <span class="rar">${TIER[r.grade].name}</span>
+        <b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)} style="color:${TIER[r.grade].color}">${r.name}</b>
+        <div class="pers">
+          <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${temperTag('patience', r.pat)}</span>
+          <span ${tipOf('judgment')}>${ic('judgment')}${temperTag('judgment', r.bias)}</span>
+          <span ${tipOf('thrift')}>${ic('thrift')}${temperTag('thrift', S.thriftOf(c))}</span></div></div></div>
+      <div class="figs">
+        ${fig('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
+        ${fig('army', fmt(c.army) + 'k')}
+        ${fig('factory', S.facOf(c))}
+        ${fig('pop', S.popOf(c).toFixed(1) + 'm')}
+        ${fig('unrest', unrest, S.unrestOf(c) >= UNREST.restless ? 'var(--revolt)' : '')}
+        ${fig('province', rs.length)}
+      </div>
+    </header>
     <div class="ledger">
       <div class="lg" ${tipAttr(nm('ambition'), ambitionDesc(amb.a))}><span>${ic('ambition')}${nm('ambition')}</span><span style="color:${amb.color}">${amb.what}</span></div>
       <div class="lg" ${tipOf('rival')}><span>${ic('rival')}${nm('rival')}</span><span>${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}</span></div>
       <div class="lg" ${tipOf('ally')}><span>${ic('ally')}Allies</span><span>${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}</span></div>
       ${c.guarantee && S.year < c.guarantee.until ? `<div class="lg"><span>Independence guaranteed by</span><span>${nameSpan(c.guarantee.by)}</span></div>` : ''}
     </div>
-    <h3>What the ministers did</h3>
-    <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet.</div>'}</div>
-    ${thoughts.length > done.length ? `<button class="btn more" id="allForecasts" aria-expanded="${allForecasts}">${allForecasts ? 'Hide forecasts' : `All ${thoughts.length} forecasts`}</button>
-      ${allForecasts ? `<div class="think">${thoughts.map(t => thought(t, true)).join('')}</div>` : ''}` : ''}
+    <h3>This season</h3>
+    <div class="acts">${now1}</div>
+    ${running ? `<div class="sub">Under way</div><div class="acts dim">${running}</div>` : ''}
     <h3>Budget</h3>
     <div class="ledger">
-      ${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
-      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
-      ${line('gold', 'Net', net, 'net')}
+      ${allBudget ? `${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
+      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}` : ''}
+      ${line('gold', 'Net', net, allBudget ? 'net' : 'net only')}
     </div>
-    <h3>Provinces</h3><div class="provs">${rs.map(prov).join('') || '<span class="muted">none</span>'}</div>`;
+    <button class="btn more" id="allBudget" aria-expanded="${allBudget}">${allBudget ? 'Hide the budget' : 'Show the budget'}</button>
+    <h3 class="hcol">Provinces${ic('goldYear')}</h3><div class="provs" style="--nc:${c.color}">${shown.map(prov).join('') || '<span class="muted">none</span>'}</div>
+    ${rs.length > PROVS_SHOWN ? `<button class="btn more" id="allProvs" aria-expanded="${allProvs}">${allProvs ? 'Show fewer' : `All ${rs.length} provinces`}</button>` : ''}`;
 }
 
 function renderProvince(){
@@ -1982,7 +2030,10 @@ $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); }
 document.querySelectorAll('.modal:not(.sticky)').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.p));
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FILTERS[b.dataset.f].on ^= 1; renderChips(); renderLog(); });
-$('side').addEventListener('click', e => { if (e.target.closest('#allForecasts')) { allForecasts = !allForecasts; renderNation(); } });
+$('side').addEventListener('click', e => {
+  if (e.target.closest('#allBudget')) { allBudget = !allBudget; renderNation(); }
+  else if (e.target.closest('#allProvs')) { allProvs = !allProvs; renderNation(); }
+});
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
 document.addEventListener('keyup', e => { if (e.key === ' ' && e.target.tagName === 'BUTTON' && !e.target.closest('.modal')) e.preventDefault(); });
 document.addEventListener('keydown', e => {

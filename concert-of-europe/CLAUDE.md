@@ -97,7 +97,7 @@ Measured at replacement (40 worlds, seeds 1–40, old pool → new): wars 42.1 �
 Besides his trait, every ruler has three temperaments, shown as tags in the panel. Each is an input to the same rational forecast (rule 5), and each acts on a different part of it:
 
 - **Patience** (`ruler.pat`): far-sighted / steady / short-sighted. The horizon of every forecast, 8 to 30 years.
-- **Judgment** (`ruler.bias`): overconfident / clear-eyed / underconfident. Skews the odds he believes in war (`warEval`) and whether he backs down to an ultimatum. Seen in the forecast line "believes X% (truly Y%)" and the chronicle's "his generals privately think N%". It leans the way his nation does (`lean.hawk`, from `data.js` `p[0]`).
+- **Judgment** (`ruler.bias`): overconfident / clear-eyed / underconfident. Skews the odds he believes in war (`warEval`) and whether he backs down to an ultimatum. Seen in the chronicle's "his generals privately think N%" (the panel shows only what the ministers did, never the forecasts). It leans the way his nation does (`lean.hawk`, from `data.js` `p[0]`).
 - **Thrift** (`ruler.thrift`, read through `thriftOf`): thrifty / balanced / lavish. Multiplies `goldValue`, so it touches every cost in every forecast, from about a third (lavish) to three times (thrifty). Measured over 6 worlds: lavish rulers hold about 5 years of gold a year and spend about 4 times as much on building as thrifty ones, which hold about 10 years.
 
 Risk (`ruler.risk`, `lossW`) was removed on purpose: it was a second copy of Judgment that no player could tell apart. In its place the loss term of `warEval` carries a fixed weight of 1.25 (a beaten ruler may lose his throne), and the neighbour-threat formulas use the old average. Don't bring back a second war temperament; a new one must act on something other than war.
@@ -180,6 +180,7 @@ Moments that already exist in the code:
 
 ## Workflow
 
+- **"Locally" means edit and build only.** When the user asks for a change "locally", edit the files and run `npm run build`; don't start a web server. Before handing over, open the built `index.html` straight from disk (`file://`) in the browser pane and screenshot it yourself; the user then reviews it. Don't commit or push until the user says so.
 - Content changes go in `content/*.json` (Rule 1), then `npm run build`.
 
 - Edit `content/`, `src/` or `map/`, then `npm run build`. Never hand-edit the root `index.html`; it is generated.

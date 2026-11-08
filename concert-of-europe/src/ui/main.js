@@ -26,7 +26,10 @@ $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); }
 document.querySelectorAll('.modal:not(.sticky)').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => showTab(t.dataset.p));
 $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FILTERS[b.dataset.f].on ^= 1; renderChips(); renderLog(); });
-$('side').addEventListener('click', e => { if (e.target.closest('#allForecasts')) { allForecasts = !allForecasts; renderNation(); } });
+$('side').addEventListener('click', e => {
+  if (e.target.closest('#allBudget')) { allBudget = !allBudget; renderNation(); }
+  else if (e.target.closest('#allProvs')) { allProvs = !allProvs; renderNation(); }
+});
 document.addEventListener('click', e => { if (e.target.closest('#map')) return; const pv = e.target.closest('[data-prov]'); if (pv) { selectProvince(+pv.dataset.prov); return; } const n = e.target.closest('[data-tag]'); if (n) { $('endModal').classList.remove('on'); select(n.dataset.tag); } });
 document.addEventListener('keyup', e => { if (e.key === ' ' && e.target.tagName === 'BUTTON' && !e.target.closest('.modal')) e.preventDefault(); });
 document.addEventListener('keydown', e => {

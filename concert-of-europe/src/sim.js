@@ -150,7 +150,7 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(0.9, 1.1), treasury: 30 + rand(0, 20), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
-      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', thoughts: [], born: S.year,
+      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: !!d.serfs, ambitionId: d.ambition || 'survive', didThisSeason: [], born: S.year,
       startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
@@ -484,7 +484,7 @@ function createSim(seed, geo, opts = {}){
     const baseRisk = riskOf(c);
     const gv = goldValue(c);
     const add = o => { o.ev = Math.round(o.ev); out.push(o); };
-    add({ type: 'save', ev: 0, label: 'Save gold', why: 'Nothing else is expected to pay off' });
+    add({ type: 'save', ev: 0, label: 'Saving gold', why: 'Nothing else is expected to pay off' });
 
     // factory: pays back over the horizon
     const leaderFac = Math.max(0.5, ...alive().map(facAvg));
@@ -496,7 +496,7 @@ function createSim(seed, geo, opts = {}){
         if (cost > T) return;
         const gain = (sumInc(regionIncome(r, c, { fac: r.fac + 1, war: false, ignoreOcc: true })) - sumInc(regionIncome(r, c, { war: false, ignoreOcc: true }))) * 4;
         const ev = gain * (H - 1) - cost * gv;
-        add({ type: 'factory', r, cost, ev, label: `Build a factory in ${r.name}`,
+        add({ type: 'factory', r, cost, ev, label: `Building a factory in ${r.name}`,
           why: `Costs ${Math.round(cost)}${catchup < 0.95 ? ' (cheap: copying richer nations)' : ''}, adds ${gain.toFixed(1)} a year; pays back in ${Math.max(1, Math.round(cost / Math.max(0.1, gain)) + 1)} years` });
       });
     }
@@ -517,12 +517,12 @@ function createSim(seed, geo, opts = {}){
     let bestA = null;
     [step, step * 2.5].forEach(st => { if (T < st * 3 * fx(c, 'recruit') + 5) return;
       const ev = armyEV(st) + (war ? 30 + st : 0);
-      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Grow the army by ${Math.round(st)}k`,
+      if (!bestA || ev > bestA.ev) bestA = { type: 'army', amt: st, ev, label: `Growing the army by ${Math.round(st)}k`,
         why: war ? 'At war: the army needs every man' : gwW > 0.3 && !baseRisk.top ? 'Preparing for the general war everyone expects' : baseRisk.top ? `Cuts expected losses to ${baseRisk.top.name} by ${Math.round(baseRisk.total - riskOf(c, st).total)}; costs ${(st * 0.16).toFixed(1)} a year in upkeep plus lost workers` : 'Little danger nearby' }; });
     if (bestA) add(bestA);
     if (!war && c.army - step >= popOf(c) * 0.8) {
       const ev = armyEV(-step);
-      add({ type: 'demob', amt: step, ev, label: `Shrink the army by ${Math.round(step)}k`, why: `Workers back in factories and fields; expected losses rise by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
+      add({ type: 'demob', amt: step, ev, label: `Shrinking the army by ${Math.round(step)}k`, why: `Workers back in factories and fields; expected losses rise by ${Math.round(riskOf(c, -step).total - baseRisk.total)}` });
     }
 
     // fortress facing the most dangerous neighbour
@@ -531,7 +531,7 @@ function createSim(seed, geo, opts = {}){
       const fs = mine.filter(r => !r.fort && !r.build && !r.occ && r.nb.some(j => S.regions[j].owner === o.tag)).sort((a, b) => provYearly(b, c) - provYearly(a, c))[0];
       const fc = 25 * fx(c, 'fortCost');
       if (fs) add({ type: 'fort', r: fs, cost: fc, ev: Math.min(1.5, t.p * H) * pWin(t.ratio) * 0.45 * (provYearly(fs, c) * H * 0.6 + 25) - fc * gv,
-        label: `Fortify ${fs.name}`, why: `Guards the richest border with ${o.name}` });
+        label: `Fortifying ${fs.name}`, why: `Guards the richest border with ${o.name}` });
     }
 
     // reform: income recovered from unrest, plus revolts avoided
@@ -539,7 +539,7 @@ function createSim(seed, geo, opts = {}){
       let gain = 0;
       mine.forEach(r => { const now = sumInc(regionIncome(r, c)), calm = sumInc(regionIncome(r, c, { unrest: Math.max(0, r.unrest - RULES.reform.calm * fx(c, 'reformCalm')) }));
         gain += (calm - now) * 4 * 1.6; if (r.unrest > 55) gain += 0.35 * provYearly(r, c) * Math.min(H, 12); });
-      if (gain > 1) add({ type: 'reform', ev: gain - RULES.reform.cost * fx(c, 'reformCost') * gv, label: 'Pass reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
+      if (gain > 1) add({ type: 'reform', ev: gain - RULES.reform.cost * fx(c, 'reformCost') * gv, label: 'Passing reforms to calm unrest', why: `Average unrest ${Math.round(unrestOf(c))}; recovers lost taxes and heads off uprisings` });
     }
 
     // diplomacy: alliances cut expected losses; courting makes them possible
@@ -554,8 +554,8 @@ function createSim(seed, geo, opts = {}){
       const r = rel(c.tag, o.tag);
       const guard = baseRisk.top ? baseRisk.top.name : 'trouble';
       if (r >= 30 && theirs - riskOf(c).total * 0.12 <= 0) return;
-      if (r >= 30) add({ type: 'ally', o, ev, guard: baseRisk.top, theirs: theirs - riskOf(c).total * 0.12, label: `Ally with ${o.name}`, why: `Cuts expected losses to ${guard} by ${Math.round(mine2)}` });
-      else add({ type: 'court', o, ev: ev * 0.25, label: `Court ${o.name}`, why: `A future ally against ${guard} (relations ${Math.round(r)})` });
+      if (r >= 30) add({ type: 'ally', o, ev, guard: baseRisk.top, theirs: theirs - riskOf(c).total * 0.12, label: `Allying with ${o.name}`, why: `Cuts expected losses to ${guard} by ${Math.round(mine2)}` });
+      else add({ type: 'court', o, ev: ev * 0.25, label: `Courting ${o.name}`, why: `A future ally against ${guard} (relations ${Math.round(r)})` });
     });
     // peaceful union of a fellow-national minor
     const union = unionOf(c);
@@ -564,8 +564,8 @@ function createSim(seed, geo, opts = {}){
       const val = regionsOf(o).reduce((s, r) => s + provYearly(r, c) * ambitionW(c, r), 0) * (H - 1.5);
       const r = rel(c.tag, o.tag);
       const ok = r >= 70 && power(c) > 2 * power(o) && ![...o.allies].some(t => t !== c.tag && isMajor(S.C[t]));
-      if (ok) add({ type: 'annex', o, ev: val, label: `Unite with ${o.name} by treaty`, why: `Toward ${theTitle(union)}; adds ${Math.round(val / (H - 1.5))} a year with no war` });
-      else if (r < 75) add({ type: 'court', o, ev: val * 0.08, label: `Court ${o.name}`, why: `Toward ${theTitle(union)} (relations ${Math.round(r)} of 70 needed)` });
+      if (ok) add({ type: 'annex', o, ev: val, label: `Uniting with ${o.name} by treaty`, why: `Toward ${theTitle(union)}; adds ${Math.round(val / (H - 1.5))} a year with no war` });
+      else if (r < 75) add({ type: 'court', o, ev: val * 0.08, label: `Courting ${o.name}`, why: `Toward ${theTitle(union)} (relations ${Math.round(r)} of 70 needed)` });
     });
 
     // war: chance of winning x what the province pays once settled, minus the price of fighting and of losing
@@ -575,7 +575,7 @@ function createSim(seed, geo, opts = {}){
         const o = S.C[r.owner];
         if (!o.alive) return;
         const e = warEval(c, o, r); if (!e || e.p < 0.55) return;
-        if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invade ${o.name} for ${r.name}`,
+        if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invading ${o.name} for ${r.name}`,
           why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inUnion(c, r) ? `; toward ${theTitle(unionOf(c))}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once integrated${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
       });
       if (best) add(best);
@@ -604,20 +604,17 @@ function createSim(seed, geo, opts = {}){
   }
   // Do every affordable option that is expected to pay off, best first (up to 4 a season).
   function decide(c){
-    let first = null; const done = [];
+    const done = [];
     for (let k = 0; k < 4 && c.alive; k++) {
       RISK = {};
       const cands = considerations(c);
       const choice = cands[0];
-      if (!first) first = cands;
       if (!choice || choice.type === 'save' || choice.ev <= 0) break;
-      done.push(choice.label);
+      done.push({ type: choice.type, label: choice.label, r: choice.r ? choice.r.i : null });
       act(c, choice);
       if (choice.type === 'war' || choice.type === 'annex' || choice.type === 'ally') break;
     }
-    c.thoughts = first.slice(0, 8).map(x => ({ label: x.label, why: x.why, ev: x.ev, type: x.type, chosen: done.includes(x.label) || (!done.length && x.type === 'save') }));
     c.didThisSeason = done;
-    c.thoughtsWhen = `${SEASONS[S.q]} ${S.year}`;
   }
 
   // ---------- construction, settling, unrest, revolts ----------

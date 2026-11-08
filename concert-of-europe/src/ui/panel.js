@@ -15,6 +15,8 @@ function renderLog(){
   const allowed = new Set(Object.values(FILTERS).filter(f => f.on).flatMap(f => f.types));
   $('log').innerHTML = logHtml(S.log.filter(l => allowed.has(l.t))) || '<div class="empty">Nothing to show with these filters.</div>';
 }
+// one figure in the nation's row of six: its icon over its number
+const fig = (icon, value, color) => `<div class="fig" ${tipOf(icon)}>${ic(icon)}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 // a ruler's trait as a badge ringed in his rarity; hover names him and says what he does
 const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(`${r.name} (${TIER[r.grade].name})`, S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[r.trait]}</svg>` : '';
@@ -105,7 +107,8 @@ function renderPowers(){
 }
 
 // the left column: one nation in full. The selected one, else yours, else the leader.
-let allForecasts = false, shownNation = null;
+let allBudget = false, allProvs = false, shownNation = null;
+const PROVS_SHOWN = 6;
 function focusNation(){ return S.C[selected] && S.C[selected].alive ? S.C[selected] : S.player ? S.C[S.player] : S.C[S.leader] || S.alive()[0]; }
 function renderNation(){
   const c = focusNation(); const box = $('side'); if (!c) return;
@@ -125,50 +128,71 @@ function renderNation(){
   const lost = `Already reduced by ${lg.lostWork.toFixed(1)} for men in the army, who aren't working, and ${lg.lostAdmin.toFixed(1)} for running ${rs.length} provinces.`;
   const line = (icon, k, v, cls = '', tip = '') => `<div class="lg ${cls}"${tip ? ' ' + tipAttr(k, tip) : ''}><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
   const H = S.horizon(c);
-  const thoughts = c.thoughts || [], done = thoughts.filter(t => t.chosen);
-  const evTip = tipAttr(nm('forecast'), `Gold over the ${H} years this ruler plans ahead, after costs.`);
-  const thought = (t, mark) => `<div class="th ${mark && t.chosen ? 'chosen' : ''}"><div class="row"><b>${ic(OPT_IC[t.type])}${t.label}</b><span class="evn" ${evTip} style="color:${t.ev > 0 ? 'var(--peace)' : t.ev < 0 ? '#e08070' : 'var(--muted)'}">${t.ev > 0 ? '+' : ''}${t.ev}</span></div><div class="why">${t.why}</div></div>`;
+  // this season: what the ministers did, one sentence each; under way: what is still running, with how long it has left
+  const did = c.didThisSeason || [];
+  const act = (icon, text, when = '', color = '') => `<div class="act"${color ? ` style="color:${color}"` : ''}>${ic(icon)}<span>${text}</span>${when ? `<span class="when">${when}</span>` : ''}</div>`;
+  const now1 = did.length ? did.map(d => act(OPT_IC[d.type], d.label)).join('') : act('save', 'Saving gold');
+  const startedNow = new Set(did.filter(d => d.r != null).map(d => d.r));
+  const left = n => `${n} season${n > 1 ? 's' : ''} left`;
+  const running = [
+    war ? act('war', war.name, '', 'var(--war)') : '',
+    S.inCrisis(c) ? `<div class="act" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}<span>${nm('civilWar')}</span></div>` : '',
+    ...rs.filter(x => x.build && !startedNow.has(x.i)).map(x => act(x.build.type === 'factory' ? 'factory' : 'fort', `${x.build.type === 'factory' ? 'Building a factory in' : 'Fortifying'} ${x.name}`, left(x.build.left))),
+    ...rs.filter(x => x.integ < 1).map(x => act('settle', x.name, `${Math.round(x.integ * 100)}% ${nm('settle').toLowerCase()}`)),
+  ].join('');
   const amb = ambitionText(c);
-  const prov = r => { const u = Math.round(r.unrest);
-    return `<div class="prov click" data-prov="${r.i}"><span>${r.name}${r.culture !== c.culture && !c.acc.has(r.culture) ? ` <span class="muted">${r.culture}</span>` : ''}${r.integ < 1 ? ` ${ic('settle')}` : ''}${r.occ ? ` ${ic('occupied')}` : ''}</span>
-      <span>${r.fac ? `${ic('factory')}${r.fac}` : ''}${r.fort ? ic('fort') : ''}${r.build ? ic('build') : ''}</span><span class="un" style="color:${u >= UNREST.uprising ? '#e0453a' : u >= UNREST.restless ? '#e3933c' : 'var(--muted)'}">${u >= UNREST.restless ? ic('unrest') : ''}${u}</span></div>`; };
+  // provinces, richest first: gold a year on the right, a bar in the nation's colour behind, what stands there as marks, unrest only when it matters
+  const pv = new Map(rs.map(x => [x, S.sumInc(S.regionIncome(x)) * 4]));
+  const byGold = [...rs].sort((x, y) => pv.get(y) - pv.get(x)), topV = Math.max(0.1, ...pv.values());
+  const prov = x => { const u = Math.round(x.unrest), v = pv.get(x);
+    const facs = x.fac > 4 ? `${ic('factory')}<span class="pn-x">×${x.fac}</span>` : ic('factory').repeat(x.fac);
+    const restless = u >= UNREST.restless ? `<span style="color:${u >= UNREST.uprising ? '#e0453a' : '#e3933c'}">${ic('unrest')}${u}</span>` : '';
+    return `<div class="prov click" data-prov="${x.i}" style="--w:${Math.max(0, v / topV * 100).toFixed(1)}%">
+      <span class="pn">${x.name}${x.culture !== c.culture && !c.acc.has(x.culture) ? ` <span class="muted">${x.culture}</span>` : ''}</span>
+      <span class="pf">${facs}</span><span class="pk">${x.fort ? ic('fort') : ''}${x.build ? ic('build') : ''}${x.integ < 1 ? ic('settle') : ''}${x.occ ? ic('occupied') : ''}</span><span class="pu">${restless}</span>
+      <span class="pv">${v.toFixed(1)}</span></div>`; };
   const r = c.ruler;
   const back = S.player && c.tag !== S.player && S.C[S.player].alive ? `<button class="btn back" data-tag="${S.player}">← ${S.C[S.player].name}</button>` : '';
+  const unrest = Math.round(S.unrestOf(c)), shown = allProvs ? byGold : byGold.slice(0, PROVS_SHOWN);
   box.innerHTML = `${back}
-    <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leader === c.tag ? ic('leader', 'lg') : ''}</div>
-    <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
-      <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
-    ${war ? `<div class="war">${ic('war')}${war.name}</div>` : ''}${S.inCrisis(c) ? `<div class="war" style="color:#c9b3e6" ${tipOf('civilWar')}>${ic('civilWar')}${nm('civilWar')}</div>` : ''}
-    <div class="rulerline">${emblem(r)}<b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)} style="color:${TIER[r.grade].color}">${r.name}</b></div>
-    <div class="pers">
-      <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${temperTag('patience', r.pat)}</span>
-      <span ${tipOf('judgment')}>${ic('judgment')}${temperTag('judgment', r.bias)}</span>
-      <span ${tipOf('thrift')}>${ic('thrift')}${temperTag('thrift', S.thriftOf(c))}</span></div>
-    <div class="stats">
-      ${statTile('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
-      ${statTile('army', fmt(c.army) + 'k')}
-      ${statTile('factory', S.facOf(c))}
-      ${statTile('pop', S.popOf(c).toFixed(1) + 'm')}
-      ${statTile('unrest', Math.round(S.unrestOf(c)), S.unrestOf(c) >= UNREST.restless ? 'var(--revolt)' : '')}
-      ${statTile('province', rs.length)}
-    </div>
+    <header class="crest" style="--tc:${TIER[r.grade].color}">
+      <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leader === c.tag ? ic('leader', 'lg') : ''}</div>
+      <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
+        <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
+      <div class="reign">${emblem(r)}<div>
+        <span class="rar">${TIER[r.grade].name}</span>
+        <b ${tipAttr(`${nm('ruler')} since ${r.since}`, REG.ruler.desc)} style="color:${TIER[r.grade].color}">${r.name}</b>
+        <div class="pers">
+          <span ${tipAttr(nm('patience'), `${REG.patience.desc} This one plans ${H} years ahead.`)}>${ic('patience')}${temperTag('patience', r.pat)}</span>
+          <span ${tipOf('judgment')}>${ic('judgment')}${temperTag('judgment', r.bias)}</span>
+          <span ${tipOf('thrift')}>${ic('thrift')}${temperTag('thrift', S.thriftOf(c))}</span></div></div></div>
+      <div class="figs">
+        ${fig('gold', fmt(c.treasury), c.treasury < 0 ? 'var(--war)' : '')}
+        ${fig('army', fmt(c.army) + 'k')}
+        ${fig('factory', S.facOf(c))}
+        ${fig('pop', S.popOf(c).toFixed(1) + 'm')}
+        ${fig('unrest', unrest, S.unrestOf(c) >= UNREST.restless ? 'var(--revolt)' : '')}
+        ${fig('province', rs.length)}
+      </div>
+    </header>
     <div class="ledger">
       <div class="lg" ${tipAttr(nm('ambition'), ambitionDesc(amb.a))}><span>${ic('ambition')}${nm('ambition')}</span><span style="color:${amb.color}">${amb.what}</span></div>
       <div class="lg" ${tipOf('rival')}><span>${ic('rival')}${nm('rival')}</span><span>${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}</span></div>
       <div class="lg" ${tipOf('ally')}><span>${ic('ally')}Allies</span><span>${c.allies.size ? [...c.allies].map(nameSpan).join(', ') : '<span class="muted">none</span>'}</span></div>
       ${c.guarantee && S.year < c.guarantee.until ? `<div class="lg"><span>Independence guaranteed by</span><span>${nameSpan(c.guarantee.by)}</span></div>` : ''}
     </div>
-    <h3>What the ministers did</h3>
-    <div class="think">${done.length ? done.map(t => thought(t, false)).join('') : '<div class="muted">No decisions yet.</div>'}</div>
-    ${thoughts.length > done.length ? `<button class="btn more" id="allForecasts" aria-expanded="${allForecasts}">${allForecasts ? 'Hide forecasts' : `All ${thoughts.length} forecasts`}</button>
-      ${allForecasts ? `<div class="think">${thoughts.map(t => thought(t, true)).join('')}</div>` : ''}` : ''}
+    <h3>This season</h3>
+    <div class="acts">${now1}</div>
+    ${running ? `<div class="sub">Under way</div><div class="acts dim">${running}</div>` : ''}
     <h3>Budget</h3>
     <div class="ledger">
-      ${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
-      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}
-      ${line('gold', 'Net', net, 'net')}
+      ${allBudget ? `${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', 'Factory output', lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
+      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', 'Recruiting', -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}` : ''}
+      ${line('gold', 'Net', net, allBudget ? 'net' : 'net only')}
     </div>
-    <h3>Provinces</h3><div class="provs">${rs.map(prov).join('') || '<span class="muted">none</span>'}</div>`;
+    <button class="btn more" id="allBudget" aria-expanded="${allBudget}">${allBudget ? 'Hide the budget' : 'Show the budget'}</button>
+    <h3 class="hcol">Provinces${ic('goldYear')}</h3><div class="provs" style="--nc:${c.color}">${shown.map(prov).join('') || '<span class="muted">none</span>'}</div>
+    ${rs.length > PROVS_SHOWN ? `<button class="btn more" id="allProvs" aria-expanded="${allProvs}">${allProvs ? 'Show fewer' : `All ${rs.length} provinces`}</button>` : ''}`;
 }
 
 function renderProvince(){
