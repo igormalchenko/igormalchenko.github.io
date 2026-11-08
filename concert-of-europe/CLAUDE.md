@@ -179,6 +179,10 @@ The survive weight doesn't save small nations: they die slightly more often with
 
 ## Future work (agreed, not built)
 
+### Ruler grades (proposed, not agreed)
+
+Split a ruler's line (what he wants) from his grade (how able he is), so the same Warmonger can be drawn common or legendary. Spec and open questions: `specs/ruler-grades.md`.
+
 ### Metaprogression
 
 The "no stacking, levelling or evolutions" rule stays within a game. Across games:

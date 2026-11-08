@@ -56,6 +56,7 @@ content/*.json         every piece of content: rulers, rarities, nations, people
                        provinces, ambitions, events, ways of war, landmarks, concepts, rules
 content/rulebook.json  the rules of the age in plain sentences, for the Almanac
 content/AUDIT.md       what was found when the content moved there, and what is still open
+specs/                 proposals not yet agreed or built (deleted once built)
 src/text.js            fills {placeholders} in content text from content numbers (say)
 src/data.js            reshapes the content into what the simulation reads
 src/sim.js             the whole simulation: economy, AI, wars, unrest, rulers, events, ambitions
