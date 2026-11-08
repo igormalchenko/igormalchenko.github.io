@@ -229,8 +229,14 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
     if (/say\(e\.\w+,\s*(?:\{\s*\.\.\.e|e\b)/.test(line)) Object.keys(e).forEach(f => { if (/Text$|^text$/.test(f)) (e[f].match(/\{(\w+)/g) || []).forEach(p => add(id, p.slice(1))); }); });
   SRC.forEach(([, src]) => { let m; const re = /\bEV\.(\w+)\.(\w+)/g; while ((m = re.exec(src))) { add(m[1], m[2]); if (C.events[m[1]] && !(m[2] in C.events[m[1]])) problems.push(`engine reads EV.${m[1]}.${m[2]}, which events.json doesn't have`); } });
   Object.entries(C.events).forEach(([id, e]) => Object.keys(e).forEach(f => {
-    if (f === 'name' || /Text$|^text$/.test(f)) return;
-    if (!(reads[id] && reads[id].has(f))) bad(`events.json ${id}`, `"${f}" is read by nothing: the engine ignores it`); })); }
+    if (f === 'name' || f === 'effect' || /Text$|^text$/.test(f)) return;
+    if (!(reads[id] && reads[id].has(f))) bad(`events.json ${id}`, `"${f}" is read by nothing: the engine ignores it`); }));
+  // and every field is stated to the player: in its text or effect, or as one of the facts the Almanac lists (relations are hidden)
+  const LISTED = ['year', 'season', 'years', 'from', 'every', 'chance', 'peoples', 'finds', 'pretexts', 'relations'];
+  Object.entries(C.events).forEach(([id, e]) => { const words = Object.keys(e).filter(f => f === 'effect' || /Text$|^text$/.test(f)).map(f => e[f]).join(' ');
+    if (!e.effect && id !== 'opening') bad(`events.json ${id}`, 'needs "effect": a sentence saying what it does and when it can happen');
+    Object.keys(e).forEach(f => { if (f === 'name' || f === 'effect' || /Text$|^text$/.test(f) || LISTED.includes(f)) return;
+      if (!new RegExp(`\\{${f}[|}]`).test(words)) bad(`events.json ${id}`, `"${f}" is never stated: put {${f}} in its text or effect`); }); }); }
 
 // ---- 9: the shape of the content ----
 { const num = (w, v, lo, hi) => { if (typeof v !== 'number' || !(v >= lo && v <= hi)) bad(w, `${JSON.stringify(v)} should be a number from ${lo} to ${hi}`); };
@@ -293,6 +299,17 @@ UI.concat(['src/ui/registry.js', 'src/sim.js']).forEach(f => { const src = read(
     if (/^\s*[+−-]?\d+\s*$/.test(t)) return;   // a bare figure: a sample on the map key, "+1" beside a factory being built
     const m = t.match(/(?<![\w#.-])\d+(?:\.\d+)?%?(?![\w-])/);
     if (m) problems.push(`${f}:${lineOf(src, at)}: the number ${m[0]} is typed into visible text ("${t.trim().replace(/\s+/g, ' ').slice(0, 70)}")`); }); });
+
+// ---- 12: every Almanac page renders, with nothing left unfilled ----
+{ const el = () => ({ innerHTML: '', textContent: '', style: {}, dataset: {}, classList: { add(){}, remove(){}, toggle(){}, contains(){ return false; } }, addEventListener(){}, focus(){}, querySelectorAll(){ return []; } });
+  const actx = { $: el, document: { getElementById: el, querySelectorAll: () => [] }, S: null, console }; vm.createContext(actx);
+  try {
+    vm.runInContext(require('./content').source() + read('src/text.js') + read('src/data.js') + 'const GEO = ' + read('map/geo.json') + ';\n' + read('src/sim.js') + read('src/ui/registry.js') +
+      read('src/ui/almanac.js').replace(/\nconst AL = /, '\nvar S = null; const AL = ') + '\nthis.SECTIONS = SECTIONS;', actx);
+    Object.entries(actx.SECTIONS).forEach(([k, s]) => { let h; try { h = s.render(); } catch (e) { problems.push(`src/ui/almanac.js: the ${s.name} page fails: ${e.message}`); return; }
+      const t = h.replace(/<[^>]*>/g, ' '), m = t.match(/\bundefined\b|\bNaN\b|\[object Object\]|\{[\w.|]+\}/);
+      if (m) problems.push(`src/ui/almanac.js: the ${s.name} page shows "${m[0]}" (…${t.slice(Math.max(0, t.indexOf(m[0]) - 60), t.indexOf(m[0]) + 20).replace(/\s+/g, ' ')}…)`); });
+  } catch (e) { problems.push(`src/ui/almanac.js: can't load the Almanac to render it: ${e.message}`); } }
 
 if (problems.length) { console.error(`Consistency check failed (${problems.length}):\n  ` + problems.join('\n  ')); process.exit(1); }
 console.log(`Consistency check passed: ${Object.keys(REG).length} concepts in the registry.`);

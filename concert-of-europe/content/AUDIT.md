@@ -202,6 +202,17 @@ Proven unchanged: final states and chronicles of eight worlds match the code bef
 
 ## 3. Not in the Almanac
 
+**Done (step 6).** Everything below is now in the Almanac:
+- **Temperaments** have a page: each of the three, its nine words, and what each word means in terms the player can see (years planned ahead, how much stronger or weaker he sees his armies, how dear he holds gold).
+- **Nations** show their war-name prefix, "never joins a union" for the Papal States, Russia's serfs, and whether each is a great power in this world. The page opens with the great powers now and what being one means (the new Great power concept).
+- **Provinces** list their land neighbours beside the sea crossings.
+- **Events** each have an `effect` sentence in `events.json` that states every number the text leaves out and when the event can happen (once only, who must hold what, which peoples, which ways of war follow); the Almanac shows it, and lists every boom find and ultimatum pretext.
+- **Rules of the world:** step 5.
+
+The check now refuses an event field that no sentence states (only relations, which are hidden, and the timing the Almanac lists are exempt) and an event with no `effect`. It also loads the Almanac headlessly and renders every page, failing on an error or on `undefined`, `NaN` or an unfilled placeholder. On its first run it found that union notes were shown raw ("{peoples.0|people}"), now fixed.
+
+What it was before:
+
 - **Temperaments:** `temperaments.json` (the nine words and their thresholds) appears nowhere.
 - **Nations:** `serfs` and `noAnnex` aren't shown; nor are war-name prefixes.
 - **Provinces:** land neighbours aren't shown, and sea crossings are wrong (1.1).
@@ -255,7 +266,7 @@ Proven unchanged: final states and chronicles of eight worlds match the code bef
 
 Fixing what it found took care of most of section 2's copied names and numbers: event prose names its own event and its provinces through placeholders, the map chips read the railway and panic events, the help text names the serfdom event's nation, the rulebook and Rarity concept name rarities and the Flirt by path, the Great War's name is its event's, the reroll price and the treaty-union threshold are rules, the heir keys follow `rules.heirs`, the Flirt's and Planner's province grant carries its own chronicle line (`news`) instead of the engine checking the label, and the Swiss have ruler names (eight, like the German list they borrowed, so the draw is unchanged), so the German fallback is gone. The opening event is now called "The age begins" ("Europe" was a name in every sentence) and the serfdom event "Emancipation of the serfs". The simulation is unchanged: full chronicles and final states of eight worlds match the code before, apart from these sentences.
 
-Still to do from the list: every event field *stated* in the Almanac, and rendering every Almanac section in the check (both with step 6).
+The last two (every event field stated, every Almanac page rendered) were done with step 6.
 
 ## Plan, in order
 

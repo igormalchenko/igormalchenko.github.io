@@ -4,7 +4,8 @@
     "year": 1848,
     "season": 1,
     "unrest": 40,
-    "text": "<strong>{name}.</strong> Revolution sweeps the continent; unrest soars everywhere."
+    "text": "<strong>{name}.</strong> Revolution sweeps the continent; unrest soars everywhere.",
+    "effect": "Adds {unrest} unrest in every province."
   },
   "famine": {
     "name": "The Great Famine",
@@ -13,7 +14,8 @@
     "province": "ire",
     "pop": 0.75,
     "unrest": 30,
-    "text": "{name} devastates {province}: {pop|inv|frac} of its people die or emigrate."
+    "text": "{name} devastates {province}: {pop|inv|frac} of its people die or emigrate.",
+    "effect": "Happens once: {province|place} loses {pop|inv|pct} of its people and gains {unrest} unrest."
   },
   "cholera": {
     "name": "Cholera",
@@ -21,7 +23,8 @@
     "nations": 3,
     "pop": 0.95,
     "unrest": 8,
-    "text": "{name} spreads through {nations}; {pop|inv|frac} dies."
+    "text": "{name} spreads through {nations}; {pop|inv|frac} dies.",
+    "effect": "Strikes {nations|word} nations at random; every province of each loses {pop|inv|pct} of its people and gains {unrest} unrest."
   },
   "railway": {
     "name": "Railway mania",
@@ -29,7 +32,8 @@
     "chance": 0.2,
     "lasts": 10,
     "cost": 0.7,
-    "text": "{name}: for {lasts|span}, factories cost {cost|down} less."
+    "text": "{name}: for {lasts|span}, factories cost {cost|down} less.",
+    "effect": "Happens once."
   },
   "panic": {
     "name": "The Panic",
@@ -39,7 +43,8 @@
     "earns": 0.8,
     "seasons": 12,
     "unrest": 10,
-    "text": "<strong>{name}.</strong> Banks fail across Europe: every nation loses {gold|inv|frac} its gold and earns {earns|inv|frac} less for {seasons|years}."
+    "text": "<strong>{name}.</strong> Banks fail across Europe: every nation loses {gold|inv|frac} its gold and earns {earns|inv|frac} less for {seasons|years}.",
+    "effect": "Happens once, and also adds {unrest} unrest in every province."
   },
   "compromise": {
     "name": "The Compromise",
@@ -52,7 +57,8 @@
     "calm": 15,
     "newName": "Austria-Hungary",
     "newAdj": "Austro-Hungarian",
-    "text": "{name}: {nation} becomes a dual monarchy, and {province|place} is calmed."
+    "text": "{name}: {nation} becomes a dual monarchy, and {province|place} is calmed.",
+    "effect": "Happens once, while {nation|nation} holds {province|place} and its unrest there is above {unrest}: {nation|nation} accepts the {people|people} people and becomes {newName} ({newAdj}), and {province|place} falls to {calm} unrest."
   },
   "serfdom": {
     "name": "Emancipation of the serfs",
@@ -62,16 +68,30 @@
     "provinces": ["mos", "spb"],
     "factories": 1,
     "before": 0.5,
-    "text": "{nation} frees the serfs; workers pour into the factories of {provinces|place}."
+    "text": "{nation} frees the serfs; workers pour into the factories of {provinces|place}.",
+    "effect": "Until it happens, {nation|nation}'s factories run at {before|frac} speed. It happens once, and {provinces|place} gain {factories|word} factor{factories|ies} each if {nation|nation} still holds them."
   },
-  "incident": {"name": "Border incident", "chance": 0.3, "relations": -25, "text": "A border incident sours relations between {a} and {b}."},
-  "marriage": {"name": "Royal marriage", "chance": 0.1, "relations": 25, "text": "A royal marriage links {a} and {b}."},
+  "incident": {
+    "name": "Border incident",
+    "chance": 0.3,
+    "relations": -25,
+    "text": "A border incident sours relations between {a} and {b}.",
+    "effect": "Sours relations between a nation and its biggest threat."
+  },
+  "marriage": {
+    "name": "Royal marriage",
+    "chance": 0.1,
+    "relations": 25,
+    "text": "A royal marriage links {a} and {b}.",
+    "effect": "Warms relations between two nations, unless one is the other's biggest threat."
+  },
   "harvest": {
     "name": "Failed harvest",
     "season": 2,
     "chance": 0.08,
     "unrest": 18,
-    "text": "A failed harvest brings bread riots to {nation}."
+    "text": "A failed harvest brings bread riots to {nation}.",
+    "effect": "Adds {unrest} unrest in every province of one nation, chosen at random."
   },
   "shevchenko": {
     "name": "Ukrainian national awakening",
@@ -79,7 +99,8 @@
     "chance": 0.3,
     "people": "ukrainian",
     "awake": 14,
-    "text": "Shevchenko's poems spark a <strong>{name}</strong>; unrest grows in {people|people} lands."
+    "text": "Shevchenko's poems spark a <strong>{name}</strong>; unrest grows in {people|people} lands.",
+    "effect": "Happens once: wherever another people rules them, the {people|people} people want {awake} more unrest for good, and their uprisings grow larger."
   },
   "awakening": {
     "name": "National awakening",
@@ -102,13 +123,15 @@
       "greek",
       "serb"
     ],
-    "text": "A national awakening stirs the {people|people} people; their provinces grow restless."
+    "text": "A national awakening stirs the {people|people} people; their provinces grow restless.",
+    "effect": "Stirs one of the peoples below at random, if it has not awakened yet and another people rules some of its land: wherever others rule it, it wants {awake} more unrest for good, and its uprisings grow larger."
   },
   "revolution": {
     "name": "Military revolution",
     "every": 12,
     "chance": 0.12,
-    "text": "<strong>{name}.</strong> {era}: every war forecast in Europe shifts."
+    "text": "<strong>{name}.</strong> {era}: every war forecast in Europe shifts.",
+    "effect": "Replaces the way of war with another one, drawn at random from the rest."
   },
   "boom": {
     "name": "Boom",
@@ -117,7 +140,8 @@
     "factories": 2,
     "pop": 1.1,
     "finds": ["Coal is found", "A railway junction booms", "Iron mines open"],
-    "text": "{find} in {province} ({nation}): {factories|word} factories' worth of industry overnight."
+    "text": "{find} in {province} ({nation}): {factories|word} factories' worth of industry overnight.",
+    "effect": "One random province that isn't occupied gains {factories|word} factories and {pop|up} more people."
   },
   "ultimatum": {
     "name": "Ultimatum",
@@ -131,15 +155,18 @@
     "pretexts": ["a border post", "a newspaper insult", "a railway concession", "a royal snub"],
     "rattleText": "{a} rattles its sabre at {b} over {pretext}, then thinks better of it.",
     "text": "<strong>Crisis.</strong> {a} sends {b} an ultimatum. {b} backs down, humiliated, and pays {gold} gold.",
+    "effect": "A nation sends one to its biggest threat next door when a war for one of its provinces looks nearly worth fighting (within {margin} gold of paying off); otherwise it only rattles its sabre, {rattle|pct} of the time. The rival backs down if it believes its chance of winning is below {backDown|pct}: it pays {pay|pct} of its gold and gains {unrest} unrest everywhere. Otherwise the war begins.",
     "warText": "<strong>Crisis.</strong> {a} sends {b} an ultimatum over {province}. {b} refuses, and the <em>{war}</em> begins."
   },
   "greatWar": {
     "name": "Great War",
-    "text": "<strong>The lamps go out all over Europe.</strong> A shot in the Balkans sets the alliances in motion: {a} and {b} go to war. The <em>{name}</em> begins."
+    "text": "<strong>The lamps go out all over Europe.</strong> A shot in the Balkans sets the alliances in motion: {a} and {b} go to war. The <em>{name}</em> begins.",
+    "effect": "The two great powers on the worst terms go to war in the {rules.greatWar.season|season} of {rules.greatWar.year}; every running war is abandoned, and every nation allied to either side joins it."
   },
   "armistice": {
     "name": "The Armistice",
-    "text": "<strong>{name}.</strong> At the eleventh hour the guns fall silent; peace is made on the lines as they stand."
+    "text": "<strong>{name}.</strong> At the eleventh hour the guns fall silent; peace is made on the lines as they stand.",
+    "effect": "Every war still running ends on the lines as they stand: each occupier keeps what it holds."
   },
   "opening": {
     "name": "The age begins",

@@ -25,7 +25,9 @@ const SECTIONS = {
       Object.entries(CONTENT.rulers).map(([t, q]) => entry(q.label, `<p class="vibe">${q.vibe}</p>${facts(CONTENT.rarities.map((rar, g) => [`<span style="color:${rar.color}">${rar.name}</span>`,
         traitEffects(t, g).map(e => iconize(e.text)).join('<br>')]))}`, { lead: `<svg class="emb" viewBox="-8 -8 16 16">${embBadge(0)}${EMB[t] || ''}</svg>` })).join(''); } },
   nations: { name: 'Nations', file: 'nations', count: () => Object.keys(CONTENT.nations).length, render(){
-    return Object.entries(CONTENT.nations).map(([tag, n]) => { const live = S && S.C[tag];
+    const majors = S ? `<p class="muted">${WORDS.major.name}s now: ${listOf(S.majors.map(t => S.C[t].name))}. ${WORDS.major.desc}</p>` : `<p class="muted">${WORDS.major.desc}</p>`;
+    const serf = CONTENT.events.serfdom;
+    return majors + Object.entries(CONTENT.nations).map(([tag, n]) => { const live = S && S.C[tag];
       const amb = ambitionName(n.ambition) + (live && live.ambition && live.ambition.id !== n.ambition ? ` (in this world: ${ambitionName(live.ambition.id)})` : '');
       const rises = Object.keys(CONTENT.peoples).filter(p => risesAs(p) === tag);
       return entry(n.name, facts([
@@ -37,7 +39,10 @@ const SECTIONS = {
         ['Allies', n.allies ? listOf(n.allies.map(nationName)) : ''],
         ['Relations', n.relations ? listOf(Object.entries(n.relations).map(([o, v]) => `${nationName(o)} ${v > 0 ? '+' : ''}${v}`)) : ''],
         ['Ruler names', listOf(n.rulerNames || CONTENT.peoples[n.people].names || [])],
-        ['In this world', live ? (live.alive ? (live.name !== n.name ? `now ${live.name}` : 'on the map') : 'gone from the map') : S && !n.starts ? 'not yet born' : ''],
+        ['In war names', `${n.pre || n.adj}-…`],
+        ['Unions', n.noAnnex ? 'never joins one, by treaty or by vote' : ''],
+        ['Serfs', tag === serf.nation ? say('factories run at {before|frac} speed until the {name}', serf) : ''],
+        ['In this world', live ? (live.alive ? (live.name !== n.name ? `now ${live.name}` : 'on the map') + (S.majors.includes(tag) ? `, a ${WORDS.major.name.toLowerCase()}` : '') : 'gone from the map') : S && !n.starts ? 'not yet born' : ''],
       ]), { sub: n.adj, lead: swatch(n.color) }); }).join(''); } },
   peoples: { name: 'Peoples', file: 'peoples', count: () => Object.keys(CONTENT.peoples).length, render(){
     return Object.entries(CONTENT.peoples).map(([p, d]) => { const home = Object.values(CONTENT.provinces).filter(x => x.people === p);
@@ -56,24 +61,32 @@ const SECTIONS = {
         ['A province of its people is worth', k.worth != null ? `${k.worth}× its gold a year` : ''], ['Every expected loss counts', k.losses != null ? `${k.losses}×` : '']])}`;
       if (kind !== 'unite') return entry(k.name, head + facts([['Held by', holders(ids[0])]]), { lead: ic('ambition') });
       return entry(k.name, head, { lead: ic('ambition') }) + ids.map(id => { const d = CONTENT.ambitions[id], u = prog[id];
-        return entry(d.title, `${d.note ? `<p class="vibe">${d.note}</p>` : ''}${facts([['Held by', holders(id)], ['People', listOf(d.peoples.map(peopleName))],
+        return entry(d.title, `${d.note ? `<p class="vibe">${say(d.note, d)}</p>` : ''}${facts([['Held by', holders(id)], ['People', listOf(d.peoples.map(peopleName))],
           ['To proclaim', `hold ${d.need} of ${d.provinces.length} provinces, from ${d.from}`], ['Provinces', listOf(d.provinces.map(provName))],
           ['In this world', u ? (u.done ? `proclaimed by ${u.done.name}` : u.lead ? `${u.lead.name} holds ${u.n} of ${u.need}` : 'no one left to unite it') : '']])}`,
           { sub: d.adj, lead: ic('proclaim') }); }).join(''); }).join(''); } },
   provinces: { name: 'Provinces', file: 'provinces', count: () => Object.keys(CONTENT.provinces).length, render(){
     // sea crossings as the map has them (map/geo.json), which is what the game plays on
     const ids = Object.keys(CONTENT.provinces), sea = GEO.naval.map(([a, b]) => [ids[a], ids[b]]);
-    return `<table class="al-tab"><thead><tr><th>Province</th><th>${WORDS.nation.name} in ${CONTENT.rules.start}</th><th>${ic('culture')}</th><th>${ic('pop')}</th><th>${ic('factory')}</th><th>${ic('trade')}</th><th>${ic('sea')}</th></tr></thead><tbody>${
+    return `<table class="al-tab"><thead><tr><th>Province</th><th>${WORDS.nation.name} in ${CONTENT.rules.start}</th><th>${ic('culture')}</th><th>${ic('pop')}</th><th>${ic('factory')}</th><th>${ic('trade')}</th><th>Neighbours</th><th>${ic('sea')}</th></tr></thead><tbody>${
       ids.map((id, i) => { const p = CONTENT.provinces[id], g = GEO.regions[i];
-        return `<tr class="al-e"><td>${p.name}</td><td>${nationName(p.owner)}</td><td>${peopleName(p.people)}</td><td>${p.pop}m</td><td>${p.industry}</td><td>${g && g.coast ? 'coast' : ''}</td>
+        return `<tr class="al-e"><td>${p.name}</td><td>${nationName(p.owner)}</td><td>${peopleName(p.people)}</td><td>${p.pop}m</td><td>${p.industry}</td><td>${g && g.coast ? 'coast' : ''}</td><td>${g ? listOf(g.nb.filter(j => !GEO.naval.some(([a, b]) => (a === i && b === j) || (a === j && b === i))).map(j => provName(ids[j]))) : ''}</td>
           <td>${listOf(sea.filter(x => x.includes(id)).map(x => provName(x[0] === id ? x[1] : x[0])))}</td></tr>`; }).join('')}</tbody></table>`; } },
   events: { name: 'Events', file: 'events', count: () => Object.keys(CONTENT.events).length, render(){
     return Object.entries(CONTENT.events).map(([id, e]) => { const when = e.year ? `${RULES.seasons[e.season]} ${e.year}`
         : e.years ? `${e.years[0]} to ${e.years[1]}` : e.from ? `from ${e.from}` : e.every ? `at least ${e.every} years after the last` : e.season != null ? `${say('{s|season}', { s: e.season })}s` : '';
       const lines = ['text', 'rattleText', 'warText'].filter(k => e[k]).map(k => `<p>${say(e[k], Object.assign({}, SAMPLE, e, { province: e.province ? `<i>${provName(e.province)}</i>` : SAMPLE.province, people: e.people || (e.peoples ? e.peoples[0] : SAMPLE.people), nations: typeof e.nations === 'number' ? `<i>${numberWord(e.nations)} nations</i>` : SAMPLE.nations, count: Object.values(CONTENT.nations).filter(n => n.starts).length, find: e.finds ? e.finds[0] : SAMPLE.find, pretext: e.pretexts ? e.pretexts[0] : SAMPLE.pretext, nation: e.nation ? `<i>${nationName(e.nation)}</i>` : SAMPLE.nation }))}</p>`).join('');
-      return entry(e.name, lines + facts([['When', when], ['Chance', e.chance != null ? yearly(e.chance) : ''], ['Peoples', e.peoples ? listOf(e.peoples.map(peopleName)) : '']]), { lead: ic('event') }); }).join(''); } },
+      const effect = e.effect ? `<p class="vibe">${say(e.effect, e)}</p>` : '';
+      return entry(e.name, lines + effect + facts([['When', when], ['Chance', e.chance != null ? yearly(e.chance) : ''], ['Peoples', e.peoples ? listOf(e.peoples.map(peopleName)) : ''],
+        ['Finds', e.finds ? listOf(e.finds) : ''], ['Pretexts', e.pretexts ? listOf(e.pretexts) : '']]), { lead: ic('event') }); }).join(''); } },
   eras: { name: 'Ways of war', file: 'eras', count: () => CONTENT.eras.length, render(){
     return CONTENT.eras.map((e, i) => entry(e.name, facts([['Defender fights', `${e.def}× as hard`], ['A fortress stops an advance', pctOf(e.fort)], ['Begins', e.start ? `in ${CONTENT.rules.start}` : 'with a military revolution']]), { lead: ic('war') })).join(''); } },
+  temperaments: { name: 'Temperaments', file: 'temperaments', count: () => Object.keys(CONTENT.temperaments).length, render(){
+    // what each word on a ruler means, in the terms the player can see (content/temperaments.json)
+    const means = { patience: v => `plans ${say('{v|horizon}', { v })} years ahead`, judgment: v => `sees his armies ${pct(Math.abs(Math.exp(v) - 1))} ${v > 0 ? 'stronger' : 'weaker'} than they are`,
+      thrift: v => `holds gold ${timesWord(v)} as dear as a balanced ruler` };
+    return `<p class="muted">Every ruler has all three, drawn at his coronation and leaning the way his nation does. The panel shows them as these words.</p>` +
+      Object.entries(CONTENT.temperaments).map(([k, t]) => entry(REG[k].name, `<p>${REG[k].desc}</p>${facts([[t.high[1], `${means[k](t.high[0])} or more`], [t.mid, 'in between'], [t.low[1], `${means[k](t.low[0])} or ${k === 'judgment' ? 'more' : 'less'}`]])}`, { lead: ic(k) })).join(''); } },
   concepts: { name: 'Concepts', file: 'concepts', count: () => Object.keys(CONTENT.concepts).length, render(){
     return Object.entries(CONTENT.concepts).map(([k, c]) => entry(c.name, `<p>${esc(say(c.desc))}</p>`, { lead: REG[k] ? ic(k) : '<span class="al-noic"></span>' })).join(''); } },
   effects: { name: 'Ruler effects', file: 'effects', count: () => Object.keys(CONTENT.effects).length, render(){
