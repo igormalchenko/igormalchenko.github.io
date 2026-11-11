@@ -4,12 +4,12 @@ const { test } = require('node:test');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const { simSource } = require('./load');
 
-// Expose the war tick only inside this test VM, leaving the game's public API unchanged.
+// Expose war internals only inside this test VM, leaving the game's public API unchanged.
 const source = simSource(), end = '\n  return S;\n}';
 assert.equal(source.split(end).length, 2);
 const ctx = {};
 vm.createContext(ctx);
-vm.runInContext(source.replace(end, '\n  S.tickWarTest = tickWars; S.endWarTest = endWar;' + end) + '\nthis.createSim = createSim; this.rules = RULES;', ctx);
+vm.runInContext(source.replace(end, '\n  S.tickWarTest = tickWars; S.endWarTest = endWar; S.warEvalTest = warEval;' + end) + '\nthis.createSim = createSim; this.rules = RULES;', ctx);
 const geo = JSON.parse(fs.readFileSync(path.join(__dirname, '../map/geo.json'), 'utf8'));
 const WR = ctx.rules.war;
 
@@ -128,4 +128,32 @@ test('an ally with no reachable front neither decides the battle nor bleeds', ()
   assert.equal(w.battles, 1);
   assert.equal(S.C.TUR.army, 100000);
   assert.ok(S.C.RUS.army < 1);
+});
+
+test('equivalent land and sea fronts have the same forecast odds and combat outcome', () => {
+  function engagement(sea){
+    const { S, w, join } = fixture(['GBR'], ['FRA'], 'par');
+    join('lon', 'par');
+    const a = S.RB.lon.i, b = S.RB.par.i;
+    S.navalSet = new Set(sea ? [a + '-' + b, b + '-' + a] : []);
+    S.majors = [];
+    Object.values(S.C).forEach(c => { c.allies.clear(); c.truce = {}; c.ruler.bias = 1; });
+    S.C.GBR.army = 300; S.C.FRA.army = 100;
+    // Forecast before declaration, then fight with exactly those armies and that front.
+    S.wars = [];
+    const forecast = S.warEvalTest(S.C.GBR, S.C.FRA, S.RB.par);
+    assert.ok(forecast, 'the invasion must be a viable option');
+    S.wars = [w];
+    S.tickWarTest();
+    return { forecast, result: {
+      occupier: S.RB.par.occ, battles: w.battles, score: w.score,
+      attackers: S.C.GBR.army, defenders: S.C.FRA.army, population: S.RB.par.pop
+    } };
+  }
+  const land = engagement(false), sea = engagement(true);
+  assert.equal(sea.forecast.pTrue, land.forecast.pTrue);
+  assert.equal(sea.forecast.p, land.forecast.p);
+  assert.equal(sea.forecast.cost, land.forecast.cost);
+  assert.equal(sea.result.occupier, 'GBR');
+  assert.deepEqual(sea.result, land.result);
 });
