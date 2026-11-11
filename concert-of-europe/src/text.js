@@ -24,6 +24,7 @@ function timesWord(x){
 }
 const pct = x => `${Math.round(x * 100)}%`;
 const FORMATS = {
+  lower: x => x.toLowerCase(),
   // value to value
   inv: x => 1 - x,                                             // 0.75 kept → 0.25 lost
   thrift: x => Math.pow(3, (x - 0.5) * 2),                     // a thrift temper → how dear he holds gold (see thriftOf)

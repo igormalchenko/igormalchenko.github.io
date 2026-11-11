@@ -1,0 +1,127 @@
+[
+  {
+    "seed": 7,
+    "player": "PRU",
+    "category": "military",
+    "choices": [
+      {
+        "year": 1836,
+        "id": "staffColleges",
+        "grade": 0
+      },
+      {
+        "year": 1848,
+        "id": "generalStaff",
+        "grade": 0
+      },
+      {
+        "year": 1860,
+        "id": "warCollege",
+        "grade": 3,
+        "target": "FRA"
+      },
+      {
+        "year": 1872,
+        "id": "homeGuard",
+        "grade": 0
+      },
+      {
+        "year": 1884,
+        "id": "warMinistry",
+        "grade": 0
+      },
+      {
+        "year": 1896,
+        "id": "rifling",
+        "grade": 3
+      },
+      {
+        "year": 1908,
+        "id": "medicine",
+        "grade": 1
+      }
+    ],
+    "heirs": 11,
+    "actions": {
+      "demob": 20,
+      "court": 85,
+      "annex": 3,
+      "army": 16,
+      "factory": 20,
+      "ally": 1,
+      "war": 8,
+      "reform": 3,
+      "fort": 6
+    },
+    "alive": true,
+    "end": [
+      1918,
+      "Autumn"
+    ],
+    "goldPerYear": 9.36,
+    "provinces": 2,
+    "wars": 42
+  },
+  {
+    "seed": 7,
+    "player": "PRU",
+    "category": "economy",
+    "choices": [
+      {
+        "year": 1836,
+        "id": "landSurvey",
+        "grade": 1
+      },
+      {
+        "year": 1848,
+        "id": "precisionEngineering",
+        "grade": 2
+      },
+      {
+        "year": 1860,
+        "id": "domesticMarkets",
+        "grade": 0
+      },
+      {
+        "year": 1872,
+        "id": "railwayProcurement",
+        "grade": 0
+      },
+      {
+        "year": 1884,
+        "id": "industry",
+        "grade": 0
+      },
+      {
+        "year": 1896,
+        "id": "merchantBanks",
+        "grade": 0
+      },
+      {
+        "year": 1908,
+        "id": "industrialStandards",
+        "grade": 1
+      }
+    ],
+    "heirs": 6,
+    "actions": {
+      "demob": 18,
+      "court": 81,
+      "annex": 3,
+      "factory": 42,
+      "war": 3,
+      "army": 19,
+      "reform": 17,
+      "fort": 20,
+      "ally": 1
+    },
+    "alive": true,
+    "end": [
+      1918,
+      "Autumn"
+    ],
+    "goldPerYear": 76.98,
+    "provinces": 14,
+    "wars": 52
+  }
+]

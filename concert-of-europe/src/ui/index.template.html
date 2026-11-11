@@ -288,6 +288,15 @@ th svg.ic{margin:0}
 .formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
 .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
 .legend div{display:flex;align-items:center;gap:8px}
+.advance-progress{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted);max-width:280px}
+.advance-progress progress{width:100%;height:4px;accent-color:var(--brass)}
+.advance-row{display:flex;flex-wrap:wrap;gap:5px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.advance-badge{display:inline-flex;border:1px solid var(--tc);border-radius:5px;padding:5px;color:var(--tc)}
+.advance-badge svg.ic{pointer-events:none;margin:0;width:20px;height:20px}
+.development{min-height:290px}.development svg.advance-art{width:58px;height:58px;margin:16px 0}
+.rerolls[hidden]{display:none}
+@media(max-width:1000px){.advance-progress{max-width:180px;font-size:10px}}
+@media(max-width:760px){.advance-progress{max-width:120px}.bar .brand-name{display:none}}
 </style>
 </head>
 <body>
@@ -296,6 +305,7 @@ th svg.ic{margin:0}
   <div class="date"><span id="season">{{rules.seasons.0}}</span><b id="year">{{rules.start}}</b></div>
   <button class="btn primary" id="auto" data-tip="Play or pause (Space)">Play</button>
   <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" data-tip="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" data-tip="Faster (+)" aria-label="Faster">+</button></div>
+  <div id="advanceProgress" class="advance-progress"></div>
   <div class="spacer"></div>
   <button class="seed" id="seed" data-tip="Start a new world"></button>
   <button class="btn icon" id="almanac" data-tip="{{concepts.almanac.name}}" data-desc="{{concepts.almanac.desc}}" aria-label="{{concepts.almanac.name}}"></button>
@@ -342,7 +352,7 @@ th svg.ic{margin:0}
     <p><b>What throws the plans off.</b> Rulers misjudge their odds, and each carries a trait with a bonus and a malus. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. A people that wins its uprising brings back its fallen nation or forms a new one, which claims the provinces of the union it works toward. {{events.serfdom.nation|nation}}'s factories run at {{events.serfdom.before|frac}} speed until the serfs are freed.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
-    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: the number on a card to pick that heir, R to reroll, A for the {{concepts.almanac.name}}, Space or P to play or pause, + and − to change speed. Click the world number to start a new world.</p>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession, and permanent {{concepts.advance.name|lower}} cards on schedule; its ministers decide everything else. Keys: the number on a card to pick that card, R to reroll heirs, A for the {{concepts.almanac.name}}, Space or P to play or pause, + and − to change speed. Click the world number to start a new world.</p>
   </div>
 </div>
 <div class="modal" id="almanacModal" role="dialog" aria-modal="true" aria-labelledby="alTitle">

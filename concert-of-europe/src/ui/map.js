@@ -41,7 +41,7 @@ function newWorld(seed, player){
 }
 function render(){
   $('year').textContent = S.year; $('season').textContent = S.over ? 'Peace' : S.SEASONS[S.q];
-  $('auto').disabled = !!S.pending; autoLabel();
+  $('auto').disabled = !!S.pending; autoLabel(); renderAdvanceProgress();
   renderMap(); renderOverlays(); renderNation();
   if (!$('panel').classList.contains('closed')) { const on = document.querySelector('.pane.on').id;
     if (on === 'chron') renderLog(); else if (on === 'powers') renderPowers(); else renderProvince(); }
@@ -147,7 +147,7 @@ function select(tag){ selected = tag; render(); }
 function selectProvince(i){ selProv = i; selected = S.regions[i].owner; showTab('province'); }
 function step(n = 1){ for (let i = 0; i < n && !S.over && !S.pending; i++) S.step(); render(); if (S.over) { stopAuto(); showEnd(); } checkPending(); }
 // a choice for the player stops the clock until it is made
-function checkPending(){ if (!S.pending) return; stopAuto(); if (S.pending.type === 'heir') showHeir(); }
+function checkPending(){ if (!S.pending) return; stopAuto(); if (S.pending.type === 'heir') showHeir(); else if (S.pending.type === 'advance') showAdvance(); }
 // speeds: seconds a season, slowest first; changing speed keeps the time already waited
 const SPEEDS = [3000, 1500, 700, 250, 40]; let speed = 1, lastTick = 0;
 function stopAuto(){ if (timer) clearTimeout(timer); timer = null; autoLabel(); }

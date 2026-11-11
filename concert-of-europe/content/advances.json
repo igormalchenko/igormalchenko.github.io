@@ -1,0 +1,354 @@
+{
+  "years": [1836, 1848, 1860, 1872, 1884, 1896, 1908],
+  "season": 0,
+  "categories": {
+    "military": {"name": "Military", "icon": "army"},
+    "economy": {"name": "Economy", "icon": "factory"},
+    "government": {"name": "Government", "icon": "reform"}
+  },
+  "eligibility": {
+    "any": "Any living nation",
+    "coast": "Requires a coastal province",
+    "border": "Requires a living neighbouring nation",
+    "target": "Requires a living neighbouring non-ally; prefers a neighbouring rival, otherwise the strongest eligible neighbour"
+  },
+  "choiceTitle": "Choose a development for {nation}",
+  "choiceInstructions": "Choose one permanent advance. Use the number on its card.",
+  "acquisitionText": "{nation} adopts {advance}.",
+  "progressText": "{concepts.advance.name}: {season} {year} · {remaining} seasons remaining",
+  "completeText": "{concepts.advance.name}: all scheduled opportunities have passed",
+  "cards": {
+    "generalStaff": {
+      "name": "General Staff",
+      "category": "military",
+      "icon": "advanceGeneralStaff",
+      "requires": "any",
+      "effects": [
+        {"fx": "fight", "values": [1.1, 1.15, 1.2, 1.25, 1.3], "text": "{concepts.army.name} fights {v|up} harder"},
+        {"fx": "bleed", "values": [0.92, 0.88, 0.84, 0.8, 0.76], "text": "Battle casualties fall by {v|down}"}
+      ]
+    },
+    "rifling": {
+      "name": "Rifled Artillery",
+      "category": "military",
+      "icon": "advanceRifling",
+      "requires": "any",
+      "effects": [{"fx": "fight", "values": [1.16, 1.24, 1.32, 1.4, 1.48], "text": "{concepts.army.name} fights {v|up} harder"}]
+    },
+    "medicine": {
+      "name": "Army Medical Corps",
+      "category": "military",
+      "icon": "advanceMedicine",
+      "requires": "any",
+      "effects": [
+        {"fx": "fight", "values": [1.04, 1.06, 1.08, 1.1, 1.12], "text": "{concepts.army.name} fights {v|up} harder"},
+        {"fx": "bleed", "values": [0.84, 0.76, 0.68, 0.6, 0.52], "text": "Battle casualties fall by {v|down}"}
+      ]
+    },
+    "siegeTrain": {
+      "name": "Campaign Administration",
+      "category": "military",
+      "icon": "advanceSiegeTrain",
+      "requires": "border",
+      "effects": [
+        {"fx": "fight", "values": [1.06, 1.09, 1.12, 1.15, 1.18], "text": "{concepts.army.name} fights {v|up} harder"},
+        {"fx": "integrate", "values": [1.16, 1.24, 1.32, 1.4, 1.48], "text": "Conquests become fully integrated {v|up} faster"}
+      ]
+    },
+    "warCollege": {
+      "name": "Border War College",
+      "category": "military",
+      "icon": "advanceWarCollege",
+      "requires": "target",
+      "effects": [
+        {
+          "fx": "targetFight",
+          "values": [1.24, 1.36, 1.48, 1.6, 1.72],
+          "text": "{concepts.army.name} fights {v|up} harder against {nation} only"
+        },
+        {"fx": "bleed", "values": [0.96, 0.94, 0.92, 0.9, 0.88], "text": "Battle casualties fall by {v|down}"}
+      ]
+    },
+    "homeGuard": {
+      "name": "National Defence",
+      "category": "military",
+      "icon": "advanceHomeGuard",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "homeFight",
+          "values": [1.24, 1.36, 1.48, 1.6, 1.72],
+          "text": "{concepts.army.name} fights {v|up} harder in wars over its core land"
+        },
+        {"fx": "fortCost", "values": [0.88, 0.82, 0.76, 0.7, 0.64], "text": "{concepts.fort.name} construction costs {v|down} less"}
+      ]
+    },
+    "engineering": {
+      "name": "Frontier Engineers",
+      "category": "military",
+      "icon": "advanceEngineering",
+      "requires": "border",
+      "effects": [
+        {"fx": "fortCost", "values": [0.8, 0.7, 0.6, 0.5, 0.4], "text": "{concepts.fort.name} construction costs {v|down} less"},
+        {"fx": "fight", "values": [1.04, 1.06, 1.08, 1.1, 1.12], "text": "{concepts.army.name} fights {v|up} harder"}
+      ]
+    },
+    "staffColleges": {
+      "name": "Staff Colleges",
+      "category": "military",
+      "icon": "advanceStaffColleges",
+      "requires": "any",
+      "effects": [
+        {"fx": "horizon", "values": [2, 3, 4, 5, 6], "text": "Plans {v} more years ahead"},
+        {"fx": "fight", "values": [1.08, 1.12, 1.16, 1.2, 1.24], "text": "{concepts.army.name} fights {v|up} harder"}
+      ]
+    },
+    "expeditionary": {
+      "name": "Expeditionary Service",
+      "category": "military",
+      "icon": "advanceExpeditionary",
+      "requires": "border",
+      "effects": [
+        {"fx": "fight", "values": [1.1, 1.15, 1.2, 1.25, 1.3], "text": "{concepts.army.name} fights {v|up} harder"},
+        {
+          "fx": "integrateOther",
+          "values": [1.24, 1.36, 1.48, 1.6, 1.72],
+          "text": "Unaccepted peoples outside core land become fully integrated {v|up} faster"
+        }
+      ]
+    },
+    "warMinistry": {
+      "name": "War Ministry",
+      "category": "military",
+      "icon": "advanceWarMinistry",
+      "requires": "any",
+      "effects": [
+        {"fx": "fight", "values": [1.06, 1.09, 1.12, 1.15, 1.18], "text": "{concepts.army.name} fights {v|up} harder"},
+        {"fx": "upkeep", "values": [0.88, 0.82, 0.76, 0.7, 0.64], "text": "{concepts.upkeep.name} costs {v|down} less"}
+      ]
+    },
+    "industry": {
+      "name": "Machine Tools",
+      "category": "economy",
+      "icon": "advanceIndustry",
+      "requires": "any",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "values": [0.86, 0.79, 0.72, 0.65, 0.58],
+          "text": "Construction of {concepts.factory.name|lower} costs {v|down} less"
+        }
+      ]
+    },
+    "shipping": {
+      "name": "Steam Shipping",
+      "category": "economy",
+      "icon": "advanceShipping",
+      "requires": "coast",
+      "effects": [{"fx": "trade", "values": [1.24, 1.36, 1.48, 1.6, 1.72], "text": "{concepts.trade.name} earns {v|up} more"}]
+    },
+    "industrialCredit": {
+      "name": "Industrial Credit",
+      "category": "economy",
+      "icon": "advanceIndustrialCredit",
+      "requires": "any",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "values": [0.92, 0.88, 0.84, 0.8, 0.76],
+          "text": "Construction of {concepts.factory.name|lower} costs {v|down} less"
+        },
+        {"fx": "horizon", "values": [2, 3, 4, 5, 6], "text": "Plans {v} more years ahead"}
+      ]
+    },
+    "railwayProcurement": {
+      "name": "Railway Procurement",
+      "category": "economy",
+      "icon": "advanceRailwayProcurement",
+      "requires": "any",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "values": [0.92, 0.88, 0.84, 0.8, 0.76],
+          "text": "Construction of {concepts.factory.name|lower} costs {v|down} less"
+        },
+        {"fx": "fortCost", "values": [0.88, 0.82, 0.76, 0.7, 0.64], "text": "{concepts.fort.name} construction costs {v|down} less"}
+      ]
+    },
+    "merchantBanks": {
+      "name": "Merchant Banks",
+      "category": "economy",
+      "icon": "advanceMerchantBanks",
+      "requires": "coast",
+      "effects": [
+        {"fx": "trade", "values": [1.12, 1.18, 1.24, 1.3, 1.36], "text": "{concepts.trade.name} earns {v|up} more"},
+        {"fx": "taxes", "values": [1.08, 1.12, 1.16, 1.2, 1.24], "text": "{concepts.taxes.name} earn {v|up} more"}
+      ]
+    },
+    "industrialStandards": {
+      "name": "Industrial Standards",
+      "category": "economy",
+      "icon": "advanceIndustrialStandards",
+      "requires": "any",
+      "effects": [
+        {
+          "fx": "earns",
+          "values": [1.04, 1.06, 1.08, 1.1, 1.12],
+          "text": "{concepts.taxes.name}, output from {concepts.factory.name|lower} and {concepts.trade.name|lower} earn {v|up} more"
+        },
+        {
+          "fx": "factoryCost",
+          "values": [0.94, 0.91, 0.88, 0.85, 0.82],
+          "text": "Construction of {concepts.factory.name|lower} costs {v|down} less"
+        }
+      ]
+    },
+    "exportHouses": {
+      "name": "Export Houses",
+      "category": "economy",
+      "icon": "advanceExportHouses",
+      "requires": "coast",
+      "effects": [
+        {"fx": "trade", "values": [1.12, 1.18, 1.24, 1.3, 1.36], "text": "{concepts.trade.name} earns {v|up} more"},
+        {"fx": "integrate", "values": [1.08, 1.12, 1.16, 1.2, 1.24], "text": "Conquests become fully integrated {v|up} faster"}
+      ]
+    },
+    "landSurvey": {
+      "name": "Land Survey",
+      "category": "economy",
+      "icon": "advanceLandSurvey",
+      "requires": "any",
+      "effects": [{"fx": "taxes", "values": [1.2, 1.3, 1.4, 1.5, 1.6], "text": "{concepts.taxes.name} earn {v|up} more"}]
+    },
+    "domesticMarkets": {
+      "name": "Domestic Markets",
+      "category": "economy",
+      "icon": "advanceDomesticMarkets",
+      "requires": "any",
+      "effects": [
+        {"fx": "ownTaxes", "values": [1.24, 1.36, 1.48, 1.6, 1.72], "text": "{concepts.taxes.name} from accepted peoples earn {v|up} more"},
+        {
+          "fx": "factoryCost",
+          "values": [0.96, 0.94, 0.92, 0.9, 0.88],
+          "text": "Construction of {concepts.factory.name|lower} costs {v|down} less"
+        }
+      ]
+    },
+    "precisionEngineering": {
+      "name": "Precision Engineering",
+      "category": "economy",
+      "icon": "advancePrecisionEngineering",
+      "requires": "any",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "values": [0.92, 0.88, 0.84, 0.8, 0.76],
+          "text": "Construction of {concepts.factory.name|lower} costs {v|down} less"
+        },
+        {"fx": "fight", "values": [1.06, 1.09, 1.12, 1.15, 1.18], "text": "{concepts.army.name} fights {v|up} harder"}
+      ]
+    },
+    "administration": {
+      "name": "Professional Civil Service",
+      "category": "government",
+      "icon": "advanceAdministration",
+      "requires": "any",
+      "effects": [
+        {
+          "fx": "earns",
+          "values": [1.06, 1.09, 1.12, 1.15, 1.18],
+          "text": "{concepts.taxes.name}, output from {concepts.factory.name|lower} and {concepts.trade.name|lower} earn {v|up} more"
+        }
+      ]
+    },
+    "parliament": {
+      "name": "Parliamentary Procedure",
+      "category": "government",
+      "icon": "advanceParliament",
+      "requires": "any",
+      "effects": [{"fx": "reformCost", "values": [0.82, 0.73, 0.64, 0.55, 0.46], "text": "{concepts.reform.name} cost {v|down} less"}]
+    },
+    "welfare": {
+      "name": "Public Institutions",
+      "category": "government",
+      "icon": "advanceWelfare",
+      "requires": "any",
+      "effects": [{"fx": "reformCalm", "values": [1.32, 1.48, 1.64, 1.8, 1.96], "text": "{concepts.reform.name} remove {v|up} more unrest"}]
+    },
+    "integration": {
+      "name": "Regional Administration",
+      "category": "government",
+      "icon": "advanceIntegration",
+      "requires": "border",
+      "effects": [{"fx": "integrate", "values": [1.24, 1.36, 1.48, 1.6, 1.72], "text": "Conquests become fully integrated {v|up} faster"}]
+    },
+    "provincialRights": {
+      "name": "Provincial Rights",
+      "category": "government",
+      "icon": "advanceProvincialRights",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "integrateOther",
+          "values": [1.32, 1.48, 1.64, 1.8, 1.96],
+          "text": "Unaccepted peoples outside core land become fully integrated {v|up} faster"
+        },
+        {"fx": "reformCalm", "values": [1.08, 1.12, 1.16, 1.2, 1.24], "text": "{concepts.reform.name} remove {v|up} more unrest"}
+      ]
+    },
+    "publicAccounts": {
+      "name": "Public Accounts",
+      "category": "government",
+      "icon": "advancePublicAccounts",
+      "requires": "any",
+      "effects": [
+        {"fx": "taxes", "values": [1.08, 1.12, 1.16, 1.2, 1.24], "text": "{concepts.taxes.name} earn {v|up} more"},
+        {"fx": "reformCost", "values": [0.9, 0.85, 0.8, 0.75, 0.7], "text": "{concepts.reform.name} cost {v|down} less"}
+      ]
+    },
+    "nationalSchools": {
+      "name": "National Schools",
+      "category": "government",
+      "icon": "advanceNationalSchools",
+      "requires": "any",
+      "effects": [
+        {"fx": "horizon", "values": [2, 3, 4, 5, 6], "text": "Plans {v} more years ahead"},
+        {"fx": "ownTaxes", "values": [1.1, 1.15, 1.2, 1.25, 1.3], "text": "{concepts.taxes.name} from accepted peoples earn {v|up} more"}
+      ]
+    },
+    "technicalUniversities": {
+      "name": "Technical Universities",
+      "category": "government",
+      "icon": "advanceTechnicalUniversities",
+      "requires": "any",
+      "effects": [
+        {"fx": "horizon", "values": [2, 3, 4, 5, 6], "text": "Plans {v} more years ahead"},
+        {
+          "fx": "earns",
+          "values": [1.02, 1.03, 1.04, 1.05, 1.06],
+          "text": "{concepts.taxes.name}, output from {concepts.factory.name|lower} and {concepts.trade.name|lower} earn {v|up} more"
+        }
+      ]
+    },
+    "civicMediation": {
+      "name": "Civic Mediation",
+      "category": "government",
+      "icon": "advanceCivicMediation",
+      "requires": "any",
+      "effects": [
+        {"fx": "reformCost", "values": [0.9, 0.85, 0.8, 0.75, 0.7], "text": "{concepts.reform.name} cost {v|down} less"},
+        {"fx": "reformCalm", "values": [1.16, 1.24, 1.32, 1.4, 1.48], "text": "{concepts.reform.name} remove {v|up} more unrest"}
+      ]
+    },
+    "consularService": {
+      "name": "Consular Service",
+      "category": "government",
+      "icon": "advanceConsularService",
+      "requires": "coast",
+      "effects": [
+        {"fx": "integrate", "values": [1.12, 1.18, 1.24, 1.3, 1.36], "text": "Conquests become fully integrated {v|up} faster"},
+        {"fx": "trade", "values": [1.08, 1.12, 1.16, 1.2, 1.24], "text": "{concepts.trade.name} earns {v|up} more"}
+      ]
+    }
+  }
+}
