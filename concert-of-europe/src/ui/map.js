@@ -126,11 +126,11 @@ function renderOverlays(){
   $('tl').innerHTML = globalChips();
   const crises = S.alive().filter(c => S.inCrisis(c)).map(c => `<div class="wchip crisis" ${tipOf('civilWar')}><div class="t">${ic('civilWar')}Civil war in ${c.name}<span>${dur(c.crisis.until - S.t)}</span></div></div>`).join('');
   const wars = S.wars.map(w => {
-    const s = w.score, left = s >= 0 ? 50 : 50 + s / 2, wid = Math.abs(s) / 2;
+    const s = w.score, left = s >= 0 ? 50 - s / 2 : 50, wid = Math.abs(s) / 2;
     const col = s >= 0 ? S.C[w.att[0]].color : S.C[w.def[0]].color;
-    const held = side => S.regions.filter(r => r.occ && side.includes(r.occ)).length;
+    const held = (side, other) => S.regions.filter(r => side.includes(r.occ) && other.includes(r.owner)).length;
     const names = side => side.map(t => S.C[t].name).join(', ');
-    return `<div class="wchip" ${tipAttr(w.name, `${names(w.att)} occupy ${held(w.att)} provinces; ${names(w.def)} occupy ${held(w.def)}. The bar leans toward whoever is winning.`)}><div class="t">${w.name}<span>${dur(w.quarters)}</span></div>
+    return `<div class="wchip" ${tipAttr(w.name, `${names(w.att)} occupy ${held(w.att, w.def)} provinces; ${names(w.def)} occupy ${held(w.def, w.att)}. The bar leans toward whoever is winning.`)}><div class="t">${w.name}<span>${dur(w.quarters)}</span></div>
       <div class="s"><div>${w.att.map(nameSpan).join(', ')}</div><div style="text-align:right">${w.def.map(nameSpan).join(', ')}</div></div>
       <div class="wsbar"><i style="left:${left}%;width:${wid}%;background:${col}"></i></div></div>`;
   }).join('');
