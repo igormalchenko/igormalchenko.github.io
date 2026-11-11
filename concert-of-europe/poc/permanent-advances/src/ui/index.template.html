@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concert of Europe · Permanent Advances POC</title>
+<link rel="icon" type="image/png" sizes="32x32" href="@@BRAND_PNG@@">
+<link rel="icon" type="image/svg+xml" href="@@BRAND_ICON@@">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* A general staff's map table at night: the map is the whole screen; brass marks the controls. */
+  --bg:#12161b; --panel:#191e25; --panel2:#20262e; --line:#2b323c; --ink:#e8e3d7; --muted:#97a0aa;
+  --brass:#c9a45c; --sea:#1b2833; --war:#d65a4d; --peace:#7fae7a; --diplo:#7aa0c9; --revolt:#d09a4a; --unify:#c9a45c;
+  --display:"IM Fell English SC", Georgia, serif; --body:"IBM Plex Sans", system-ui, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--body);font-variant-numeric:tabular-nums;display:flex;flex-direction:column;overflow:hidden}
+button,select{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+.bar{height:46px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px;border-bottom:1px solid var(--line);background:#14181e}
+.bar h1{font:400 20px/1 var(--display);margin:0 6px 0 0;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand-mark{display:block;width:36px;height:24px;flex:none}
+.date{display:flex;align-items:baseline;gap:6px;min-width:120px}
+.date span{font-size:13px;color:var(--muted)}
+.date b{font:400 24px/1 var(--display);color:var(--brass);font-variant-numeric:tabular-nums}
+.spacer{flex:1}
+.btn{background:var(--panel2);border:1px solid var(--line);border-radius:6px;height:30px;padding:0 11px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:#46505c}
+.btn.primary{background:var(--brass);color:#1a1408;border-color:var(--brass);font-weight:600;min-width:74px;justify-content:center}
+.btn.icon{width:30px;padding:0;justify-content:center;font-weight:600}
+.btn.icon svg.ic{margin:0;width:16px;height:16px;cursor:pointer}
+.btn[disabled]{opacity:.45;cursor:default}
+.speed{display:flex;align-items:center;gap:4px}
+.pips{display:flex;align-items:flex-end;gap:2px;height:30px;padding:0 3px}
+.pip{width:12px;height:30px;padding:0 2px;background:none;border:0;cursor:pointer;display:flex;align-items:flex-end}
+.pip i{display:block;width:100%;border-radius:2px;background:var(--line)}
+.pip.on i{background:var(--brass)}.pip:hover i{outline:1px solid #46505c}
+.seed{color:var(--muted);font:11.5px var(--body);background:none;border:0;border-radius:6px;height:30px;padding:0 8px;cursor:pointer}
+.seed:hover{color:var(--ink);background:var(--panel2)}
+@media (max-width:760px){.bar{gap:6px}.bar h1{margin-right:2px}.bar .brand-name{display:none}.brand-mark{width:30px;height:20px}.date{min-width:100px}}
+
+.main{flex:1;display:flex;min-height:0}
+.mapwrap{position:relative;flex:1;min-width:0;background:#0f1317}
+#map{position:absolute;inset:0;width:100%;height:100%}
+#map .cell{transition:fill .5s, opacity .3s;cursor:pointer}
+#map .lbl{font-family:var(--display);fill:#f3efe4;paint-order:stroke;stroke:rgba(10,12,15,.8);stroke-width:3px;stroke-linejoin:round;pointer-events:none;text-anchor:middle;dominant-baseline:middle;letter-spacing:.03em}
+#map .goal{fill:none;stroke:#d65a4d;stroke-width:2.2;stroke-dasharray:6 4;pointer-events:none}
+#map #gSettle,#map #gOcc,#map #gFront,#map #gGoals,#map #gNaval,#map #gIcons,#map #gMarks,#map #gLabels{pointer-events:none}
+#map .front{fill:none;stroke:#ff5a48;stroke-width:3.2;stroke-linecap:round;stroke-dasharray:7 4;filter:drop-shadow(0 0 2px rgba(255,90,72,.7))}
+#map .fresh{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:no-preference){#map .hot{animation:pulse 1.1s ease-in-out infinite}#map .goal,#map .front{animation:dash 1.2s linear infinite}#map .fresh{animation:pop .5s ease-out}}
+@keyframes pulse{50%{opacity:.4}}@keyframes dash{to{stroke-dashoffset:-20}}@keyframes pop{from{transform:scale(1.8);opacity:0}}
+
+.overlay{position:absolute;pointer-events:none;display:flex;gap:6px}
+.overlay > *{pointer-events:auto}
+.tl{top:10px;left:10px;flex-direction:column;align-items:flex-start}
+.bl{bottom:10px;left:10px;right:10px;flex-wrap:wrap;align-items:flex-end}
+.chip2{background:rgba(20,24,30,.88);border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:12px;backdrop-filter:blur(3px);display:flex;align-items:center;cursor:default}
+.wchip{background:rgba(20,24,30,.9);border:1px solid var(--line);border-left:3px solid var(--war);border-radius:7px;padding:5px 9px;font-size:12px;width:230px;cursor:default}
+.wchip.crisis{border-left-color:#b9a3d6}
+.wchip .t{display:flex;justify-content:space-between;gap:6px;font-weight:500}
+.wchip .t span{color:var(--muted);font:11px var(--body)}
+.wsbar{height:5px;border-radius:3px;background:#2c333d;position:relative;overflow:hidden;margin:4px 0 2px}
+.wsbar i{position:absolute;top:0;bottom:0}
+.wsbar::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#6b7480}
+.wchip .s{display:flex;justify-content:space-between;gap:6px;color:var(--muted);font-size:11px}
+.wchip .s div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}
+
+.tip{position:absolute;pointer-events:none;background:rgba(14,17,21,.96);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;display:none;width:250px;z-index:3}
+.tip .hd{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.tip .fl{width:14px;height:10px;border-radius:2px;flex:none}
+.tip hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+.qtip{position:fixed;pointer-events:none;background:rgba(14,17,21,.96);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:12px;line-height:1.35;max-width:260px;display:none;z-index:20}
+.qtip b{font-weight:600}.qtip .d{color:var(--muted);margin-top:1px}
+
+/* The nation panel. Its head is a small card in the ruler's rarity, like the heir cards; below it, plain sections under brass headings. */
+.side{width:340px;flex:none;border-right:1px solid var(--line);background:var(--panel);padding:16px 16px 28px;overflow-y:auto;font-size:13px}
+.side .btn.back{background:none;border:0;padding:0;height:auto;margin:0 0 10px;color:var(--muted)}.side .btn.back:hover{color:var(--ink)}
+.crest{position:relative;padding:18px 18px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--tc) 45%,var(--line));
+  background:radial-gradient(120% 55% at 50% 0%,color-mix(in srgb,var(--tc) 12%,transparent),transparent 70%),linear-gradient(180deg,#242b34,#1a1f26);
+  box-shadow:0 8px 20px -10px rgba(0,0,0,.8)}
+.crest::before{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--tc) 20%,transparent);border-radius:10px;pointer-events:none}
+.crest .nation-head{gap:10px;margin:0 0 12px}
+.crest .nation-head .flag{width:30px;height:21px}
+.crest .nation-head h2{font-size:26px}
+.crest .inc .num{display:flex;align-items:center;gap:8px}.crest .inc b{font:500 34px/1 var(--body);color:var(--brass)}.crest .inc .num span{color:var(--muted);font-size:13px;margin-left:auto}.crest .inc svg.ic.lg{width:24px;height:24px}
+.crest .spark{display:block;width:100%;height:32px;margin-top:8px}
+.crest .reign{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line))}
+.crest .reign svg.emb{width:52px;height:52px}
+.crest .reign .rar{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tc);margin-bottom:2px}
+.crest .reign b{display:block;font:400 20px/1.15 var(--display);cursor:default}
+.crest .pers{margin:5px 0 0;gap:2px 12px;font-size:12px}
+.figs{display:grid;grid-template-columns:repeat(6,1fr);margin-top:14px;padding-top:12px;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line))}
+.fig{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:default}
+.fig svg.ic{margin:0;width:16px;height:16px}
+.fig b{font:500 14px var(--body)}
+.side .crest + .ledger{margin-top:16px}
+.side h3{font-size:18px;color:var(--brass);margin:26px 0 10px}
+.side .ledger{margin-bottom:0;font-size:13px}
+.side .lg{padding:3px 0}
+.side .lg.only{border-top:0;margin-top:0;padding-top:3px}
+.side .acts{display:flex;flex-direction:column;gap:6px}
+.side .act{display:flex;align-items:center;gap:2px}.side .act svg.ic{margin-right:8px}
+.side .act .when{margin-left:auto;padding-left:10px;color:var(--muted);font-size:12px;white-space:nowrap}
+.side .acts.dim{color:#cfc9bb}
+.side .sub{margin:16px 0 8px;font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.side h3.hcol{display:flex;justify-content:space-between;align-items:center}.side h3.hcol svg.ic{margin:0 0 0 auto;opacity:.8}
+.side .provs{margin:0 -8px;font-size:13px}
+.side .prov{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 62px 32px 42px 34px;gap:6px;align-items:center;padding:5px 8px;border:0;border-radius:5px}
+.side .provs{display:flex;flex-direction:column;gap:3px}
+.side .prov::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);border-radius:5px;background:color-mix(in srgb,var(--nc) 16%,transparent);pointer-events:none}
+.side .prov > *{position:relative}
+.side .prov.click:hover{background:var(--panel2)}
+.side .prov .pn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side .prov .pf,.side .prov .pk{display:flex;align-items:center;justify-content:flex-end;gap:1px}.side .prov svg.ic{margin:0;width:14px;height:14px}
+.side .prov .pu{text-align:right;font-size:12px;white-space:nowrap}.side .prov .pu svg.ic{margin-right:2px}
+.side .prov .pn-x{font-size:11.5px;color:var(--muted);margin-left:1px}
+.side .prov .pv{text-align:right;color:var(--brass);font-weight:500}
+.btn.more{width:auto;background:none;border:0;padding:0;height:auto;margin:12px 0 0;font-size:12.5px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}.btn.more:hover{color:var(--ink)}
+@media (max-width:900px){.side{display:none}}
+.panel{width:380px;flex:none;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0;transition:width .2s}
+.panel.closed{width:0;border-left:0;overflow:hidden}
+@media (max-width:760px){.panel{position:absolute;right:0;top:46px;bottom:0;z-index:5;width:min(92vw,380px)}}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tab{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:9px 6px;cursor:pointer;color:var(--muted);font-weight:500}
+.tab.on{color:var(--ink);border-bottom-color:var(--brass)}
+.pane{display:none;overflow-y:auto;padding:12px 14px;flex:1;min-height:0}
+.pane.on{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{border:1px solid var(--line);background:none;border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer;color:var(--muted)}
+.chip.on{color:var(--ink);border-color:#56606c;background:var(--panel2)}
+.chip .sw{width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.sw{width:11px;height:11px;border-radius:2px;display:inline-block;flex:none}
+.yr{font:400 18px var(--display);color:var(--brass);margin:12px 0 4px;border-bottom:1px solid var(--line);padding-bottom:2px}
+.yr:first-child{margin-top:0}
+.ev{padding:3px 0;margin:2px 0;font-size:13px}
+.sea{color:var(--muted);font-size:12px;margin:8px 0 2px}.yr + .sea{margin-top:2px}
+.ev em{font-style:italic;color:#efe7d2}
+.ev i{font-style:normal;color:#d9d2c0;border-bottom:1px dotted #6b7480}
+b.cn{font-weight:600;cursor:pointer;box-shadow:inset 0 -2px 0 var(--c)}
+b.cn:hover{color:#fff}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{color:var(--muted);font-weight:500;text-align:right;padding:5px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:5px 4px;text-align:right;border-bottom:1px solid #222830;font-variant-numeric:tabular-nums;font-family:var(--body);font-size:12px}
+th:nth-child(2),td:nth-child(2){text-align:left;font-family:var(--body);font-size:12.5px}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--panel2)}
+.chart{margin:4px 0 14px}
+.chart text{fill:var(--muted);font:10px var(--body)}
+h3{font:400 17px var(--display);margin:4px 0 8px}
+.muted{color:var(--muted)}
+.uni{margin-bottom:9px;font-size:12px}.uni .row{display:flex;justify-content:space-between;gap:8px;margin-bottom:3px}.uni .row b{font-weight:500}
+.barx{height:6px;background:#2c333d;border-radius:3px;overflow:hidden;position:relative}
+.barx i{display:block;height:100%;background:var(--brass)}
+.barx.mid i{position:absolute;top:0;bottom:0;background:var(--diplo)}.barx.mid::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#6b7480}
+.nation-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.nation-head .flag{width:34px;height:24px;border-radius:3px;border:1px solid rgba(255,255,255,.15)}
+.nation-head h2{font:400 24px/1.05 var(--display);margin:0}
+.pers{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted);margin:0 0 12px}.pers span{display:inline-flex;align-items:center;cursor:default}
+.rulerline{display:flex;align-items:center;gap:10px;margin:2px 0 6px}.rulerline b{font:400 20px/1.15 var(--display);cursor:default}.rulerline svg.emb{width:34px;height:34px}
+.btn.back{height:26px;font-size:12px;margin-bottom:10px;color:var(--muted)}
+.stat{cursor:default}
+.trait{font-size:12px;margin-top:6px;color:#d9d2c0}.trait b{font-weight:600;color:var(--brass)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.stat{background:var(--panel2);border-radius:6px;padding:6px 8px}
+.stat b{font:500 15px var(--body)}
+.ledger{background:var(--panel2);border-radius:8px;padding:6px 10px;margin-bottom:12px;font-size:12.5px}
+.lg{display:flex;justify-content:space-between;padding:2px 0}.lg span:last-child{font-family:var(--body)}
+.lg.net{border-top:1px solid var(--line);margin-top:3px;padding-top:4px;font-weight:600}
+.lgnote{color:var(--muted);font-size:11.5px;margin-top:5px;line-height:1.35}
+.provs{margin-bottom:12px;font-size:12.5px}
+.prov{display:grid;grid-template-columns:1fr 78px 48px;gap:8px;padding:3px 0;border-bottom:1px solid #222830}
+.prov.head{color:var(--muted);font-size:11px}
+.prov .ic{letter-spacing:1px}.prov .un{text-align:right;font-family:var(--body)}
+.empty{color:var(--muted);padding:20px 4px;text-align:center}
+
+svg.ic{width:15px;height:15px;vertical-align:-3px;margin-right:4px;flex:none;cursor:help}
+svg.ic.lg{width:22px;height:22px;margin:0}
+svg.emb{width:22px;height:22px;flex:none}
+.tipr{display:flex;align-items:center;gap:4px}.tipr svg.emb{width:15px;height:15px}
+.ev{display:flex;gap:8px}.ev .evi{flex:none;padding-top:1px}.ev .evi svg.ic{width:16px;height:16px;margin:0}
+.stat{display:flex;gap:8px;align-items:center}
+
+.claims div{font-size:12.5px;padding:2px 0}
+.nbs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.nbx{background:var(--panel2);border-radius:999px;padding:2px 9px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.nbx:hover,.prov.click:hover{background:#2a313a}.prov.click{cursor:pointer}
+.chip svg.ic{width:13px;height:13px}
+th svg.ic{margin:0}
+.modal{position:fixed;inset:0;background:rgba(5,7,9,.7);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;padding:20px 22px}
+.modal h2{font:400 26px var(--display);margin:0 0 8px;color:var(--brass);text-wrap:balance}
+.modal p,.modal li{max-width:65ch}
+.modal .close{float:right}
+.modal .box.wide{max-width:860px}
+/* The start screen: a title page over the darkened map. Three ambitions, three columns; the unions as races between their nations. */
+.modal.title{background:radial-gradient(ellipse at 50% 50%,rgba(8,10,13,.86),rgba(8,10,13,.97) 70%);padding:28px 24px}
+.tbox{width:100%;max-width:1120px;max-height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:26px}
+.t-hd{text-align:center}
+.t-brand{display:flex;align-items:center;justify-content:center;gap:20px}
+.t-wordmark{min-width:0;text-align:left}
+.title-emblem{display:block;width:auto;height:clamp(90px,14vh,128px);max-width:30%;object-fit:contain;flex:none}
+.t-hd h2{font:400 56px/1 var(--display);color:var(--brass);margin:0;letter-spacing:.01em}
+.t-years{font:400 22px/1 var(--display);color:var(--brass);margin-top:10px}
+.t-hd p{max-width:64ch;margin:12px auto 0;color:#cfc9bb;font-size:15px;line-height:1.5;text-wrap:balance}
+.t-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start}
+.t-races{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px}
+.t-col{background:rgba(25,30,37,.92);border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px}
+.t-col h3{font:400 21px/1.1 var(--display);color:var(--brass);margin:0}
+.t-col .who{color:var(--muted);font-size:12.5px;line-height:1.45;margin:6px 0 14px}
+.t-n{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-radius:6px;padding:6px 8px;margin:0 -8px;width:calc(100% + 16px);text-align:left;cursor:pointer;font-size:14px}
+.t-n:hover,.t-n:focus-visible{background:var(--panel2)}
+.t-n .fl{width:16px;height:11px;border-radius:2px;flex:none}
+.t-race{padding:8px 0 6px;border-top:1px solid var(--line)}
+.t-race:nth-child(-n+2){border-top:0;padding-top:0}
+.t-race .rt{font:400 16px/1.2 var(--display);color:var(--ink);margin-bottom:4px}
+.t-race .t-n{font-size:13.5px;padding:4px 8px}
+.t-ft{display:flex;align-items:center;justify-content:center;gap:10px}
+.t-ft .muted{font-size:12.5px;margin-left:4px}
+@media (max-width:860px){.t-cols,.t-races{grid-template-columns:1fr}.t-race:nth-child(2){border-top:1px solid var(--line);padding-top:8px}.t-hd h2{font-size:40px}}
+@media (max-height:760px){.title-emblem{height:90px}.tbox{gap:20px}.modal.title{padding:20px 24px}}
+@media (max-width:600px){.t-brand{gap:12px}.title-emblem{height:80px}.t-hd h2{font-size:clamp(26px,6vw,36px)}.t-years{font-size:18px;margin-top:7px}}
+.picks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.pick{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.pick:hover{border-color:var(--brass)}.pick .fl{width:14px;height:10px;border-radius:2px}
+.heirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:10px}
+.heir{position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;min-height:340px;padding:24px 18px 18px;border-radius:14px;color:var(--ink);font:inherit;
+  border:1px solid color-mix(in srgb,var(--tc) 55%,var(--line));
+  background:radial-gradient(120% 60% at 50% 0%,color-mix(in srgb,var(--tc) 14%,transparent),transparent 70%),linear-gradient(180deg,#242b34,#1a1f26);
+  box-shadow:0 8px 20px -10px rgba(0,0,0,.8);transition:transform .15s ease,border-color .15s ease}
+.heir::before{content:"";position:absolute;inset:6px;border:1px solid color-mix(in srgb,var(--tc) 24%,transparent);border-radius:10px;pointer-events:none}
+.heir:hover{transform:translateY(-4px);border-color:var(--tc)}
+.heir:focus{outline:none}.heir:focus-visible{border-color:var(--tc)}
+.heir .key{position:absolute;top:13px;left:14px;min-width:18px;font-size:11px;line-height:17px;color:var(--muted);border:1px solid var(--line);border-radius:4px}
+.heir .rar{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tc)}
+.heir svg.emb{width:68px;height:68px;margin:12px 0 8px;flex:none}
+.heir .ttl{font:400 24px/1.1 var(--display)}
+.heir .who{color:var(--muted);font-size:12.5px}
+.heir .vibe{margin:12px 2px 0;font-size:15px;font-style:italic;line-height:1.4;color:var(--muted)}
+.heir .fx{margin:0;padding:5px 0 0 9px;width:100%;text-align:left;font-size:13.5px;line-height:1.4;border-left:2px solid var(--fxc)}
+.heir .fx-main{--fxc:var(--peace);margin-top:auto;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line));padding-top:10px}.heir .fx-flat{--fxc:var(--brass)}.heir .fx-malus{--fxc:#e08070}
+.heir.tier3{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 12px -4px var(--tc)}
+.heir.tier4{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 18px -4px var(--tc)}
+.heir.tier5{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 24px -4px var(--tc);background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%),linear-gradient(180deg,#2a2c2b,#1d1f22)}
+@media (max-width:640px){.heirs{grid-template-columns:1fr}.heir{min-height:0}.heir svg.emb{width:48px;height:48px;margin:6px 0 4px}}
+.heir.tier5::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,transparent 60%);background-size:250% 100%;background-position:120% 0;opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #heirModal.on .heir{animation:deal .35s ease-out backwards}
+  #heirModal.on .heir.tier4{animation:deal .35s ease-out backwards,glow4 3.2s ease-in-out .4s infinite}
+  #heirModal.on .heir.tier5{animation:deal .35s ease-out backwards,glow5 2.6s ease-in-out .4s infinite}
+  #heirModal.on .heir.tier5::after{animation:sheen 4s ease-in-out 1s infinite}
+}
+@keyframes deal{from{opacity:0;transform:translateY(8px)}}
+@keyframes glow4{50%{box-shadow:0 0 22px -3px var(--tc)}}
+@keyframes glow5{50%{box-shadow:0 0 30px -2px var(--tc)}}
+@keyframes sheen{0%{opacity:1;background-position:120% 0}45%,100%{opacity:1;background-position:-20% 0}}
+.iw{white-space:nowrap}
+.rerolls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
+.rr{position:relative}
+#rerollNote{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:10px;white-space:nowrap;color:var(--war)}
+.btn.nope{animation:nope .4s;border-color:var(--war)}
+@keyframes nope{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.box.almanac{max-width:1080px;height:88vh;display:flex;flex-direction:column;padding:16px 18px;overflow:hidden}
+.al-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}.al-top h2{margin:0;flex:none}
+.al-top input{flex:1;min-width:0;height:30px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--ink);font:inherit;padding:0 10px}
+.al-top .close{float:none;margin-left:auto}
+.al-cols{display:grid;grid-template-columns:200px 1fr;gap:14px;min-height:0;flex:1}
+.al-nav{overflow-y:auto;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--line);padding-right:10px}
+.al-n{display:flex;justify-content:space-between;gap:8px;text-align:left;background:none;border:0;border-radius:6px;padding:6px 8px;color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+.al-n:hover{background:var(--panel2)}.al-n.on{background:var(--panel2);color:var(--brass)}
+.al-body{overflow-y:auto;padding-right:6px;min-width:0}
+.al-g{margin-top:16px}
+.al-e{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0 0 8px;background:var(--panel2);border-left:3px solid var(--tc,var(--line))}
+.al-e p{margin:4px 0;font-size:13.5px;line-height:1.45}.al-e .vibe{font-style:italic;color:var(--muted)}
+.al-h{display:flex;align-items:center;gap:10px;margin-bottom:2px}.al-h svg.emb{width:34px;height:34px;flex:none}.al-h .sw{width:16px;height:12px}
+.al-t{font:400 18px var(--display)}
+.al-f{display:grid;grid-template-columns:minmax(120px,max-content) 1fr;gap:2px 12px;margin:6px 0 0;font-size:12.5px}.al-f dt{color:var(--muted)}.al-f dd{margin:0}
+.raw{margin-top:6px;font-size:11.5px;color:var(--muted)}.raw summary{cursor:pointer;width:max-content}.raw pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border-radius:6px;padding:8px;margin:4px 0 0;max-height:260px;overflow:auto}
+.al-tab td,.al-tab th{text-align:left;padding:4px 6px}.al-tab tr.al-e{display:table-row;background:none;border:0}.al-tab tr.al-e[hidden]{display:none}
+.al-noic{display:inline-block;width:16px}
+@media (max-width:700px){.al-cols{grid-template-columns:1fr}.al-nav{flex-direction:row;flex-wrap:wrap;border:0;max-height:96px}}
+.formula{background:var(--panel2);border-radius:8px;padding:10px 12px;font:12.5px/1.6 var(--body);margin:10px 0}
+.legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-size:12.5px;margin:8px 0 4px}
+.legend div{display:flex;align-items:center;gap:8px}
+/* Isolated permanent-advances prototype. */
+.advances-button{position:relative;color:var(--brass)}.advance-count{position:absolute;right:0;bottom:-2px;font-size:9px;background:var(--panel);border-radius:5px;padding:0 3px}.advances-button[hidden]{display:none}
+.poc-intro{display:inline-block;margin-top:12px;color:var(--brass);font-size:14px}
+.advance-card{min-height:430px;gap:8px}.advance-card .ttl{font-size:25px}.advance-card .vibe{font-size:14px;margin:4px 0 12px}
+.advance-symbol{display:grid;place-items:center;width:68px;height:68px;margin:10px 0 4px;border:1px solid color-mix(in srgb,var(--tc) 45%,transparent);border-radius:50%;color:var(--tc);background:color-mix(in srgb,var(--tc) 8%,transparent)}
+.advance-symbol svg{width:32px;height:32px}.advance-card .fx-main{margin-top:auto;font-size:15px;font-weight:500}
+.advance-steer{text-align:left;font-size:12.5px;line-height:1.5;color:var(--muted);margin:0;width:100%}
+.advance-outlook{text-align:left;border-top:1px solid var(--line);padding-top:12px;font-size:12px;line-height:1.45;color:var(--tc);width:100%;margin-top:8px}
+.advance-foot{font-size:12px;color:var(--muted);margin:18px 0 0;line-height:1.5}
+.advances-panel{padding:0 0 16px;border-bottom:1px solid var(--line);margin-bottom:16px}.advances-panel h3{display:flex;justify-content:space-between}.advances-panel h3 span{font-size:12px}
+.advance-next{font-size:11px;line-height:1.5;color:var(--muted);margin:4px 0 10px}.advance-entry{border-top:1px solid var(--line);padding:9px 0;font-size:12px}.advance-entry summary{display:flex;align-items:center;gap:8px;cursor:pointer}.advance-entry summary span{margin-left:auto;color:var(--muted)}.advance-entry p{margin:8px 0 0;line-height:1.5}
+@media(max-width:640px){.advance-card{min-height:330px}.advance-symbol{width:48px;height:48px}.advance-card .vibe{margin-bottom:4px}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1 aria-label="Concert of Europe"><img class="brand-mark" src="@@BRAND_MARK@@" width="96" height="64" alt="" aria-hidden="true"><span class="brand-name">Concert of Europe</span></h1>
+  <div class="date"><span id="season">{{rules.seasons.0}}</span><b id="year">{{rules.start}}</b></div>
+  <button class="btn primary" id="auto" data-tip="Play or pause (Space)">Play</button>
+  <div class="speed" role="group" aria-label="Speed"><button class="btn icon" id="slower" data-tip="Slower (−)" aria-label="Slower">−</button><div class="pips" id="pips"></div><button class="btn icon" id="faster" data-tip="Faster (+)" aria-label="Faster">+</button></div>
+  <button class="btn icon advances-button" id="advancesBtn" data-tip="National advances" aria-label="National advances" hidden></button>
+  <div class="spacer"></div>
+  <button class="seed" id="seed" data-tip="Start a new world"></button>
+  <button class="btn icon" id="almanac" data-tip="{{concepts.almanac.name}}" data-desc="{{concepts.almanac.desc}}" aria-label="{{concepts.almanac.name}}"></button>
+  <button class="btn icon" id="help" data-tip="How it works" aria-label="How it works">?</button>
+  <button class="btn icon" id="toggle" data-tip="Show or hide the side panel" aria-label="Show or hide the side panel"></button>
+</div>
+<div class="main">
+  <aside class="side" id="side" aria-label="Nation at a glance"></aside>
+  <div class="mapwrap" id="mapwrap">
+    <svg id="map" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of Europe coloured by owner">
+      <defs>
+        <pattern id="occ-key" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="8" fill="#c96b5f"/><rect x="4" width=".8" height="8" fill="rgba(0,0,0,.35)"/></pattern>
+        <pattern id="settle" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1" fill="rgba(12,14,18,.55)"/></pattern>
+        <pattern id="waves" width="14" height="8" patternUnits="userSpaceOnUse"><path d="M0 6 Q3.5 3 7 6 T14 6" fill="none" stroke="#24333f" stroke-width="1"/></pattern>
+      </defs>
+      <rect x="-500" y="-500" width="2000" height="1720" fill="#0f1317"/>
+      <rect width="1000" height="720" fill="var(--sea)"/>
+      <rect width="1000" height="720" fill="url(#waves)"/>
+      <g id="gLand"></g><g id="gCells"></g><g id="gSettle"></g><g id="gOcc"></g><g id="gBorders"></g><g id="gFront"></g><g id="gGoals"></g><g id="gNaval"></g><g id="gIcons"></g><g id="gLabels"></g><g id="gMarks"></g><rect width="1000" height="720" fill="none" stroke="#3a414a" stroke-width="1.2" pointer-events="none"/>
+    </svg>
+    <div class="overlay tl" id="tl"></div>
+    <div class="overlay bl" id="bl"></div>
+    <div class="tip" id="tip"></div>
+  </div>
+  <aside class="panel" id="panel">
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-p="chron" role="tab">Chronicle</button>
+      <button class="tab" data-p="powers" role="tab">Powers</button>
+      <button class="tab" data-p="province" role="tab">Province</button>
+    </div>
+    <div class="pane on" id="chron"><div class="chips" id="chips"></div><div id="log"></div></div>
+    <div class="pane" id="powers"></div>
+    <div class="pane" id="province"><div class="empty">Click a province on the map.</div></div>
+  </aside>
+</div>
+
+<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="box">
+    <button class="btn close" data-close>Close</button>
+    <h2 id="helpTitle">How it works</h2>
+    <p><b>The ambition.</b> Every nation has one ambition for the armistice of {{rules.end.year}}: the great powers of {{rules.start}} want the most gold a year, a divided people wants to unite and hold together, and the small want to survive. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first. A province of the people it is uniting is worth {{ambitionKinds.unite.worth|times}} its gold a year to it, and a nation that only has to survive counts every loss {{ambitionKinds.survive.losses|times}} as dear.</p>
+    <div class="formula">value = extra gold a year × years planned − cost − expected losses</div>
+    <p>Factories pay for good but each one costs more and adds less. An army deters neighbours whose own forecast says "invade", but its men are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it is integrated, minus army losses, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
+    <p><b>What throws the plans off.</b> Rulers misjudge their odds, and each carries a trait with a bonus and a malus. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. A people that wins its uprising brings back its fallen nation or forms a new one, which claims the provinces of the union it works toward. {{events.serfdom.nation|nation}}'s factories run at {{events.serfdom.before|frac}} speed until the serfs are freed.</p>
+    <h3>Map key</h3>
+    <div class="legend" id="legend"></div>
+    <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession; its ministers decide everything else. Keys: the number on a card to pick that heir, R to reroll, A for the {{concepts.almanac.name}}, Space or P to play or pause, + and − to change speed. Click the world number to start a new world.</p>
+  </div>
+</div>
+<div class="modal" id="almanacModal" role="dialog" aria-modal="true" aria-labelledby="alTitle">
+  <div class="box almanac">
+    <div class="al-top"><h2 id="alTitle">{{concepts.almanac.name}}</h2><input id="alSearch" type="search" placeholder="Search this page" aria-label="Search this page"><button class="btn close" data-close>Close</button></div>
+    <div class="al-cols"><nav class="al-nav" id="alNav" aria-label="Almanac sections"></nav><div class="al-body" id="alBody"></div></div>
+  </div>
+</div>
+
+<div class="modal sticky title" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+  <div class="tbox">
+    <header class="t-hd">
+      <div class="t-brand">
+        <img class="title-emblem" src="@@BRAND_HERO@@" width="960" height="640" alt="" aria-hidden="true" fetchpriority="high">
+        <div class="t-wordmark">
+          <h2 id="startTitle">Concert of Europe</h2>
+          <div class="t-years">{{rules.start}} – {{rules.end.year}} · Permanent Advances POC</div>
+        </div>
+      </div>
+      <p id="startIntro"></p>
+    </header>
+    <div class="t-cols" id="startBody"></div>
+    <footer class="t-ft"><button class="btn" id="watch">Watch Europe</button><button class="btn" id="reworld">Different world</button><span class="muted" id="startSeed"></span></footer>
+  </div>
+</div>
+<div class="modal sticky" id="heirModal" role="dialog" aria-modal="true" aria-labelledby="heirTitle">
+  <div class="box wide">
+    <h2 id="heirTitle"></h2>
+    <p class="muted" id="heirSub"></p>
+    <div class="heirs" id="heirCards"></div>
+    <div class="rerolls"><span class="rr"><button class="btn" id="reroll"></button><span id="rerollNote"></span></span></div>
+  </div>
+</div>
+<div class="modal sticky" id="advanceModal" role="dialog" aria-modal="true" aria-labelledby="advanceTitle">
+  <div class="box wide"><h2 id="advanceTitle"></h2><p class="muted" id="advanceSub"></p>
+    <div class="heirs" id="advanceCards"></div>
+    <p class="advance-foot">Choose with 1, 2 or 3. Ministers still decide what to do; your advance changes what pays. Your chosen advances stay in the nation panel.</p>
+  </div>
+</div>
+<div class="modal" id="advancesModal" role="dialog" aria-modal="true" aria-labelledby="advancesLedgerTitle"><div class="box"><button class="btn close" data-close>Close</button><h2 id="advancesLedgerTitle">National advances</h2><div id="advancesLedger"></div></div></div>
+<div class="modal" id="newModal" role="dialog" aria-modal="true" aria-labelledby="newTitle">
+  <div class="box" style="max-width:420px">
+    <h2 id="newTitle">Start a new world?</h2>
+    <p class="muted">This game ends here and cannot be resumed.</p>
+    <p style="display:flex;gap:8px;margin-bottom:0"><button class="btn primary" id="abandon">Start a new world</button><button class="btn" data-close>Keep playing</button></p>
+  </div>
+</div>
+<div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+  <div class="box">
+    <button class="btn close" data-close>Close</button>
+    <h2 id="endTitle">The end of an age</h2>
+    <div id="endBody"></div>
+    <p><button class="btn primary" id="again">Play a new world</button></p>
+  </div>
+</div>
+
+<script>
+/*SIM*/
+</script>
+<script>
+/*UI*/
+</script>
+</body>
+</html>

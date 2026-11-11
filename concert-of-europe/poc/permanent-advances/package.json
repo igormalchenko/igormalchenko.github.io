@@ -1,0 +1,13 @@
+{
+  "name": "concert-of-europe-permanent-advances-poc",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Isolated playable permanent-advances experiment",
+  "scripts": {
+    "build": "node tools/check.js && node tools/build.js",
+    "sweep": "node tools/sweep.js",
+    "chronicle": "node tools/chronicle.js",
+    "content": "node tools/content.js --format",
+    "test": "node tools/test-advances.js"
+  }
+}

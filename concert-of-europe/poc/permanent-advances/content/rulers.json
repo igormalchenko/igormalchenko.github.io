@@ -1,0 +1,166 @@
+{
+  "warmonger": {
+    "label": "Warmonger",
+    "vibe": "Would rather recruit an army than host a dinner.",
+    "main": {"fx": "recruit", "values": [0.9, 0.75, 0.5], "text": "Army recruitment costs {v|down} less"},
+    "flat": {"fx": "army", "values": [5, 10], "text": "+{v}k army at his coronation"},
+    "malus": {"fx": "upkeep", "values": [1.5, 1.25, 1.1], "text": "Army upkeep {v|up} higher"}
+  },
+  "soldier": {
+    "label": "Soldier",
+    "vibe": "Lives in uniform and expects everyone else to keep up.",
+    "main": {"fx": "fight", "values": [1.15, 1.3, 1.75], "text": "His army fights {v|up} harder"},
+    "flat": {"fx": "army", "values": [5, 10], "text": "+{v}k army at his coronation"},
+    "malus": {"fx": "bleed", "values": [1.4, 1.2, 1.05], "text": "His army loses {v|up} more men in battle"}
+  },
+  "bold": {
+    "label": "Bold",
+    "vibe": "Always bets on himself.",
+    "main": {"fx": "breakthrough", "values": [0.9, 0.75, 0.5], "text": "Breaks through the enemy's lines with {v|down} less advantage"},
+    "flat": {"fx": "gold", "values": [30, 60], "text": "+{v} gold won at cards, at his coronation"},
+    "malus": {"fx": "bias", "values": [0.2, 0.1, 0.05], "text": "Believes his odds in war are {v|points} better than they are"}
+  },
+  "cautious": {
+    "label": "Cautious",
+    "vibe": "Would rather hold his ground than bury his men.",
+    "main": {"fx": "hold", "values": [0.1, 0.25, 0.5], "text": "Stops {v|pct} of enemy advances into his land"},
+    "flat": {"fx": "fortify", "values": [1, 2], "text": "Fortifies {v|word} random province{v|s} at his coronation"},
+    "malus": {"fx": "breakthrough", "values": [1.5, 1.25, 1.1], "text": "Breaks through the enemy's lines only with {v|up} more advantage"}
+  },
+  "paranoid": {
+    "label": "Paranoid",
+    "vibe": "Checks the locks before checking the budget.",
+    "main": {"fx": "fortCost", "values": [0.85, 0.65, 0.4], "text": "Fortresses cost {v|down} less"},
+    "flat": {"fx": "fortify", "values": [1, 2], "text": "Fortifies {v|word} random province{v|s} at his coronation"},
+    "malus": {"fx": "trade", "values": [0.75, 0.85, 0.95], "text": "Sea trade {v|down} lower: he trusts no foreign ship"}
+  },
+  "builder": {
+    "label": "Builder",
+    "vibe": "Talks of nothing but coal, iron and railways.",
+    "main": {"fx": "factoryCost", "values": [0.9, 0.75, 0.5], "text": "Factories cost {v|down} less"},
+    "flat": {"fx": "factoryCapital", "values": [1, 2], "text": "+{v} factor{v|ies} in the capital at his coronation"},
+    "malus": {"fx": "fortCost", "values": [1.6, 1.3, 1.1], "text": "Fortresses cost {v|up} more"}
+  },
+  "stingy": {
+    "label": "Stingy",
+    "vibe": "Cuts every bill and argues over every building contract.",
+    "main": {"fx": "upkeep", "values": [0.9, 0.75, 0.5], "text": "Army upkeep {v|down} lower"},
+    "flat": {"fx": "gold", "values": [30, 60], "text": "+{v} gold from his hoard, at his coronation"},
+    "malus": {"fx": "factoryCost", "values": [1.3, 1.15, 1.05], "text": "Factories cost {v|up} more"}
+  },
+  "spender": {
+    "label": "Big Spender",
+    "vibe": "Wants the whole world to see how rich his nation is.",
+    "main": {"fx": "earns", "values": [1.08, 1.15, 1.3], "text": "Gold a year {v|up} higher"},
+    "flat": {"fx": "factoryCapital", "values": [1, 2], "text": "+{v} factor{v|ies} in the capital at his coronation"},
+    "malus": {"fx": "endGold", "values": [1, 0.6, 0.3], "text": "Spends {v|pct} of the gold he leaves when his reign ends"}
+  },
+  "tyrant": {
+    "label": "Tyrant",
+    "vibe": "Expects obedience, and expects it to pay.",
+    "main": {"fx": "taxes", "values": [1.2, 1.4, 1.8], "text": "Taxes {v|up} higher"},
+    "flat": {"fx": "gold", "values": [30, 60], "text": "+{v} gold seized at his coronation"},
+    "malus": {"fx": "unrest", "values": [12, 6, 2], "text": "Unrest {v|signed} everywhere during his reign"}
+  },
+  "reformer": {
+    "label": "Reformer",
+    "vibe": "Thinks the old laws are the problem.",
+    "main": {"fx": "reformCalm", "values": [1.25, 1.5, 2], "text": "Reforms take away {v|up} more unrest"},
+    "flat": {"fx": "calmAll", "values": [10, 20], "text": "Unrest −{v} everywhere at his coronation"},
+    "malus": {"fx": "taxes", "values": [0.85, 0.92, 0.97], "text": "Taxes {v|down} lower"}
+  },
+  "drunk": {
+    "label": "Drunk",
+    "vibe": "Never seen before noon; everyone knows his favourite tavern.",
+    "main": {"fx": "unrestOwn", "values": [-5, -10, -20], "text": "Unrest {v|signed} in his own people's provinces during his reign"},
+    "flat": {"fx": "calmOwn", "values": [10, 20], "text": "Unrest −{v} in his own people's provinces at his coronation: a feast"},
+    "malus": {"fx": "swing", "values": [0.3, 0.2, 0.05], "text": "Misjudges his odds in war by up to {v|points}, differently every season"}
+  },
+  "vengeful": {
+    "label": "Vengeful",
+    "vibe": "Keeps a map of every province his nation has lost.",
+    "main": {"fx": "homeFight", "values": [1.1, 1.25, 1.75], "text": "His army fights {v|up} harder in wars over his nation's own land"},
+    "flat": {"fx": "army", "values": [5, 10], "text": "+{v}k army at his coronation"},
+    "malus": {"fx": "upkeep", "values": [1.4, 1.2, 1.1], "text": "Army upkeep {v|up} higher: the army never stands down"}
+  },
+  "flirt": {
+    "label": "Flirt",
+    "vibe": "Falls in love at every foreign court.",
+    "main": {"fx": "unrestOther", "values": [-5, -10, -20], "text": "Unrest {v|signed} in other peoples' provinces during his reign"},
+    "flat": {
+      "fx": "gold",
+      "values": [30],
+      "text": "+{v} gold in a dowry at his coronation",
+      "big": {
+        "fx": "province",
+        "value": 1,
+        "text": "Marries into {v|word} random bordering province{v|s} at his coronation",
+        "news": "{ruler} of {nation} marries into {province} from {from}."
+      }
+    },
+    "malus": {"fx": "civilWar", "values": [40, 25, 10], "text": "His reign ends in civil war: unrest +{v} everywhere"}
+  },
+  "religious": {
+    "label": "Religious",
+    "vibe": "Would rather fund a charity than a military parade.",
+    "main": {"fx": "reformCost", "values": [0.85, 0.65, 0.4], "text": "Reforms cost {v|down} less"},
+    "flat": {"fx": "reforms", "values": [1, 2], "text": "{v|Word} free reform{v|s} at his coronation"},
+    "malus": {"fx": "fight", "values": [0.7, 0.85, 0.95], "text": "His army fights {v|down} less hard"}
+  },
+  "sharp": {
+    "label": "Sharp",
+    "vibe": "Reads every dispatch twice and spots a bad bet.",
+    "main": {"fx": "sharp", "values": [0.25, 0.6, 0.9], "text": "Misjudges his odds in war {v|pct} less"},
+    "flat": {"fx": "truce", "values": [5, 10], "text": "Truce with every neighbour for {v|span} from his coronation"},
+    "malus": {"fx": "horizon", "values": [-8, -4, -2], "text": "Plans {v|abs} fewer years ahead"}
+  },
+  "planner": {
+    "label": "Planner",
+    "vibe": "Builds for a future he may never live to see.",
+    "main": {"fx": "horizon", "values": [4, 10, 20], "text": "Plans {v|word} more years ahead"},
+    "flat": {
+      "fx": "factoryRandom",
+      "values": [1],
+      "text": "+{v} factor{v|ies} in a random province at his coronation",
+      "big": {
+        "fx": "province",
+        "value": 1,
+        "text": "Inherits {v|word} random bordering province{v|s} at his coronation",
+        "news": "{ruler} of {nation} inherits {province} from {from}."
+      }
+    },
+    "malus": {"fx": "earns", "values": [0.8, 0.9, 0.95], "text": "Gold a year {v|down} lower"}
+  },
+  "tolerant": {
+    "label": "Tolerant",
+    "vibe": "Sees his subjects as neighbours, whatever language they speak.",
+    "main": {"fx": "integrate", "values": [1.25, 1.75, 3], "text": "Conquests become integrated {v|up} faster"},
+    "flat": {
+      "fx": "rights",
+      "values": [1, 2],
+      "text": "Equal rights for {v|word} random people{v|s} of the realm at his coronation, for good"
+    },
+    "malus": {"fx": "unrestOwn", "values": [10, 5, 2], "text": "Unrest {v|signed} in his own people's provinces during his reign"}
+  },
+  "nationalist": {
+    "label": "Nationalist",
+    "vibe": "Puts his own people first and makes sure everyone knows it.",
+    "main": {"fx": "ownTaxes", "values": [1.2, 1.5, 2], "text": "His own people pay {v|up} more taxes"},
+    "flat": {"fx": "army", "values": [5, 10], "text": "+{v}k army of volunteers at his coronation"},
+    "malus": {"fx": "integrateOther", "values": [0.4, 0.65, 0.9], "text": "Other peoples' provinces become integrated {v|down} slower"}
+  },
+  "strict": {
+    "label": "Strict",
+    "vibe": "Has never let an uprising go unanswered.",
+    "main": {"fx": "garrison", "values": [1.25, 1.75, 3], "text": "His army fights uprisings {v|up} harder"},
+    "flat": {"fx": "calmOther", "values": [10, 20], "text": "Unrest −{v} in other peoples' provinces at his coronation: a crackdown"},
+    "malus": {"fx": "endUnrestOther", "values": [40, 25, 10], "text": "Other peoples' provinces gain {v} unrest when his reign ends"}
+  },
+  "sailor": {
+    "label": "Sailor",
+    "vibe": "Happier on a ship than a throne.",
+    "main": {"fx": "trade", "values": [1.25, 1.5, 2], "text": "Sea trade {v|up} higher"},
+    "flat": {"fx": "gold", "values": [30, 60], "text": "+{v} gold in prize money at his coronation"},
+    "malus": {"fx": "recruit", "values": [1.5, 1.25, 1.1], "text": "Army recruitment costs {v|up} more"}
+  }
+}

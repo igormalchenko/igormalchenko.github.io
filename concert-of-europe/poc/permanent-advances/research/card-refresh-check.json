@@ -1,0 +1,825 @@
+[
+  {
+    "id": "generalStaff",
+    "name": "General Staff",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rifling",
+    "name": "Rifled Artillery",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "medicine",
+    "name": "Army Medical Corps",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 1,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "siegeTrain",
+    "name": "Campaign Administration",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "warCollege",
+    "name": "Border War College",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "homeGuard",
+    "name": "National Defence",
+    "checked": 8,
+    "changedForecasts": 2,
+    "changedActions": 3,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Fortifying Lorraine",
+          "Building a factory in Aquitaine"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "engineering",
+    "name": "Frontier Engineers",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine",
+          "Fortifying Lorraine"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "staffColleges",
+    "name": "Staff Colleges",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 4,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "expeditionary",
+    "name": "Expeditionary Service",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "warMinistry",
+    "name": "War Ministry",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 7,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Building a factory in Aquitaine",
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Invading Austria for Austria"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "industry",
+    "name": "Machine Tools",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 4,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine",
+          "Building a factory in Lyonnais"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "shipping",
+    "name": "Steam Shipping",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "industrialCredit",
+    "name": "Industrial Credit",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 5,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine",
+          "Building a factory in Lyonnais"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "railwayProcurement",
+    "name": "Railway Procurement",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 3,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine",
+          "Building a factory in Lyonnais"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "merchantBanks",
+    "name": "Merchant Banks",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "industrialStandards",
+    "name": "Industrial Standards",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 3,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine",
+          "Building a factory in Lyonnais"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "exportHouses",
+    "name": "Export Houses",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "landSurvey",
+    "name": "Land Survey",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "domesticMarkets",
+    "name": "Domestic Markets",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine",
+          "Building a factory in Lyonnais"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "precisionEngineering",
+    "name": "Precision Engineering",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 5,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "FRA",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine"
+        ],
+        "after": [
+          "Shrinking the army by 16k",
+          "Shrinking the army by 16k",
+          "Building a factory in Aquitaine",
+          "Building a factory in Lyonnais"
+        ]
+      },
+      {
+        "seed": 7,
+        "tag": "PRU",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Courting Saxony"
+        ],
+        "after": [
+          "Shrinking the army by 8k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k",
+          "Shrinking the army by 7k"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "administration",
+    "name": "Professional Civil Service",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 1,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "parliament",
+    "name": "Parliamentary Procedure",
+    "checked": 8,
+    "changedForecasts": 5,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "welfare",
+    "name": "Public Institutions",
+    "checked": 8,
+    "changedForecasts": 1,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "integration",
+    "name": "Regional Administration",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "provincialRights",
+    "name": "Provincial Rights",
+    "checked": 8,
+    "changedForecasts": 4,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "publicAccounts",
+    "name": "Public Accounts",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "nationalSchools",
+    "name": "National Schools",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 5k",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Shrinking the army by 5k",
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "technicalUniversities",
+    "name": "Technical Universities",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 2,
+    "examples": [
+      {
+        "seed": 7,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      },
+      {
+        "seed": 41,
+        "tag": "POR",
+        "stress": false,
+        "before": [
+          "Shrinking the army by 5k",
+          "Courting Spain",
+          "Courting Spain",
+          "Courting Spain"
+        ],
+        "after": [
+          "Shrinking the army by 5k",
+          "Building a factory in Portugal",
+          "Courting Spain",
+          "Courting Spain"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "civicMediation",
+    "name": "Civic Mediation",
+    "checked": 8,
+    "changedForecasts": 5,
+    "changedActions": 0,
+    "examples": []
+  },
+  {
+    "id": "consularService",
+    "name": "Consular Service",
+    "checked": 8,
+    "changedForecasts": 8,
+    "changedActions": 0,
+    "examples": []
+  }
+]

@@ -1,0 +1,857 @@
+{
+  "status": "Approved starting matrix for production implementation; balance validation remains required. Reference input only, not runtime content.",
+  "rarityOrder": [
+    "Common",
+    "Uncommon",
+    "Rare",
+    "Epic",
+    "Legendary"
+  ],
+  "advances": [
+    {
+      "id": "generalStaff",
+      "name": "General Staff",
+      "category": "Military",
+      "effects": [
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.1,
+            1.15,
+            1.2,
+            1.25,
+            1.3
+          ]
+        },
+        {
+          "fx": "bleed",
+          "kind": "reduction",
+          "label": "Battle casualties",
+          "values": [
+            0.92,
+            0.88,
+            0.84,
+            0.8,
+            0.76
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rifling",
+      "name": "Rifled Artillery",
+      "category": "Military",
+      "effects": [
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.16,
+            1.24,
+            1.32,
+            1.4,
+            1.48
+          ]
+        }
+      ]
+    },
+    {
+      "id": "medicine",
+      "name": "Army Medical Corps",
+      "category": "Military",
+      "effects": [
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.04,
+            1.06,
+            1.08,
+            1.1,
+            1.12
+          ]
+        },
+        {
+          "fx": "bleed",
+          "kind": "reduction",
+          "label": "Battle casualties",
+          "values": [
+            0.84,
+            0.76,
+            0.68,
+            0.6,
+            0.52
+          ]
+        }
+      ]
+    },
+    {
+      "id": "siegeTrain",
+      "name": "Campaign Administration",
+      "category": "Military",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.06,
+            1.09,
+            1.12,
+            1.15,
+            1.18
+          ]
+        },
+        {
+          "fx": "integrate",
+          "kind": "increase",
+          "label": "Conquest integration speed",
+          "values": [
+            1.16,
+            1.24,
+            1.32,
+            1.4,
+            1.48
+          ]
+        }
+      ]
+    },
+    {
+      "id": "warCollege",
+      "name": "Border War College",
+      "category": "Military",
+      "requires": "target",
+      "effects": [
+        {
+          "fx": "targetFight",
+          "kind": "increase",
+          "label": "Fighting strength vs named neighbour only",
+          "values": [
+            1.24,
+            1.36,
+            1.48,
+            1.6,
+            1.72
+          ]
+        },
+        {
+          "fx": "bleed",
+          "kind": "reduction",
+          "label": "Battle casualties",
+          "values": [
+            0.96,
+            0.94,
+            0.92,
+            0.9,
+            0.88
+          ]
+        }
+      ]
+    },
+    {
+      "id": "homeGuard",
+      "name": "National Defence",
+      "category": "Military",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "homeFight",
+          "kind": "increase",
+          "label": "Fighting strength in wars over national land",
+          "values": [
+            1.24,
+            1.36,
+            1.48,
+            1.6,
+            1.72
+          ]
+        },
+        {
+          "fx": "fortCost",
+          "kind": "reduction",
+          "label": "Fortress construction cost",
+          "values": [
+            0.88,
+            0.82,
+            0.76,
+            0.7,
+            0.64
+          ]
+        }
+      ]
+    },
+    {
+      "id": "engineering",
+      "name": "Frontier Engineers",
+      "category": "Military",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "fortCost",
+          "kind": "reduction",
+          "label": "Fortress construction cost",
+          "values": [
+            0.8,
+            0.7,
+            0.6,
+            0.5,
+            0.4
+          ]
+        },
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.04,
+            1.06,
+            1.08,
+            1.1,
+            1.12
+          ]
+        }
+      ]
+    },
+    {
+      "id": "staffColleges",
+      "name": "Staff Colleges",
+      "category": "Military",
+      "effects": [
+        {
+          "fx": "horizon",
+          "kind": "years",
+          "label": "Planning horizon",
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.08,
+            1.12,
+            1.16,
+            1.2,
+            1.24
+          ]
+        }
+      ]
+    },
+    {
+      "id": "expeditionary",
+      "name": "Expeditionary Service",
+      "category": "Military",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.1,
+            1.15,
+            1.2,
+            1.25,
+            1.3
+          ]
+        },
+        {
+          "fx": "integrateOther",
+          "kind": "increase",
+          "label": "Integration speed for other peoples’ provinces",
+          "values": [
+            1.24,
+            1.36,
+            1.48,
+            1.6,
+            1.72
+          ]
+        }
+      ]
+    },
+    {
+      "id": "warMinistry",
+      "name": "War Ministry",
+      "category": "Military",
+      "effects": [
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.06,
+            1.09,
+            1.12,
+            1.15,
+            1.18
+          ]
+        },
+        {
+          "fx": "upkeep",
+          "kind": "reduction",
+          "label": "Army upkeep",
+          "values": [
+            0.88,
+            0.82,
+            0.76,
+            0.7,
+            0.64
+          ]
+        }
+      ]
+    },
+    {
+      "id": "industry",
+      "name": "Machine Tools",
+      "category": "Economy",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "kind": "reduction",
+          "label": "Factory construction cost",
+          "values": [
+            0.86,
+            0.79,
+            0.72,
+            0.65,
+            0.58
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shipping",
+      "name": "Steam Shipping",
+      "category": "Economy",
+      "requires": "coast",
+      "effects": [
+        {
+          "fx": "trade",
+          "kind": "increase",
+          "label": "Sea trade earnings",
+          "values": [
+            1.24,
+            1.36,
+            1.48,
+            1.6,
+            1.72
+          ]
+        }
+      ]
+    },
+    {
+      "id": "industrialCredit",
+      "name": "Industrial Credit",
+      "category": "Economy",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "kind": "reduction",
+          "label": "Factory construction cost",
+          "values": [
+            0.92,
+            0.88,
+            0.84,
+            0.8,
+            0.76
+          ]
+        },
+        {
+          "fx": "horizon",
+          "kind": "years",
+          "label": "Planning horizon",
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "railwayProcurement",
+      "name": "Railway Procurement",
+      "category": "Economy",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "kind": "reduction",
+          "label": "Factory construction cost",
+          "values": [
+            0.92,
+            0.88,
+            0.84,
+            0.8,
+            0.76
+          ]
+        },
+        {
+          "fx": "fortCost",
+          "kind": "reduction",
+          "label": "Fortress construction cost",
+          "values": [
+            0.88,
+            0.82,
+            0.76,
+            0.7,
+            0.64
+          ]
+        }
+      ]
+    },
+    {
+      "id": "merchantBanks",
+      "name": "Merchant Banks",
+      "category": "Economy",
+      "requires": "coast",
+      "effects": [
+        {
+          "fx": "trade",
+          "kind": "increase",
+          "label": "Sea trade earnings",
+          "values": [
+            1.12,
+            1.18,
+            1.24,
+            1.3,
+            1.36
+          ]
+        },
+        {
+          "fx": "taxes",
+          "kind": "increase",
+          "label": "Taxes",
+          "values": [
+            1.08,
+            1.12,
+            1.16,
+            1.2,
+            1.24
+          ]
+        }
+      ]
+    },
+    {
+      "id": "industrialStandards",
+      "name": "Industrial Standards",
+      "category": "Economy",
+      "effects": [
+        {
+          "fx": "earns",
+          "kind": "increase",
+          "label": "All earnings",
+          "values": [
+            1.04,
+            1.06,
+            1.08,
+            1.1,
+            1.12
+          ]
+        },
+        {
+          "fx": "factoryCost",
+          "kind": "reduction",
+          "label": "Factory construction cost",
+          "values": [
+            0.94,
+            0.91,
+            0.88,
+            0.85,
+            0.82
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exportHouses",
+      "name": "Export Houses",
+      "category": "Economy",
+      "requires": "coast",
+      "effects": [
+        {
+          "fx": "trade",
+          "kind": "increase",
+          "label": "Sea trade earnings",
+          "values": [
+            1.12,
+            1.18,
+            1.24,
+            1.3,
+            1.36
+          ]
+        },
+        {
+          "fx": "integrate",
+          "kind": "increase",
+          "label": "Conquest integration speed",
+          "values": [
+            1.08,
+            1.12,
+            1.16,
+            1.2,
+            1.24
+          ]
+        }
+      ]
+    },
+    {
+      "id": "landSurvey",
+      "name": "Land Survey",
+      "category": "Economy",
+      "effects": [
+        {
+          "fx": "taxes",
+          "kind": "increase",
+          "label": "Taxes",
+          "values": [
+            1.2,
+            1.3,
+            1.4,
+            1.5,
+            1.6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "domesticMarkets",
+      "name": "Domestic Markets",
+      "category": "Economy",
+      "effects": [
+        {
+          "fx": "ownTaxes",
+          "kind": "increase",
+          "label": "Accepted peoples’ taxes",
+          "values": [
+            1.24,
+            1.36,
+            1.48,
+            1.6,
+            1.72
+          ]
+        },
+        {
+          "fx": "factoryCost",
+          "kind": "reduction",
+          "label": "Factory construction cost",
+          "values": [
+            0.96,
+            0.94,
+            0.92,
+            0.9,
+            0.88
+          ]
+        }
+      ]
+    },
+    {
+      "id": "precisionEngineering",
+      "name": "Precision Engineering",
+      "category": "Economy",
+      "effects": [
+        {
+          "fx": "factoryCost",
+          "kind": "reduction",
+          "label": "Factory construction cost",
+          "values": [
+            0.92,
+            0.88,
+            0.84,
+            0.8,
+            0.76
+          ]
+        },
+        {
+          "fx": "fight",
+          "kind": "increase",
+          "label": "Fighting strength",
+          "values": [
+            1.06,
+            1.09,
+            1.12,
+            1.15,
+            1.18
+          ]
+        }
+      ]
+    },
+    {
+      "id": "administration",
+      "name": "Professional Civil Service",
+      "category": "Government",
+      "effects": [
+        {
+          "fx": "earns",
+          "kind": "increase",
+          "label": "All earnings",
+          "values": [
+            1.06,
+            1.09,
+            1.12,
+            1.15,
+            1.18
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parliament",
+      "name": "Parliamentary Procedure",
+      "category": "Government",
+      "effects": [
+        {
+          "fx": "reformCost",
+          "kind": "reduction",
+          "label": "Reform cost",
+          "values": [
+            0.82,
+            0.73,
+            0.64,
+            0.55,
+            0.46
+          ]
+        }
+      ]
+    },
+    {
+      "id": "welfare",
+      "name": "Public Institutions",
+      "category": "Government",
+      "effects": [
+        {
+          "fx": "reformCalm",
+          "kind": "increase",
+          "label": "Unrest removed by reforms",
+          "values": [
+            1.32,
+            1.48,
+            1.64,
+            1.8,
+            1.96
+          ]
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "name": "Regional Administration",
+      "category": "Government",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "integrate",
+          "kind": "increase",
+          "label": "Conquest integration speed",
+          "values": [
+            1.24,
+            1.36,
+            1.48,
+            1.6,
+            1.72
+          ]
+        }
+      ]
+    },
+    {
+      "id": "provincialRights",
+      "name": "Provincial Rights",
+      "category": "Government",
+      "requires": "border",
+      "effects": [
+        {
+          "fx": "integrateOther",
+          "kind": "increase",
+          "label": "Integration speed for other peoples’ provinces",
+          "values": [
+            1.32,
+            1.48,
+            1.64,
+            1.8,
+            1.96
+          ]
+        },
+        {
+          "fx": "reformCalm",
+          "kind": "increase",
+          "label": "Unrest removed by reforms",
+          "values": [
+            1.08,
+            1.12,
+            1.16,
+            1.2,
+            1.24
+          ]
+        }
+      ]
+    },
+    {
+      "id": "publicAccounts",
+      "name": "Public Accounts",
+      "category": "Government",
+      "effects": [
+        {
+          "fx": "taxes",
+          "kind": "increase",
+          "label": "Taxes",
+          "values": [
+            1.08,
+            1.12,
+            1.16,
+            1.2,
+            1.24
+          ]
+        },
+        {
+          "fx": "reformCost",
+          "kind": "reduction",
+          "label": "Reform cost",
+          "values": [
+            0.9,
+            0.85,
+            0.8,
+            0.75,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nationalSchools",
+      "name": "National Schools",
+      "category": "Government",
+      "effects": [
+        {
+          "fx": "horizon",
+          "kind": "years",
+          "label": "Planning horizon",
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        {
+          "fx": "ownTaxes",
+          "kind": "increase",
+          "label": "Accepted peoples’ taxes",
+          "values": [
+            1.1,
+            1.15,
+            1.2,
+            1.25,
+            1.3
+          ]
+        }
+      ]
+    },
+    {
+      "id": "technicalUniversities",
+      "name": "Technical Universities",
+      "category": "Government",
+      "effects": [
+        {
+          "fx": "horizon",
+          "kind": "years",
+          "label": "Planning horizon",
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        {
+          "fx": "earns",
+          "kind": "increase",
+          "label": "All earnings",
+          "values": [
+            1.02,
+            1.03,
+            1.04,
+            1.05,
+            1.06
+          ]
+        }
+      ]
+    },
+    {
+      "id": "civicMediation",
+      "name": "Civic Mediation",
+      "category": "Government",
+      "effects": [
+        {
+          "fx": "reformCost",
+          "kind": "reduction",
+          "label": "Reform cost",
+          "values": [
+            0.9,
+            0.85,
+            0.8,
+            0.75,
+            0.7
+          ]
+        },
+        {
+          "fx": "reformCalm",
+          "kind": "increase",
+          "label": "Unrest removed by reforms",
+          "values": [
+            1.16,
+            1.24,
+            1.32,
+            1.4,
+            1.48
+          ]
+        }
+      ]
+    },
+    {
+      "id": "consularService",
+      "name": "Consular Service",
+      "category": "Government",
+      "requires": "coast",
+      "effects": [
+        {
+          "fx": "integrate",
+          "kind": "increase",
+          "label": "Conquest integration speed",
+          "values": [
+            1.12,
+            1.18,
+            1.24,
+            1.3,
+            1.36
+          ]
+        },
+        {
+          "fx": "trade",
+          "kind": "increase",
+          "label": "Sea trade earnings",
+          "values": [
+            1.08,
+            1.12,
+            1.16,
+            1.2,
+            1.24
+          ]
+        }
+      ]
+    }
+  ]
+}

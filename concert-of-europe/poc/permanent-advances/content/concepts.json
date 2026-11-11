@@ -1,0 +1,127 @@
+{
+  "gold": {
+    "name": "Gold",
+    "desc": "Money in the bank. Pays for factories, fortresses, recruits and reforms.",
+    "avoid": ["treasury", "treasuries", "savings"]
+  },
+  "goldYear": {
+    "name": "Gold a year",
+    "desc": "Taxes, factory output and sea trade over a year. The great power with the most in {rules.end.season|season} {rules.end.year} meets its ambition.",
+    "avoid": ["income", "score", "/yr"]
+  },
+  "taxes": {"name": "Taxes", "desc": "Gold the people pay. Falls with unrest, occupation and every man in the army."},
+  "upkeep": {"name": "Army upkeep", "desc": "Gold the army costs every season."},
+  "trade": {"name": "Sea trade", "desc": "Gold from coastal provinces. Lost while the nation is at war."},
+  "save": {"name": "Save gold", "desc": "The ministers keep the gold when nothing else is expected to pay."},
+  "province": {"name": "Provinces", "desc": "Land a nation holds. Each one costs a little to run."},
+  "capital": {"name": "Capital", "desc": "Where a nation is ruled from. Its army size shows here in wartime."},
+  "pop": {"name": "People", "desc": "How many live in a province or nation, in millions."},
+  "culture": {"name": "Nationality", "desc": "The people of a province. Under a ruler of another nationality they grow restless."},
+  "settle": {
+    "name": "Integrated",
+    "desc": "How far a conquered province has become part of its new nation. It pays little until fully integrated.",
+    "avoid": ["settles", "settled", "integration"]
+  },
+  "occupied": {"name": "Occupied", "desc": "Held by an enemy army. Pays its owner nothing until freed."},
+  "sea": {"name": "Sea crossing", "desc": "Two coastal provinces close enough to invade across the water."},
+  "claim": {"name": "Claims", "desc": "Nations that want a province: its old owner, its own people, or a nation uniting it."},
+  "factory": {"name": "Factories", "desc": "Produce gold every season. Each new one costs more and adds less."},
+  "fort": {
+    "name": "Fortress",
+    "desc": "Stops a share of enemy advances into the province. Razed if the province falls.",
+    "avoid": ["forts", "fort"]
+  },
+  "buildFactory": {"name": "Factory being built", "desc": "A factory under construction. Takes {rules.build.factory|word} seasons."},
+  "buildFort": {"name": "Fortress being built", "desc": "A fortress under construction. Takes {rules.build.fort|word} seasons."},
+  "build": {"name": "Construction", "desc": "Gold spent this season on factories and fortresses."},
+  "ruin": {"name": "Ruin", "desc": "A factory or fortress destroyed in war."},
+  "boom": {"name": "Boom", "desc": "Coal is found or a railway arrives: the province suddenly pays more."},
+  "reform": {"name": "Reforms", "desc": "Laws that calm unrest for a while. Cost gold."},
+  "unrest": {
+    "name": "Unrest",
+    "desc": "Anger in a province ruled by another nationality. Cuts taxes; at {rules.unrest.uprising} or more it is close to an uprising.",
+    "avoid": ["restlessness"]
+  },
+  "uprising": {
+    "name": "Uprising",
+    "desc": "A province rises against its ruler and may break away or join its own people.",
+    "avoid": ["revolt", "revolts", "rebellion"]
+  },
+  "army": {
+    "name": "Army",
+    "desc": "Men under arms, in thousands. Deters attack and wins wars, but every man is a worker lost.",
+    "avoid": ["soldiers", "troops"]
+  },
+  "war": {"name": "War", "desc": "Nations fighting over a province. Ends when one side wins or both are exhausted."},
+  "battle": {"name": "Battle", "desc": "Fighting in a province this season."},
+  "front": {"name": "Front line", "desc": "Where the two sides of a war hold land face to face."},
+  "goal": {"name": "War goal", "desc": "The province a war is being fought for."},
+  "peace": {"name": "Peace", "desc": "A war ends and land or gold changes hands."},
+  "dead": {"name": "Dead", "desc": "Lives lost in the fighting, in millions."},
+  "ally": {"name": "Alliance", "desc": "Nations that usually join each other's wars, and nearly always each other's defence."},
+  "rival": {"name": "Biggest threat", "desc": "The neighbour a nation fears most. It arms and allies against it."},
+  "proclaim": {
+    "name": "Proclamation",
+    "desc": "A divided people united: the nation that holds enough of its lands takes its new name, and the smaller nations of its people join it."
+  },
+  "ambition": {
+    "name": "Ambition",
+    "desc": "What a nation must achieve by the armistice of {rules.end.season|season} {rules.end.year}: be the richest great power, unite its people, or survive.",
+    "avoid": ["objective", "dream", "dreams"]
+  },
+  "leader": {"name": "Leading nation", "desc": "The nation with the most gold a year right now."},
+  "ruler": {
+    "name": "Ruler",
+    "desc": "Who decides for the nation, with his own patience, judgment, thrift and trait.",
+    "avoid": ["sovereign"]
+  },
+  "patience": {"name": "Patience", "desc": "How many years ahead a ruler counts gains and costs."},
+  "thrift": {
+    "name": "Thrift",
+    "desc": "How dear a ruler holds his gold. A thrifty one hoards it and builds little; a lavish one spends it on factories, recruits and reforms.",
+    "avoid": ["frugal", "frugality"]
+  },
+  "judgment": {"name": "Judgment", "desc": "Whether a ruler sees his odds in war as better or worse than they are."},
+  "forecast": {
+    "name": "Forecasts",
+    "desc": "What each option is worth in gold over the ruler's horizon. Positive ones are done, best first."
+  },
+  "civilWar": {
+    "name": "Civil war",
+    "desc": "A disputed succession: rival claimants split the army, which fights at {rules.reign.crisisArmy|frac} strength.",
+    "avoid": ["succession crisis"]
+  },
+  "coup": {"name": "Coup", "desc": "The army deposes the ruler of a restless nation."},
+  "event": {"name": "Event", "desc": "Famines, epidemics, panics, booms and other turns of fortune."},
+  "panel": {"name": "Side panel", "desc": "Shows or hides the chronicle, rankings and details on the right."},
+  "almanac": {
+    "name": "Almanac",
+    "desc": "Every ruler, nation, people, ambition, event and rule in the game, read live from the game's own data (key A)."
+  },
+  "nation": {
+    "name": "Nation",
+    "desc": "A realm on the map, with its own ruler, gold and army.",
+    "word": true,
+    "avoid": ["country", "countries", "states"]
+  },
+  "reroll": {
+    "name": "Reroll",
+    "desc": "Deal {rules.heirs|word} new heirs instead of these (key R). {rules.rerolls|Word} free rerolls a game.",
+    "word": true
+  },
+  "rarity": {
+    "name": "Rarity",
+    "desc": "How rare a ruler is, from {rarities.0.name} to {rarities.4.name}. The rarer he is, the more he can change the game.",
+    "word": true
+  },
+  "guarantee": {
+    "name": "Guarantor",
+    "desc": "A great power sworn to defend a nation born in an uprising for {rules.newNation.guarantee|span}: it always joins its wars.",
+    "word": true
+  },
+  "major": {
+    "name": "Great power",
+    "desc": "One of the {rules.majors.count|word} strongest nations, recounted every {rules.majors.every|span}. Great powers step in against a nation that grows too strong, guarantee nations born in uprisings and fight the {events.greatWar.name}. The great powers of {rules.start} race to be the richest.",
+    "word": true
+  }
+}

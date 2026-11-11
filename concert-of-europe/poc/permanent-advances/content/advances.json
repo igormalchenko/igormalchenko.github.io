@@ -1,0 +1,408 @@
+{
+  "years": [
+    1836,
+    1848,
+    1860,
+    1872,
+    1884,
+    1896,
+    1908
+  ],
+  "cards": [
+    {
+      "id": "generalStaff",
+      "name": "General Staff",
+      "category": "Military",
+      "icon": "war",
+      "vibe": "Turn scattered commands into a single campaign.",
+      "effect": "Armies fight {fx.fight|up} harder. Battle casualties are {fx.bleed|down} lower.",
+      "steer": "Raises estimated victory odds and reduces the forecast cost of fighting with the army you already have.",
+      "fx": {
+        "fight": 1.5,
+        "bleed": 0.65
+      }
+    },
+    {
+      "id": "rifling",
+      "name": "Rifled Artillery",
+      "category": "Military",
+      "icon": "war",
+      "vibe": "Make the guns count before the first advance.",
+      "effect": "Armies fight {fx.fight|up} harder.",
+      "steer": "Improves victory odds in the invasion forecast and strength in actual battles.",
+      "fx": {
+        "fight": 1.6
+      }
+    },
+    {
+      "id": "medicine",
+      "name": "Army Medical Corps",
+      "category": "Military",
+      "icon": "army",
+      "vibe": "Keep experienced formations in the field.",
+      "effect": "Armies fight {fx.fight|up} harder. Battle casualties are {fx.bleed|down} lower.",
+      "steer": "Makes campaigns less costly while improving the army’s chances of winning.",
+      "fx": {
+        "fight": 1.2,
+        "bleed": 0.4
+      }
+    },
+    {
+      "id": "siegeTrain",
+      "name": "Campaign Administration",
+      "category": "Military",
+      "icon": "settle",
+      "vibe": "Make a victory pay before the next campaign.",
+      "effect": "Armies fight {fx.fight|up} harder. Conquests integrate {fx.integrate|up} faster.",
+      "steer": "Combines better combat odds with an earlier economic return from conquest.",
+      "fx": {
+        "fight": 1.35,
+        "integrate": 2.5
+      },
+      "requires": "border"
+    },
+    {
+      "id": "warCollege",
+      "name": "Border War College",
+      "category": "Military",
+      "icon": "war",
+      "vibe": "Know the rival across the frontier.",
+      "effect": "Armies fight {targetFight|up} harder against {nation} only. Battle casualties are {fx.bleed|down} lower in all wars.",
+      "steer": "Improves the forecast against {nation}. Lower casualties also make other campaigns less costly.",
+      "fx": {
+        "bleed": 0.75
+      },
+      "requires": "target",
+      "targetFight": 1.8
+    },
+    {
+      "id": "homeGuard",
+      "name": "National Defence",
+      "category": "Defence",
+      "icon": "fort",
+      "vibe": "Make every border province worth defending.",
+      "effect": "Armies fight {fx.homeFight|up} harder in wars over your nation’s own land. Fortresses cost {fx.fortCost|down} less.",
+      "steer": "Changes the estimated balance in wars over national land and makes threatened borders cheaper to fortify.",
+      "fx": {
+        "homeFight": 1.8,
+        "fortCost": 0.4
+      },
+      "requires": "border"
+    },
+    {
+      "id": "engineering",
+      "name": "Frontier Engineers",
+      "category": "Defence",
+      "icon": "fort",
+      "vibe": "Let roads, earthworks and bridges serve the army.",
+      "effect": "Fortresses cost {fx.fortCost|down} less. Armies fight {fx.fight|up} harder.",
+      "steer": "Makes border fortification much cheaper and also improves military odds.",
+      "fx": {
+        "fortCost": 0.25,
+        "fight": 1.2
+      },
+      "requires": "border"
+    },
+    {
+      "id": "staffColleges",
+      "name": "Staff Colleges",
+      "category": "Military",
+      "icon": "patience",
+      "vibe": "Plan the campaign and the peace that follows.",
+      "effect": "Ministers plan {fx.horizon|word} more years ahead. Armies fight {fx.fight|up} harder.",
+      "steer": "Counts more years of a conquest’s returns while improving victory odds. Long-term civilian investments also become more attractive.",
+      "fx": {
+        "horizon": 12,
+        "fight": 1.4
+      }
+    },
+    {
+      "id": "expeditionary",
+      "name": "Expeditionary Service",
+      "category": "Military",
+      "icon": "war",
+      "vibe": "Prepare to hold what the army wins abroad.",
+      "effect": "Armies fight {fx.fight|up} harder. Other peoples’ provinces integrate {fx.integrateOther|up} faster.",
+      "steer": "Improves combat odds and makes foreign conquests repay their costs sooner.",
+      "fx": {
+        "fight": 1.5,
+        "integrateOther": 3
+      },
+      "requires": "border"
+    },
+    {
+      "id": "warMinistry",
+      "name": "War Ministry",
+      "category": "Military",
+      "icon": "war",
+      "vibe": "Give campaigns a permanent staff and a lasting budget.",
+      "effect": "Armies fight {fx.fight|up} harder and upkeep is {fx.upkeep|down} lower. Conquests integrate {fx.integrate|up} faster. Ministers plan {fx.horizon|word} more years ahead.",
+      "steer": "Makes campaigns cheaper to maintain, improves victory odds and counts more of a conquest’s future returns. Also changes civilian investment forecasts.",
+      "fx": {
+        "fight": 1.6,
+        "upkeep": 0.35,
+        "integrate": 3,
+        "horizon": 20
+      }
+    },
+    {
+      "id": "industry",
+      "name": "Machine Tools",
+      "category": "Industry",
+      "icon": "factory",
+      "vibe": "Equip the workshops that build the future.",
+      "effect": "Factories cost {fx.factoryCost|down} less.",
+      "steer": "Directly lowers factory prices and brings more industrial investments within reach.",
+      "fx": {
+        "factoryCost": 0.55
+      }
+    },
+    {
+      "id": "shipping",
+      "name": "Steam Shipping",
+      "category": "Commerce",
+      "icon": "trade",
+      "vibe": "Bring the ports into the age of steam.",
+      "effect": "Sea trade earns {fx.trade|up} more.",
+      "steer": "Makes coastal earnings more valuable. Ministers also count more lost trade when weighing a war.",
+      "fx": {
+        "trade": 1.8
+      },
+      "requires": "coast"
+    },
+    {
+      "id": "industrialCredit",
+      "name": "Industrial Credit",
+      "category": "Industry",
+      "icon": "factory",
+      "vibe": "Give new industry time to repay its debts.",
+      "effect": "Factories cost {fx.factoryCost|down} less. Ministers plan {fx.horizon|word} more years ahead.",
+      "steer": "Lowers the initial investment and counts more years of factory returns.",
+      "fx": {
+        "factoryCost": 0.75,
+        "horizon": 10
+      }
+    },
+    {
+      "id": "railwayProcurement",
+      "name": "Railway Procurement",
+      "category": "Industry",
+      "icon": "build",
+      "vibe": "Buy iron and engineering on a national scale.",
+      "effect": "Factories cost {fx.factoryCost|down} less. Fortresses cost {fx.fortCost|down} less.",
+      "steer": "Makes both industrial construction and border defence more affordable.",
+      "fx": {
+        "factoryCost": 0.7,
+        "fortCost": 0.5
+      }
+    },
+    {
+      "id": "merchantBanks",
+      "name": "Merchant Banks",
+      "category": "Commerce",
+      "icon": "trade",
+      "vibe": "Connect the customs house to the counting house.",
+      "effect": "Sea trade earns {fx.trade|up} more. Taxes earn {fx.taxes|up} more.",
+      "steer": "Changes the value of commerce and taxable provinces, while increasing funds for investment.",
+      "fx": {
+        "trade": 1.5,
+        "taxes": 1.3
+      },
+      "requires": "coast"
+    },
+    {
+      "id": "industrialStandards",
+      "name": "Industrial Standards",
+      "category": "Industry",
+      "icon": "factory",
+      "vibe": "Make the machinery fit from one workshop to the next.",
+      "effect": "All earnings rise by {fx.earns|up}. Factories cost {fx.factoryCost|down} less.",
+      "steer": "Raises the forecast return on factories as well as reducing their price.",
+      "fx": {
+        "earns": 1.2,
+        "factoryCost": 0.8
+      }
+    },
+    {
+      "id": "exportHouses",
+      "name": "Export Houses",
+      "category": "Commerce",
+      "icon": "trade",
+      "vibe": "Connect newly acquired ports to established markets.",
+      "effect": "Sea trade earns {fx.trade|up} more. Conquests integrate {fx.integrate|up} faster.",
+      "steer": "Strengthens peaceful trade and brings the rewards of new territory forward. Ministers weigh both effects.",
+      "fx": {
+        "trade": 1.45,
+        "integrate": 1.8
+      },
+      "requires": "coast"
+    },
+    {
+      "id": "landSurvey",
+      "name": "Land Survey",
+      "category": "Industry",
+      "icon": "taxes",
+      "vibe": "Know what the land can contribute.",
+      "effect": "Taxes earn {fx.taxes|up} more.",
+      "steer": "Increases the forecast value of taxable provinces, both at home and across the border.",
+      "fx": {
+        "taxes": 1.6
+      }
+    },
+    {
+      "id": "domesticMarkets",
+      "name": "Domestic Markets",
+      "category": "Industry",
+      "icon": "factory",
+      "vibe": "Connect familiar towns to a national market.",
+      "effect": "Accepted peoples’ taxes rise by {fx.ownTaxes|up}. Factories cost {fx.factoryCost|down} less.",
+      "steer": "Makes investment cheaper and increases the tax value of provinces whose people your nation accepts.",
+      "fx": {
+        "ownTaxes": 1.8,
+        "factoryCost": 0.85
+      }
+    },
+    {
+      "id": "precisionEngineering",
+      "name": "Precision Engineering",
+      "category": "Industry",
+      "icon": "factory",
+      "vibe": "The same workshops make engines and armaments.",
+      "effect": "Factories cost {fx.factoryCost|down} less. Armies fight {fx.fight|up} harder.",
+      "steer": "Improves industrial investment and military forecasts together.",
+      "fx": {
+        "factoryCost": 0.75,
+        "fight": 1.3
+      }
+    },
+    {
+      "id": "administration",
+      "name": "Professional Civil Service",
+      "category": "Government",
+      "icon": "gold",
+      "vibe": "Put the nation’s resources to work.",
+      "effect": "All earnings rise by {fx.earns|up}.",
+      "steer": "Raises the returns ministers expect from economic improvements and taxable territory.",
+      "fx": {
+        "earns": 1.22
+      }
+    },
+    {
+      "id": "parliament",
+      "name": "Parliamentary Procedure",
+      "category": "Government",
+      "icon": "reform",
+      "vibe": "Make reform possible before the streets demand it.",
+      "effect": "Reforms cost {fx.reformCost|down} less.",
+      "steer": "Directly lowers the price ministers compare against the expected benefits of reform.",
+      "fx": {
+        "reformCost": 0.4
+      }
+    },
+    {
+      "id": "welfare",
+      "name": "Public Institutions",
+      "category": "Government",
+      "icon": "reform",
+      "vibe": "Give public reform the means to make a difference.",
+      "effect": "Reforms remove {fx.reformCalm|up} more unrest.",
+      "steer": "Makes reform more valuable where unrest is hurting production or threatening an uprising.",
+      "fx": {
+        "reformCalm": 2.2
+      }
+    },
+    {
+      "id": "integration",
+      "name": "Regional Administration",
+      "category": "Government",
+      "icon": "settle",
+      "vibe": "Turn new provinces into lasting parts of the nation.",
+      "effect": "Conquests integrate {fx.integrate|up} faster.",
+      "steer": "Brings the economic rewards of a possible conquest much closer in the invasion forecast.",
+      "fx": {
+        "integrate": 3
+      },
+      "requires": "border"
+    },
+    {
+      "id": "provincialRights",
+      "name": "Provincial Rights",
+      "category": "Government",
+      "icon": "settle",
+      "vibe": "Let a wider realm find common ground.",
+      "effect": "Other peoples’ provinces integrate {fx.integrateOther|up} faster. Reforms remove {fx.reformCalm|up} more unrest.",
+      "steer": "Makes foreign conquests pay sooner and gives ministers a stronger response to unrest.",
+      "fx": {
+        "integrateOther": 4,
+        "reformCalm": 1.35
+      },
+      "requires": "border"
+    },
+    {
+      "id": "publicAccounts",
+      "name": "Public Accounts",
+      "category": "Government",
+      "icon": "taxes",
+      "vibe": "Make taxation and public spending easier to administer.",
+      "effect": "Taxes earn {fx.taxes|up} more. Reforms cost {fx.reformCost|down} less.",
+      "steer": "Increases the value recovered by calming unrest while lowering the cost of reform.",
+      "fx": {
+        "taxes": 1.3,
+        "reformCost": 0.65
+      }
+    },
+    {
+      "id": "nationalSchools",
+      "name": "National Schools",
+      "category": "Government",
+      "icon": "patience",
+      "vibe": "Build institutions that outlive the present reign.",
+      "effect": "Ministers plan {fx.horizon|word} more years ahead. Accepted peoples’ taxes rise by {fx.ownTaxes|up}.",
+      "steer": "Makes long-term investments and provinces with accepted peoples more valuable in the forecast.",
+      "fx": {
+        "horizon": 10,
+        "ownTaxes": 1.3
+      }
+    },
+    {
+      "id": "technicalUniversities",
+      "name": "Technical Universities",
+      "category": "Government",
+      "icon": "patience",
+      "vibe": "Put knowledge to work over a longer future.",
+      "effect": "Ministers plan {fx.horizon|word} more years ahead. All earnings rise by {fx.earns|up}.",
+      "steer": "Raises and extends the forecast returns from investment and territorial gains.",
+      "fx": {
+        "horizon": 6,
+        "earns": 1.15
+      }
+    },
+    {
+      "id": "civicMediation",
+      "name": "Civic Mediation",
+      "category": "Government",
+      "icon": "reform",
+      "vibe": "Make useful reform easier to agree and deliver.",
+      "effect": "Reforms cost {fx.reformCost|down} less and remove {fx.reformCalm|up} more unrest.",
+      "steer": "Changes both sides of the reform calculation: a smaller expense for a larger benefit.",
+      "fx": {
+        "reformCost": 0.65,
+        "reformCalm": 1.6
+      }
+    },
+    {
+      "id": "consularService",
+      "name": "Consular Service",
+      "category": "Government",
+      "icon": "trade",
+      "vibe": "Build lasting institutions around the ports.",
+      "effect": "Conquests integrate {fx.integrate|up} faster. Sea trade earns {fx.trade|up} more.",
+      "steer": "Balances earlier returns from new territory against the increased value of peaceful commerce.",
+      "fx": {
+        "integrate": 2.3,
+        "trade": 1.3
+      },
+      "requires": "coast"
+    }
+  ]
+}
