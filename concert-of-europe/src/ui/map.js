@@ -20,7 +20,7 @@ const cellEls = [], borderEls = [];
   el('path', { d: GEO.land, fill: '#2a2f35', stroke: '#3a414a', 'stroke-width': .6 }, $('gLand'));
   GEO.regions.forEach((g, i) => { const p = el('path', { d: g.d, class: 'cell', stroke: 'rgba(10,12,15,.4)', 'stroke-width': .6, 'stroke-linejoin': 'round' }, $('gCells')); p.dataset.i = i; cellEls.push(p); });
   GEO.borders.forEach(b => borderEls.push({ b, l: el('path', { d: b.d, fill: 'none', stroke: '#0b0e11', 'stroke-width': 1.7, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, $('gBorders')) }));
-  GEO.naval.forEach(([a, b], k) => { const pp = GEO.navalPts[k] || [A(a), A(b)]; el('line', { x1: pp[0][0], y1: pp[0][1], x2: pp[1][0], y2: pp[1][1], stroke: '#9fb1c2', 'stroke-dasharray': '2 3', 'stroke-width': 1, opacity: .45 }, $('gNaval')); });
+  GEO.naval.forEach(([a, b], k) => { const pp = GEO.navalPts[k] || [A(a), A(b)], d = GEO.navalPaths?.[k] || `M${pp[0].join(',')}L${pp[1].join(',')}`; el('path', { d, fill: 'none', stroke: '#9fb1c2', 'stroke-dasharray': '2 3', 'stroke-width': 1, opacity: .45 }, $('gNaval')); });
 })();
 const occPatterns = new Set();
 function occPattern(tag){

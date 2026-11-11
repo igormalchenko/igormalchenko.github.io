@@ -1,1 +1,14 @@
-{"land": [["con", "bul"], ["con", "mac"]], "sea": [["lon", "hol"], ["sco", "nor"], ["nth", "jut"]]}
+{
+  "land": [["con", "bul"], ["con", "mac"]],
+  "sea": [
+    ["lon", "hol"],
+    ["sco", "nor"],
+    ["nth", "jut"],
+    ["lon", "por"],
+    ["lon", "gal"],
+    ["ire", "bri"],
+    ["ire", "por"],
+    ["cat", "tus"],
+    ["and", "sic"]
+  ]
+}
