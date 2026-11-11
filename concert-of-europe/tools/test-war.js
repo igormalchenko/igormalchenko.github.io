@@ -42,7 +42,9 @@ for (const strongSide of ['att', 'def']) test(`no front: stronger ${strongSide} 
 
 test('a disconnected war still times out, without manufacturing a victory', () => {
   const { S, w, armies } = fixture(), before = armies();
-  for (let i = 0; i < WR.seasons; i++) S.tickWarTest();
+  // the stalemate roll may end it early; switch it off so the timeout itself is tested
+  const chance = WR.stalemate.chance; WR.stalemate.chance = 0;
+  try { for (let i = 0; i < WR.seasons; i++) S.tickWarTest(); } finally { WR.stalemate.chance = chance; }
   assert.equal(w.quarters, WR.seasons);
   assert.equal(S.wars.length, 0);
   assert.equal(w.battles, 0);
@@ -114,4 +116,16 @@ test('the armistice still settles both sides on the current occupation lines', (
   assert.equal(S.RB.lon.owner, 'RUS');
   assert.equal(S.regions.filter(r => r.occ).length, 0);
   assert.equal(S.wars.length, 0);
+});
+
+test('an ally with no reachable front neither decides the battle nor bleeds', () => {
+  const { S, w, join } = fixture(['GBR'], ['RUS', 'TUR']);
+  join('lon', 'mos');
+  S.C.GBR.army = 50; S.C.TUR.army = 100000;
+  S.tickWarTest();
+  assert.equal(S.RB.mos.occ, 'GBR');
+  assert.equal(S.RB.lon.occ, null);
+  assert.equal(w.battles, 1);
+  assert.equal(S.C.TUR.army, 100000);
+  assert.ok(S.C.RUS.army < 1);
 });
