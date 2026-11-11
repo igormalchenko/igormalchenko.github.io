@@ -9,7 +9,7 @@ const source = simSource(), end = '\n  return S;\n}';
 assert.equal(source.split(end).length, 2);
 const ctx = {};
 vm.createContext(ctx);
-vm.runInContext(source.replace(end, '\n  S.tickWarTest = tickWars; S.endWarTest = endWar; S.warEvalTest = warEval;' + end) + '\nthis.createSim = createSim; this.rules = RULES;', ctx);
+vm.runInContext(source.replace(end, '\n  S.tickWarTest = tickWars; S.endWarTest = endWar; S.warEvalTest = warEval; S.geoNavalTest = geoNaval; S.invalidateTest = invalidate;' + end) + '\nthis.createSim = createSim; this.rules = RULES;', ctx);
 const geo = JSON.parse(fs.readFileSync(path.join(__dirname, '../map/geo.json'), 'utf8'));
 const WR = ctx.rules.war;
 
@@ -132,10 +132,21 @@ test('an ally with no reachable front neither decides the battle nor bleeds', ()
 
 test('equivalent land and sea fronts have the same forecast odds and combat outcome', () => {
   function engagement(sea){
-    const { S, w, join } = fixture(['GBR'], ['FRA'], 'par');
-    join('lon', 'par');
-    const a = S.RB.lon.i, b = S.RB.par.i;
-    S.navalSet = new Set(sea ? [a + '-' + b, b + '-' + a] : []);
+    const { S, w } = fixture(['GBR'], ['FRA'], 'par');
+    // Use real map edges: London–Paris by sea, Brittany–Paris by land.
+    const from = S.RB[sea ? 'lon' : 'bri'], target = S.RB.par;
+    const a = from.i, b = target.i;
+    assert.ok(geo.regions[a].nb.includes(b));
+    assert.ok(geo.regions[b].nb.includes(a));
+    assert.equal(S.geoNavalTest(a, b), sea);
+    assert.equal(S.geoNavalTest(b, a), sea);
+    // Isolate that real front, as in the other war fixtures.
+    from.nb = geo.regions[a].nb.filter(j => j === b);
+    target.nb = geo.regions[b].nb.filter(j => j === a);
+    // Swap the British foothold for the land case, preserving each nation's
+    // province count, population, industry and income in both engagements.
+    for (const key of ['pop', 'fac', 'culture', 'coast', 'unrest', 'integ']) S.RB.bri[key] = S.RB.lon[key];
+    if (!sea) { S.RB.bri.owner = 'GBR'; S.RB.lon.owner = 'FRA'; S.invalidateTest(); }
     S.majors = [];
     Object.values(S.C).forEach(c => { c.allies.clear(); c.truce = {}; c.ruler.bias = 1; });
     S.C.GBR.army = 300; S.C.FRA.army = 100;
