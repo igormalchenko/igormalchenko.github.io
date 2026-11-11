@@ -391,25 +391,27 @@ function createSim(seed, geo, opts = {}){
     killIfEmpty(from);
   }
   const controlledBy = (r, side) => (side.includes(r.owner) && !r.occ) || side.includes(r.occ);
+  // Report an engagement, even if an assault is repulsed; no reachable front means no battle.
   function frontMove(win, lose, w, isAtt){
     const lib = S.regions.filter(r => win.includes(r.owner) && r.occ && lose.includes(r.occ) && r.nb.some(j => controlledBy(S.regions[j], win)));
-    if (lib.length) { const r = pick(lib); r.occ = null; r.battle = 2; return; }
+    if (lib.length) { const r = pick(lib); r.occ = null; r.battle = 2; return true; }
     const cands = S.regions.filter(r => lose.includes(r.owner) && !r.occ && r.nb.some(j => controlledBy(S.regions[j], win)));
-    if (!cands.length) return;
+    if (!cands.length) return false;
     const goal = RB[w.goal];
     const r = isAtt && cands.includes(goal) ? goal : cands.sort((a, b) => b.pop - a.pop)[Math.floor(rng() * Math.min(3, cands.length))];
     r.battle = 2; S.stats.battles++;
     r.pop *= 1 - RULES.battle.dead; S.stats.dead = (S.stats.dead || 0) + r.pop * RULES.battle.dead;
     if (r.fac > 0 && chance(RULES.battle.ruin)) { r.fac--; mark(r.i, 'ruin'); }
-    if (r.fort && chance(S.era.fort)) return;
+    if (r.fort && chance(S.era.fort)) return true;
     // a Cautious ruler stops some advances into his land
-    if (chance(fx(S.C[r.owner], 'hold'))) return;
+    if (chance(fx(S.C[r.owner], 'hold'))) return true;
     if (r.fort) { r.fort = 0; mark(r.i, 'ruin'); L('war', `The fortress of ${Rn(r)} falls and is razed.`); }
     // credit the ally whose land (or occupied land) actually borders it
     const counts = {};
     r.nb.forEach(j => { const x = S.regions[j]; const holder = x.occ && win.includes(x.occ) ? x.occ : (win.includes(x.owner) && !x.occ ? x.owner : null); if (holder) counts[holder] = (counts[holder] || 0) + 1; });
     r.occ = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || (a === win[0] ? -1 : 1))[0] || win[0];
     r.unrest = Math.min(100, r.unrest + RULES.battle.occupied);
+    return true;
   }
   function warScore(w){
     const pops = side => S.regions.filter(r => side.includes(r.owner)).reduce((s, r) => s + r.pop, 0) || 1;
@@ -473,14 +475,16 @@ function createSim(seed, geo, opts = {}){
       const goal = RB[w.goal], home = t => goal.core === t ? fx(S.C[t], 'homeFight') : 1;
       const sA = sideStr(w.att) * home(w.att[0]) * rand(0.7, 1.3), sD = sideStr(w.def) * home(w.def[0]) * S.era.def * rand(0.7, 1.3);
       const aWin = sA > sD, ratio = aWin ? sA / sD : sD / sA;
-      w.battles = clamp(w.battles + (aWin ? 1 : -1), -14, 14);
       const [win, lose] = aWin ? [w.att, w.def] : [w.def, w.att];
-      frontMove(win, lose, w, aWin);
+      let engaged = frontMove(win, lose, w, aWin);
       // a crushing advantage breaks through twice; a Bold leader needs less of one, a Cautious one more
-      if (ratio > RULES.breakthrough * fx(S.C[win[0]], 'breakthrough')) frontMove(win, lose, w, aWin);
-      const bleed = t => fx(S.C[t], 'bleed');
-      win.forEach(t => { S.C[t].army *= 1 - rand(RULES.battle.losses.win[0], RULES.battle.losses.win[1]) * bleed(t); });
-      lose.forEach(t => { S.C[t].army *= 1 - rand(RULES.battle.losses.lose[0], RULES.battle.losses.lose[1]) * bleed(t); });
+      if (ratio > RULES.breakthrough * fx(S.C[win[0]], 'breakthrough')) engaged = frontMove(win, lose, w, aWin) || engaged;
+      if (engaged) {
+        w.battles = clamp(w.battles + (aWin ? 1 : -1), -14, 14);
+        const bleed = t => fx(S.C[t], 'bleed');
+        win.forEach(t => { S.C[t].army *= 1 - rand(RULES.battle.losses.win[0], RULES.battle.losses.win[1]) * bleed(t); });
+        lose.forEach(t => { S.C[t].army *= 1 - rand(RULES.battle.losses.lose[0], RULES.battle.losses.lose[1]) * bleed(t); });
+      }
       w.score = warScore(w);
       const WR = RULES.war, thr = w.great ? WR.greatWin : WR.win, maxQ = w.great ? WR.greatSeasons : WR.seasons;
       const allTaken = S.regions.filter(r => r.owner === w.def[0]).every(r => w.att.includes(r.occ));
