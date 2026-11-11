@@ -812,14 +812,13 @@ function createSim(seed, geo, opts = {}){
       && (leader || isNeighbor(m, a) || isNeighbor(m, d)) && (leader || rel(m.tag, a.tag) < 10 || m.rival === a.tag))
       .map(m => ({ m, q: Math.min(0.9, 0.25 + 0.35 * clamp(power(a) / Math.max(1, power(m)) - 0.4, 0, 1) + (regionsOf(d).length === 1 ? 0.2 : 0) + (leader ? 0.3 : 0)) }));
   }
-  const bySeaOnly = (a, r) => !r.nb.some(j => S.regions[j].owner === a.tag && !geoNaval(j, r.i));
   function geoNaval(i, j){ return (S.navalSet || (S.navalSet = new Set((geo.naval || []).flatMap(([x, y]) => [x + '-' + y, y + '-' + x])))).has(i + '-' + j); }
   function warEval(a, d, r, dExtra = 0, dAlly = null){
     if (a.allies.has(d.tag) || (a.truce[d.tag] || 0) > S.year) return null;
     let their = theirSide(d, a.tag) + dExtra * quality(d);
     if (warOf(d)) their *= 0.5;   // its armies are busy elsewhere
     interveners(a, d).forEach(({ m, q }) => { their += strength(m) * q * 0.45; });
-    if (bySeaOnly(a, r)) their *= 2;  // invading across the sea is hard
+    // Sea crossings grant access to a front; combat gives them no separate strength penalty.
     if (r.core === d.tag) their *= fx(d, 'homeFight');   // a Vengeful defender fights harder for his own land
     if (dAlly && !d.allies.has(dAlly.tag)) their += strength(dAlly) * 0.8;
     const ratio = mySide(a) * (r.core === a.tag ? fx(a, 'homeFight') : 1) / Math.max(1, their * S.era.def);
