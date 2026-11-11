@@ -229,10 +229,28 @@ cands.forEach(c => { if ((per[c.i] || 0) >= 3 || (per[c.j] || 0) >= 3) return;
   const mid = [(c.p[0] + c.q[0]) / 2, (c.p[1] + c.q[1]) / 2]; if (mids.some(m => Math.hypot(m[0] - mid[0], m[1] - mid[1]) < 30)) return; mids.push(mid); per[c.i] = (per[c.i] || 0) + 1; per[c.j] = (per[c.j] || 0) + 1;
   nb[c.i].add(c.j); nb[c.j].add(c.i); naval.push([c.i, c.j]); linkPts[c.i + '-' + c.j] = [c.p.map(r1), c.q.map(r1)]; });
 // geography the shapes get wrong (content/map.json): pairs joined by land, and pairs joined by a sea crossing
+// Long connections may pass a headland: bend their drawing over water rather than through another province.
+const linkPaths = {};
+function seaPath(p, q){
+  const dx = q[0] - p[0], dy = q[1] - p[1], d = Math.hypot(dx, dy), steps = Math.ceil(d / 3);
+  for (let k = 0; k <= 32; k++) {
+    const bend = (k % 2 ? 1 : -1) * Math.ceil(k / 2) / 8;
+    const c = [(p[0] + q[0]) / 2 - dy * bend, (p[1] + q[1]) / 2 + dx * bend].map(r1);
+    let clear = true;
+    for (let s = 1; s < steps; s++) {
+      const t = s / steps, u = 1 - t;
+      const pt = [u * u * p[0] + 2 * u * t * c[0] + t * t * q[0], u * u * p[1] + 2 * u * t * c[1] + t * t * q[1]];
+      if (pt[0] < 0 || pt[0] > MAP_W || pt[1] < 0 || pt[1] > MAP_H || pointOnLand(pt)) { clear = false; break; }
+    }
+    if (clear) return `M${p.join(',')}Q${c.join(',')} ${q.join(',')}`;
+  }
+  throw new Error('No sea-only drawing between coast points ' + p + ' and ' + q);
+}
 CONTENT.map.land.forEach(([x, y]) => { const i = idx[x], j = idx[y]; nb[i].add(j); nb[j].add(i);
   const k = naval.findIndex(([p, q]) => (p === i && q === j) || (p === j && q === i)); if (k >= 0) { naval.splice(k, 1); delete linkPts[i + '-' + j]; delete linkPts[j + '-' + i]; } });
 CONTENT.map.sea.forEach(([x, y]) => { const i = idx[x], j = idx[y]; if (nb[i].has(j)) return; nb[i].add(j); nb[j].add(i);
-  const [d, p, q] = nearest(coastPts[i], coastPts[j]); naval.push([i, j]); linkPts[i + '-' + j] = [p.map(r1), q.map(r1)]; });
+  const [d, p, q] = nearest(coastPts[i], coastPts[j]); naval.push([i, j]); linkPts[i + '-' + j] = [p.map(r1), q.map(r1)];
+  linkPaths[i + '-' + j] = seaPath(...linkPts[i + '-' + j]); });
 const out = {
   W: MAP_W, H: MAP_H,
   // what the map was built from, in order: the check refuses a geo.json that no longer matches the content
@@ -240,6 +258,7 @@ const out = {
   land: pathOf(fullLandLL.map(poly => poly.map(ring => thin(ring.map(([lo, la]) => proj(lo, la)), 1.1))).filter(poly => poly[0].length >= 4)),
   regions: regions.map((r, i) => ({ d: r.d, ax: r.ax, ay: r.ay, area: r.area, nb: [...nb[i]], coast: coastal[i] })),
   borders, naval, navalPts: naval.map(([a2, b2]) => linkPts[a2 + '-' + b2]),
+  navalPaths: naval.map(([a2, b2]) => linkPaths[a2 + '-' + b2] || null),
 };
 fs.writeFileSync(__dirname + '/geo.json', JSON.stringify(out));
 console.error('size', JSON.stringify(out).length);
