@@ -66,7 +66,7 @@ function createSim(seed, geo, opts = {}){
   // a nation's ruler names, or else its people's (the check makes sure one of them has some)
   const namesOf = c => c.namePool === 'people' ? PEOPLES[c.culture].names : c.rulerNames;
 
-  const S = { seed, player: opts.player || null, pending: null, rerolls: opts.player ? RULES.rerolls : 0, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, leader: null, phase: 'season', inSeason: false, reignQueue: [],
+  const S = { seed, player: opts.player || null, pending: null, rerolls: opts.player ? RULES.rerolls : 0, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, forecastLeader: null, phase: 'season', inSeason: false, reignQueue: [],
     marks: [], warNames: {}, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: Object.fromEntries(Object.keys(PEOPLES).map(id => [id, 0])), majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0, dead: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
@@ -306,8 +306,11 @@ function createSim(seed, geo, opts = {}){
   const capitalOf = c => regionsOf(c).slice().sort((a, b) => b.pop * (1 + b.fac) - a.pop * (1 + a.fac))[0];
   const g = v => `${v >= 0 ? '+' : '−'}${Math.abs(Math.round(v))}`;
 
-  // the nation with the most gold a year, fixed once a season so every forecast of the season sees the same leader
-  function computeLeader(){ S.leader = alive().reduce((b, c) => !b || score(c) > score(b) ? c : b, null).tag; }
+  // the living nation with the most gold a year, as things stand now (the interface shows this one)
+  const leaderNow = () => alive().reduce((b, c) => !b || score(c) > score(b) ? c : b, null).tag;
+  // the same, fixed once a season so every forecast of the season sees the same leader
+  function computeLeader(){ S.forecastLeader = leaderNow(); }
+  S.leaderNow = leaderNow;
   function computeMajors(){ S.majors = alive().sort((a, b) => power(b) - power(a)).slice(0, RULES.majors.count).map(c => c.tag); }
 
   function pickRival(c){ // the neighbour that most threatens c's income
@@ -363,7 +366,7 @@ function createSim(seed, geo, opts = {}){
   // a's forecast of attacking d for province r (gold over a's horizon)
   // Great powers that would step in to stop a from growing at d's expense, with the chance each joins.
   function interveners(a, d){
-    const leader = S.leader === a.tag;
+    const leader = S.forecastLeader === a.tag;
     return S.majors.map(t => S.C[t]).filter(m => m.alive && m !== a && m !== d && !a.allies.has(m.tag) && !d.allies.has(m.tag) && !warOf(m)
       && (leader || isNeighbor(m, a) || isNeighbor(m, d)) && (leader || rel(m.tag, a.tag) < 10 || m.rival === a.tag))
       .map(m => ({ m, q: Math.min(0.9, 0.25 + 0.35 * clamp(power(a) / Math.max(1, power(m)) - 0.4, 0, 1) + (regionsOf(d).length === 1 ? 0.2 : 0) + (leader ? 0.3 : 0)) }));

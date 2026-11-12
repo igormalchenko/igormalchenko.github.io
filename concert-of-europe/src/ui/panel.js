@@ -143,7 +143,7 @@ function renderPowers(){
 // the left column: one nation in full. The selected one, else yours, else the leader.
 let allBudget = false, allProvs = false, shownNation = null;
 const PROVS_SHOWN = 6;
-function focusNation(){ return S.C[selected] && S.C[selected].alive ? S.C[selected] : S.player ? S.C[S.player] : S.C[S.leader] || S.alive()[0]; }
+function focusNation(){ return S.C[selected] && S.C[selected].alive ? S.C[selected] : S.player ? S.C[S.player] : S.C[S.leaderNow()]; }
 function renderNation(){
   const c = focusNation(); const box = $('side'); if (!c) return;
   if (c.tag !== shownNation) { shownNation = c.tag; box.scrollTop = 0; }
@@ -195,7 +195,7 @@ function renderNation(){
   const unrest = Math.round(S.unrestOf(c)), shown = allProvs ? byGold : byGold.slice(0, PROVS_SHOWN);
   box.innerHTML = `${back}
     <header class="crest" style="--tc:${TIER[r.grade].color}">
-      <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leader === c.tag ? ic('leader', 'lg') : ''}</div>
+      <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leaderNow() === c.tag ? ic('leader', 'lg') : ''}</div>
       <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
         <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
       <div class="reign">${emblem(r)}<div>

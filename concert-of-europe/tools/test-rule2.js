@@ -143,3 +143,13 @@ test('the player stand-in never reigns: neutral effects until a ruler is chosen 
   const c = s.C[tag]; assert.equal(s.pending.type, 'heir'); assert.equal(c.ruler.ended, true);
   for (const [k, e] of Object.entries(C.effects)) assert.equal(s.fxTest(c, k), e.none, k);
 });
+test('the interface leader is always the living top earner, apart from the forecast snapshot', () => {
+  const s = engine(); let stale = 0;
+  while (!s.over) {
+    s.step();
+    const best = s.alive().reduce((b, c) => !b || s.score(c) > s.score(b) ? c : b, null);
+    assert.equal(s.leaderNow(), best.tag, `${s.year} ${s.q}`); assert.ok(s.C[s.leaderNow()].alive);
+    if (s.forecastLeader !== best.tag) stale++;
+  }
+  assert.ok(stale > 0, 'the forecast snapshot is fixed for the season, so it lags the live leader somewhere');
+});

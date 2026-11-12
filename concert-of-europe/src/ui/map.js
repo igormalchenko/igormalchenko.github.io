@@ -91,6 +91,7 @@ function renderMap(){
     const t = fmt(c.army) + 'k'; const w = 13 + t.length * 5;
     marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5)">${glyph('army')}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}">${t}</text></g>`; });
   // capitals, names, ruler emblems, leader crown
+  const leader = S.leaderNow();
   S.alive().forEach(c => {
     const rs = S.regionsOf(c); if (!rs.length) return;
     const cap = S.capitalOf(c);
@@ -106,7 +107,7 @@ function renderMap(){
     labels += `<text class="lbl" x="${x.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs.toFixed(1)}">${name}</text>`;
     const half = name.length * fs * 0.27;
     if (S.inCrisis(c)) labels += at(x - half - 9, ly - 1, glyph('civilWar'));
-    if (S.leader === c.tag) labels += at(x, ly - fs * 0.62 - 5, glyph('leader'));
+    if (leader === c.tag) labels += at(x, ly - fs * 0.62 - 5, glyph('leader'));
   });
   $('gFront').innerHTML = fronts; $('gOcc').innerHTML = occ; $('gSettle').innerHTML = settle; $('gGoals').innerHTML = goals; $('gIcons').innerHTML = icons; $('gMarks').innerHTML = marks; $('gLabels').innerHTML = labels;
 }
