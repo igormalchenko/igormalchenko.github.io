@@ -1,6 +1,6 @@
 {
   "rich": {"kind": "richest"},
-  "survive": {"kind": "survive"},
+  "survive": {"kind": "survive", "fallback": true},
   "ger": {
     "kind": "unite",
     "title": "German Empire",
