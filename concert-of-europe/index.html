@@ -1004,7 +1004,7 @@ function createSim(seed, geo, opts = {}){
       // only the armies that can reach the front fight, and only they bleed
       const fA = atFront(w.att, w.def), fD = atFront(w.def, w.att);
       if (fA.length || fD.length) {
-        const sA = sideStr(fA, w.def) * home(w.att[0]) * rand(0.7, 1.3), sD = sideStr(fD, w.att) * home(w.def[0]) * S.era.def * rand(0.7, 1.3);
+        const sA = sideStr(fA, fD) * home(w.att[0]) * rand(0.7, 1.3), sD = sideStr(fD, fA) * home(w.def[0]) * S.era.def * rand(0.7, 1.3);
         const aWin = sA > sD, ratio = aWin ? sA / sD : sD / sA;
         const [win, lose] = aWin ? [w.att, w.def] : [w.def, w.att];
         let engaged = frontMove(win, lose, w, aWin);
@@ -1221,6 +1221,8 @@ function createSim(seed, geo, opts = {}){
       // what every nation born in an uprising gets (rules.json newNation): gold, an army sized by its people, an old enemy, perhaps a guarantor
       const nc = makeCountry(tag, Object.assign({}, NATIONS[tag], { army: r.pop * RULES.newNation.armyPerMillion, gold: RULES.newNation.gold }));
       nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
+      // permanent advances outlive the nation's fall
+      if (restored) { nc.advances = S.C[tag].advances; nc.advanceYear = S.C[tag].advanceYear; }
       setAmbition(nc); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
       const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ && (!home || x.core === home)));
       invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = UP.free.unrest; x.build = null; x.flash = 3; x.integ = 1; });
