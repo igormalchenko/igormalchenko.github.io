@@ -1,0 +1,119 @@
+[
+  {
+    "seed": 7,
+    "player": "FRA",
+    "category": "military",
+    "choices": [
+      {
+        "year": 1836,
+        "id": "rifling",
+        "grade": 0
+      },
+      {
+        "year": 1848,
+        "id": "expeditionary",
+        "grade": 2
+      },
+      {
+        "year": 1860,
+        "id": "homeGuard",
+        "grade": 4
+      },
+      {
+        "year": 1872,
+        "id": "engineering",
+        "grade": 1
+      },
+      {
+        "year": 1884,
+        "id": "warMinistry",
+        "grade": 0
+      },
+      {
+        "year": 1896,
+        "id": "staffColleges",
+        "grade": 1
+      },
+      {
+        "year": 1908,
+        "id": "medicine",
+        "grade": 2
+      }
+    ],
+    "heirs": 6,
+    "actions": {
+      "demob": 17,
+      "factory": 39,
+      "reform": 18,
+      "fort": 2,
+      "army": 21
+    },
+    "alive": true,
+    "end": [
+      1918,
+      "Autumn"
+    ],
+    "goldPerYear": 186.26,
+    "provinces": 11,
+    "wars": 51
+  },
+  {
+    "seed": 7,
+    "player": "FRA",
+    "category": "economy",
+    "choices": [
+      {
+        "year": 1836,
+        "id": "merchantBanks",
+        "grade": 0
+      },
+      {
+        "year": 1848,
+        "id": "shipping",
+        "grade": 1
+      },
+      {
+        "year": 1860,
+        "id": "landSurvey",
+        "grade": 0
+      },
+      {
+        "year": 1872,
+        "id": "industry",
+        "grade": 1
+      },
+      {
+        "year": 1884,
+        "id": "exportHouses",
+        "grade": 1
+      },
+      {
+        "year": 1896,
+        "id": "domesticMarkets",
+        "grade": 1
+      },
+      {
+        "year": 1908,
+        "id": "industrialCredit",
+        "grade": 3
+      }
+    ],
+    "heirs": 5,
+    "actions": {
+      "demob": 20,
+      "factory": 46,
+      "reform": 17,
+      "fort": 8,
+      "court": 34,
+      "army": 20
+    },
+    "alive": true,
+    "end": [
+      1918,
+      "Autumn"
+    ],
+    "goldPerYear": 231.92,
+    "provinces": 8,
+    "wars": 44
+  }
+]

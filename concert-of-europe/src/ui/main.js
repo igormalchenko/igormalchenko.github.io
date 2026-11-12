@@ -19,7 +19,7 @@ $('reroll').onclick = () => {
   const b = $('reroll'); $('rerollNote').textContent = 'Coming soon';
   b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope');
 };
-$('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b) return; S.chooseHeir(+b.dataset.i); $('heirModal').classList.remove('on'); render(); startAuto(); });
+$('heirCards').addEventListener('click', e => { const b = e.target.closest('.heir'); if (!b || !S.pending) return; (S.pending.type === 'advance' ? S.chooseAdvance : S.chooseHeir)(+b.dataset.i); $('heirModal').classList.remove('on'); render(); checkPending(); startAuto(); });
 $('help').onclick = () => $('helpModal').classList.add('on');
 $('toggle').innerHTML = ic('panel');
 $('toggle').onclick = () => { $('panel').classList.toggle('closed'); render(); };
@@ -36,8 +36,8 @@ document.addEventListener('keydown', e => {
   if ((e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') && e.key !== 'Escape') return;
   // Space is play/pause everywhere outside dialogs, even with a button focused
   if (e.key === ' ' && e.target.tagName === 'BUTTON' && e.target.closest('.modal')) return;
-  // the number on a card picks that heir
-  if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && /^[1-9]$/.test(e.key) && +e.key <= RULES.heirs) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
+  // the number on a card resolves the current mandatory choice
+  if (S.pending && $('heirModal').classList.contains('on') && /^[1-9]$/.test(e.key) && +e.key <= S.pending.options.length) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
   if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
   if (S.pending) return;
   if (e.key === ' ' || e.key === 'p' || e.key === 'P') { e.preventDefault(); if (document.querySelector('.modal.on')) return; timer ? stopAuto() : startAuto(); }
@@ -120,7 +120,7 @@ const scene = Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
 if (scene.seed || scene.to) {
   newWorld(+scene.seed || 1848, scene.play || undefined);
   const to = +scene.to || RULES.start;
-  while (!S.over && S.year < to) { if (S.pending) S.chooseHeir(0); S.step(); }
-  if (S.pending) S.chooseHeir(0);
-  $('heirModal').classList.remove('on'); render();
+  while (!S.over && S.year < to) { if (S.pending) (S.pending.type === 'advance' ? S.chooseAdvance : S.chooseHeir)(0); S.step(); }
+  if (S.pending) (S.pending.type === 'advance' ? S.chooseAdvance : S.chooseHeir)(0);
+  $('heirModal').classList.remove('on'); render(); checkPending();
 } else { newWorld(1 + Math.floor(Math.random() * 99999)); showStart(); }

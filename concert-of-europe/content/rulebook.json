@@ -68,5 +68,15 @@
     "A province that rises next to a nation of its own people joins it at {rules.uprising.joins.unrest} unrest. Whenever a province breaks away, every province of a subject people left in the old nation gains {rules.uprising.spread} unrest.",
     "Rebels who find no allies are beaten back at a heavy price: the province stays at {rules.uprising.alone.unrest} unrest, and its ruler loses {rules.uprising.alone.army|down} of his army and {rules.uprising.alone.gold|down} of his gold.",
     "A province that wins its independence starts at {rules.uprising.free.unrest} unrest and fully integrated, and the old ruler loses {rules.uprising.free.army|down} of his army."
+  ],
+  "Development": [
+    "Every living nation receives a development offer in {advances.season|season} of {advances.years|list}, using the game calendar. The opening player offer follows the opening ruler choice. There are no retrospective awards for missed opportunities.",
+    "Each offer contains one eligible, unowned advance from each category: {advances.categories.military.name}, {advances.categories.economy.name} and {advances.categories.government.name}. Identities are random within categories; an unavailable category is filled from the remaining eligible pool without duplicates.",
+    "The player must choose one face-up card and the game pauses until resolved. AI nations receive equivalent offers and choose randomly. Advances cost no gold and cannot be rerolled.",
+    "Each offered card independently draws its rarity: {rarities.0.name} {rarities.0.odds|pct}, {rarities.1.name} {rarities.1.odds|pct}, {rarities.2.name} {rarities.2.odds|pct}, {rarities.3.name} {rarities.3.odds|pct}, {rarities.4.name} {rarities.4.odds|pct}. Rarity strengthens the same effects without adding grants or penalties. Every advance has one or two effects at every rarity, with no added grants, penalties or levels.",
+    "Advances belong to the nation and survive ruler changes. Each can be acquired only once, regardless of rarity, with no upgrades or replacements. Percentage modifiers multiply with other advances and the ruler; planning years add. Costs stay positive through multiplication.",
+    "Coast cards require a coastal province; border cards require a living neighbour. Targeted cards require a living neighbouring non-ally and name a fixed target when offered, preferring the rival, otherwise the strongest eligible neighbour. The target strength bonus applies only against that nation; casualty reductions apply to every battle.",
+    "Core-land strength applies only in wars whose goal is the nation’s core land, whether defending or recovering it. General speed and foreign-province speed both apply only when a conquest belongs to an unaccepted people outside core land. Strength changes effectiveness, never army headcount; faster progress is not a reduction of time by the same percentage.",
+    "Advances add no orders or new objectives: the same ministers forecast decisions in gold, with the existing costs of growth. After the final scheduled opportunity there are no further timed offers."
   ]
 }

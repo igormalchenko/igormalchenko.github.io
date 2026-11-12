@@ -17,6 +17,11 @@ function traitEffects(t, g){
   one('malus', T.malus, T.malus.values[R.malus]);
   return out;
 }
+// One formatter for chooser, owned-card hovers and Almanac; acquisitions contain IDs and runtime parameters only.
+function advanceEffects(a, nation = a.target ? CONTENT.nations[a.target].name : ''){
+  return CONTENT.advances.cards[a.id].effects.map(e => ({ fx: e.fx, value: e.values[a.grade],
+    text: say(e.text, { v: e.values[a.grade], nation }) }));
+}
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
 
 function createSim(seed, geo, opts = {}){
@@ -26,9 +31,32 @@ function createSim(seed, geo, opts = {}){
   const pick = a => a[Math.floor(rng() * a.length)];
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const sig = x => 1 / (1 + Math.exp(-x));
-  // the reigning ruler's value for an effect (content/effects.json), or the value that changes nothing
-  const fx = (c, k) => { const v = c && c.ruler && c.ruler.fx && c.ruler.fx[k]; return v == null ? EFFECTS[k].none : v; };
-  const hasFx = (c, k) => !!(c && c.ruler && c.ruler.fx && c.ruler.fx[k] != null);
+  // Resolve ruler and permanent national contributions in one path. Zero-neutral effects add; unit-neutral effects multiply.
+  // A nation's advance values grouped by effect, in acquisition order; rebuilt only when its list grows or is replaced.
+  // A targeted effect (effects.json `targeted`) keeps the nation it is aimed at and applies only against it.
+  const ADV_FX = new WeakMap();
+  const advFx = c => {
+    const list = c?.advances; if (!list || !list.length) return null;
+    let m = ADV_FX.get(list);
+    if (!m || m.len !== list.length) {
+      m = { len: list.length, by: {} };
+      for (const a of list) for (const e of CONTENT.advances.cards[a.id].effects)
+        (m.by[e.fx] || (m.by[e.fx] = [])).push({ v: e.values[a.grade], target: EFFECTS[e.fx].targeted ? a.target : null });
+      ADV_FX.set(list, m);
+    }
+    return m.by;
+  };
+  const fx = (c, k, against = []) => {
+    let value = c?.ruler?.fx?.[k] ?? EFFECTS[k].none;
+    const vs = advFx(c)?.[k]; if (!vs) return value;
+    const mul = EFFECTS[k].none === 1, foes = EFFECTS[k].targeted && (Array.isArray(against) ? against : [against.tag || against]);
+    for (const { v, target } of vs) {
+      if (foes && !foes.includes(target)) continue;
+      value = mul ? value * v : value + v;
+    }
+    return value;
+  };
+  const hasFx = (c, k) => fx(c, k) !== EFFECTS[k].none;
   // a nation's ruler names, or else its people's (the check makes sure one of them has some)
   const namesOf = c => c.rulerNames || PEOPLES[c.culture].names;
 
@@ -99,10 +127,10 @@ function createSim(seed, geo, opts = {}){
     S.rerolls--; S.pending = heirCard(S.C[p.tag], p.opening, p.why, p.crisis); return true;
   }
   function chooseHeir(i){
-    const p = S.pending; if (!p || p.type !== 'heir') return;
+    const p = S.pending; if (!p || p.type !== 'heir' || !Number.isInteger(i) || !p.options[i]) return false;
     const c = S.C[p.tag], nr = p.options[i]; S.pending = null;
-    if (p.opening) { crown(c, nr, false); L('ruler', `${RN(nr)} takes the throne of ${N(c)}. ${traitDesc(nr)}.`); return; }
-    successionLog(c, p.why, crown(c, nr, false), p.crisis);
+    if (p.opening) { crown(c, nr, false); L('ruler', `${RN(nr)} takes the throne of ${N(c)}. ${traitDesc(nr)}.`); offerAdvances(); return true; }
+    successionLog(c, p.why, crown(c, nr, false), p.crisis); offerAdvances(); return true;
   }
   // a civil war follows some successions: rival claimants split the army and unrest soars (by `crisis` if it is a number)
   function successionLog(c, why, nr, crisis){
@@ -156,7 +184,7 @@ function createSim(seed, geo, opts = {}){
       army: d.army * rand(RULES.setup.army[0], RULES.setup.army[1]), treasury: (g => d.gold != null ? d.gold : g)(RULES.setup.gold[0] + rand(0, RULES.setup.gold[1] - RULES.setup.gold[0])), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
       alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: tag === EV.serfdom.nation, ambitionId: d.ambition || 'survive', didThisSeason: [], born: S.year,
-      startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
+      advances: [], advanceYear: null, startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
   }
@@ -187,9 +215,9 @@ function createSim(seed, geo, opts = {}){
   const facAvg = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.fac * r.pop, 0) / p; };
   const unrestOf = c => { const rs = regionsOf(c); const p = rs.reduce((s, r) => s + r.pop, 0) || 1; return rs.reduce((s, r) => s + r.unrest * r.pop, 0) / p; };
   // how well the armies fight: industry, and a soldier or conqueror at their head
-  const quality = c => (1 + RULES.battle.industry * facAvg(c)) * fx(c, 'fight');
+  const quality = (c, against = []) => (1 + RULES.battle.industry * facAvg(c)) * fx(c, 'fight') * fx(c, 'targetFight', against);
   const inCrisis = c => c.crisis && S.t < c.crisis.until;
-  const strength = c => c.army * quality(c) * (1 - unrestOf(c) / 250) * (inCrisis(c) ? RULES.reign.crisisArmy : 1);
+  const strength = (c, against = []) => c.army * quality(c, against) * (1 - unrestOf(c) / 250) * (inCrisis(c) ? RULES.reign.crisisArmy : 1);
   const warOf = c => S.wars.find(w => w.att.includes(c.tag) || w.def.includes(c.tag));
   const isAccepted = (c, cul) => c.culture === cul || c.acc.has(cul);
   const neighborsOf = c => { const s = new Set(); regionsOf(c).forEach(r => r.nb.forEach(j => { const o = S.regions[j].owner; if (o !== c.tag) s.add(o); })); return [...s].map(t => S.C[t]); };
@@ -268,22 +296,26 @@ function createSim(seed, geo, opts = {}){
   }
 
   // ---------- military forecasting ----------
-  const sideStr = ts => ts.reduce((s, t) => s + strength(S.C[t]), 0);
-  function mySide(c, extraArmy = 0, extraAlly = null){
-    let s = (c.army + extraArmy) * quality(c) * (1 - unrestOf(c) / 250) * (inCrisis(c) ? RULES.reign.crisisArmy : 1);
-    c.allies.forEach(t => { if (!warOf(S.C[t])) s += strength(S.C[t]) * 0.65; });
-    if (extraAlly) s += strength(extraAlly) * 0.65;
+  // Targeted modifiers see possible opposing participants, never an ally already busy in another war.
+  const forecastFoes = (c, own, extra = null) => [c.tag, ...c.allies, ...(extra ? [extra.tag] : [])]
+    .filter(t => t === c.tag || (S.C[t].alive && !warOf(S.C[t]) && !own.allies.has(t)));
+  const sideStr = (ts, against) => ts.reduce((s, t) => s + strength(S.C[t], against), 0);
+  function mySide(c, extraArmy = 0, extraAlly = null, against = []){
+    let s = (c.army + extraArmy) * quality(c, against) * (1 - unrestOf(c) / 250) * (inCrisis(c) ? RULES.reign.crisisArmy : 1);
+    c.allies.forEach(t => { if (!warOf(S.C[t])) s += strength(S.C[t], against) * 0.65; });
+    if (extraAlly) s += strength(extraAlly, against) * 0.65;
     return s;
   }
   function theirSide(o, exclude){
-    let s = strength(o);
-    o.allies.forEach(t => { if (t !== exclude && !warOf(S.C[t])) s += strength(S.C[t]) * 0.8; });
+    const against = forecastFoes(S.C[exclude], o);
+    let s = strength(o, against);
+    o.allies.forEach(t => { if (t !== exclude && !warOf(S.C[t])) s += strength(S.C[t], against) * 0.8; });
     return s;
   }
   const pWin = ratio => sig(3.2 * Math.log(Math.max(0.05, ratio)));
   // yearly chance that o attacks c, and what c would lose
   function threatOf(o, c, extraArmy = 0, extraAlly = null){
-    const ratio = theirSide(o, c.tag) / Math.max(1, mySide(c, extraArmy, extraAlly) * 1.15);
+    const ratio = theirSide(o, c.tag) / Math.max(1, mySide(c, extraArmy, extraAlly, forecastFoes(o, c)) * 1.15);
     const hostility = clamp((20 - rel(o.tag, c.tag)) / 60, 0.1, 1.6) * 0.82 * (1 + o.infamy / 40);
     const p = 0.2 * sig(4 * (ratio - 1.2)) * hostility;
     return { p, ratio };
@@ -320,13 +352,14 @@ function createSim(seed, geo, opts = {}){
   function geoNaval(i, j){ return (S.navalSet || (S.navalSet = new Set((geo.naval || []).flatMap(([x, y]) => [x + '-' + y, y + '-' + x])))).has(i + '-' + j); }
   function warEval(a, d, r, dExtra = 0, dAlly = null){
     if (a.allies.has(d.tag) || (a.truce[d.tag] || 0) > S.year) return null;
-    let their = theirSide(d, a.tag) + dExtra * quality(d);
+    const foesOfD = forecastFoes(a, d);   // who d's side would face, for targeted modifiers
+    let their = theirSide(d, a.tag) + dExtra * quality(d, foesOfD);
     if (warOf(d)) their *= 0.5;   // its armies are busy elsewhere
-    interveners(a, d).forEach(({ m, q }) => { their += strength(m) * q * 0.45; });
+    interveners(a, d).forEach(({ m, q }) => { their += strength(m, foesOfD) * q * 0.45; });
     // Sea crossings grant access to a front; combat gives them no separate strength penalty.
     if (r.core === d.tag) their *= fx(d, 'homeFight');   // a Vengeful defender fights harder for his own land
-    if (dAlly && !d.allies.has(dAlly.tag)) their += strength(dAlly) * 0.8;
-    const ratio = mySide(a) * (r.core === a.tag ? fx(a, 'homeFight') : 1) / Math.max(1, their * S.era.def);
+    if (dAlly && !d.allies.has(dAlly.tag)) their += strength(dAlly, foesOfD) * 0.8;
+    const ratio = mySide(a, 0, null, forecastFoes(d, a, dAlly)) * (r.core === a.tag ? fx(a, 'homeFight') : 1) / Math.max(1, their * S.era.def);
     const pTrue = pWin(ratio), p = believe(a, ratio);   // what the ruler believes
     if (p < 0.5) return null;
     const H = horizon(a), T = a.treasury;
@@ -480,7 +513,7 @@ function createSim(seed, geo, opts = {}){
       // only the armies that can reach the front fight, and only they bleed
       const fA = atFront(w.att, w.def), fD = atFront(w.def, w.att);
       if (fA.length || fD.length) {
-        const sA = sideStr(fA) * home(w.att[0]) * rand(0.7, 1.3), sD = sideStr(fD) * home(w.def[0]) * S.era.def * rand(0.7, 1.3);
+        const sA = sideStr(fA, fD) * home(w.att[0]) * rand(0.7, 1.3), sD = sideStr(fD, fA) * home(w.def[0]) * S.era.def * rand(0.7, 1.3);
         const aWin = sA > sD, ratio = aWin ? sA / sD : sD / sA;
         const [win, lose] = aWin ? [w.att, w.def] : [w.def, w.att];
         let engaged = frontMove(win, lose, w, aWin);
@@ -697,6 +730,8 @@ function createSim(seed, geo, opts = {}){
       // what every nation born in an uprising gets (rules.json newNation): gold, an army sized by its people, an old enemy, perhaps a guarantor
       const nc = makeCountry(tag, Object.assign({}, NATIONS[tag], { army: r.pop * RULES.newNation.armyPerMillion, gold: RULES.newNation.gold }));
       nc.born = S.year; nc.restored = restored; if (wasPlayer) nc.player = true;
+      // permanent advances outlive the nation's fall
+      if (restored) { nc.advances = S.C[tag].advances; nc.advanceYear = S.C[tag].advanceYear; }
       setAmbition(nc); S.C[tag] = nc; if (!tags.includes(tag)) tags.push(tag);
       const group = [r].concat(r.nb.map(j => S.regions[j]).filter(x => x.owner === o.tag && x.culture === r.culture && !x.occ && (!home || x.core === home)));
       invalidate(); group.forEach(x => { x.owner = tag; x.core = tag; x.unrest = UP.free.unrest; x.build = null; x.flash = 3; x.integ = 1; });
@@ -800,7 +835,7 @@ function createSim(seed, geo, opts = {}){
       const c = pick(cs), o = S.C[c.rival];
       let best = null; borderRegions(c).filter(r => r.owner === o.tag).forEach(r => { const ev = warEval(c, o, r); if (ev && (!best || ev.ev > best.ev)) best = { ...ev, r }; });
       if (!best || best.ev + e.margin < 0) { if (chance(e.rattle)) L('diplo', say(e.rattleText, { a: N(c), b: N(o), pretext: pick(e.pretexts) })); return; }
-      const oFears = believe(o, theirSide(o, c.tag) * S.era.def / Math.max(1, mySide(c))) < e.backDown;
+      const oFears = believe(o, theirSide(o, c.tag) * S.era.def / Math.max(1, mySide(c, 0, null, forecastFoes(o, c)))) < e.backDown;
       if (oFears) { const pay = Math.max(0, o.treasury * e.pay); o.treasury -= pay; c.treasury += pay; regionsOf(o).forEach(r => r.unrest += e.unrest); addRel(c.tag, o.tag, e.relations);
         L('diplo', say(e.text, { a: N(c), b: N(o), gold: Math.round(pay) })); }
       else { const name = warName(c, o); declareWar(c, o, best.r, { p: best.p, pTrue: best.pTrue, name, text: say(e.warText, { a: N(c), b: N(o), province: Rn(best.r), war: name }) }); } } },
@@ -850,6 +885,59 @@ function createSim(seed, geo, opts = {}){
   }
 
   // ---------- one season ----------
+  // ---------- scheduled permanent national advances ----------
+  function drawAdvances(c){
+    const neighbours = neighborsOf(c).filter(o => o.alive);
+    const targets = neighbours.filter(o => !c.allies.has(o.tag)).sort((a, b) =>
+      Number(b.tag === c.rival) - Number(a.tag === c.rival) || strength(b) - strength(a));
+    const eligible = Object.entries(CONTENT.advances.cards).filter(([id, a]) => !c.advances.some(owned => owned.id === id)
+      && (a.requires !== 'coast' || regionsOf(c).some(r => r.coast))
+      && (a.requires !== 'border' || neighbours.length)
+      && (a.requires !== 'target' || targets.length));
+    const options = [];
+    for (const category of Object.keys(CONTENT.advances.categories)) {
+      const pool = eligible.filter(([id, a]) => a.category === category && !options.some(o => o.id === id));
+      if (pool.length) options.push({ id: pick(pool)[0] });
+    }
+    while (options.length < Object.keys(CONTENT.advances.categories).length) {
+      const pool = eligible.filter(([id]) => !options.some(o => o.id === id));
+      if (!pool.length) break;
+      options.push({ id: pick(pool)[0] });
+    }
+    return options.map(a => {
+      let x = rng(), grade = 0;
+      while (grade < RARITY.length - 1 && x >= RARITY[grade].odds) { x -= RARITY[grade].odds; grade++; }
+      return { ...a, grade, ...(CONTENT.advances.cards[a.id].requires === 'target' ? { target: targets[0].tag } : {}) };
+    });
+  }
+  function acquireAdvance(c, a){
+    c.advances.push(a); RISK = {};
+    const d = CONTENT.advances.cards[a.id];
+    L('event', say(CONTENT.advances.acquisitionText, { nation: N(c), advance: `<span style="color:${RARITY[a.grade].color}">${d.name}</span>` }));
+  }
+  function offerAdvances(){
+    if (S.over || S.q !== CONTENT.advances.season || !CONTENT.advances.years.includes(S.year)) return;
+    for (const c of alive()) {
+      if (c.advanceYear === S.year || (c.player && S.pending)) continue;
+      const options = drawAdvances(c); c.advanceYear = S.year;
+      if (!options.length) continue;
+      if (c.player) S.pending = { type: 'advance', tag: c.tag, year: S.year, options };
+      else acquireAdvance(c, pick(options));
+    }
+  }
+  function chooseAdvance(i){
+    const p = S.pending;
+    if (!p || p.type !== 'advance' || !Number.isInteger(i) || !p.options[i]) return false;
+    const c = S.C[p.tag];
+    if (!c.alive || c.advances.some(a => a.id === p.options[i].id)) return false;
+    acquireAdvance(c, p.options[i]); S.pending = null; return true;
+  }
+  function nextAdvanceYear(){
+    const c = S.player && S.C[S.player];
+    if (S.over || (c && !c.alive)) return null;
+    return CONTENT.advances.years.find(y => y > S.year || (y === S.year && S.q <= CONTENT.advances.season && (c && (c.advanceYear !== y || S.pending?.type === 'advance')))) ?? null;
+  }
+
   function step(){
     if (S.over || S.pending) return;
     const cs = alive();
@@ -898,6 +986,8 @@ function createSim(seed, geo, opts = {}){
       return;
     }
     S.t++; S.year = RULES.start + Math.floor(S.t / 4); S.q = S.t % 4;
+    if (S.player && !S.C[S.player].alive) S.pending = null;
+    offerAdvances();
   }
 
   alive().forEach(pickRival);
@@ -908,7 +998,8 @@ function createSim(seed, geo, opts = {}){
     // vary the draw by country, so two countries in the same world are not offered the same three characters
     for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng();
     S.pending = heirCard(pc, true); }
-  Object.assign(S, { chooseHeir, rerollHeirs, step, alive, considerations, SEASONS, riskOf, thriftOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
+  offerAdvances();
+  Object.assign(S, { chooseAdvance, nextAdvanceYear, chooseHeir, rerollHeirs, step, alive, considerations, SEASONS, riskOf, thriftOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
   return S;
 }
 

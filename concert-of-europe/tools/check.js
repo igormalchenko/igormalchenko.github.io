@@ -138,7 +138,7 @@ if (C.eras.filter(e => e.start).length !== 1) bad('eras.json', 'exactly one way 
 
 // ---- 6: templates ----
 // every placeholder a template may use, besides its own fields: the words a running world fills in
-const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need', 'n', 'by', 'count', 'v', 'ruler', 'from'];
+const RUNTIME = ['friend', 'culture', 'landmark', 'mood', 'a', 'b', 'nation', 'nations', 'province', 'people', 'era', 'find', 'pretext', 'gold', 'war', 'the', 'title', 'need', 'n', 'by', 'count', 'v', 'ruler', 'from', 'advance', 'season', 'year', 'remaining'];
 // a runtime word that is also a content file (nations) is left to the content, so {nations.FRA.name} still checks
 const probe = Object.fromEntries(RUNTIME.filter(k => !(k in C)).map(k => [k, 'X']));
 function template(where, tpl, own){
@@ -175,10 +175,50 @@ Object.entries(C.rulers).forEach(([t, q]) => { const w = `rulers.json ${t}`;
 { const mains = {}; Object.entries(C.rulers).forEach(([t, q]) => { if (mains[q.main.fx]) bad(`rulers.json ${t}`, `shares its main bonus (${q.main.fx}) with ${mains[q.main.fx]}`); mains[q.main.fx] = t; }); }
 Object.keys(ctx.EMB).forEach(t => { if (!C.rulers[t]) problems.push(`src/ui/registry.js: emblem for "${t}", which is not in rulers.json`); });
 const fxOfTrait = q => ['main', 'flat', 'malus'].flatMap(sl => [q[sl].fx, q[sl].big && q[sl].big.fx]).filter(Boolean);
-Object.keys(C.effects).forEach(k => { if (!Object.values(C.rulers).some(q => fxOfTrait(q).includes(k))) bad('effects.json', `"${k}" is used by no ruler`); });
+Object.keys(C.effects).forEach(k => { if (!Object.values(C.rulers).some(q => fxOfTrait(q).includes(k)) && !Object.values(C.advances.cards).some(a => a.effects.some(e => e.fx === k))) bad('effects.json', `"${k}" is used by no ruler or advance`); });
 C.rarities.forEach((r, g) => { const w = `rarities.json ${r.name}`;
   ['main', 'malus'].forEach(k => { if (![0, 1, 2].includes(r[k])) bad(w, `${k} must be 0, 1 or 2 (small, medium, big)`); });
   if (![null, 0, 1].includes(r.flat)) bad(w, 'flat must be null, 0 or 1 (none, small, medium)'); });
+// Permanent advances have their own five strength levels, independent of the ruler slot mapping.
+{ const a = C.advances, ids = Object.keys(a.cards), categories = Object.keys(a.categories);
+  if (C.rarities.length !== 5) bad('rarities.json', 'advances require five rarity tiers');
+  if (!Array.isArray(a.years) || !a.years.length || a.years.some((y, i) => !Number.isInteger(y) || y < C.rules.start || y > C.rules.end.year || (i && y <= a.years[i - 1]))) bad('advances.json', 'years must be ordered unique game years');
+  if (!Number.isInteger(a.season) || !C.rules.seasons[a.season]) bad('advances.json', 'unknown scheduled season');
+  if (categories.length !== C.rules.heirs) bad('advances.json', 'one category per offered card is required');
+  categories.forEach(k => { if (!a.categories[k].name || !REG[a.categories[k].icon]) bad('advances.json', `category ${k} needs a name and registered icon`); });
+  if (!REG.advance || ctx.DRAW.advance.draw === ctx.DRAW.reform.draw) bad('concepts.json', 'development needs its own registered icon');
+  const grants = new Set([...read('src/sim.js').matchAll(/\bv\('(\w+)'\)/g)].map(m => m[1]));
+  const readFx = new Set([...read('src/sim.js').matchAll(/\bfx\(\s*[^,]+,\s*'(\w+)'/g)].map(m => m[1]));
+  const advanceIcons = new Set();
+  ids.forEach(id => { const d = a.cards[id], w = `advances.json ${id}`;
+    if (!/^[a-z][a-zA-Z]*$/.test(id) || !d.name) bad(w, 'needs a stable ID and name');
+    if (!categories.includes(d.category)) bad(w, `unknown category ${d.category}`);
+    if (!REG[d.icon]) bad(w, `unknown icon ${d.icon}`);
+    if (advanceIcons.has(d.icon)) bad(w, 'advance identities must use distinct registered icons');
+    advanceIcons.add(d.icon);
+    if (!['any', 'coast', 'border', 'target'].includes(d.requires) || !a.eligibility[d.requires]) bad(w, 'unknown or unexplained eligibility');
+    if (!Array.isArray(d.effects) || d.effects.length < 1 || d.effects.length > 2) return bad(w, 'needs one or two permanent effects');
+    if (new Set(d.effects.map(e => e.fx)).size !== d.effects.length) bad(w, 'duplicate effects');
+    if (d.effects.some(e => C.effects[e.fx] && C.effects[e.fx].targeted) !== (d.requires === 'target')) bad(w, 'target eligibility and effect must agree');
+    d.effects.forEach(e => {
+      if (!C.effects[e.fx] || !readFx.has(e.fx) || grants.has(e.fx)) bad(w, `effect ${e.fx} must be a registered, applied permanent modifier`);
+      if (!Array.isArray(e.values) || e.values.length !== C.rarities.length || e.values.some(v => !Number.isFinite(v) || v <= 0)) bad(w, 'needs five positive finite strength values');
+      if (Array.isArray(e.values) && C.effects[e.fx]) e.values.forEach((v, g) => {
+        const neutral = C.effects[e.fx].none, direction = Math.sign(e.values[0] - neutral);
+        if (direction === 0 || Math.sign(v - neutral) !== direction || (g && direction * (v - e.values[g - 1]) <= 0)) bad(w, 'each rarity must strengthen the same bonus');
+        template(w, e.text, { v, nation: 'X' });
+        if (!e.text || !e.text.includes('{v')) bad(w, 'effect wording must state its value');
+        if (C.effects[e.fx] && C.effects[e.fx].targeted && !e.text.includes('{nation}')) bad(w, 'targeted effect must name its target');
+      });
+    });
+  });
+  const book = JSON.stringify(C.rulebook.Development || []);
+  for (const path of ['advances.years', 'advances.season', ...categories.map(k => `advances.categories.${k}.name`), ...C.rarities.flatMap((r, g) => [`rarities.${g}.name`, `rarities.${g}.odds`])])
+    if (!book.includes('{' + path)) bad('rulebook.json', `development rules must explain ${path}`);
+  // The prose is content; these required topics guard against accidentally dropping lifecycle/conditional explanations.
+  for (const topic of ['pauses', 'randomly', 'multiply', 'planning years add', 'survive ruler', 'only once', 'non-ally', 'core land', 'no retrospective', 'final scheduled'])
+    if (!book.toLowerCase().includes(topic)) bad('rulebook.json', `development explanation missing: ${topic}`);
+}
 // the rulebook: plain sentences for the Almanac, one or more for every rule
 Object.entries(C.rulebook).forEach(([g, lines]) => lines.forEach((l, i) => template(`rulebook.json "${g}" ${i + 1}`, l, {})));
 { const book = JSON.stringify(C.rulebook);
@@ -248,7 +288,7 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
   Object.entries(C.provinces).forEach(([id, p]) => { num(`provinces.json ${id} pop`, p.pop, 0.01, 100); num(`provinces.json ${id} industry`, p.industry, 0, C.rules.build.maxFactories);
     if (!Number.isInteger(p.industry)) bad(`provinces.json ${id}`, 'industry is a number of factories, a whole number'); });
   Object.entries(C.ambitions).forEach(([id, d]) => { if (d.provinces && new Set(d.provinces).size !== d.provinces.length) bad(`ambitions.json ${id}`, 'lists a province twice'); });
-  Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); });
+  Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); if (d.targeted != null && d.targeted !== true) bad(`effects.json ${k}`, '"targeted" is true or left out'); });
   Object.entries(C.temperaments).forEach(([k, t]) => { ['high', 'low'].forEach(h => { if (!Array.isArray(t[h]) || typeof t[h][0] !== 'number' || typeof t[h][1] !== 'string') bad(`temperaments.json ${k}`, `"${h}" should be [threshold, word]`); });
     if (typeof t.mid !== 'string') bad(`temperaments.json ${k}`, '"mid" should be a word'); });
   if (C.rules.heirs > Object.keys(C.rulers).length) bad('rules.json', `heirs: a card can't show ${C.rules.heirs} different traits out of ${Object.keys(C.rulers).length}`);
@@ -274,6 +314,7 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
   C.eras.forEach((e, i) => nm(e.name, `way of war ${i}`));
   Object.entries(C.rulers).forEach(([t, q]) => nm(q.label, `trait ${t}`));
   C.rarities.forEach((r, i) => nm(r.name, `rarity ${i}`));
+  Object.entries(C.advances.cards).forEach(([id, d]) => nm(d.name, `advance ${id}`));
   C.rules.seasons.forEach((x, i) => { nm(x, `season ${i}`); nm(x.toLowerCase(), `season ${i}`); });
   const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const RE = new RegExp(`(?<![\\w-])(${NAMES.map(x => x.n).sort((a, b) => b.length - a.length).map(esc).join('|')})(?![\\w-])`, 'g');
@@ -305,8 +346,20 @@ UI.concat(['src/ui/registry.js', 'src/sim.js']).forEach(f => { const src = read(
   const actx = { $: el, document: { getElementById: el, querySelectorAll: () => [] }, S: null, console }; vm.createContext(actx);
   try {
     vm.runInContext(require('./content').source() + read('src/text.js') + read('src/data.js') + 'const GEO = ' + read('map/geo.json') + ';\n' + read('src/sim.js') + read('src/ui/registry.js') +
-      read('src/ui/almanac.js').replace(/\nconst AL = /, '\nvar S = null; const AL = ') + '\nthis.SECTIONS = SECTIONS;', actx);
+      read('src/ui/almanac.js').replace(/\nconst AL = /, '\nvar S = null; const AL = ') + '\nthis.SECTIONS = SECTIONS; this.CONTENT = CONTENT; this.advanceEffects = advanceEffects;', actx);
     Object.entries(actx.SECTIONS).forEach(([k, s]) => { let h; try { h = s.render(); } catch (e) { problems.push(`src/ui/almanac.js: the ${s.name} page fails: ${e.message}`); return; }
+      if (k === 'advances') {
+        const plain = h.replace(/<[^>]*>/g, '').replace(/\s+/g, '');
+        Object.entries(actx.CONTENT.advances.cards).forEach(([id, d]) => {
+          if (!h.includes(d.name) || !h.includes(actx.CONTENT.advances.eligibility[d.requires])) problems.push(`Almanac: missing advance ${id} or its eligibility`);
+          actx.CONTENT.rarities.forEach((r, grade) => actx.advanceEffects({ id, grade }, '<i>a nation</i>').forEach(e => {
+            const expected = e.text.replace(/<[^>]*>/g, '').replace(/\s+/g, '');
+            if (!plain.includes(expected)) problems.push(`Almanac: missing ${id} strength at ${r.name}`);
+          }));
+        });
+        if ((h.match(/class="al-e"/g) || []).length !== Object.keys(actx.CONTENT.advances.cards).length) problems.push('Almanac: incomplete advance catalogue');
+        for (const r of actx.CONTENT.rarities) if (!h.includes(r.name)) problems.push('Almanac: missing advance rarity');
+      }
       const t = h.replace(/<[^>]*>/g, ' '), m = t.match(/\bundefined\b|\bNaN\b|\[object Object\]|\{[\w.|]+\}/);
       if (m) problems.push(`src/ui/almanac.js: the ${s.name} page shows "${m[0]}" (…${t.slice(Math.max(0, t.indexOf(m[0]) - 60), t.indexOf(m[0]) + 20).replace(/\s+/g, ' ')}…)`); });
   } catch (e) { problems.push(`src/ui/almanac.js: can't load the Almanac to render it: ${e.message}`); } }

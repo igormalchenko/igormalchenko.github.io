@@ -9,6 +9,37 @@
 const INK = '#f3efe4', DARK = '#111';
 const P = s => `<g transform="translate(-8 -8)">${s}</g>`; // drawings made on a 0..16 grid
 const DRAW = {
+  advanceGeneralStaff: { draw: P('<path d="M2 2h12v12H2z M4 5h8M4 8h5M4 11h3 M10 10l3 3m0-3l-3 3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceRifling: { draw: P('<path d="M2 12L12 2l2 2L4 14z M5 9l2 2m0-5l2 2m0-5l2 2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceMedicine: { draw: P('<path d="M5 2h6v3h3v6h-3v3H5v-3H2V5h3z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceSiegeTrain: { draw: P('<path d="M2 4h12v8H2z M5 4V2h6v2 M5 7h6M5 9h4 M4 12v2m8-2v2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceWarCollege: { draw: P('<path d="M2 13V3h5l1 2 1-2h5v10H9l-1 1-1-1z M8 5v9 M4 7h2m4 0h2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceHomeGuard: { draw: P('<path d="M2 7l6-5 6 5 M4 6v8h8V6 M8 7v5M6 9h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceEngineering: { draw: P('<path d="M2 14V6h3V3h2v3h3V3h2v3h2v8z M4 10h8M8 8v6" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceStaffColleges: { draw: P('<path d="M1 5l7-3 7 3-7 3z M4 7v4q4 4 8 0V7 M14 6v7" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceExpeditionary: { draw: P('<path d="M2 13l4-8 3 5 2-4 3 7z M6 5V1h5l-2 2 2 2z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceWarMinistry: { draw: P('<path d="M2 14V6l6-4 6 4v8z M5 7v5m3-5v5m3-5v5 M1 14h14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIndustry: { draw: P('<path d="M2 2l3 3v4l4 4h4v-4L9 5H5L2 2 M2 12l4-4m4-4l3-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceShipping: { draw: P('<path d="M2 10h12l-3 4H5z M8 2v8 M7 3L3 8h4m2-5l4 5H9" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIndustrialCredit: { draw: P('<path d="M2 3h12v10H2z M2 6h12 M4 10h3 M10 9v3m-1-2h3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceRailwayProcurement: { draw: P('<path d="M5 1v14m6-14v14 M3 3h10M3 7h10M3 11h10 M2 15l3-4m9 4l-3-4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceMerchantBanks: { draw: P('<path d="M2 6l6-4 6 4z M3 8v4m4-4v4m4-4v4 M1 14h14 M12 1v4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIndustrialStandards: { draw: P('<path d="M3 2h10v12H3z M5 7l2 2 4-5 M5 12h6" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceExportHouses: { draw: P('<path d="M2 14V7l5-4 5 4v7z M5 14V9h4v5 M9 3h6m-2-2l2 2-2 2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceLandSurvey: { draw: P('<path d="M8 2l5 12H3z M4 11h8 M1 6h14 M8 1v14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceDomesticMarkets: { draw: P('<path d="M2 3h12l1 4H1z M2 7v7h12V7 M5 14v-4h3v4 M2 5h12" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advancePrecisionEngineering: { draw: P('<path d="M8 1v3m0 8v3M1 8h3m8 0h3 M3 3l2 2m6 6l2 2M3 13l2-2m6-6l2-2 M5 5h6v6H5z M7 7h2v2H7z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceAdministration: { draw: P('<path d="M3 1h8l2 2v12H3z M5 5h6M5 8h6M5 11h3 M9 12l1 1 3-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceParliament: { draw: P('<path d="M2 13V8q6-10 12 0v5 M2 10h12 M5 7v6m3-8v8m3-6v6 M1 15h14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceWelfare: { draw: P('<path d="M3 4h10v10H3z M6 2h4v4H6z M8 8v4M6 10h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIntegration: { draw: P('<path d="M1 3h6v4H1z M9 9h6v4H9z M7 5h5v4 M4 7v4h5" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceProvincialRights: { draw: P('<path d="M1 2h5v11H1z M10 2h5v11h-5z M6 5l2-2 2 2 M6 10l2 2 2-2 M3 15h10" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advancePublicAccounts: { draw: P('<path d="M2 2h12v12H2z M5 2v12 M5 6h9M5 10h9 M8 3v10M11 3v10" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceNationalSchools: { draw: P('<path d="M2 14V6l6-5 6 5v8z M6 14V9h4v5 M8 4v3M6 6h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceTechnicalUniversities: { draw: P('<path d="M5 2h6 M6 2v5l-4 7h12l-4-7V2 M4 11h8 M7 9h2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceCivicMediation: { draw: P('<path d="M2 4h8v6H6l-3 3v-3H2z M10 6h4v7h-2v2l-3-2H7v-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceConsularService: { draw: P('<path d="M2 3h12v10H2z M2 4l6 5 6-5 M3 12l3-4m7 4l-3-4 M7 1h2v2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advance: { draw: P('<path d="M3 2h8l2 2v10H3z" fill="#384d5a" stroke="#bcd9dc"/><path d="M5 11l3-6 3 6M6 9h4" fill="none" stroke="#e4c273" stroke-width="1.2"/>') },
   // ----- money -----
   gold: { draw: P('<circle cx="5.3" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="10.7" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="8" cy="4.6" r="2.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><path d="M3.4 8c-1.3 1.1-1.8 2.6-1.4 4 .5 1.7 2.6 2.6 6 2.6s5.5-.9 6-2.6c.4-1.4-.1-2.9-1.4-4z" fill="#4b4038" stroke="#a8957a" stroke-linejoin="round"/><path d="M2.2 7.6h11.6" stroke="#a8957a" stroke-width="1.6" stroke-linecap="round"/>') },
   goldYear: { draw: P('<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>') },
@@ -92,7 +123,7 @@ const DRAW = {
 // every concept: its name, description and avoided words from content/concepts.json (numbers in the
 // descriptions filled in from content), with its drawing from DRAW. Concepts marked `word` have no icon.
 const REG = {}, WORDS = {};
-Object.entries(CONTENT.concepts).forEach(([k, c]) => { const e = Object.assign({}, c, { desc: say(c.desc) }, DRAW[k] || {}); (c.word ? WORDS : REG)[k] = e; });
+Object.entries(CONTENT.concepts).forEach(([k, c]) => { const e = Object.assign({}, c, { name: say(c.name), desc: say(c.desc) }, DRAW[k] || {}); (c.word ? WORDS : REG)[k] = e; });
 // ruler rarity, white to gold (content/rarities.json; TIER[0] is Common)
 const TIER = CONTENT.rarities;
 // ruler quirk emblems, drawn inside a round badge (names and descriptions come from content/rulers.json)
@@ -134,10 +165,12 @@ const ic = (k, cls = '', style = '') => { const e = REG[k], b = e.box || 8;
 const glyph = (k, style = '') => { const e = REG[k], s = e.map || .55;
   return `<g transform="scale(${s})"${style ? ` style="${style}"` : ''}>${e.draw}</g>`; };
 // words in copy that get their concept's icon in front (see iconize)
-const WORD_IC = { 'gold a year': 'goldYear', 'army upkeep': 'upkeep', 'sea trade': 'trade', 'civil war': 'civilWar', factories: 'factory', factory: 'factory',
+const WORD_IC = { development: 'advance', developments: 'advance', 'gold a year': 'goldYear', 'army upkeep': 'upkeep', 'sea trade': 'trade', 'civil war': 'civilWar', factories: 'factory', factory: 'factory',
   fortresses: 'fort', fortress: 'fort', unrest: 'unrest', uprisings: 'uprising', uprising: 'uprising', armies: 'army', army: 'army', alliances: 'ally', alliance: 'ally',
   reforms: 'reform', integrates: 'settle', integrated: 'settle', capital: 'capital', gold: 'gold', peace: 'peace', rulers: 'ruler', ruler: 'ruler', war: 'war',
   ambitions: 'ambition', ambition: 'ambition', proclaims: 'proclaim', proclaim: 'proclaim' };
+// Advance wording uses canonical concept names, including after a content-only rename.
+for (const k of ['army', 'factory', 'upkeep', 'fort', 'trade', 'taxes', 'reform', 'advance']) WORD_IC[REG[k].name.toLowerCase()] = k;
 const WORD_RE = new RegExp(`\\b(${Object.keys(WORD_IC).sort((a, b) => b.length - a.length).join('|')})\\b`, 'gi');
 // copy with an icon in front of the first mention of each concept it names
 const iconize = text => { const seen = new Set();

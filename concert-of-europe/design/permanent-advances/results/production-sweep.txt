@@ -1,0 +1,47 @@
+
+> concert-of-europe@0.6.0 sweep
+> node tools/sweep.js 1 41
+
+seed 1  1918 Autumn  wars 30  revolts 26  dead 12m  Ukraine alive  unions ger,ita (held ita)  survived 3/9  richest power France  top France (249)  85721ms
+seed 2  1918 Autumn  wars 43  revolts 33  dead 18m  Ukraine alive  unions ger,ita,pol,ibe,hun (held ibe,ita,hun,pol)  survived 3/9  richest power Great Britain  top Great Britain (273)  91899ms
+seed 3  1918 Autumn  wars 73  revolts 40  dead 29m  Ukraine alive  unions ger,ita,sca,rom,pol,ibe (held ger,ibe,sca)  survived 5/14  richest power Russia  top Russia (152)  77288ms
+seed 4  1918 Autumn  wars 32  revolts 40  dead 15m  Ukraine alive  unions ger,ita,rom,ibe (held ger,ibe,ita)  survived 3/10  richest power France  top France (222)  93094ms
+seed 5  1918 Autumn  wars 42  revolts 33  dead 15m  Ukraine alive  unions ger,ita,bul,ibe (held ger,ibe,ita)  survived 4/12  richest power France  top France (187)  87804ms
+seed 6  1918 Autumn  wars 32  revolts 35  dead 12m  Ukraine alive  unions ger,ukr,ibe (held ger,ibe)  survived 3/10  richest power France  top France (151)  78609ms
+seed 7  1918 Autumn  wars 31  revolts 31  dead 18m  Ukraine alive  unions ger,ibe (held ger)  survived 3/10  richest power Great Britain  top Great Britain (250)  80725ms
+seed 8  1918 Autumn  wars 45  revolts 41  dead 18m  Ukraine alive  unions ger,ita,rom,ibe (held ibe,ita,rom)  survived 5/10  richest power Great Britain  top Great Britain (166)  72718ms
+seed 9  1918 Autumn  wars 39  revolts 37  dead 15m  Ukraine alive  unions ger,ita,ibe (held ger,ita)  survived 3/11  richest power France  top France (218)  101504ms
+seed 10  1918 Autumn  wars 37  revolts 24  dead 12m  Ukraine alive  unions ger,ita,sca,ibe (held ibe,ita)  survived 4/10  richest power Great Britain  top Great Britain (221)  94602ms
+seed 11  1918 Autumn  wars 64  revolts 39  dead 23m  Ukraine died  unions ger,ita,bul,ibe,hun (held ger,ita)  survived 2/12  richest power France  top France (177)  50980ms
+seed 12  1918 Autumn  wars 63  revolts 38  dead 28m  Ukraine alive  unions ger,ita,ukr,yug,ibe (held ger,ibe,ita)  survived 7/16  richest power France  top Iberian Union (147)  58255ms
+seed 13  1918 Autumn  wars 48  revolts 36  dead 18m  Ukraine alive  unions ger,ita,sca,ibe (held ibe,sca,ita)  survived 4/11  richest power Great Britain  top Great Britain (214)  67362ms
+seed 14  1918 Autumn  wars 67  revolts 33  dead 25m  Ukraine died  unions ger,ita,ukr,pol,ibe (held ibe)  survived 4/13  richest power France  top France (217)  56151ms
+seed 15  1918 Autumn  wars 44  revolts 37  dead 13m  Ukraine alive  unions ger,ita,rom,ibe (held ger,ibe,ita)  survived 3/10  richest power France  top France (196)  67447ms
+seed 16  1918 Autumn  wars 48  revolts 42  dead 19m  Ukraine alive  unions ger,ita (held ger,ita)  survived 5/11  richest power Great Britain  top Great Britain (153)  60358ms
+seed 17  1918 Autumn  wars 62  revolts 39  dead 22m  Ukraine alive  unions ger,ita (held ger,ita)  survived 2/11  richest power Russia  top Russia (140)  42001ms
+seed 18  1918 Autumn  wars 18  revolts 27  dead 10m  Ukraine alive  unions ger,ibe (held ger,ibe)  survived 3/9  richest power France  top France (198)  71180ms
+seed 19  1918 Autumn  wars 67  revolts 42  dead 24m  Ukraine alive  unions ger,pol,ibe (held pol)  survived 5/12  richest power France  top France (197)  49496ms
+seed 20  1918 Autumn  wars 69  revolts 34  dead 21m  Ukraine alive  unions ger,ita,rom,bul,gre (held ita,bul,rom)  survived 4/11  richest power France  top France (153)  36580ms
+seed 21  1918 Autumn  wars 30  revolts 25  dead 12m  Ukraine alive  unions ger,ita,ibe (held ita)  survived 2/11  richest power Great Britain  top Great Britain (242)  88606ms
+seed 22  1918 Autumn  wars 62  revolts 48  dead 17m  Ukraine alive  unions ger,bul,pol,ibe (held bul)  survived 5/12  richest power France  top France (160)  48923ms
+seed 23  1918 Autumn  wars 54  revolts 26  dead 22m  Ukraine never  unions ger,rom,bul,gre,pol,ibe (held ger,pol,rom)  survived 7/14  richest power France  top France (188)  62238ms
+seed 24  1918 Autumn  wars 49  revolts 42  dead 17m  Ukraine alive  unions ger,pol,ibe (held ger,ibe)  survived 4/10  richest power France  top France (248)  64018ms
+seed 25  1918 Autumn  wars 58  revolts 37  dead 22m  Ukraine alive  unions ger,ita,bul,pol,ibe (held ibe,ita,bul)  survived 4/11  richest power Great Britain  top Great Britain (225)  44853ms
+seed 26  1918 Autumn  wars 50  revolts 31  dead 17m  Ukraine alive  unions ger,pol,ibe (held ger,ibe)  survived 3/10  richest power Great Britain  top Great Britain (182)  63124ms
+seed 27  1918 Autumn  wars 35  revolts 23  dead 12m  Ukraine died  unions ger,ibe (held -)  survived 2/9  richest power Great Britain  top Great Britain (218)  61473ms
+seed 28  1918 Autumn  wars 41  revolts 39  dead 16m  Ukraine alive  unions ger,ita,sca,ukr,rom,bul (held ger,sca,ita,bul,rom)  survived 3/11  richest power Great Britain  top Great Britain (208)  54912ms
+seed 29  1918 Autumn  wars 53  revolts 41  dead 24m  Ukraine alive  unions ger,sca,rom,pol (held pol)  survived 4/12  richest power Great Britain  top Great Britain (241)  56111ms
+seed 30  1918 Autumn  wars 57  revolts 41  dead 19m  Ukraine alive  unions ger,ita,ukr,rom,bul,ibe (held ger,ibe,ita)  survived 6/13  richest power France  top France (228)  59952ms
+seed 31  1918 Autumn  wars 41  revolts 28  dead 15m  Ukraine alive  unions ger,ita,ibe (held ger)  survived 8/14  richest power France  top France (204)  48751ms
+seed 32  1918 Autumn  wars 38  revolts 24  dead 14m  Ukraine alive  unions ger,sca (held ger,sca)  survived 6/11  richest power France  top France (195)  55395ms
+seed 33  1918 Autumn  wars 31  revolts 24  dead 14m  Ukraine alive  unions ger,ita,pol,ibe (held ger,ita,pol)  survived 1/9  richest power Great Britain  top Great Britain (252)  59942ms
+seed 34  1918 Autumn  wars 32  revolts 24  dead 13m  Ukraine never  unions ger,ita,rom,ibe (held ita,rom)  survived 4/10  richest power Great Britain  top Great Britain (210)  54062ms
+seed 35  1918 Autumn  wars 23  revolts 24  dead 7m  Ukraine alive  unions ger,ita,ibe (held ger,ibe)  survived 3/10  richest power France  top France (190)  49770ms
+seed 36  1918 Autumn  wars 48  revolts 44  dead 19m  Ukraine never  unions ger,rom,ibe,hun (held ibe,rom)  survived 1/10  richest power France  top France (158)  46859ms
+seed 37  1918 Autumn  wars 24  revolts 25  dead 10m  Ukraine alive  unions ger,ita,ibe (held ger,ibe,ita)  survived 2/11  richest power France  top France (187)  50720ms
+seed 38  1918 Autumn  wars 51  revolts 40  dead 19m  Ukraine died  unions ger,ita,ibe (held ibe)  survived 4/10  richest power Great Britain  top Great Britain (215)  43266ms
+seed 39  1918 Autumn  wars 53  revolts 42  dead 20m  Ukraine died  unions ger,ita,ibe (held ibe,ita)  survived 8/14  richest power France  top France (263)  35567ms
+seed 40  1918 Autumn  wars 30  revolts 29  dead 10m  Ukraine alive  unions ger,ita,ibe (held ger,ibe)  survived 1/9  richest power France  top France (247)  31326ms
+
+40 worlds: avg wars 45.4, avg revolts 34.1, Ukraine alive in 32, top {"France":22,"Great Britain":15,"Russia":2,"Iberian Union":1}
+ambitions: richest power {"France":23,"Great Britain":15,"Russia":2}; unions proclaimed {"ger":40,"ita":28,"pol":11,"ibe":33,"hun":3,"sca":6,"rom":11,"bul":8,"ukr":5,"yug":1,"gre":2}, held in 1918 {"ita":22,"ibe":22,"hun":1,"pol":5,"ger":23,"sca":4,"rom":6,"bul":4}; survive-ambition nations alive 153 of 442

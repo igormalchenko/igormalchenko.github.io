@@ -24,6 +24,13 @@ const SECTIONS = {
     return `<p class="muted">Every heir is a rarity and a trait. Of every heir in Europe: ${odds}; then any trait, all equally likely. A card never shows one trait twice.</p>` +
       Object.entries(CONTENT.rulers).map(([t, q]) => entry(q.label, `<p class="vibe">${q.vibe}</p>${facts(CONTENT.rarities.map((rar, g) => [`<span style="color:${rar.color}">${rar.name}</span>`,
         traitEffects(t, g).map(e => iconize(e.text)).join('<br>')]))}`, { lead: `<svg class="emb" viewBox="-8 -8 16 16">${embBadge(0)}${EMB[t] || ''}</svg>` })).join(''); } },
+  advances: { name: CONTENT.concepts.advance.name, file: 'advances', count: () => Object.keys(CONTENT.advances.cards).length, render(){
+    return CONTENT.rulebook.Development.map(l => `<p>${iconize(say(l))}</p>`).join('') +
+      Object.entries(CONTENT.advances.cards).map(([id, d]) => entry(d.name,
+        `<p>${CONTENT.advances.categories[d.category].name} · ${CONTENT.advances.eligibility[d.requires]}</p>` +
+        facts(CONTENT.rarities.map((r, grade) => [`<span style="color:${r.color}">${r.name}</span>`,
+          advanceEffects({ id, grade }, SAMPLE.nation).map(e => iconize(e.text)).join('<br>')])), { lead: ic(d.icon) })).join('');
+  } },
   nations: { name: 'Nations', file: 'nations', count: () => Object.keys(CONTENT.nations).length, render(){
     const majors = S ? `<p class="muted">${WORDS.major.name}s now: ${listOf(S.majors.map(t => S.C[t].name))}. ${WORDS.major.desc}</p>` : `<p class="muted">${WORDS.major.desc}</p>`;
     const serf = CONTENT.events.serfdom;
@@ -88,11 +95,11 @@ const SECTIONS = {
     return `<p class="muted">Every ruler has all three, drawn at his coronation and leaning the way his nation does. The panel shows them as these words.</p>` +
       Object.entries(CONTENT.temperaments).map(([k, t]) => entry(REG[k].name, `<p>${REG[k].desc}</p>${facts([[t.high[1], `${means[k](t.high[0])} or more`], [t.mid, 'in between'], [t.low[1], `${means[k](t.low[0])} or ${k === 'judgment' ? 'more' : 'less'}`]])}`, { lead: ic(k) })).join(''); } },
   concepts: { name: 'Concepts', file: 'concepts', count: () => Object.keys(CONTENT.concepts).length, render(){
-    return Object.entries(CONTENT.concepts).map(([k, c]) => entry(c.name, `<p>${esc(say(c.desc))}</p>`, { lead: REG[k] ? ic(k) : '<span class="al-noic"></span>' })).join(''); } },
-  effects: { name: 'Ruler effects', file: 'effects', count: () => Object.keys(CONTENT.effects).length, render(){
+    return Object.entries(CONTENT.concepts).map(([k, c]) => entry(say(c.name), `<p>${esc(say(c.desc))}</p>`, { lead: REG[k] ? ic(k) : '<span class="al-noic"></span>' })).join(''); } },
+  effects: { name: 'Effects', file: 'effects', count: () => Object.keys(CONTENT.effects).length, render(){
     const slots = { main: 'main bonus', flat: 'flat bonus', malus: 'malus' };
     return Object.entries(CONTENT.effects).map(([k, d]) => entry(d.desc, facts([['Rulers', listOf(Object.entries(CONTENT.rulers).flatMap(([, q]) =>
-      Object.keys(slots).filter(sl => q[sl].fx === k || (q[sl].big && q[sl].big.fx === k)).map(sl => `${q.label} (${slots[sl]})`)))]]))).join(''); } },
+      Object.keys(slots).filter(sl => q[sl].fx === k || (q[sl].big && q[sl].big.fx === k)).map(sl => `${q.label} (${slots[sl]})`)))], ['Development', listOf(Object.values(CONTENT.advances.cards).filter(a => a.effects.some(e => e.fx === k)).map(a => a.name))]]))).join(''); } },
   rules: { name: 'Rules', file: 'rules', count: () => Object.values(CONTENT.rulebook).flat().length, render(){
     return Object.entries(CONTENT.rulebook).map(([group, lines]) => entry(group, lines.map(l => `<p>${iconize(say(l))}</p>`).join(''))).join(''); } },
 };

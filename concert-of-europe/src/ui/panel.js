@@ -27,6 +27,7 @@ const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 const nm2 = k => WORDS[k].name;
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
+  $('rerolls').hidden = false;
   // one line per effect: the main bonus, the flat bonus from Rare up, the malus
   const fxLine = e => `<p class="fx fx-${e.slot}">${iconize(e.text)}</p>`;
   const card = (r, i) => { const g = r.grade;
@@ -51,6 +52,33 @@ function showHeir(){
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
 }
+function advanceLines(a){
+  return advanceEffects(a, a.target ? S.C[a.target].name : '').map(e => e.text);
+}
+function showAdvance(){
+  const p = S.pending, c = S.C[p.tag];
+  $('heirTitle').innerHTML = ic('advance') + say(CONTENT.advances.choiceTitle, { nation: c.name });
+  $('heirSub').textContent = CONTENT.advances.choiceInstructions;
+  $('rerolls').hidden = true;
+  $('heirCards').innerHTML = p.options.map((a, i) => {
+    const d = CONTENT.advances.cards[a.id], r = TIER[a.grade];
+    return `<button class="heir development tier${a.grade + 1}" data-i="${i}" style="--tc:${r.color};animation-delay:${i * 90}ms">
+      <span class="key">${i + 1}</span><span class="rar">${r.name}</span>
+      ${ic(d.icon, 'advance-art')}<b class="ttl">${d.name}</b><span class="who">${CONTENT.advances.categories[d.category].name}</span>
+      ${advanceLines(a).map((text, j) => `<p class="fx ${j ? 'fx-flat' : 'fx-main'}">${iconize(text)}</p>`).join('')}
+    </button>`;
+  }).join('');
+  $('heirModal').classList.add('on'); $('heirCards').querySelector('.heir').focus();
+}
+function renderAdvanceProgress(){
+  const year = S.nextAdvanceYear(), box = $('advanceProgress');
+  if (year == null) { box.innerHTML = S.over || !S.player || S.C[S.player].alive ? ic('advance') + say(CONTENT.advances.completeText) : ''; return; }
+  const years = CONTENT.advances.years, prev = years[years.indexOf(year) - 1] ?? RULES.start;
+  const due = (year - RULES.start) * SEASONS.length + CONTENT.advances.season;
+  const remaining = Math.max(0, due - S.t), span = (year - prev) * SEASONS.length || 1;
+  const text = say(CONTENT.advances.progressText, { year, season: SEASONS[CONTENT.advances.season], remaining });
+  box.innerHTML = `<span>${ic('advance')}${text}</span><progress max="${span}" value="${span - remaining}" aria-label="${text}"></progress>`;
+}
 // a temperament as the word the panel shows (content/temperaments.json)
 const temperTag = (k, v) => { const t = CONTENT.temperaments[k]; return v > t.high[0] ? t.high[1] : v < t.low[0] ? t.low[1] : t.mid; };
 // a nation's ambition: a short label, what it takes (for hover text), and how it stands now
@@ -65,7 +93,7 @@ function ambitionText(c){
   return { a, what, color: a.state === 'met' ? 'var(--peace)' : a.state === 'lost' ? 'var(--war)' : 'inherit' };
 }
 function showStart(){
-  $('startIntro').innerHTML = iconize(say('Pick a nation and meet its ambition by {rules.end.season|season} {rules.end.year}. You choose its rulers, and each one decides how the nation is run during his reign. When it ends, you pick the next from {rules.heirs|word} heirs.'));
+  $('startIntro').innerHTML = iconize(say('Pick a nation and meet its ambition by {rules.end.season|season} {rules.end.year}. You choose its rulers and permanent {concepts.advance.name|lower} cards, and each ruler decides how the nation is run during his reign. When it ends, you pick the next from {rules.heirs|word} heirs.'));
   const cs = S.alive().slice().sort((a, b) => S.score(b) - S.score(a));
   const of = k => cs.filter(c => S.ambitionOf(c).kind === k);
   const AM = CONTENT.ambitionKinds;
@@ -181,6 +209,10 @@ function renderNation(){
         ${fig('province', rs.length)}
       </div>
     </header>
+    ${c.advances.length ? `<div class="advance-row">${c.advances.map(a => {
+      const d = CONTENT.advances.cards[a.id], r = TIER[a.grade];
+      return `<span class="advance-badge" style="--tc:${r.color}" ${tipAttr(`${d.name} (${r.name})`, advanceLines(a).join('. '))}>${ic(d.icon)}</span>`;
+    }).join('')}</div>` : ''}
     <div class="ledger">
       <div class="lg" ${tipAttr(nm('ambition'), ambitionDesc(amb.a))}><span>${ic('ambition')}${nm('ambition')}</span><span style="color:${amb.color}">${amb.what}</span></div>
       <div class="lg" ${tipOf('rival')}><span>${ic('rival')}${nm('rival')}</span><span>${c.rival && S.C[c.rival].alive ? nameSpan(c.rival) : '<span class="muted">none</span>'}</span></div>
