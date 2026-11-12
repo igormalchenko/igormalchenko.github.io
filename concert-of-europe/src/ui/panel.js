@@ -40,7 +40,7 @@ function showHeir(){
       ${r.effects.map(fxLine).join('')}
     </button>`; };
   const why = p.why ? p.why.replace(/<[^>]*>/g, '') : '';
-  $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in ${RULES.start}?` : `Who rules ${c.name} now?`;
+  $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in ${p.year}?` : `Who rules ${c.name} now?`;
   $('heirSub').textContent = p.opening ? 'Pick a ruler. The ministers run everything else.'
     : `${why}${p.crisis ? ' Rival claimants will fight whoever you pick.' : ''}`;
   $('heirCards').innerHTML = p.options.map(card).join('');
@@ -158,7 +158,7 @@ function renderNation(){
   const scoreTip = tipAttr(`${nm('goldYear')}: #${rank} of ${ranked.length}`, `${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year. ${REG.goldYear.desc}`);
   const lg = c.ledger || { tax: 0, fac: 0, trade: 0, upkeep: 0, lostWork: 0, lostAdmin: 0, spent: {} };
   const sp = lg.spent || {};
-  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0);
+  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0) + lg.other;
   const lost = `Already reduced by ${lg.lostWork.toFixed(1)} for men in the army, who aren't working, and ${lg.lostAdmin.toFixed(1)} for running ${rs.length} provinces.`;
   const line = (icon, k, v, cls = '', tip = '') => `<div class="lg ${cls}"${tip ? ' ' + tipAttr(k, tip) : ''}><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
   const H = S.horizon(c);
@@ -225,7 +225,7 @@ function renderNation(){
     <h3>Budget</h3>
     <div class="ledger">
       ${allBudget ? `${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', nm('factory'), lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
-      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', nm('army'), -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}` : ''}
+      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', nm('army'), -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}${lg.other ? line('event', 'Other changes', lg.other) : ''}` : ''}
       ${line('gold', nm('gold'), net, allBudget ? 'net' : 'net only')}
     </div>
     <button class="btn more" id="allBudget" aria-expanded="${allBudget}">${allBudget ? 'Hide the budget' : 'Show the budget'}</button>
