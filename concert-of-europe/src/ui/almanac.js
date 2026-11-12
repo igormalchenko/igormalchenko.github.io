@@ -7,7 +7,7 @@ const swatch = color => `<span class="sw" style="background:${color}"></span>`;
 const provName = id => CONTENT.provinces[id] ? CONTENT.provinces[id].name : `<b style="color:var(--war)">${esc(id)}?</b>`;
 const nationName = tag => CONTENT.nations[tag] ? CONTENT.nations[tag].name : tag;
 // an ambition's name: a union's title, or its kind's name (Richest great power, Survive)
-const ambitionName = id => { const a = CONTENT.ambitions[id]; return a.title || CONTENT.ambitionKinds[a.kind].name; };
+const ambitionName = id => { const a = CONTENT.ambitions[id]; return say(a.title); };
 const pctOf = p => `${Math.round(p * 1000) / 10}%`;
 const yearly = p => `${pctOf(p)} a year`;
 const listOf = xs => xs.join(', ');
@@ -23,7 +23,7 @@ const SECTIONS = {
     const odds = CONTENT.rarities.map(r => `${r.name} ${pctOf(r.odds)}`).join(', ');
     return `<p class="muted">Every heir is a rarity and a trait. Of every heir in Europe: ${odds}; then any trait, all equally likely. A card never shows one trait twice.</p>` +
       Object.entries(CONTENT.rulers).map(([t, q]) => entry(q.label, `<p class="vibe">${q.vibe}</p>${facts(CONTENT.rarities.map((rar, g) => [`<span style="color:${rar.color}">${rar.name}</span>`,
-        traitEffects(t, g).map(e => iconize(e.text)).join('<br>')]))}`, { lead: `<svg class="emb" viewBox="-8 -8 16 16">${embBadge(0)}${EMB[t] || ''}</svg>` })).join(''); } },
+        traitEffects(t, g).map(e => iconize(e.text)).join('<br>')]))}`, { lead: `<svg class="emb" viewBox="-8 -8 16 16">${embBadge(SAMPLE_GRADE)}${EMB[q.emblem]}</svg>` })).join(''); } },
   advances: { name: CONTENT.concepts.advance.name, file: 'advances', count: () => Object.keys(CONTENT.advances.cards).length, render(){
     return CONTENT.rulebook.Development.map(l => `<p>${iconize(say(l))}</p>`).join('') +
       Object.entries(CONTENT.advances.cards).map(([id, d]) => entry(d.name,
@@ -34,28 +34,28 @@ const SECTIONS = {
   nations: { name: 'Nations', file: 'nations', count: () => Object.keys(CONTENT.nations).length, render(){
     const majors = S ? `<p class="muted">${WORDS.major.name}s now: ${listOf(S.majors.map(t => S.C[t].name))}. ${WORDS.major.desc}</p>` : `<p class="muted">${WORDS.major.desc}</p>`;
     return majors + Object.entries(CONTENT.nations).map(([tag, n]) => { const live = S && S.C[tag];
-      const amb = ambitionName(n.ambition) + (live && live.ambition && live.ambition.id !== n.ambition ? ` (in this world: ${ambitionName(live.ambition.id)})` : '');
+      const amb = ambitionName(n.ambition) + (live && live.ambition.id !== n.ambition ? ` (in this world: ${ambitionName(live.ambition.id)})` : '');
       const rises = Object.keys(CONTENT.peoples).filter(p => risesAs(p) === tag);
       return entry(n.name, facts([
         ['Begins', n.starts ? `on the map in ${CONTENT.rules.start}` : 'born in an uprising'],
-        ['People', peopleName(n.people) + (n.accepts ? ` (also accepts ${listOf(n.accepts.map(peopleName))})` : '')],
-        ['Ambition', amb], ['Army', n.army != null ? `${n.army}k` : ''], ['Leans to war', n.hawk], ['Patience', n.patience],
+        ['People', peopleName(n.people) + (n.accepts.length ? ` (also accepts ${listOf(n.accepts.map(peopleName))})` : '')],
+        ['Ambition', amb], ['Army', n.starts ? `${n.army}k` : ''], ['Leans to war', n.hawk], ['Patience', n.patience],
         ['Provinces', listOf(Object.entries(CONTENT.provinces).filter(([, p]) => p.owner === tag).map(([, p]) => p.name))],
         ['Rises from', rises.length ? `an uprising of the ${listOf(rises.map(peopleName))} people` : ''],
-        ['Allies', n.allies ? listOf(n.allies.map(nationName)) : ''],
-        ['Relations', n.relations ? listOf(Object.entries(n.relations).map(([o, v]) => `${nationName(o)} ${v > 0 ? '+' : ''}${v}`)) : ''],
-        ['Ruler names', listOf(n.rulerNames || CONTENT.peoples[n.people].names || [])],
-        ['In war names', `${n.pre || n.adj}-…`],
+        ['Allies', listOf(n.allies.map(nationName))],
+        ['Relations', listOf(Object.entries(n.relations).map(([o, v]) => `${nationName(o)} ${v > 0 ? '+' : ''}${v}`))],
+        ['Ruler names', listOf(n.namePool === 'nation' ? n.rulerNames : CONTENT.peoples[n.people].names)],
+        ['In war names', `${n.pre}-…`],
         ['Unions', n.noAnnex ? 'never joins one, by treaty or by vote' : ''],
         ['Serfs', n.factoryMultiplier !== 1 ? say('factories run at {v|frac} speed until the serfs are freed', { v: n.factoryMultiplier }) : ''],
         ['In this world', live ? (live.alive ? (live.name !== n.name ? `now ${live.name}` : 'on the map') + (S.majors.includes(tag) ? `, a ${WORDS.major.name.toLowerCase()}` : '') : 'gone from the map') : S && !n.starts ? 'not yet born' : ''],
       ]), { sub: n.adj, lead: swatch(n.color) }); }).join(''); } },
   peoples: { name: 'Peoples', file: 'peoples', count: () => Object.keys(CONTENT.peoples).length, render(){
     return Object.entries(CONTENT.peoples).map(([p, d]) => { const home = Object.values(CONTENT.provinces).filter(x => x.people === p);
-      const unions = Object.values(CONTENT.ambitions).filter(x => x.peoples && x.peoples.includes(p)).map(x => x.title);
+      const unions = Object.values(CONTENT.ambitions).filter(x => x.peoples.includes(p)).map(x => x.title);
       return entry(d.name, facts([['Lives in', listOf(home.map(x => x.name)) || '<span class="muted">no province of its own</span>'],
         ['People', `${Math.round(home.reduce((s, x) => s + x.pop, 0) * 10) / 10}m in ${CONTENT.rules.start}`],
-        ['Ruler names', d.names ? listOf(d.names) : ''],
+        ['Ruler names', listOf(d.names)],
         ['Unites in', listOf(unions)], ['Rises as', risesAs(p) ? nationName(risesAs(p)) : '<span class="muted">no nation: its rebels find no allies</span>'],
         ['Can awaken', Object.values(CONTENT.events).some(e => e.operation === 'awaken' && e.target.peoples.includes(p)) ? 'yes' : '']])); }).join(''); } },
   ambitions: { name: 'Ambitions', count: () => Object.keys(CONTENT.ambitions).length, render(){
@@ -64,7 +64,7 @@ const SECTIONS = {
     return Object.entries(CONTENT.ambitionKinds).map(([kind, k]) => {
       const ids = Object.keys(CONTENT.ambitions).filter(id => CONTENT.ambitions[id].kind === kind);
       const head = `<p>${say(k.desc, { the: '', title: '<i>the new nation</i>', need: '<i>enough</i>' })}</p><p class="vibe">${say(k.who)}</p>${facts([
-        ['A province of its people is worth', k.worth != null ? `${k.worth}× its gold a year` : ''], ['Every expected loss counts', k.losses != null ? `${k.losses}×` : '']])}`;
+        ['A province of its people is worth', k.worth !== 1 ? `${k.worth}× its gold a year` : ''], ['Every expected loss counts', k.losses !== 1 ? `${k.losses}×` : '']])}`;
       if (kind !== 'unite') return entry(k.name, head + facts([['Held by', holders(ids[0])]]), { lead: ic('ambition') });
       return entry(k.name, head, { lead: ic('ambition') }) + ids.map(id => { const d = CONTENT.ambitions[id], u = prog[id];
         return entry(d.title, `${d.note ? `<p class="vibe">${say(d.note, d)}</p>` : ''}${facts([['Held by', holders(id)], ['People', listOf(d.peoples.map(peopleName))],
@@ -104,7 +104,7 @@ const SECTIONS = {
   effects: { name: 'Effects', file: 'effects', count: () => Object.keys(CONTENT.effects).length, render(){
     const slots = { main: 'main bonus', flat: 'flat bonus', malus: 'malus' };
     return Object.entries(CONTENT.effects).map(([k, d]) => entry(d.desc, facts([['Rulers', listOf(Object.entries(CONTENT.rulers).flatMap(([, q]) =>
-      Object.keys(slots).filter(sl => q[sl].fx === k || (q[sl].big && q[sl].big.fx === k)).map(sl => `${q.label} (${slots[sl]})`)))], ['Development', listOf(Object.values(CONTENT.advances.cards).filter(a => a.effects.some(e => e.fx === k)).map(a => a.name))]]))).join(''); } },
+      Object.keys(slots).filter(sl => q[sl].some(e => e.fx === k)).map(sl => `${q.label} (${slots[sl]})`)))], ['Development', listOf(Object.values(CONTENT.advances.cards).filter(a => a.effects.some(e => e.fx === k)).map(a => a.name))]]))).join(''); } },
   rules: { name: 'Rules', file: 'rules', count: () => Object.values(CONTENT.rulebook).flat().length, render(){
     return Object.entries(CONTENT.rulebook).map(([group, lines]) => entry(group, lines.map(l => `<p>${iconize(say(l))}</p>`).join(''))).join(''); } },
 };

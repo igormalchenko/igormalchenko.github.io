@@ -9,56 +9,56 @@
 const INK = '#f3efe4', DARK = '#111';
 const P = s => `<g transform="translate(-8 -8)">${s}</g>`; // drawings made on a 0..16 grid
 const DRAW = {
-  advanceGeneralStaff: { draw: P('<path d="M2 2h12v12H2z M4 5h8M4 8h5M4 11h3 M10 10l3 3m0-3l-3 3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceRifling: { draw: P('<path d="M2 12L12 2l2 2L4 14z M5 9l2 2m0-5l2 2m0-5l2 2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceMedicine: { draw: P('<path d="M5 2h6v3h3v6h-3v3H5v-3H2V5h3z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceSiegeTrain: { draw: P('<path d="M2 4h12v8H2z M5 4V2h6v2 M5 7h6M5 9h4 M4 12v2m8-2v2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceWarCollege: { draw: P('<path d="M2 13V3h5l1 2 1-2h5v10H9l-1 1-1-1z M8 5v9 M4 7h2m4 0h2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceHomeGuard: { draw: P('<path d="M2 7l6-5 6 5 M4 6v8h8V6 M8 7v5M6 9h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceEngineering: { draw: P('<path d="M2 14V6h3V3h2v3h3V3h2v3h2v8z M4 10h8M8 8v6" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceStaffColleges: { draw: P('<path d="M1 5l7-3 7 3-7 3z M4 7v4q4 4 8 0V7 M14 6v7" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceExpeditionary: { draw: P('<path d="M2 13l4-8 3 5 2-4 3 7z M6 5V1h5l-2 2 2 2z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceWarMinistry: { draw: P('<path d="M2 14V6l6-4 6 4v8z M5 7v5m3-5v5m3-5v5 M1 14h14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceIndustry: { draw: P('<path d="M2 2l3 3v4l4 4h4v-4L9 5H5L2 2 M2 12l4-4m4-4l3-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceShipping: { draw: P('<path d="M2 10h12l-3 4H5z M8 2v8 M7 3L3 8h4m2-5l4 5H9" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceIndustrialCredit: { draw: P('<path d="M2 3h12v10H2z M2 6h12 M4 10h3 M10 9v3m-1-2h3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceRailwayProcurement: { draw: P('<path d="M5 1v14m6-14v14 M3 3h10M3 7h10M3 11h10 M2 15l3-4m9 4l-3-4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceMerchantBanks: { draw: P('<path d="M2 6l6-4 6 4z M3 8v4m4-4v4m4-4v4 M1 14h14 M12 1v4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceIndustrialStandards: { draw: P('<path d="M3 2h10v12H3z M5 7l2 2 4-5 M5 12h6" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceExportHouses: { draw: P('<path d="M2 14V7l5-4 5 4v7z M5 14V9h4v5 M9 3h6m-2-2l2 2-2 2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceLandSurvey: { draw: P('<path d="M8 2l5 12H3z M4 11h8 M1 6h14 M8 1v14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceDomesticMarkets: { draw: P('<path d="M2 3h12l1 4H1z M2 7v7h12V7 M5 14v-4h3v4 M2 5h12" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advancePrecisionEngineering: { draw: P('<path d="M8 1v3m0 8v3M1 8h3m8 0h3 M3 3l2 2m6 6l2 2M3 13l2-2m6-6l2-2 M5 5h6v6H5z M7 7h2v2H7z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceAdministration: { draw: P('<path d="M3 1h8l2 2v12H3z M5 5h6M5 8h6M5 11h3 M9 12l1 1 3-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceParliament: { draw: P('<path d="M2 13V8q6-10 12 0v5 M2 10h12 M5 7v6m3-8v8m3-6v6 M1 15h14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceWelfare: { draw: P('<path d="M3 4h10v10H3z M6 2h4v4H6z M8 8v4M6 10h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceIntegration: { draw: P('<path d="M1 3h6v4H1z M9 9h6v4H9z M7 5h5v4 M4 7v4h5" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceProvincialRights: { draw: P('<path d="M1 2h5v11H1z M10 2h5v11h-5z M6 5l2-2 2 2 M6 10l2 2 2-2 M3 15h10" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advancePublicAccounts: { draw: P('<path d="M2 2h12v12H2z M5 2v12 M5 6h9M5 10h9 M8 3v10M11 3v10" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceNationalSchools: { draw: P('<path d="M2 14V6l6-5 6 5v8z M6 14V9h4v5 M8 4v3M6 6h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceTechnicalUniversities: { draw: P('<path d="M5 2h6 M6 2v5l-4 7h12l-4-7V2 M4 11h8 M7 9h2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceCivicMediation: { draw: P('<path d="M2 4h8v6H6l-3 3v-3H2z M10 6h4v7h-2v2l-3-2H7v-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advanceConsularService: { draw: P('<path d="M2 3h12v10H2z M2 4l6 5 6-5 M3 12l3-4m7 4l-3-4 M7 1h2v2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
-  advance: { draw: P('<path d="M3 2h8l2 2v10H3z" fill="#384d5a" stroke="#bcd9dc"/><path d="M5 11l3-6 3 6M6 9h4" fill="none" stroke="#e4c273" stroke-width="1.2"/>') },
+  advanceGeneralStaff: { box: 8, map: .55, draw: P('<path d="M2 2h12v12H2z M4 5h8M4 8h5M4 11h3 M10 10l3 3m0-3l-3 3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceRifling: { box: 8, map: .55, draw: P('<path d="M2 12L12 2l2 2L4 14z M5 9l2 2m0-5l2 2m0-5l2 2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceMedicine: { box: 8, map: .55, draw: P('<path d="M5 2h6v3h3v6h-3v3H5v-3H2V5h3z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceSiegeTrain: { box: 8, map: .55, draw: P('<path d="M2 4h12v8H2z M5 4V2h6v2 M5 7h6M5 9h4 M4 12v2m8-2v2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceWarCollege: { box: 8, map: .55, draw: P('<path d="M2 13V3h5l1 2 1-2h5v10H9l-1 1-1-1z M8 5v9 M4 7h2m4 0h2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceHomeGuard: { box: 8, map: .55, draw: P('<path d="M2 7l6-5 6 5 M4 6v8h8V6 M8 7v5M6 9h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceEngineering: { box: 8, map: .55, draw: P('<path d="M2 14V6h3V3h2v3h3V3h2v3h2v8z M4 10h8M8 8v6" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceStaffColleges: { box: 8, map: .55, draw: P('<path d="M1 5l7-3 7 3-7 3z M4 7v4q4 4 8 0V7 M14 6v7" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceExpeditionary: { box: 8, map: .55, draw: P('<path d="M2 13l4-8 3 5 2-4 3 7z M6 5V1h5l-2 2 2 2z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceWarMinistry: { box: 8, map: .55, draw: P('<path d="M2 14V6l6-4 6 4v8z M5 7v5m3-5v5m3-5v5 M1 14h14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIndustry: { box: 8, map: .55, draw: P('<path d="M2 2l3 3v4l4 4h4v-4L9 5H5L2 2 M2 12l4-4m4-4l3-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceShipping: { box: 8, map: .55, draw: P('<path d="M2 10h12l-3 4H5z M8 2v8 M7 3L3 8h4m2-5l4 5H9" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIndustrialCredit: { box: 8, map: .55, draw: P('<path d="M2 3h12v10H2z M2 6h12 M4 10h3 M10 9v3m-1-2h3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceRailwayProcurement: { box: 8, map: .55, draw: P('<path d="M5 1v14m6-14v14 M3 3h10M3 7h10M3 11h10 M2 15l3-4m9 4l-3-4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceMerchantBanks: { box: 8, map: .55, draw: P('<path d="M2 6l6-4 6 4z M3 8v4m4-4v4m4-4v4 M1 14h14 M12 1v4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIndustrialStandards: { box: 8, map: .55, draw: P('<path d="M3 2h10v12H3z M5 7l2 2 4-5 M5 12h6" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceExportHouses: { box: 8, map: .55, draw: P('<path d="M2 14V7l5-4 5 4v7z M5 14V9h4v5 M9 3h6m-2-2l2 2-2 2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceLandSurvey: { box: 8, map: .55, draw: P('<path d="M8 2l5 12H3z M4 11h8 M1 6h14 M8 1v14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceDomesticMarkets: { box: 8, map: .55, draw: P('<path d="M2 3h12l1 4H1z M2 7v7h12V7 M5 14v-4h3v4 M2 5h12" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advancePrecisionEngineering: { box: 8, map: .55, draw: P('<path d="M8 1v3m0 8v3M1 8h3m8 0h3 M3 3l2 2m6 6l2 2M3 13l2-2m6-6l2-2 M5 5h6v6H5z M7 7h2v2H7z" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceAdministration: { box: 8, map: .55, draw: P('<path d="M3 1h8l2 2v12H3z M5 5h6M5 8h6M5 11h3 M9 12l1 1 3-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceParliament: { box: 8, map: .55, draw: P('<path d="M2 13V8q6-10 12 0v5 M2 10h12 M5 7v6m3-8v8m3-6v6 M1 15h14" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceWelfare: { box: 8, map: .55, draw: P('<path d="M3 4h10v10H3z M6 2h4v4H6z M8 8v4M6 10h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceIntegration: { box: 8, map: .55, draw: P('<path d="M1 3h6v4H1z M9 9h6v4H9z M7 5h5v4 M4 7v4h5" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceProvincialRights: { box: 8, map: .55, draw: P('<path d="M1 2h5v11H1z M10 2h5v11h-5z M6 5l2-2 2 2 M6 10l2 2 2-2 M3 15h10" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advancePublicAccounts: { box: 8, map: .55, draw: P('<path d="M2 2h12v12H2z M5 2v12 M5 6h9M5 10h9 M8 3v10M11 3v10" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceNationalSchools: { box: 8, map: .55, draw: P('<path d="M2 14V6l6-5 6 5v8z M6 14V9h4v5 M8 4v3M6 6h4" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceTechnicalUniversities: { box: 8, map: .55, draw: P('<path d="M5 2h6 M6 2v5l-4 7h12l-4-7V2 M4 11h8 M7 9h2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceCivicMediation: { box: 8, map: .55, draw: P('<path d="M2 4h8v6H6l-3 3v-3H2z M10 6h4v7h-2v2l-3-2H7v-3" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advanceConsularService: { box: 8, map: .55, draw: P('<path d="M2 3h12v10H2z M2 4l6 5 6-5 M3 12l3-4m7 4l-3-4 M7 1h2v2" fill="none" stroke="#d3c297" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>') },
+  advance: { box: 8, map: .55, draw: P('<path d="M3 2h8l2 2v10H3z" fill="#384d5a" stroke="#bcd9dc"/><path d="M5 11l3-6 3 6M6 9h4" fill="none" stroke="#e4c273" stroke-width="1.2"/>') },
   // ----- money -----
-  gold: { draw: P('<circle cx="5.3" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="10.7" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="8" cy="4.6" r="2.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><path d="M3.4 8c-1.3 1.1-1.8 2.6-1.4 4 .5 1.7 2.6 2.6 6 2.6s5.5-.9 6-2.6c.4-1.4-.1-2.9-1.4-4z" fill="#4b4038" stroke="#a8957a" stroke-linejoin="round"/><path d="M2.2 7.6h11.6" stroke="#a8957a" stroke-width="1.6" stroke-linecap="round"/>') },
-  goldYear: { draw: P('<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>') },
-  taxes: { draw: P('<path d="M5.2 2.2h5.6L9.6 5c3 1 4.6 4 4.2 7-.2 1.6-1.6 2.5-3.2 2.5H5.4c-1.6 0-3-.9-3.2-2.5-.4-3 1.2-6 4.2-7z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M6.4 5h3.2" stroke="#5c4320" stroke-width="1.2"/><path d="M8 7.6v5M6.6 8.8h2.1a.9.9 0 010 1.8H7.3a.9.9 0 000 1.8h2.1" fill="none" stroke="#5c4320" stroke-width=".9"/>') },
-  upkeep: { draw: P('<circle cx="7" cy="8" r="5.5" fill="#d98a6a" stroke="#7a3a22" stroke-width="1.1"/><path d="M4.5 8h5" stroke="#7a3a22" stroke-width="1.6"/>') },
-  trade: { draw: P('<circle cx="8" cy="3.2" r="1.7" fill="none" stroke="#6fa8dc" stroke-width="1.3"/><path d="M8 5v9.5M5 7.5h6M2.5 10c0 2.6 2.5 4.5 5.5 4.5s5.5-1.9 5.5-4.5" fill="none" stroke="#6fa8dc" stroke-width="1.4" stroke-linecap="round"/>') },
-  save: { draw: P('<path d="M2.5 6.5h11v7.5h-11z" fill="#b08a4a" stroke="#5c4320"/><path d="M2 6.5L8 2l6 4.5" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><circle cx="8" cy="10" r="1.6" fill="#e9c35a" stroke="#5c4320" stroke-width=".8"/>') },
+  gold: { box: 8, map: .55, draw: P('<circle cx="5.3" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="10.7" cy="6" r="2" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><circle cx="8" cy="4.6" r="2.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".8"/><path d="M3.4 8c-1.3 1.1-1.8 2.6-1.4 4 .5 1.7 2.6 2.6 6 2.6s5.5-.9 6-2.6c.4-1.4-.1-2.9-1.4-4z" fill="#4b4038" stroke="#a8957a" stroke-linejoin="round"/><path d="M2.2 7.6h11.6" stroke="#a8957a" stroke-width="1.6" stroke-linecap="round"/>') },
+  goldYear: { box: 8, map: .55, draw: P('<circle cx="8" cy="8" r="6" fill="#e9c35a" stroke="#8a6a1c" stroke-width="1.2"/><path d="M8 4.6v6.8M6.2 6.3h2.9a1.2 1.2 0 010 2.4H7a1.2 1.2 0 000 2.4h2.9" fill="none" stroke="#8a6a1c" stroke-width="1.1"/>') },
+  taxes: { box: 8, map: .55, draw: P('<path d="M5.2 2.2h5.6L9.6 5c3 1 4.6 4 4.2 7-.2 1.6-1.6 2.5-3.2 2.5H5.4c-1.6 0-3-.9-3.2-2.5-.4-3 1.2-6 4.2-7z" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><path d="M6.4 5h3.2" stroke="#5c4320" stroke-width="1.2"/><path d="M8 7.6v5M6.6 8.8h2.1a.9.9 0 010 1.8H7.3a.9.9 0 000 1.8h2.1" fill="none" stroke="#5c4320" stroke-width=".9"/>') },
+  upkeep: { box: 8, map: .55, draw: P('<circle cx="7" cy="8" r="5.5" fill="#d98a6a" stroke="#7a3a22" stroke-width="1.1"/><path d="M4.5 8h5" stroke="#7a3a22" stroke-width="1.6"/>') },
+  trade: { box: 8, map: .55, draw: P('<circle cx="8" cy="3.2" r="1.7" fill="none" stroke="#6fa8dc" stroke-width="1.3"/><path d="M8 5v9.5M5 7.5h6M2.5 10c0 2.6 2.5 4.5 5.5 4.5s5.5-1.9 5.5-4.5" fill="none" stroke="#6fa8dc" stroke-width="1.4" stroke-linecap="round"/>') },
+  save: { box: 8, map: .55, draw: P('<path d="M2.5 6.5h11v7.5h-11z" fill="#b08a4a" stroke="#5c4320"/><path d="M2 6.5L8 2l6 4.5" fill="#c9a45c" stroke="#5c4320" stroke-linejoin="round"/><circle cx="8" cy="10" r="1.6" fill="#e9c35a" stroke="#5c4320" stroke-width=".8"/>') },
 
   // ----- land and people -----
-  province: { draw: P('<path d="M2 4.5L6 2l4.5 1.5L14 2.5v9.5L10 14l-4.5-1.5L2 14z" fill="#8fb36b" stroke="#3d5a26" stroke-width="1" stroke-linejoin="round"/><path d="M6 2v10.5M10.5 3.5V14M2 8.5l4-1 4.5 1L14 7.5" fill="none" stroke="#3d5a26" stroke-width=".8"/>') },
-  capital: { box: 4,
+  province: { box: 8, map: .55, draw: P('<path d="M2 4.5L6 2l4.5 1.5L14 2.5v9.5L10 14l-4.5-1.5L2 14z" fill="#8fb36b" stroke="#3d5a26" stroke-width="1" stroke-linejoin="round"/><path d="M6 2v10.5M10.5 3.5V14M2 8.5l4-1 4.5 1L14 7.5" fill="none" stroke="#3d5a26" stroke-width=".8"/>') },
+  capital: { map: .55, box: 4,
     draw: `<circle r="2.6" fill="${INK}" stroke="${DARK}" stroke-width="1.1"/>` },
-  pop: { draw: P('<circle cx="8" cy="4.6" r="2.8" fill="#e8d3b3" stroke="#6b5537"/><path d="M2.8 14.5c0-3.6 2.3-6 5.2-6s5.2 2.4 5.2 6z" fill="#d7b98d" stroke="#6b5537"/>') },
-  culture: { draw: P('<path d="M2 3h12v8H7l-3.5 3v-3H2z" fill="#a8c7a0" stroke="#3f5e3a" stroke-linejoin="round"/><path d="M4.5 6h7M4.5 8.5h5" stroke="#3f5e3a"/>') },
-  settle: { draw: P('<circle cx="8" cy="8" r="6.3" fill="#3a4048" stroke="#a8c7a0" stroke-width="1.3"/><path d="M8 8V1.7A6.3 6.3 0 0114.1 9.6z" fill="#a8c7a0"/>') },
-  occupied: { draw: P('<rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#c96b5f"/><path d="M1.5 9L9 1.5M1.5 14.5L14.5 1.5M7 14.5L14.5 7" stroke="#5e221c" stroke-width="1.6"/>') },
-  sea: { box: 9,
+  pop: { box: 8, map: .55, draw: P('<circle cx="8" cy="4.6" r="2.8" fill="#e8d3b3" stroke="#6b5537"/><path d="M2.8 14.5c0-3.6 2.3-6 5.2-6s5.2 2.4 5.2 6z" fill="#d7b98d" stroke="#6b5537"/>') },
+  culture: { box: 8, map: .55, draw: P('<path d="M2 3h12v8H7l-3.5 3v-3H2z" fill="#a8c7a0" stroke="#3f5e3a" stroke-linejoin="round"/><path d="M4.5 6h7M4.5 8.5h5" stroke="#3f5e3a"/>') },
+  settle: { box: 8, map: .55, draw: P('<circle cx="8" cy="8" r="6.3" fill="#3a4048" stroke="#a8c7a0" stroke-width="1.3"/><path d="M8 8V1.7A6.3 6.3 0 0114.1 9.6z" fill="#a8c7a0"/>') },
+  occupied: { box: 8, map: .55, draw: P('<rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#c96b5f"/><path d="M1.5 9L9 1.5M1.5 14.5L14.5 1.5M7 14.5L14.5 7" stroke="#5e221c" stroke-width="1.6"/>') },
+  sea: { map: .55, box: 9,
     draw: `<line x1="-9" y1="0" x2="9" y2="0" stroke="#9fb1c2" stroke-width="1.4" stroke-dasharray="2 3"/>` },
-  claim: { draw: `<path d="M-4.5 7V-7" stroke="#c9ced6" stroke-width="1.6" stroke-linecap="round"/><path d="M-3.8 -6.6h9l-2.3 3.2 2.3 3.2h-9z" fill="#d65a4d" stroke="#5e221c" stroke-width=".9" stroke-linejoin="round"/>` },
+  claim: { box: 8, map: .55, draw: `<path d="M-4.5 7V-7" stroke="#c9ced6" stroke-width="1.6" stroke-linecap="round"/><path d="M-3.8 -6.6h9l-2.3 3.2 2.3 3.2h-9z" fill="#d65a4d" stroke="#5e221c" stroke-width=".9" stroke-linejoin="round"/>` },
 
   // ----- building -----
   factory: { box: 5.5, map: 1,
@@ -69,63 +69,69 @@ const DRAW = {
     draw: `<path d="M-4.5 3.5V-.5l2.6-1.6V-.5l2.6-1.6V-.5V-4.5h1.8v8z" fill="none" stroke="${INK}" stroke-width=".8" stroke-dasharray="1.4 1"/>` },
   buildFort: { box: 5.5, map: 1,
     draw: `<path d="M-3.5 3.5V-1.5h-1v-3h2v1.2h1.5v-1.2h2v1.2h1.5v-1.2h2v3h-1v5z" fill="none" stroke="${INK}" stroke-width=".8" stroke-dasharray="1.4 1"/>` },
-  build: { draw: P('<path d="M3 15V5M3 5h10M3 5l4 0M13 5v4" stroke="#e9c35a" stroke-width="1.5" fill="none"/><path d="M11.5 9h3v2.5h-3z" fill="#e9c35a"/><path d="M1.5 15h4" stroke="#e9c35a" stroke-width="1.5"/><path d="M3 5L7 1.5" stroke="#e9c35a" stroke-width="1.2"/>') },
+  build: { box: 8, map: .55, draw: P('<path d="M3 15V5M3 5h10M3 5l4 0M13 5v4" stroke="#e9c35a" stroke-width="1.5" fill="none"/><path d="M11.5 9h3v2.5h-3z" fill="#e9c35a"/><path d="M1.5 15h4" stroke="#e9c35a" stroke-width="1.5"/><path d="M3 5L7 1.5" stroke="#e9c35a" stroke-width="1.2"/>') },
   ruin: { box: 6, map: 1,
     draw: `<path d="M-5 4V0l2.6-1.5V0l1.8-1 1.2 3.5 1.6-3.8.8 1.2V-4.5h2V4z" fill="#8a8f99" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M1 -5l1.4 1.8-1.6 1.2" stroke="#e0453a" stroke-width="1.1" fill="none"/>` },
   boom: { box: 7, map: 1,
     draw: `<path d="M0 -6L4 0L0 6L-4 0z" fill="#f2c94c" stroke="${DARK}" stroke-width=".8"/><path d="M0 -3.4L2.2 0L0 3.4L-2.2 0z" fill="#fff6c9"/>` },
-  reform: { draw: P('<path d="M3 2.5h8.5a1.5 1.5 0 011.5 1.5v10H4.5A1.5 1.5 0 013 12.5z" fill="#efe2bf" stroke="#7a6a3c"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke="#7a6a3c"/>') },
+  reform: { box: 8, map: .55, draw: P('<path d="M3 2.5h8.5a1.5 1.5 0 011.5 1.5v10H4.5A1.5 1.5 0 013 12.5z" fill="#efe2bf" stroke="#7a6a3c"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke="#7a6a3c"/>') },
 
   // ----- unrest -----
-  unrest: { map: .62, avoid: ['restlessness'],
+  unrest: { box: 8, map: .62, avoid: ['restlessness'],
     draw: `<g style="fill:var(--uc,#e0503f)" stroke="${DARK}" stroke-width="1" stroke-linejoin="round"><path d="M-2.6 1.8V7.2h5.2V1.8z"/><rect x="-4.8" y="-6.4" width="9.6" height="9" rx="2.6"/><path d="M-1.6 -6.4v3.2M1.6 -6.4v3.2" fill="none"/><path d="M-4.8 -1.4h5a1.5 1.5 0 0 1 0 3h-4.2"/></g>` },
-  uprising: { map: .85, avoid: ['revolt', 'revolts', 'rebellion'],
+  uprising: { box: 8, map: .85, avoid: ['revolt', 'revolts', 'rebellion'],
     draw: `<path d="M0 -7.2C2.6 -4.2 5.2 -2 5.2 1.8A5.2 5.2 0 0 1 -5.2 1.8C-5.2 -1 -3.2 -2.6 -2.6 -4.8C-1.2 -3.2 -.6 -2.2 0 -7.2z" fill="#e0453a" stroke="${DARK}" stroke-width=".9" stroke-linejoin="round"/><path d="M0 -.8C1.4 .9 2.3 1.9 2.3 3.2A2.3 2.3 0 0 1 -2.3 3.2C-2.3 1.9 -1.1 .9 0 -.8z" fill="#f2c94c"/>` },
 
   // ----- war -----
-  army: { map: .62, avoid: ['soldiers', 'troops'],
+  army: { box: 8, map: .62, avoid: ['soldiers', 'troops'],
     draw: P('<g stroke-linecap="round"><path d="M2.5 13.5L12.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M12.5 3.5l2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M13.5 13.5L3.5 3.5" stroke="#8a5a34" stroke-width="2.4"/><path d="M3.5 3.5l-2-2" stroke="#c9ced6" stroke-width="1.1"/><path d="M4.2 11.8l1.6 1.6M11.8 11.8l-1.6 1.6" stroke="#4a3018" stroke-width="1.6"/></g>') },
-  war: { draw: P('<path d="M13.5 2.5L5 11" stroke="#e0e3e8" stroke-width="2.2" stroke-linecap="round"/><path d="M3 9.5l3.5 3.5M2 14l2.3-2.3" stroke="#d65a4d" stroke-width="2" stroke-linecap="round"/>') },
+  war: { box: 8, map: .55, draw: P('<path d="M13.5 2.5L5 11" stroke="#e0e3e8" stroke-width="2.2" stroke-linecap="round"/><path d="M3 9.5l3.5 3.5M2 14l2.3-2.3" stroke="#d65a4d" stroke-width="2" stroke-linecap="round"/>') },
   battle: { box: 6.5, map: 1,
     draw: `<g stroke-linecap="round"><path d="M-5 -5L5 5M5 -5L-5 5" stroke="${DARK}" stroke-width="4"/><path d="M-5 -5L5 5M5 -5L-5 5" stroke="#fff" stroke-width="1.8"/></g>` },
-  front: { box: 9,
+  front: { map: .55, box: 9,
     draw: `<path d="M-9 0H9" stroke="#ff5a48" stroke-width="3" stroke-dasharray="4 2"/>` },
-  goal: { box: 9,
+  goal: { map: .55, box: 9,
     draw: `<rect x="-8" y="-5.5" width="16" height="11" fill="none" stroke="#d65a4d" stroke-width="1.6" stroke-dasharray="4 2"/>` },
-  peace: { draw: P('<path d="M2 9c2-4 6-5 9-3.5L14.5 4 13 7.5c.5 3-2 6-6 6-2 0-4-1.5-5-4.5z" fill="#f2f4f2" stroke="#4f7a4b" stroke-width="1"/><circle cx="11.8" cy="6.4" r=".7" fill="#4f7a4b"/>') },
-  dead: { draw: P('<path d="M3 7a5 5 0 0110 0v3l-1.5 1v2.5h-7V11L3 10z" fill="#d9dbe0" stroke="#4a4e55"/><circle cx="6" cy="7.6" r="1.4" fill="#2a2d32"/><circle cx="10" cy="7.6" r="1.4" fill="#2a2d32"/><path d="M7 13.5v-1.5M9 13.5v-1.5" stroke="#4a4e55"/>') },
+  peace: { box: 8, map: .55, draw: P('<path d="M2 9c2-4 6-5 9-3.5L14.5 4 13 7.5c.5 3-2 6-6 6-2 0-4-1.5-5-4.5z" fill="#f2f4f2" stroke="#4f7a4b" stroke-width="1"/><circle cx="11.8" cy="6.4" r=".7" fill="#4f7a4b"/>') },
+  dead: { box: 8, map: .55, draw: P('<path d="M3 7a5 5 0 0110 0v3l-1.5 1v2.5h-7V11L3 10z" fill="#d9dbe0" stroke="#4a4e55"/><circle cx="6" cy="7.6" r="1.4" fill="#2a2d32"/><circle cx="10" cy="7.6" r="1.4" fill="#2a2d32"/><path d="M7 13.5v-1.5M9 13.5v-1.5" stroke="#4a4e55"/>') },
 
   // ----- diplomacy -----
-  ally: { draw: P('<path d="M1 8.5l3-3 3 1.5 2-1.5 3 1.5 3 3-3.5 3.5-2-1-2 1z" fill="#8bb6e0" stroke="#2f557e" stroke-width="1" stroke-linejoin="round"/>') },
-  rival: { draw: P('<circle cx="8" cy="8" r="6.3" fill="#f2ece6" stroke="#8a2a20" stroke-width="1"/><circle cx="8" cy="8" r="4.2" fill="#d65a4d"/><circle cx="8" cy="8" r="2.2" fill="#f2ece6"/><circle cx="8" cy="8" r=".9" fill="#8a2a20"/>') },
-  proclaim: { map: .85,
+  ally: { box: 8, map: .55, draw: P('<path d="M1 8.5l3-3 3 1.5 2-1.5 3 1.5 3 3-3.5 3.5-2-1-2 1z" fill="#8bb6e0" stroke="#2f557e" stroke-width="1" stroke-linejoin="round"/>') },
+  rival: { box: 8, map: .55, draw: P('<circle cx="8" cy="8" r="6.3" fill="#f2ece6" stroke="#8a2a20" stroke-width="1"/><circle cx="8" cy="8" r="4.2" fill="#d65a4d"/><circle cx="8" cy="8" r="2.2" fill="#f2ece6"/><circle cx="8" cy="8" r=".9" fill="#8a2a20"/>') },
+  proclaim: { box: 8, map: .85,
     draw: P('<path d="M8 1.2l2 4.6 5 .4-3.8 3.2 1.2 4.9L8 11.7l-4.4 2.6 1.2-4.9L1 6.2l5-.4z" fill="#e9c35a" stroke="#8a6a1c" stroke-linejoin="round"/>') },
-  ambition: { draw: P('<path d="M8 14.6C4.6 14.4 2.8 11.4 3.2 3.6M8 14.6c3.4-.2 5.2-3.2 4.8-11" fill="none" stroke="#3d5a26" stroke-width=".9"/><g fill="#7fae7a" stroke="#3d5a26" stroke-width=".6"><path d="M4.4 13c-1.7-.1-2.8-1.1-3-2.6 1.5 0 2.7.9 3 2.6z"/><path d="M3 9.6C1.5 9 .8 7.8 1 6.3c1.4.5 2.1 1.8 2 3.3z"/><path d="M2.8 6.2C1.9 5 2 3.6 2.8 2.4c.9 1.1 1 2.5 0 3.8z"/><path d="M11.6 13c1.7-.1 2.8-1.1 3-2.6-1.5 0-2.7.9-3 2.6z"/><path d="M13 9.6c1.5-.6 2.2-1.8 2-3.3-1.4.5-2.1 1.8-2 3.3z"/><path d="M13.2 6.2c.9-1.2.8-2.6 0-3.8-.9 1.1-1 2.5 0 3.8z"/></g><circle cx="8" cy="14.4" r="1.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".5"/>') },
+  ambition: { box: 8, map: .55, draw: P('<path d="M8 14.6C4.6 14.4 2.8 11.4 3.2 3.6M8 14.6c3.4-.2 5.2-3.2 4.8-11" fill="none" stroke="#3d5a26" stroke-width=".9"/><g fill="#7fae7a" stroke="#3d5a26" stroke-width=".6"><path d="M4.4 13c-1.7-.1-2.8-1.1-3-2.6 1.5 0 2.7.9 3 2.6z"/><path d="M3 9.6C1.5 9 .8 7.8 1 6.3c1.4.5 2.1 1.8 2 3.3z"/><path d="M2.8 6.2C1.9 5 2 3.6 2.8 2.4c.9 1.1 1 2.5 0 3.8z"/><path d="M11.6 13c1.7-.1 2.8-1.1 3-2.6-1.5 0-2.7.9-3 2.6z"/><path d="M13 9.6c1.5-.6 2.2-1.8 2-3.3-1.4.5-2.1 1.8-2 3.3z"/><path d="M13.2 6.2c.9-1.2.8-2.6 0-3.8-.9 1.1-1 2.5 0 3.8z"/></g><circle cx="8" cy="14.4" r="1.1" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".5"/>') },
   leader: { box: 7.5, map: 1,
     draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#c9a45c" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
 
   // ----- rulers -----
-  ruler: { draw: `<ellipse rx="6.2" ry="7.3" fill="#b9a3d6" stroke="#4e3f66" stroke-width="1"/><path d="M-4.2 6.2C-4 3.2 -2.6 2 -1.1 1.5C-2.3 .6 -2.8 -.9 -2.6 -2.3C-2.3 -4.3 -.8 -5.2 .6 -5C2.1 -4.8 2.9 -3.5 2.8 -2.1L3.7 -.9 2.8 -.5C2.8 .5 2.2 1.1 1.3 1.5C2.8 2 4 3.2 4.2 6.2C2.9 6.9 1.5 7.3 0 7.3S-2.9 6.9 -4.2 6.2Z" fill="#4e3f66"/>` },
-  patience: { draw: P('<path d="M4 1.5h8M4 14.5h8M5 1.5c0 4 6 4.5 6 6.5s-6 2.5-6 6.5M11 1.5c0 4-6 4.5-6 6.5s6 2.5 6 6.5" fill="none" stroke="#c9a45c" stroke-width="1.3"/><path d="M6.5 13.5c.5-1.5 2.5-1.5 3 0z" fill="#c9a45c"/>') },
-  thrift: { draw: P('<path d="M2 7.2V5.6C2 3.6 4.7 2.4 8 2.4s6 1.2 6 3.2v1.6z" fill="#9a6a3c" stroke="#4e3420" stroke-width="1" stroke-linejoin="round"/><rect x="2" y="7.2" width="12" height="6.6" rx=".8" fill="#7d5430" stroke="#4e3420" stroke-width="1"/><path d="M2 7.2h12" stroke="#c9a45c" stroke-width="1.2"/><rect x="6.5" y="6.3" width="3" height="3.6" rx=".6" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".7"/><circle cx="8" cy="8.4" r=".55" fill="#4e3420"/>') },
-  judgment: { draw: P('<path d="M1 8Q8 1.5 15 8Q8 14.5 1 8z" fill="#e6eef6" stroke="#3f6a94" stroke-width="1.1"/><circle cx="8" cy="8" r="2.6" fill="#3f6a94"/><circle cx="8.8" cy="7.2" r=".8" fill="#fff"/>') },
-  forecast: { draw: P('<path d="M2 13.5h12" stroke="#97a0aa" stroke-width="1.2"/><path d="M2.5 11l3.5-3.5 2.5 2 5-5.5" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5h3v3" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>') },
+  ruler: { box: 8, map: .55, draw: `<ellipse rx="6.2" ry="7.3" fill="#b9a3d6" stroke="#4e3f66" stroke-width="1"/><path d="M-4.2 6.2C-4 3.2 -2.6 2 -1.1 1.5C-2.3 .6 -2.8 -.9 -2.6 -2.3C-2.3 -4.3 -.8 -5.2 .6 -5C2.1 -4.8 2.9 -3.5 2.8 -2.1L3.7 -.9 2.8 -.5C2.8 .5 2.2 1.1 1.3 1.5C2.8 2 4 3.2 4.2 6.2C2.9 6.9 1.5 7.3 0 7.3S-2.9 6.9 -4.2 6.2Z" fill="#4e3f66"/>` },
+  patience: { box: 8, map: .55, draw: P('<path d="M4 1.5h8M4 14.5h8M5 1.5c0 4 6 4.5 6 6.5s-6 2.5-6 6.5M11 1.5c0 4-6 4.5-6 6.5s6 2.5 6 6.5" fill="none" stroke="#c9a45c" stroke-width="1.3"/><path d="M6.5 13.5c.5-1.5 2.5-1.5 3 0z" fill="#c9a45c"/>') },
+  thrift: { box: 8, map: .55, draw: P('<path d="M2 7.2V5.6C2 3.6 4.7 2.4 8 2.4s6 1.2 6 3.2v1.6z" fill="#9a6a3c" stroke="#4e3420" stroke-width="1" stroke-linejoin="round"/><rect x="2" y="7.2" width="12" height="6.6" rx=".8" fill="#7d5430" stroke="#4e3420" stroke-width="1"/><path d="M2 7.2h12" stroke="#c9a45c" stroke-width="1.2"/><rect x="6.5" y="6.3" width="3" height="3.6" rx=".6" fill="#e9c35a" stroke="#8a6a1c" stroke-width=".7"/><circle cx="8" cy="8.4" r=".55" fill="#4e3420"/>') },
+  judgment: { box: 8, map: .55, draw: P('<path d="M1 8Q8 1.5 15 8Q8 14.5 1 8z" fill="#e6eef6" stroke="#3f6a94" stroke-width="1.1"/><circle cx="8" cy="8" r="2.6" fill="#3f6a94"/><circle cx="8.8" cy="7.2" r=".8" fill="#fff"/>') },
+  forecast: { box: 8, map: .55, draw: P('<path d="M2 13.5h12" stroke="#97a0aa" stroke-width="1.2"/><path d="M2.5 11l3.5-3.5 2.5 2 5-5.5" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5h3v3" fill="none" stroke="#7fae7a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>') },
   civilWar: { box: 7.5, map: 1,
     draw: `<path d="M-7 3L-7.4 -3.5L-4 -.5L-1.6 -4.6L-.4 -2.2L-1.4 -.4L-.4 1.2L-1 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M1 3L1.6 1.2L.6 -.4L1.6 -2.2L2.4 -4.6L4.6 -.5L7.4 -3.5L7 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/>` },
   coup: { box: 7.5, map: 1,
     draw: `<path d="M-6 3L-6.5 -3.5L-3 -.5L0 -5L3 -.5L6.5 -3.5L6 3z" fill="#b9a3d6" stroke="${DARK}" stroke-width=".8" stroke-linejoin="round"/><path d="M-7 4L7 -5" stroke="${DARK}" stroke-width="2.2"/><path d="M-7 4L7 -5" stroke="#e0453a" stroke-width="1.2"/>` },
 
   // ----- the chronicle and the interface -----
-  event: { draw: P('<path d="M8 1.5l6.8 12.5H1.2z" fill="#9aa3ad" stroke="#3a4048" stroke-linejoin="round"/><path d="M8 6v4" stroke="#1a1d22" stroke-width="1.6"/><circle cx="8" cy="12" r=".9" fill="#1a1d22"/>') },
-  panel: { draw: `<rect x="-6.5" y="-5.5" width="13" height="11" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="1.5" y="-5.5" width="5" height="11" fill="currentColor" opacity=".45"/><path d="M1.5 -5.5v11" stroke="currentColor" stroke-width="1.3"/>` },
-  almanac: { draw: P('<path d="M2 3.2C4 2.4 6.2 2.5 8 3.6v10.2c-1.8-1.1-4-1.2-6-.4z" fill="#efe2bf" stroke="#7a6a3c" stroke-linejoin="round"/><path d="M14 3.2c-2-.8-4.2-.7-6 .4v10.2c1.8-1.1 4-1.2 6-.4z" fill="#e2d3a8" stroke="#7a6a3c" stroke-linejoin="round"/><path d="M3.6 6h2.8M3.6 8.2h2.8M9.6 6h2.8M9.6 8.2h2.8" stroke="#7a6a3c" stroke-width=".8"/>') },
+  event: { box: 8, map: .55, draw: P('<path d="M8 1.5l6.8 12.5H1.2z" fill="#9aa3ad" stroke="#3a4048" stroke-linejoin="round"/><path d="M8 6v4" stroke="#1a1d22" stroke-width="1.6"/><circle cx="8" cy="12" r=".9" fill="#1a1d22"/>') },
+  panel: { box: 8, map: .55, draw: `<rect x="-6.5" y="-5.5" width="13" height="11" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="1.5" y="-5.5" width="5" height="11" fill="currentColor" opacity=".45"/><path d="M1.5 -5.5v11" stroke="currentColor" stroke-width="1.3"/>` },
+  almanac: { box: 8, map: .55, draw: P('<path d="M2 3.2C4 2.4 6.2 2.5 8 3.6v10.2c-1.8-1.1-4-1.2-6-.4z" fill="#efe2bf" stroke="#7a6a3c" stroke-linejoin="round"/><path d="M14 3.2c-2-.8-4.2-.7-6 .4v10.2c1.8-1.1 4-1.2 6-.4z" fill="#e2d3a8" stroke="#7a6a3c" stroke-linejoin="round"/><path d="M3.6 6h2.8M3.6 8.2h2.8M9.6 6h2.8M9.6 8.2h2.8" stroke="#7a6a3c" stroke-width=".8"/>') },
 };
 // every concept: its name, description and avoided words from content/concepts.json (numbers in the
 // descriptions filled in from content), with its drawing from DRAW. Concepts marked `word` have no icon.
 const REG = {}, WORDS = {};
-Object.entries(CONTENT.concepts).forEach(([k, c]) => { const e = Object.assign({}, c, { name: say(c.name), desc: say(c.desc) }, DRAW[k] || {}); (c.word ? WORDS : REG)[k] = e; });
+Object.entries(CONTENT.concepts).forEach(([k, c]) => {
+  const e = { ...c, name: say(c.name), desc: say(c.desc) };
+  if (c.word) WORDS[k] = e; else REG[k] = { ...e, ...DRAW[k] };
+});
 // ruler rarity, white to gold (content/rarities.json; TIER[0] is Common)
 const TIER = CONTENT.rarities;
+const SAMPLE_GRADE = TIER.findIndex(r => r.sample);
+const tierClass = g => `${TIER[g].pulse ? 'pulsing' : ''} ${TIER[g].sheen ? 'shining' : ''}`;
+const tierStyle = g => `--tc:${TIER[g].color};--glow:${TIER[g].glow}px;--pulse:${TIER[g].pulse}px;--pulse-time:${TIER[g].pulseSeconds}s`;
 // ruler quirk emblems, drawn inside a round badge (names and descriptions come from content/rulers.json)
 const EMB = {
   warmonger: `<path d="M-2.6 2.6L2.8 -2.8M-2.4 -.2L.2 2.4M-3.2 3.2l1-1" stroke="${INK}" stroke-width="1.2" stroke-linecap="round"/>`,
@@ -150,7 +156,7 @@ const EMB = {
   sailor: `<circle cy="-2.6" r=".8" fill="none" stroke="${INK}" stroke-width=".8"/><path d="M0 -1.8V3.2M-1.6 -.6H1.6M-3 .8C-2.6 2.6 -1.4 3.2 0 3.2C1.4 3.2 2.6 2.6 3 .8" fill="none" stroke="${INK}" stroke-width=".9" stroke-linecap="round"/>`,
 };
 // the round badge behind a quirk emblem, ringed in its rarity's colour
-const embBadge = g => `<circle r="7" fill="#1a1f26" stroke="${(TIER[g] || TIER[0]).color}" stroke-width="${g >= 3 ? 1.4 : 1}"/>`;
+const embBadge = g => `<circle r="7" fill="#1a1f26" stroke="${TIER[g].color}" stroke-width="${TIER[g].ring}"/>`;
 
 // the name of a concept, for labels
 const nm = k => REG[k].name;
@@ -159,10 +165,10 @@ const nm = k => REG[k].name;
 const tipAttr = (name, desc = '') => `data-tip="${name}"${desc ? ` data-desc="${desc.replace(/"/g, '&quot;')}"` : ''}`;
 const tipOf = k => { const e = REG[k] || WORDS[k]; return tipAttr(e.name, e.desc); };
 // a panel icon that names and explains itself on hover; `style` can set --uc for unrest colour
-const ic = (k, cls = '', style = '') => { const e = REG[k], b = e.box || 8;
+const ic = (k, cls = '', style = '') => { const e = REG[k], b = e.box;
   return `<svg class="ic ${cls}" viewBox="${-b} ${-b} ${2 * b} ${2 * b}" role="img" aria-label="${e.name}" ${tipOf(k)}${style ? ` style="${style}"` : ''}>${e.draw}</svg>`; };
 // the same drawing for the map, centred on 0,0 at the map's scale
-const glyph = (k, style = '') => { const e = REG[k], s = e.map || .55;
+const glyph = (k, style = '') => { const e = REG[k], s = e.map;
   return `<g transform="scale(${s})"${style ? ` style="${style}"` : ''}>${e.draw}</g>`; };
 // words in copy that get their concept's icon in front (see iconize)
 const WORD_IC = { development: 'advance', developments: 'advance', 'gold a year': 'goldYear', 'army upkeep': 'upkeep', 'sea trade': 'trade', 'civil war': 'civilWar', factories: 'factory', factory: 'factory',

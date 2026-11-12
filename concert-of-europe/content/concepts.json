@@ -2,101 +2,163 @@
   "gold": {
     "name": "Gold",
     "desc": "Money in the bank. Pays for factories, fortresses, recruits and reforms.",
-    "avoid": ["treasury", "treasuries", "savings"]
+    "avoid": ["treasury", "treasuries", "savings"],
+    "word": false
   },
   "goldYear": {
     "name": "Gold a year",
     "desc": "Taxes, factory output and sea trade over a year. The great power with the most in {rules.end.season|season} {rules.end.year} meets its ambition.",
-    "avoid": ["income", "score", "/yr"]
+    "avoid": ["income", "score", "/yr"],
+    "word": false
   },
-  "taxes": {"name": "Taxes", "desc": "Gold the people pay. Falls with unrest, occupation and every man in the army."},
-  "upkeep": {"name": "Army upkeep", "desc": "Gold the army costs every season."},
-  "trade": {"name": "Sea trade", "desc": "Gold from coastal provinces. Lost while the nation is at war."},
-  "save": {"name": "Save gold", "desc": "The ministers keep the gold when nothing else is expected to pay."},
-  "province": {"name": "Provinces", "desc": "Land a nation holds. Each one costs a little to run."},
-  "capital": {"name": "Capital", "desc": "Where a nation is ruled from. Its army size shows here in wartime."},
-  "pop": {"name": "People", "desc": "How many live in a province or nation, in millions."},
-  "culture": {"name": "Nationality", "desc": "The people of a province. Under a ruler of another nationality they grow restless."},
+  "taxes": {
+    "name": "Taxes",
+    "desc": "Gold the people pay. Falls with unrest, occupation and every man in the army.",
+    "word": false,
+    "avoid": []
+  },
+  "upkeep": {"name": "Army upkeep", "desc": "Gold the army costs every season.", "word": false, "avoid": []},
+  "trade": {"name": "Sea trade", "desc": "Gold from coastal provinces. Lost while the nation is at war.", "word": false, "avoid": []},
+  "save": {"name": "Save gold", "desc": "The ministers keep the gold when nothing else is expected to pay.", "word": false, "avoid": []},
+  "province": {"name": "Provinces", "desc": "Land a nation holds. Each one costs a little to run.", "word": false, "avoid": []},
+  "capital": {"name": "Capital", "desc": "Where a nation is ruled from. Its army size shows here in wartime.", "word": false, "avoid": []},
+  "pop": {"name": "People", "desc": "How many live in a province or nation, in millions.", "word": false, "avoid": []},
+  "culture": {
+    "name": "Nationality",
+    "desc": "The people of a province. Under a ruler of another nationality they grow restless.",
+    "word": false,
+    "avoid": []
+  },
   "settle": {
     "name": "Integrated",
     "desc": "How far a conquered province has become part of its new nation. It pays little until fully integrated.",
-    "avoid": ["settles", "settled", "integration"]
+    "avoid": ["settles", "settled", "integration"],
+    "word": false
   },
-  "occupied": {"name": "Occupied", "desc": "Held by an enemy army. Pays its owner nothing until freed."},
-  "sea": {"name": "Sea crossing", "desc": "Two coastal provinces close enough to invade across the water."},
-  "claim": {"name": "Claims", "desc": "Nations that want a province: its old owner, its own people, or a nation uniting it."},
-  "factory": {"name": "Factories", "desc": "Produce gold every season. Each new one costs more and adds less."},
+  "occupied": {"name": "Occupied", "desc": "Held by an enemy army. Pays its owner nothing until freed.", "word": false, "avoid": []},
+  "sea": {"name": "Sea crossing", "desc": "Two coastal provinces close enough to invade across the water.", "word": false, "avoid": []},
+  "claim": {
+    "name": "Claims",
+    "desc": "Nations that want a province: its old owner, its own people, or a nation uniting it.",
+    "word": false,
+    "avoid": []
+  },
+  "factory": {"name": "Factories", "desc": "Produce gold every season. Each new one costs more and adds less.", "word": false, "avoid": []},
   "fort": {
     "name": "Fortress",
     "desc": "Stops a share of enemy advances into the province. Razed if the province falls.",
-    "avoid": ["forts", "fort"]
+    "avoid": ["forts", "fort"],
+    "word": false
   },
-  "buildFactory": {"name": "Factory being built", "desc": "A factory under construction. Takes {rules.build.factory|word} seasons."},
-  "buildFort": {"name": "Fortress being built", "desc": "A fortress under construction. Takes {rules.build.fort|word} seasons."},
-  "build": {"name": "Construction", "desc": "Gold spent this season on factories and fortresses."},
-  "ruin": {"name": "Ruin", "desc": "A factory or fortress destroyed in war."},
-  "boom": {"name": "Boom", "desc": "Coal is found or a railway arrives: the province suddenly pays more."},
-  "reform": {"name": "Reforms", "desc": "Laws that calm unrest for a while. Cost gold."},
+  "buildFactory": {
+    "name": "Factory being built",
+    "desc": "A factory under construction. Takes {rules.build.factory|word} seasons.",
+    "word": false,
+    "avoid": []
+  },
+  "buildFort": {
+    "name": "Fortress being built",
+    "desc": "A fortress under construction. Takes {rules.build.fort|word} seasons.",
+    "word": false,
+    "avoid": []
+  },
+  "build": {"name": "Construction", "desc": "Gold spent this season on factories and fortresses.", "word": false, "avoid": []},
+  "ruin": {"name": "Ruin", "desc": "A factory or fortress destroyed in war.", "word": false, "avoid": []},
+  "boom": {"name": "Boom", "desc": "Coal is found or a railway arrives: the province suddenly pays more.", "word": false, "avoid": []},
+  "reform": {"name": "Reforms", "desc": "Laws that calm unrest for a while. Cost gold.", "word": false, "avoid": []},
   "unrest": {
     "name": "Unrest",
     "desc": "Anger in a province ruled by another nationality. Cuts taxes; at {rules.unrest.uprising} or more it is close to an uprising.",
-    "avoid": ["restlessness"]
+    "avoid": ["restlessness"],
+    "word": false
   },
   "uprising": {
     "name": "Uprising",
     "desc": "A province rises against its ruler and may break away or join its own people.",
-    "avoid": ["revolt", "revolts", "rebellion"]
+    "avoid": ["revolt", "revolts", "rebellion"],
+    "word": false
   },
   "army": {
     "name": "Army",
     "desc": "Men under arms, in thousands. Deters attack and wins wars, but every man is a worker lost.",
-    "avoid": ["soldiers", "troops"]
+    "avoid": ["soldiers", "troops"],
+    "word": false
   },
-  "war": {"name": "War", "desc": "Nations fighting over a province. Ends when one side wins or both are exhausted."},
-  "battle": {"name": "Battle", "desc": "Fighting in a province this season."},
-  "front": {"name": "Front line", "desc": "Where the two sides of a war hold land face to face."},
-  "goal": {"name": "War goal", "desc": "The province a war is being fought for."},
-  "peace": {"name": "Peace", "desc": "A war ends and land or gold changes hands."},
-  "dead": {"name": "Dead", "desc": "Lives lost in the fighting, in millions."},
-  "ally": {"name": "Alliance", "desc": "Nations that usually join each other's wars, and nearly always each other's defence."},
-  "rival": {"name": "Biggest threat", "desc": "The neighbour a nation fears most. It arms and allies against it."},
+  "war": {
+    "name": "War",
+    "desc": "Nations fighting over a province. Ends when one side wins or both are exhausted.",
+    "word": false,
+    "avoid": []
+  },
+  "battle": {"name": "Battle", "desc": "Fighting in a province this season.", "word": false, "avoid": []},
+  "front": {"name": "Front line", "desc": "Where the two sides of a war hold land face to face.", "word": false, "avoid": []},
+  "goal": {"name": "War goal", "desc": "The province a war is being fought for.", "word": false, "avoid": []},
+  "peace": {"name": "Peace", "desc": "A war ends and land or gold changes hands.", "word": false, "avoid": []},
+  "dead": {"name": "Dead", "desc": "Lives lost in the fighting, in millions.", "word": false, "avoid": []},
+  "ally": {
+    "name": "Alliance",
+    "desc": "Nations that usually join each other's wars, and nearly always each other's defence.",
+    "word": false,
+    "avoid": []
+  },
+  "rival": {
+    "name": "Biggest threat",
+    "desc": "The neighbour a nation fears most. It arms and allies against it.",
+    "word": false,
+    "avoid": []
+  },
   "proclaim": {
     "name": "Proclamation",
-    "desc": "A divided people united: the nation that holds enough of its lands takes its new name, and the smaller nations of its people join it."
+    "desc": "A divided people united: the nation that holds enough of its lands takes its new name, and the smaller nations of its people join it.",
+    "word": false,
+    "avoid": []
   },
   "ambition": {
     "name": "Ambition",
     "desc": "What a nation must achieve by the armistice of {rules.end.season|season} {rules.end.year}: be the richest great power, unite its people, or survive.",
-    "avoid": ["objective", "dream", "dreams"]
+    "avoid": ["objective", "dream", "dreams"],
+    "word": false
   },
-  "leader": {"name": "Leading nation", "desc": "The nation with the most gold a year right now."},
+  "leader": {"name": "Leading nation", "desc": "The nation with the most gold a year right now.", "word": false, "avoid": []},
   "ruler": {
     "name": "Ruler",
     "desc": "Who decides for the nation, with his own patience, judgment, thrift and trait.",
-    "avoid": ["sovereign"]
+    "avoid": ["sovereign"],
+    "word": false
   },
-  "patience": {"name": "Patience", "desc": "How many years ahead a ruler counts gains and costs."},
+  "patience": {"name": "Patience", "desc": "How many years ahead a ruler counts gains and costs.", "word": false, "avoid": []},
   "thrift": {
     "name": "Thrift",
     "desc": "How dear a ruler holds his gold. A thrifty one hoards it and builds little; a lavish one spends it on factories, recruits and reforms.",
-    "avoid": ["frugal", "frugality"]
+    "avoid": ["frugal", "frugality"],
+    "word": false
   },
-  "judgment": {"name": "Judgment", "desc": "Whether a ruler sees his odds in war as better or worse than they are."},
+  "judgment": {
+    "name": "Judgment",
+    "desc": "Whether a ruler sees his odds in war as better or worse than they are.",
+    "word": false,
+    "avoid": []
+  },
   "forecast": {
     "name": "Forecasts",
-    "desc": "What each option is worth in gold over the ruler's horizon. Positive ones are done, best first."
+    "desc": "What each option is worth in gold over the ruler's horizon. Positive ones are done, best first.",
+    "word": false,
+    "avoid": []
   },
   "civilWar": {
     "name": "Civil war",
     "desc": "A disputed succession: rival claimants split the army, which fights at {rules.reign.crisisArmy|frac} strength.",
-    "avoid": ["succession crisis"]
+    "avoid": ["succession crisis"],
+    "word": false
   },
-  "coup": {"name": "Coup", "desc": "The army deposes the ruler of a restless nation."},
-  "event": {"name": "Event", "desc": "Famines, epidemics, panics, booms and other turns of fortune."},
-  "panel": {"name": "Side panel", "desc": "Shows or hides the chronicle, rankings and details on the right."},
+  "coup": {"name": "Coup", "desc": "The army deposes the ruler of a restless nation.", "word": false, "avoid": []},
+  "event": {"name": "Event", "desc": "Famines, epidemics, panics, booms and other turns of fortune.", "word": false, "avoid": []},
+  "panel": {"name": "Side panel", "desc": "Shows or hides the chronicle, rankings and details on the right.", "word": false, "avoid": []},
   "almanac": {
     "name": "Almanac",
-    "desc": "Every ruler, nation, people, ambition, event and rule in the game, read live from the game's own data (key A)."
+    "desc": "Every ruler, nation, people, ambition, event and rule in the game, read live from the game's own data (key A).",
+    "word": false,
+    "avoid": []
   },
   "nation": {
     "name": "Nation",
@@ -107,52 +169,91 @@
   "reroll": {
     "name": "Reroll",
     "desc": "Deal {rules.heirs|word} new heirs instead of these (key R). {rules.rerolls|Word} free rerolls a game.",
-    "word": true
+    "word": true,
+    "avoid": []
   },
   "rarity": {
     "name": "Rarity",
     "desc": "How rare a ruler is, from {rarities.0.name} to {rarities.4.name}. The rarer he is, the more he can change the game.",
-    "word": true
+    "word": true,
+    "avoid": []
   },
   "guarantee": {
     "name": "Guarantor",
     "desc": "A great power sworn to defend a nation born in an uprising for {rules.newNation.guarantee|span}: it always joins its wars.",
-    "word": true
+    "word": true,
+    "avoid": []
   },
   "major": {
     "name": "Great power",
     "desc": "One of the {rules.majors.count|word} strongest nations, recounted every {rules.majors.every|span}. Great powers step in against a nation that grows too strong, guarantee nations born in uprisings and fight the {events.greatWar.name}. The great powers of {rules.start} race to be the richest.",
-    "word": true
+    "word": true,
+    "avoid": []
   },
-  "advance": {"name": "Development", "desc": "A permanent national advance. Chosen from scheduled offers, it survives changes of ruler."},
-  "advanceGeneralStaff": {"name": "{advances.cards.generalStaff.name}", "desc": "{concepts.advance.desc}"},
-  "advanceRifling": {"name": "{advances.cards.rifling.name}", "desc": "{concepts.advance.desc}"},
-  "advanceMedicine": {"name": "{advances.cards.medicine.name}", "desc": "{concepts.advance.desc}"},
-  "advanceSiegeTrain": {"name": "{advances.cards.siegeTrain.name}", "desc": "{concepts.advance.desc}"},
-  "advanceWarCollege": {"name": "{advances.cards.warCollege.name}", "desc": "{concepts.advance.desc}"},
-  "advanceHomeGuard": {"name": "{advances.cards.homeGuard.name}", "desc": "{concepts.advance.desc}"},
-  "advanceEngineering": {"name": "{advances.cards.engineering.name}", "desc": "{concepts.advance.desc}"},
-  "advanceStaffColleges": {"name": "{advances.cards.staffColleges.name}", "desc": "{concepts.advance.desc}"},
-  "advanceExpeditionary": {"name": "{advances.cards.expeditionary.name}", "desc": "{concepts.advance.desc}"},
-  "advanceWarMinistry": {"name": "{advances.cards.warMinistry.name}", "desc": "{concepts.advance.desc}"},
-  "advanceIndustry": {"name": "{advances.cards.industry.name}", "desc": "{concepts.advance.desc}"},
-  "advanceShipping": {"name": "{advances.cards.shipping.name}", "desc": "{concepts.advance.desc}"},
-  "advanceIndustrialCredit": {"name": "{advances.cards.industrialCredit.name}", "desc": "{concepts.advance.desc}"},
-  "advanceRailwayProcurement": {"name": "{advances.cards.railwayProcurement.name}", "desc": "{concepts.advance.desc}"},
-  "advanceMerchantBanks": {"name": "{advances.cards.merchantBanks.name}", "desc": "{concepts.advance.desc}"},
-  "advanceIndustrialStandards": {"name": "{advances.cards.industrialStandards.name}", "desc": "{concepts.advance.desc}"},
-  "advanceExportHouses": {"name": "{advances.cards.exportHouses.name}", "desc": "{concepts.advance.desc}"},
-  "advanceLandSurvey": {"name": "{advances.cards.landSurvey.name}", "desc": "{concepts.advance.desc}"},
-  "advanceDomesticMarkets": {"name": "{advances.cards.domesticMarkets.name}", "desc": "{concepts.advance.desc}"},
-  "advancePrecisionEngineering": {"name": "{advances.cards.precisionEngineering.name}", "desc": "{concepts.advance.desc}"},
-  "advanceAdministration": {"name": "{advances.cards.administration.name}", "desc": "{concepts.advance.desc}"},
-  "advanceParliament": {"name": "{advances.cards.parliament.name}", "desc": "{concepts.advance.desc}"},
-  "advanceWelfare": {"name": "{advances.cards.welfare.name}", "desc": "{concepts.advance.desc}"},
-  "advanceIntegration": {"name": "{advances.cards.integration.name}", "desc": "{concepts.advance.desc}"},
-  "advanceProvincialRights": {"name": "{advances.cards.provincialRights.name}", "desc": "{concepts.advance.desc}"},
-  "advancePublicAccounts": {"name": "{advances.cards.publicAccounts.name}", "desc": "{concepts.advance.desc}"},
-  "advanceNationalSchools": {"name": "{advances.cards.nationalSchools.name}", "desc": "{concepts.advance.desc}"},
-  "advanceTechnicalUniversities": {"name": "{advances.cards.technicalUniversities.name}", "desc": "{concepts.advance.desc}"},
-  "advanceCivicMediation": {"name": "{advances.cards.civicMediation.name}", "desc": "{concepts.advance.desc}"},
-  "advanceConsularService": {"name": "{advances.cards.consularService.name}", "desc": "{concepts.advance.desc}"}
+  "advance": {
+    "name": "Development",
+    "desc": "A permanent national advance. Chosen from scheduled offers, it survives changes of ruler.",
+    "word": false,
+    "avoid": []
+  },
+  "advanceGeneralStaff": {"name": "{advances.cards.generalStaff.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceRifling": {"name": "{advances.cards.rifling.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceMedicine": {"name": "{advances.cards.medicine.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceSiegeTrain": {"name": "{advances.cards.siegeTrain.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceWarCollege": {"name": "{advances.cards.warCollege.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceHomeGuard": {"name": "{advances.cards.homeGuard.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceEngineering": {"name": "{advances.cards.engineering.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceStaffColleges": {"name": "{advances.cards.staffColleges.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceExpeditionary": {"name": "{advances.cards.expeditionary.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceWarMinistry": {"name": "{advances.cards.warMinistry.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceIndustry": {"name": "{advances.cards.industry.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceShipping": {"name": "{advances.cards.shipping.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceIndustrialCredit": {
+    "name": "{advances.cards.industrialCredit.name}",
+    "desc": "{concepts.advance.desc}",
+    "word": false,
+    "avoid": []
+  },
+  "advanceRailwayProcurement": {
+    "name": "{advances.cards.railwayProcurement.name}",
+    "desc": "{concepts.advance.desc}",
+    "word": false,
+    "avoid": []
+  },
+  "advanceMerchantBanks": {"name": "{advances.cards.merchantBanks.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceIndustrialStandards": {
+    "name": "{advances.cards.industrialStandards.name}",
+    "desc": "{concepts.advance.desc}",
+    "word": false,
+    "avoid": []
+  },
+  "advanceExportHouses": {"name": "{advances.cards.exportHouses.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceLandSurvey": {"name": "{advances.cards.landSurvey.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceDomesticMarkets": {"name": "{advances.cards.domesticMarkets.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advancePrecisionEngineering": {
+    "name": "{advances.cards.precisionEngineering.name}",
+    "desc": "{concepts.advance.desc}",
+    "word": false,
+    "avoid": []
+  },
+  "advanceAdministration": {"name": "{advances.cards.administration.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceParliament": {"name": "{advances.cards.parliament.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceWelfare": {"name": "{advances.cards.welfare.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceIntegration": {"name": "{advances.cards.integration.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceProvincialRights": {
+    "name": "{advances.cards.provincialRights.name}",
+    "desc": "{concepts.advance.desc}",
+    "word": false,
+    "avoid": []
+  },
+  "advancePublicAccounts": {"name": "{advances.cards.publicAccounts.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceNationalSchools": {"name": "{advances.cards.nationalSchools.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceTechnicalUniversities": {
+    "name": "{advances.cards.technicalUniversities.name}",
+    "desc": "{concepts.advance.desc}",
+    "word": false,
+    "avoid": []
+  },
+  "advanceCivicMediation": {"name": "{advances.cards.civicMediation.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []},
+  "advanceConsularService": {"name": "{advances.cards.consularService.name}", "desc": "{concepts.advance.desc}", "word": false, "avoid": []}
 }

@@ -245,20 +245,17 @@ th svg.ic{margin:0}
 .heir .vibe{margin:12px 2px 0;font-size:15px;font-style:italic;line-height:1.4;color:var(--muted)}
 .heir .fx{margin:0;padding:5px 0 0 9px;width:100%;text-align:left;font-size:13.5px;line-height:1.4;border-left:2px solid var(--fxc)}
 .heir .fx-main{--fxc:var(--peace);margin-top:auto;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line));padding-top:10px}.heir .fx-flat{--fxc:var(--brass)}.heir .fx-malus{--fxc:#e08070}
-.heir.tier3{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 12px -4px var(--tc)}
-.heir.tier4{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 18px -4px var(--tc)}
-.heir.tier5{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 24px -4px var(--tc);background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%),linear-gradient(180deg,#2a2c2b,#1d1f22)}
+.heir{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 var(--glow) -4px var(--tc)}
+.heir.shining{background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%),linear-gradient(180deg,#2a2c2b,#1d1f22)}
 @media (max-width:640px){.heirs{grid-template-columns:1fr}.heir{min-height:0}.heir svg.emb{width:48px;height:48px;margin:6px 0 4px}}
-.heir.tier5::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,transparent 60%);background-size:250% 100%;background-position:120% 0;opacity:0}
+.heir.shining::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,transparent 60%);background-size:250% 100%;background-position:120% 0;opacity:0}
 @media (prefers-reduced-motion:no-preference){
   #heirModal.on .heir{animation:deal .35s ease-out backwards}
-  #heirModal.on .heir.tier4{animation:deal .35s ease-out backwards,glow4 3.2s ease-in-out .4s infinite}
-  #heirModal.on .heir.tier5{animation:deal .35s ease-out backwards,glow5 2.6s ease-in-out .4s infinite}
-  #heirModal.on .heir.tier5::after{animation:sheen 4s ease-in-out 1s infinite}
+  #heirModal.on .heir.pulsing{animation:deal .35s ease-out backwards,rarityGlow var(--pulse-time) ease-in-out .4s infinite}
+  #heirModal.on .heir.shining::after{animation:sheen 4s ease-in-out 1s infinite}
 }
 @keyframes deal{from{opacity:0;transform:translateY(8px)}}
-@keyframes glow4{50%{box-shadow:0 0 22px -3px var(--tc)}}
-@keyframes glow5{50%{box-shadow:0 0 30px -2px var(--tc)}}
+@keyframes rarityGlow{50%{box-shadow:0 0 var(--pulse) -3px var(--tc)}}
 @keyframes sheen{0%{opacity:1;background-position:120% 0}45%,100%{opacity:1;background-position:-20% 0}}
 .iw{white-space:nowrap}
 .rerolls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}

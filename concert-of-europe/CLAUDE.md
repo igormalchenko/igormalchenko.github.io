@@ -13,8 +13,8 @@ Every piece of content (rulers, rarities, temperaments, nations (those of 1836 a
 - **To change content, change the content file.** A ruler's strength, an event's odds, a union's provinces, a concept's name: edit the JSON, run `npm run build`, and the engine, the cards, the chronicle, the help text and the Almanac all follow.
 - **Never type a number into text.** A sentence that states a number takes it from the data with a placeholder: `"His army fights {v|up} harder"`, `"Takes {rules.build.factory|word} seasons."`. The formats (`word`, `pct`, `up`, `down`, `frac`, `times`, `harder`, `x`, `xs`, `span`, `years`, `inv`, `thrift`, `horizon`, `points`, `signed`, `abs`, `s`, `ies`, `place`, `nation`) are in `src/text.js`; add one there if a phrase needs it. In the HTML template use `{{path|format}}`.
 - **Never type a name into text either.** A sentence that names a province, nation, people, union, event, way of war, trait or rarity takes it from its entry: `{provinces.kie.name}`, `{events.greatWar.name}`, `{rarities.0.name}`, an event's own `{name}`, a list of province ids with `{provinces|place}`, a nation's tag with `{nation|nation}`, a people's id with `{people|people}` (in code, `peopleName(id)`: peoples are referred to by id everywhere and shown by their `name`). Any path into the content works anywhere; an entry's own field wins over the content file of the same name. Code compares ids, never names.
-- **Never type a content number into the engine.** The engine resolves the reigning ruler's and permanent national advances' effects with `fx(c, 'key')` (and `hasFx`), rules with `RULES.x`, events with `EV.id`. A new effect gets a line in `content/effects.json` (what it does, and the value that changes nothing) and a place in a trait in `content/rulers.json` or an advance in `content/advances.json`. The tuning of the forecast itself (tax rates, the win-chance curve) is engine, not content.
-- **The build enforces it** (`tools/check.js`): every reference in the content points at something that exists; every piece of prose in the content fills in, states no typed number and types no content name; anything left in braces is an error; the HTML template and every string in the code type no content name, and the interface's strings no number; every `fx(...)`, `hasFx`, `RULES.`, `EV.` and event field `e.x` the code reads exists, and every rule and event field is read by code (a rulebook sentence alone doesn't count); `map/geo.json` was built from the provinces and map fixes as they are now (else run `npm run map`); and the content has the right shape (odds, ranges, unique union provinces, a trait's flat bonus is a coronation grant and its main bonus and malus are not, every nation can name its rulers). A failing check means the data and the engine disagree: fix one of them, never the check.
+- **Never type a content number into the engine.** The engine resolves the reigning ruler's and permanent national advances' effects with `fx(c, 'key')` (and `hasFx`), rules with `RULES.x`; the shared event runner reads each event's schedule, selector and effects. A new effect gets a line in `content/effects.json` (what it does, and the value that changes nothing) and a place in a trait in `content/rulers.json` or an advance in `content/advances.json`. The tuning of the forecast itself (tax rates, the win-chance curve) is engine, not content.
+- **The build enforces it** (`tools/check.js`): every reference in the content points at something that exists; every piece of prose in the content fills in, states no typed number and types no content name; anything left in braces is an error; the HTML template and every string in the code type no content name, and the interface's strings no number; every `fx(...)`, `hasFx` and `RULES.` read exists; uniform event schemas reject unknown or unused non-neutral fields; every rule is read by code (a rulebook sentence alone doesn't count); `map/geo.json` was built from the provinces and map fixes as they are now (else run `npm run map`); and the content has the right shape (odds, ranges, unique union provinces, a trait's flat bonus is a coronation grant and its main bonus and malus are not, every nation can name its rulers). A failing check means the data and the engine disagree: fix one of them, never the check.
 - **The Almanac is the proof.** Press A in the game (or the book button) to see every entry exactly as the engine has it, in plain words: no file names, keys or raw data. Every rule gets a sentence in `content/rulebook.json`, and every event an `effect` sentence that states each of its numbers and when it can happen (the build checks both, and renders every Almanac page to make sure nothing shows `undefined` or an unfilled placeholder). If something looks wrong there, it is wrong in the game.
 - **After moving or reshaping content,** compare full chronicles and final states before and after (the sweep alone can hide a change). Keep the files tidy with `npm run content`.
 - The numbers quoted in this file (the ruler pool, the ambitions) describe the design and can lag behind; `content/` and the Almanac are the truth.
@@ -30,6 +30,8 @@ The goal is a system so plain it can't break: every mechanic built the same way,
 - **One job per step of the season.** Each season runs its steps in a fixed order (income, decisions, wars, unrest, rulers, events…). A step does its own job and doesn't quietly do part of another's, or rely on something another step left lying around.
 - **Fix the rule, not the case.** A bug fixed by adding a condition is a warning sign. Look for the general rule that makes the condition unnecessary; a fix that deletes code beats one that adds it.
 - **The juggle test.** Any entry can be added, deleted, or swapped with another, and the build still passes. Anything that breaks shows up as a build-check error, never as a crash or a quietly wrong world. Wherever one of these rules can be checked mechanically, `tools/check.js` checks it, as it does for rule 1.
+
+Trait drawings remain authored in `EMB` in the registry. Each trait carries an explicit `emblem` reference; creating new artwork may need a code edit. This is the agreed art exception, not permission for mechanics to branch on a trait ID.
 
 ## Design rules
 
@@ -59,6 +61,8 @@ The goal is a system so plain it can't break: every mechanic built the same way,
 
 ### How a reign ends
 
+Reign-ending requests are resolved at the end of the season, after unification. Until then the incumbent still rules. A pending player choice pauses that boundary before the date advances; choosing an heir resumes the same boundary without repeating the season. A nation has at most one ordinary succession per season. The armistice requests no new successors.
+
 Reigns last 8–24 years if nothing ends them sooner. A reign also ends by (`endReign` in `sim.js`):
 
 - **Abdication after a lost war.** Half the time, when the beaten side's leader lost land or started the war.
@@ -70,7 +74,7 @@ This gives the choice stakes: pick the Bold, and if he loses his war he loses hi
 
 ### The ruler pool (built)
 
-Every ruler is **one trait at one rarity**, named "Ludwig II the Builder": a name from his people's list (`peoples.json` `names`, or a nation's own `rulerNames`; every nation must have one or the other), a regnal number, and his trait's label as is (no separate epithets). His rarity is the colour of his name in the panel, the hover card and the chronicle, and the word above his emblem on the card. No titles per rarity. 20 traits × 5 rarities = 100 cards, all generated from `content/rulers.json` (each trait's three effects and their values) and `content/rarities.json` (the odds, and which value of each effect a rarity gets). Never author a card by hand.
+Every ruler is **one trait at one rarity**, named "Ludwig II the Builder": a name from his people's list (`namePool: 'people'` uses `peoples.json` `names`; `namePool: 'nation'` uses its `rulerNames`; the chosen pool must be nonempty), a regnal number, and his trait's label as is (no separate epithets). His rarity is the colour of his name in the panel, the hover card and the chronicle, and the word above his emblem on the card. No titles per rarity. 20 traits × 5 rarities = 100 cards, all generated from `content/rulers.json` (each trait's three effects and their values) and `content/rarities.json` (the odds, and which value of each effect a rarity gets). Never author a card by hand.
 
 Each trait has three effects, each read through `fx(c, key)` from `content/effects.json`:
 
@@ -194,13 +198,17 @@ Moments that already exist in the code:
 
 - Content: `CONTENT` (all of `content/`), `RULES`, `EV` (events), `TRAITS` (rulers), `RARITY`, `EFFECTS`, `traitEffects(t, g)` (a card's effects and text), `fx(c, k)` (the combined ruler and advance value for an effect), `hasFx(c, k)`, `say` (any template, `src/text.js`).
 
-- `createSim(seed, geo)` builds state `S`; `S.step()` advances one season.
+- `createSim(seed, geo)` builds state `S`; `S.step()` runs a season or resumes its paused closing boundary.
 - Economy: `regionIncome`, `income`, `score`, `workforce`, `admin`.
 - AI: `considerations`, `act`, `decide`; military forecasts `warEval`, `riskOf`, `interveners`.
 - War: `declareWar`, `frontMove`, `warScore`, `endWar`, `tickWars`.
 - Provinces: `tickProvinces` (construction, integration), `tickUnrest`, `revolts`.
-- Rulers and chaos: `drawHeir`, `makeRuler`, `crown` and `coronation` (flat bonuses), `endReign` (end-of-reign maluses), `believe` (judgment), `successions`, `EVENTS`.
+- Rulers and chaos: `drawHeir`, `makeRuler`, `crown` and `coronation` (flat bonuses), `endReign` (end-of-reign maluses), `believe` (judgment), `successions`, `runEvents`.
 - Ambitions: `AMBITIONS`, `UNIONS`, `unionOf` (the union a nation works toward), `unification`.
 - Ambitions: `setAmbition` (at birth), `ambitionOf` (how it stands), `ambitionW` and `surviveW` (what they add to the forecast), the closing line of the armistice block.
 - Player: `createSim(seed, geo, { player })`; `heirCard` builds a choice of three heirs and parks it in `S.pending` (which halts `step()`), `chooseHeir(i)` resolves it. Every reign ends through `endReign`; AI countries get a random heir from `drawHeir`. `tickRulers` redraws a Drunk's misjudgment every season. `tools/load.js` passes `{ player }` through for headless tests.
 - End: the armistice block at the end of `step()`.
+
+## Shared content and lifecycle mechanisms
+
+See `RULE2-IMPLEMENTATION.md` for the uniform event format, complete record schemas, state mutation functions, season boundaries and deliberate behavior changes. `tools/validate.js` supplies build/headless structural validation; `tools/check-rule2.js` guards executable writes and fixed content lookups. `tools/fixtures.js` supplies synthetic mechanic worlds. Run `npm run juggle` for disposable content-only build/Chronicle experiments. Measured results remain in `MEASUREMENTS.md`.

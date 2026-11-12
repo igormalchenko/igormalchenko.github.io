@@ -8,11 +8,14 @@
 //  7. Engine and content match both ways: every number the engine reads exists, and every number in the content is read.
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
-require('./validate').assertContent(require('./content').load());
+const structural = require('./validate').validateContent(require('./content').load());
+if (structural.length) { console.error('Content validation failed:\n  ' + structural.join('\n  ')); process.exit(1); }
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const ctx = {}; vm.createContext(ctx);
 vm.runInContext(require('./content').source() + read('src/text.js') + read('src/ui/registry.js') + '\nthis.REG = REG; this.WORDS = WORDS; this.DRAW = DRAW; this.EMB = EMB; this.CONTENT = CONTENT; this.say = say; this.maps = [TYPE_IC, OPT_IC, MARK_IC, WORD_IC];', ctx);
 const REG = ctx.REG, problems = [];
+const rule2Files = ['src/sim.js','src/data.js','src/text.js','src/ui/map.js','src/ui/panel.js','src/ui/almanac.js','src/ui/main.js','map/build-map.js'];
+rule2Files.forEach(f => problems.push(...require('./check-rule2').checkSource(read(f), f)));
 const lineOf = (src, i) => src.slice(0, i).split('\n').length;
 
 // ---- 0: every source file parses (a syntax error would otherwise only show in the browser) ----
@@ -106,8 +109,7 @@ Object.entries(C.nations).forEach(([t, n]) => { const w = `nations.json ${t}`; p
   NATION_FIELDS.forEach(k => { if (n[k] == null) bad(w, `has no "${k}"`); });
   if (typeof n.starts !== 'boolean') bad(w, '"starts" must be true or false');
   (n.allies || []).forEach(o => nation(w, o)); Object.keys(n.relations || {}).forEach(o => nation(w, o));
-  if (n.starts && !Object.values(C.provinces).some(p => p.owner === t)) bad(w, 'starts on the map but holds no province');
-  if (!n.starts && ['army', 'allies', 'relations'].some(k => k in n)) bad(w, 'a nation born in an uprising gets its army and relations from rules.json newNation, not its own entry'); });
+  if (n.starts && !Object.values(C.provinces).some(p => p.owner === t)) bad(w, 'starts on the map but holds no province'); });
 // an uprising rises as its people's one nation that was not on the map at the start: two would be a tie
 Object.keys(C.peoples).forEach(p => { const born = Object.keys(C.nations).filter(t => C.nations[t].people === p && !C.nations[t].starts);
   if (born.length > 1) bad('nations.json', `the ${p} people have ${born.length} nations born in uprisings (${born.join(', ')}); an uprising could rise as either`); });
@@ -125,14 +127,8 @@ Object.entries(C.concepts).forEach(([k, c]) => { if (!c.word && !ctx.DRAW[k]) pr
 Object.keys(ctx.DRAW).forEach(k => { if (!C.concepts[k] || C.concepts[k].word) problems.push(`src/ui/registry.js: drawing for "${k}", which is not a concept with an icon in concepts.json`); });
 if (C.eras.filter(e => e.start).length !== 1) bad('eras.json', 'exactly one way of war must be marked start');
 
-// the map (map/geo.json) is joined to the provinces by position: it must have been built from these provinces, in this order
-{ const geo = JSON.parse(read('map/geo.json')), b = geo.built;
-  const now = { provinces: Object.entries(C.provinces).map(([id, p]) => [id, p.lon, p.lat]), fixes: C.map };
-  if (!b) problems.push('map/geo.json: says nothing about what it was built from; run npm run map');
-  else if (JSON.stringify(b) !== JSON.stringify(now)) {
-    const diff = now.provinces.map((p, i) => JSON.stringify(p) === JSON.stringify(b.provinces[i]) ? null : !b.provinces[i] ? `${p[0]} (new)` : b.provinces[i][0] === p[0] ? `${p[0]} (moved)` : `${p[0]} (the map has ${b.provinces[i][0]} in its place)`).filter(Boolean);
-    problems.push(`map/geo.json: built from other provinces or map fixes than content/ has now${diff.length ? ': ' + diff.slice(0, 5).join(', ') : ''}; run npm run map`); }
-  if (geo.regions.length !== now.provinces.length) problems.push(`map/geo.json: ${geo.regions.length} shapes for ${now.provinces.length} provinces; run npm run map`); }
+// Generated geography is checked identically by the build and headless loader.
+problems.push(...require('./validate').validateGeometry(C, JSON.parse(read('map/geo.json'))));
 
 // ---- 6: templates ----
 // every placeholder a template may use, besides its own fields: the words a running world fills in
@@ -159,24 +155,34 @@ const eachProse = fn => Object.entries(C).forEach(([file, data]) => {
   Object.entries(data).forEach(([id, e]) => walkProse(e, `${file}.json ${id}`, e && typeof e === 'object' ? e : {}, e && typeof e === 'object' ? e : {}, id, fn)); });
 eachProse((tpl, where, own) => template(where, tpl, own));
 
-// rulers: a trait has a main bonus and a malus with a small, medium and big value, and a flat bonus with a small and a medium one
-// (or a small one and, at Legendary, an effect of its own); every effect is described in effects.json
-Object.entries(C.rulers).forEach(([t, q]) => { const w = `rulers.json ${t}`;
-  ['label', 'vibe', 'main', 'flat', 'malus'].forEach(k => { if (q[k] == null) bad(w, `has no "${k}"`); });
-  if (!ctx.EMB[t]) problems.push(`src/ui/registry.js: ruler "${t}" has no emblem in EMB`);
-  ['main', 'flat', 'malus'].forEach(sl => { const e = q[sl]; if (!e) return;
-    const want = sl === 'flat' ? (e.big ? 1 : 2) : 3;
-    if (!Array.isArray(e.values) || e.values.length !== want) bad(w, `${sl} needs ${want} value${want > 1 ? 's' : ''}`);
-    [e, e.big].filter(Boolean).forEach(x => { if (!C.effects[x.fx]) bad(w, `${sl}: no effect "${x.fx}" in effects.json`);
-      (x.values || [x.value]).forEach(v => template(`${w} ${sl}`, x.text, { v })); }); });
-  if (q.main.fx === q.malus.fx) bad(w, 'its main bonus and malus are the same effect'); });
-{ const mains = {}; Object.entries(C.rulers).forEach(([t, q]) => { if (mains[q.main.fx]) bad(`rulers.json ${t}`, `shares its main bonus (${q.main.fx}) with ${mains[q.main.fx]}`); mains[q.main.fx] = t; }); }
-Object.keys(ctx.EMB).forEach(t => { if (!C.rulers[t]) problems.push(`src/ui/registry.js: emblem for "${t}", which is not in rulers.json`); });
-const fxOfTrait = q => ['main', 'flat', 'malus'].flatMap(sl => [q[sl].fx, q[sl].big && q[sl].big.fx]).filter(Boolean);
-Object.keys(C.effects).forEach(k => { if (!Object.values(C.rulers).some(q => fxOfTrait(q).includes(k)) && !Object.values(C.advances.cards).some(a => a.effects.some(e => e.fx === k))) bad('effects.json', `"${k}" is used by no ruler or advance`); });
-C.rarities.forEach((r, g) => { const w = `rarities.json ${r.name}`;
-  ['main', 'malus'].forEach(k => { if (![0, 1, 2].includes(r[k])) bad(w, `${k} must be 0, 1 or 2 (small, medium, big)`); });
-  if (![null, 0, 1].includes(r.flat)) bad(w, 'flat must be null, 0 or 1 (none, small, medium)'); });
+// A trait's three slots share one record shape; a flat slot has two strengths, the others three.
+Object.entries(C.rulers).forEach(([id, t]) => {
+  const w = `rulers.json ${id}`;
+  if (!ctx.EMB[t.emblem]) bad(w, `no drawing "${t.emblem}" in EMB`);
+  for (const slot of ['main','flat','malus']) {
+    const entries = t[slot], want = slot === 'flat' ? 2 : 3;
+    if (entries.length !== want) bad(w, `${slot} needs ${want} strengths`);
+    if (slot !== 'flat' && new Set(entries.map(e => e.fx)).size !== 1) bad(w, `${slot} must change one effect at every strength`);
+    for (const e of entries) {
+      if (!C.effects[e.fx]) bad(w, `${slot}: no effect "${e.fx}"`);
+      else if (C.effects[e.fx].targeted) bad(w, 'a ruler effect cannot require a permanent advance target');
+      template(`${w}.${slot}`, e.text, { v:e.value });
+      if (e.fx === 'province' && !e.news) bad(w, 'a province grant requires a news template');
+    }
+  }
+  if (t.main[0].fx === t.malus[0].fx || t.flat.some(e => [t.main[0].fx,t.malus[0].fx].includes(e.fx))) bad(w, 'two slots use the same effect');
+});
+{ const mains = new Map(); for (const [id,t] of Object.entries(C.rulers)) {
+  const key = t.main[0].fx;
+  if (mains.has(key)) bad(`rulers.json ${id}`, `shares its main bonus with ${mains.get(key)}`);
+  mains.set(key,id);
+} }
+const fxOfTrait = t => ['main','flat','malus'].flatMap(slot => t[slot].map(e => e.fx));
+Object.keys(C.effects).forEach(k => { if (!Object.values(C.rulers).some(t => fxOfTrait(t).includes(k)) && !Object.values(C.advances.cards).some(a => a.effects.some(e => e.fx === k))) bad('effects.json', `"${k}" is used by no ruler or advance`); });
+C.rarities.forEach(r => {
+  for (const k of ['main','malus']) if (![0,1,2].includes(r[k])) bad('rarities.json', `${k} must select a valid slot strength`);
+  if (![null,0,1].includes(r.flat)) bad('rarities.json', 'flat must be null, zero or one');
+});
 // Permanent advances have their own five strength levels, independent of the ruler slot mapping.
 { const a = C.advances, ids = Object.keys(a.cards), categories = Object.keys(a.categories);
   if (C.rarities.length !== 5) bad('rarities.json', 'advances require five rarity tiers');
@@ -265,20 +271,21 @@ Object.entries(C.events).forEach(([id, e]) => {
   Object.entries(C.peoples).forEach(([id, p]) => { if (typeof p.name !== 'string' || !p.name) bad(`peoples.json ${id}`, 'needs a name'); });
   Object.entries(C.nations).forEach(([t, n]) => { num(`nations.json ${t} hawk`, n.hawk, 0, 1); num(`nations.json ${t} patience`, n.patience, 0, 1);
     if (n.starts) num(`nations.json ${t} army`, n.army, 1, 1000);
-    if (!(n.rulerNames || (C.peoples[n.people] && C.peoples[n.people].names || []).length)) bad(`nations.json ${t}`, `has no ruler names, and the ${n.people} people have none either`); });
+    if (!(n.namePool === 'nation' ? n.rulerNames : C.peoples[n.people].names).length) bad(`nations.json ${t}`, `has no ruler names, and the ${n.people} people have none either`); });
   Object.entries(C.provinces).forEach(([id, p]) => { num(`provinces.json ${id} pop`, p.pop, 0.01, 100); num(`provinces.json ${id} industry`, p.industry, 0, C.rules.build.maxFactories);
     if (!Number.isInteger(p.industry)) bad(`provinces.json ${id}`, 'industry is a number of factories, a whole number'); });
   Object.entries(C.ambitions).forEach(([id, d]) => { if (d.provinces && new Set(d.provinces).size !== d.provinces.length) bad(`ambitions.json ${id}`, 'lists a province twice'); });
-  Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); if (d.targeted != null && d.targeted !== true) bad(`effects.json ${k}`, '"targeted" is true or left out'); });
+  Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); if (typeof d.targeted !== 'boolean') bad(`effects.json ${k}`, 'targeted must be boolean'); });
   Object.entries(C.temperaments).forEach(([k, t]) => { ['high', 'low'].forEach(h => { if (!Array.isArray(t[h]) || typeof t[h][0] !== 'number' || typeof t[h][1] !== 'string') bad(`temperaments.json ${k}`, `"${h}" should be [threshold, word]`); });
     if (typeof t.mid !== 'string') bad(`temperaments.json ${k}`, '"mid" should be a word'); });
   if (C.rules.heirs > Object.keys(C.rulers).length) bad('rules.json', `heirs: a card can't show ${C.rules.heirs} different traits out of ${Object.keys(C.rulers).length}`);
   // a trait's three effects are different, and only the flat bonus is a one-time grant at coronation (read as v('x') in coronation)
   const sim = read('src/sim.js'), grants = new Set([...sim.matchAll(/\bv\('(\w+)'\)/g)].map(m => m[1]));
-  Object.entries(C.rulers).forEach(([t, q]) => { const w = `rulers.json ${t}`, fxs = ['main', 'flat', 'malus'].map(sl => q[sl] && q[sl].fx);
-    if (new Set(fxs).size !== 3) bad(w, 'two of its effects are the same');
-    [q.flat, q.flat && q.flat.big].filter(Boolean).forEach(f => { if (!grants.has(f.fx)) bad(w, `flat bonus "${f.fx}" is not a one-time grant at coronation`); });
-    ['main', 'malus'].forEach(sl => { if (q[sl] && grants.has(q[sl].fx)) bad(w, `${sl} "${q[sl].fx}" is a coronation grant, not an effect that lasts his reign`); }); }); }
+  Object.entries(C.rulers).forEach(([t,q]) => {
+    for (const slot of ['main','flat','malus']) for (const e of q[slot])
+      if (grants.has(e.fx) !== (slot === 'flat')) bad(`rulers.json ${t}`, `${slot} uses an effect from the wrong lifecycle stage: ${e.fx}`);
+  }); }
+
 
 // ---- 10: names come from the content ----
 // The name of a province, nation, people, union, event, way of war, trait or rarity lives in its own entry. Anywhere else
@@ -327,6 +334,8 @@ UI.concat(['src/ui/registry.js', 'src/sim.js']).forEach(f => { const src = read(
   try {
     vm.runInContext(require('./content').source() + read('src/text.js') + read('src/data.js') + 'const GEO = ' + read('map/geo.json') + ';\n' + read('src/sim.js') + read('src/ui/registry.js') +
       read('src/ui/almanac.js').replace(/\nconst AL = /, '\nvar S = null; const AL = ') + '\nthis.SECTIONS = SECTIONS; this.CONTENT = CONTENT; this.advanceEffects = advanceEffects;', actx);
+    for (const world of [null, vm.runInContext('createSim(1,GEO)', actx)]) {
+    actx.S = world;
     Object.entries(actx.SECTIONS).forEach(([k, s]) => { let h; try { h = s.render(); } catch (e) { problems.push(`src/ui/almanac.js: the ${s.name} page fails: ${e.message}`); return; }
       if (k === 'advances') {
         const plain = h.replace(/<[^>]*>/g, '').replace(/\s+/g, '');
@@ -342,6 +351,7 @@ UI.concat(['src/ui/registry.js', 'src/sim.js']).forEach(f => { const src = read(
       }
       const t = h.replace(/<[^>]*>/g, ' '), m = t.match(/\bundefined\b|\bNaN\b|\[object Object\]|\{[\w.|]+\}/);
       if (m) problems.push(`src/ui/almanac.js: the ${s.name} page shows "${m[0]}" (…${t.slice(Math.max(0, t.indexOf(m[0]) - 60), t.indexOf(m[0]) + 20).replace(/\s+/g, ' ')}…)`); });
+    }
   } catch (e) { problems.push(`src/ui/almanac.js: can't load the Almanac to render it: ${e.message}`); } }
 
 if (problems.length) { console.error(`Consistency check failed (${problems.length}):\n  ` + problems.join('\n  ')); process.exit(1); }

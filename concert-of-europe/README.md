@@ -43,6 +43,7 @@ npm install          # only needed for regenerating the map
 npm run build        # check, then assemble index.html from content/, src/ and map/geo.json
 npm run sweep -- 1 41    # play worlds 1..40 headlessly on every core, one summary line each
 npm run chronicle -- 7   # print the full history of world 7
+npm run juggle          # test content edits in disposable copies (map dependencies needed)
 npm run map          # regenerate map/geo.json from the coastline data, then build
 npm run content      # rewrite content/*.json in the house layout
 ```
@@ -63,6 +64,8 @@ src/ui/registry.js     every concept's drawing (names and descriptions come from
 src/ui/almanac.js      the Almanac: every piece of content, shown live from the data (key A)
 tools/content.js       loads content/ for the build and tools; formats it
 tools/check.js         consistency check run by npm run build
+tools/validate.js      shared structural/content-schema validation
+tools/fixtures.js      synthetic worlds for mechanic regressions
 src/ui/map.js          map rendering: provinces, icons, markers, front lines, overlays
 src/ui/panel.js        nation column on the left; Chronicle, Powers and Province tabs; end screen
 src/ui/main.js         controls, hover card, selection, map key
@@ -100,3 +103,5 @@ Known weak spots:
 - Each season takes about 30 ms to compute, so the fastest speed runs a little slow.
 
 Ideas not built yet: armies shown at the fronts (split per border, without full movement AI), a playable country using the same option list, one visible national bonus per great power, and other settings or eras (the engine is generic; the data and events are not).
+
+The Rule 2 implementation and its review guide are in [RULE2-IMPLEMENTATION.md](RULE2-IMPLEMENTATION.md). Sweep tracking is optional: add `--watch TAG` to follow a particular nation; the tool has no fixed country.

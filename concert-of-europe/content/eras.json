@@ -1,7 +1,7 @@
 [
   {"name": "Napoleonic warfare", "def": 1.15, "fort": 0.55, "start": true},
-  {"name": "Rifled muskets and railways favour the attacker", "def": 0.95, "fort": 0.35},
-  {"name": "Entrenchments and breech-loaders favour the defender", "def": 1.4, "fort": 0.7},
-  {"name": "Mass conscription and artillery favour the attacker", "def": 1, "fort": 0.4},
-  {"name": "Machine guns and barbed wire favour the defender", "def": 1.5, "fort": 0.75}
+  {"name": "Rifled muskets and railways favour the attacker", "def": 0.95, "fort": 0.35, "start": false},
+  {"name": "Entrenchments and breech-loaders favour the defender", "def": 1.4, "fort": 0.7, "start": false},
+  {"name": "Mass conscription and artillery favour the attacker", "def": 1, "fort": 0.4, "start": false},
+  {"name": "Machine guns and barbed wire favour the defender", "def": 1.5, "fort": 0.75, "start": false}
 ]

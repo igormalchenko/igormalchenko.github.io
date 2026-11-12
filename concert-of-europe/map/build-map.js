@@ -257,7 +257,10 @@ const out = {
   land: pathOf(fullLandLL.map(poly => poly.map(ring => thin(ring.map(([lo, la]) => proj(lo, la)), 1.1))).filter(poly => poly[0].length >= 4)),
   regions: regions.map((r, i) => ({ d: r.d, ax: r.ax, ay: r.ay, area: r.area, nb: [...nb[i]], coast: coastal[i] })),
   borders, naval, navalPts: naval.map(([a2, b2]) => linkPts[a2 + '-' + b2]),
-  navalPaths: naval.map(([a2, b2]) => linkPaths[a2 + '-' + b2] || null),
+  navalPaths: naval.map(([a2, b2]) => {
+    const key = a2 + '-' + b2, points = linkPts[key];
+    return linkPaths[key] || `M${points[0].join(',')}L${points[1].join(',')}`;
+  }),
 };
 fs.writeFileSync(__dirname + '/geo.json', JSON.stringify(out));
 console.error('size', JSON.stringify(out).length);
