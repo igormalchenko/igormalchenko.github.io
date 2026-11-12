@@ -245,20 +245,17 @@ th svg.ic{margin:0}
 .heir .vibe{margin:12px 2px 0;font-size:15px;font-style:italic;line-height:1.4;color:var(--muted)}
 .heir .fx{margin:0;padding:5px 0 0 9px;width:100%;text-align:left;font-size:13.5px;line-height:1.4;border-left:2px solid var(--fxc)}
 .heir .fx-main{--fxc:var(--peace);margin-top:auto;border-top:1px solid color-mix(in srgb,var(--tc) 28%,var(--line));padding-top:10px}.heir .fx-flat{--fxc:var(--brass)}.heir .fx-malus{--fxc:#e08070}
-.heir.tier3{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 12px -4px var(--tc)}
-.heir.tier4{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 18px -4px var(--tc)}
-.heir.tier5{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 24px -4px var(--tc);background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%),linear-gradient(180deg,#2a2c2b,#1d1f22)}
+.heir{box-shadow:0 8px 20px -10px rgba(0,0,0,.8),0 0 var(--glow) -4px var(--tc)}
+.heir.shining{background:radial-gradient(130% 70% at 50% 0%,color-mix(in srgb,var(--tc) 26%,transparent),transparent 70%),linear-gradient(180deg,#2a2c2b,#1d1f22)}
 @media (max-width:640px){.heirs{grid-template-columns:1fr}.heir{min-height:0}.heir svg.emb{width:48px;height:48px;margin:6px 0 4px}}
-.heir.tier5::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,transparent 60%);background-size:250% 100%;background-position:120% 0;opacity:0}
+.heir.shining::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,transparent 60%);background-size:250% 100%;background-position:120% 0;opacity:0}
 @media (prefers-reduced-motion:no-preference){
   #heirModal.on .heir{animation:deal .35s ease-out backwards}
-  #heirModal.on .heir.tier4{animation:deal .35s ease-out backwards,glow4 3.2s ease-in-out .4s infinite}
-  #heirModal.on .heir.tier5{animation:deal .35s ease-out backwards,glow5 2.6s ease-in-out .4s infinite}
-  #heirModal.on .heir.tier5::after{animation:sheen 4s ease-in-out 1s infinite}
+  #heirModal.on .heir.pulsing{animation:deal .35s ease-out backwards,rarityGlow var(--pulse-time) ease-in-out .4s infinite}
+  #heirModal.on .heir.shining::after{animation:sheen 4s ease-in-out 1s infinite}
 }
 @keyframes deal{from{opacity:0;transform:translateY(8px)}}
-@keyframes glow4{50%{box-shadow:0 0 22px -3px var(--tc)}}
-@keyframes glow5{50%{box-shadow:0 0 30px -2px var(--tc)}}
+@keyframes rarityGlow{50%{box-shadow:0 0 var(--pulse) -3px var(--tc)}}
 @keyframes sheen{0%{opacity:1;background-position:120% 0}45%,100%{opacity:1;background-position:-20% 0}}
 .iw{white-space:nowrap}
 .rerolls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
@@ -349,7 +346,7 @@ th svg.ic{margin:0}
     <p><b>The ambition.</b> Every nation has one ambition for the armistice of {{rules.end.year}}: the great powers of {{rules.start}} want the most gold a year, a divided people wants to unite and hold together, and the small want to survive. Each season its ruler forecasts what every option would add or protect, in gold over the years he plans ahead, and does everything that pays, best first. A province of the people it is uniting is worth {{ambitionKinds.unite.worth|times}} its gold a year to it, and a nation that only has to survive counts every loss {{ambitionKinds.survive.losses|times}} as dear.</p>
     <div class="formula">value = extra gold a year × years planned − cost − expected losses</div>
     <p>Factories pay for good but each one costs more and adds less. An army deters neighbours whose own forecast says "invade", but its men are workers missing from fields and factories. A war is worth chance of winning × what the province pays once it is integrated, minus army losses, blockaded trade and neighbours' distrust. Great powers may step in, especially against whoever is leading.</p>
-    <p><b>What throws the plans off.</b> Rulers misjudge their odds, and each carries a trait with a bonus and a malus. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. A people that wins its uprising brings back its fallen nation or forms a new one, which claims the provinces of the union it works toward. {{events.serfdom.nation|nation}}'s factories run at {{events.serfdom.before|frac}} speed until the serfs are freed.</p>
+    <p><b>What throws the plans off.</b> Rulers misjudge their odds, and each carries a trait with a bonus and a malus. Successions can become civil wars, rivals send ultimatums, coal booms make provinces into prizes, coups topple restless governments, and military revolutions swing battles. Subject peoples awaken and rise when their rulers' armies are busy; factory workers grow restless late in the century. A people that wins its uprising brings back its fallen nation or forms a new one, which claims the provinces of the union it works toward.</p>
     <h3>Map key</h3>
     <div class="legend" id="legend"></div>
     <p class="muted" style="margin-top:12px">Click a province to inspect it; its nation fills the left column, with factories, fortresses and unrest drawn on its provinces. Click the sea or press Escape to go back to your own nation (or the leader). If you rule a nation, you choose its ruler at the start and at every succession, and permanent {{concepts.advance.name|lower}} cards on schedule; its ministers decide everything else. Keys: the number on a card to pick that card, R to reroll heirs, A for the {{concepts.almanac.name}}, Space or P to play or pause, + and − to change speed. Click the world number to start a new world.</p>

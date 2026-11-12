@@ -19,7 +19,7 @@ function renderLog(){
 const fig = (icon, value, color) => `<div class="fig" ${tipOf(icon)}>${ic(icon)}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 const statTile = (icon, value, color) => `<div class="stat" ${tipOf(icon)}>${ic(icon, 'lg')}<b${color ? ` style="color:${color}"` : ''}>${value}</b></div>`;
 // a ruler's trait as a badge ringed in his rarity; hover names him and says what he does
-const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(`${r.name} (${TIER[r.grade].name})`, S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[r.trait]}</svg>` : '';
+const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role="img" aria-label="${TRAITS[r.trait].label}" ${tipAttr(`${r.name} (${TIER[r.grade].name})`, S.traitDesc(r) + '.')}>${embBadge(r.grade)}${EMB[TRAITS[r.trait].emblem]}</svg>` : '';
 
 // ---------- the player's choices ----------
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
@@ -31,7 +31,7 @@ function showHeir(){
   // one line per effect: the main bonus, the flat bonus from Rare up, the malus
   const fxLine = e => `<p class="fx fx-${e.slot}">${iconize(e.text)}</p>`;
   const card = (r, i) => { const g = r.grade;
-    return `<button class="heir tier${g + 1}" data-i="${i}" style="--tc:${TIER[g].color};animation-delay:${i * 90}ms">
+    return `<button class="heir ${tierClass(g)}" data-i="${i}" style="${tierStyle(g)};animation-delay:${i * 90}ms">
       <span class="key">${i + 1}</span>
       <span class="rar" ${tipOf('rarity')}>${TIER[g].name}</span>
       ${emblem(r)}
@@ -40,12 +40,12 @@ function showHeir(){
       ${r.effects.map(fxLine).join('')}
     </button>`; };
   const why = p.why ? p.why.replace(/<[^>]*>/g, '') : '';
-  $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in ${RULES.start}?` : `Who rules ${c.name} now?`;
+  $('heirTitle').textContent = p.opening ? `Who rules ${c.name} in ${p.year}?` : `Who rules ${c.name} now?`;
   $('heirSub').textContent = p.opening ? 'Pick a ruler. The ministers run everything else.'
     : `${why}${p.crisis ? ' Rival claimants will fight whoever you pick.' : ''}`;
   $('heirCards').innerHTML = p.options.map(card).join('');
   // three free rerolls a game; the fourth will be for sale (no payment yet)
-  const left = S.rerolls || 0;
+  const left = S.rerolls;
   $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $${RULES.price.reroll}`;
   $('reroll').disabled = false; $('reroll').classList.remove('nope'); $('rerollNote').textContent = '';
   Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
@@ -62,7 +62,7 @@ function showAdvance(){
   $('rerolls').hidden = true;
   $('heirCards').innerHTML = p.options.map((a, i) => {
     const d = CONTENT.advances.cards[a.id], r = TIER[a.grade];
-    return `<button class="heir development tier${a.grade + 1}" data-i="${i}" style="--tc:${r.color};animation-delay:${i * 90}ms">
+    return `<button class="heir development ${tierClass(a.grade)}" data-i="${i}" style="${tierStyle(a.grade)};animation-delay:${i * 90}ms">
       <span class="key">${i + 1}</span><span class="rar">${r.name}</span>
       ${ic(d.icon, 'advance-art')}<b class="ttl">${d.name}</b><span class="who">${CONTENT.advances.categories[d.category].name}</span>
       ${advanceLines(a).map((text, j) => `<p class="fx ${j ? 'fx-flat' : 'fx-main'}">${iconize(text)}</p>`).join('')}
@@ -143,10 +143,15 @@ function renderPowers(){
 // the left column: one nation in full. The selected one, else yours, else the leader.
 let allBudget = false, allProvs = false, shownNation = null;
 const PROVS_SHOWN = 6;
-function focusNation(){ return S.C[selected] && S.C[selected].alive ? S.C[selected] : S.player ? S.C[S.player] : S.C[S.leader] || S.alive()[0]; }
+function focusNation(){ return S.C[selected] && S.C[selected].alive ? S.C[selected] : S.player ? S.C[S.player] : S.C[S.leaderNow()]; }
 function renderNation(){
   const c = focusNation(); const box = $('side'); if (!c) return;
   if (c.tag !== shownNation) { shownNation = c.tag; box.scrollTop = 0; }
+  if (!c.alive) {
+    const ambition = ambitionText(c);
+    box.innerHTML = `<header class="crest"><h2>${c.name}</h2></header><p class="muted">This nation is no longer on the map.</p><div class="lg"><span>${ic('ambition')}${nm('ambition')}</span><span style="color:var(--war)">${ambition.what}</span></div>`;
+    return;
+  }
   const rs = S.regionsOf(c), war = S.warOf(c);
   const ranked = S.alive().sort((a, b) => S.score(b) - S.score(a)), rank = ranked.indexOf(c) + 1;
   // gold a year and its whole history as a sparkline; rank and the change on last year on hover
@@ -156,14 +161,14 @@ function renderNation(){
   const pts = vals.map((v, i) => `${(vals.length > 1 ? i / (vals.length - 1) * W : W).toFixed(1)},${(Hh - 3 - (v - mn) / span * (Hh - 6)).toFixed(1)}`).join(' ');
   const d = ago != null ? Math.round(now - ago) : 0;
   const scoreTip = tipAttr(`${nm('goldYear')}: #${rank} of ${ranked.length}`, `${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} on last year. ${REG.goldYear.desc}`);
-  const lg = c.ledger || { tax: 0, fac: 0, trade: 0, upkeep: 0, lostWork: 0, lostAdmin: 0, spent: {} };
-  const sp = lg.spent || {};
-  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - (sp.build || 0) - (sp.army || 0) - (sp.reform || 0);
+  const lg = c.ledger;
+  const sp = lg.spent;
+  const net = lg.tax + lg.fac + lg.trade - lg.upkeep - sp.build - sp.army - sp.reform + lg.other;
   const lost = `Already reduced by ${lg.lostWork.toFixed(1)} for men in the army, who aren't working, and ${lg.lostAdmin.toFixed(1)} for running ${rs.length} provinces.`;
   const line = (icon, k, v, cls = '', tip = '') => `<div class="lg ${cls}"${tip ? ' ' + tipAttr(k, tip) : ''}><span>${icon ? ic(icon) : ''}${k}</span><span style="color:${v > 0 ? 'var(--peace)' : v < 0 ? '#e08070' : 'inherit'}">${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(1)}</span></div>`;
   const H = S.horizon(c);
   // this season: what the ministers did, one sentence each; under way: what is still running, with how long it has left
-  const did = c.didThisSeason || [];
+  const did = c.didThisSeason;
   const act = (icon, text, when = '', color = '') => `<div class="act"${color ? ` style="color:${color}"` : ''}>${ic(icon)}<span>${text}</span>${when ? `<span class="when">${when}</span>` : ''}</div>`;
   const now1 = did.length ? did.map(d => act(OPT_IC[d.type], d.label)).join('') : act('save', 'Saving gold');
   const startedNow = new Set(did.filter(d => d.r != null).map(d => d.r));
@@ -190,7 +195,7 @@ function renderNation(){
   const unrest = Math.round(S.unrestOf(c)), shown = allProvs ? byGold : byGold.slice(0, PROVS_SHOWN);
   box.innerHTML = `${back}
     <header class="crest" style="--tc:${TIER[r.grade].color}">
-      <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leader === c.tag ? ic('leader', 'lg') : ''}</div>
+      <div class="nation-head"><div class="flag" style="background:${c.color}"></div><h2>${c.name}</h2>${S.leaderNow() === c.tag ? ic('leader', 'lg') : ''}</div>
       <div class="inc" ${scoreTip}><div class="num">${ic('goldYear', 'lg')}<b>${fmt(now)}</b><span>#${rank}</span></div>
         <svg class="spark" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>
       <div class="reign">${emblem(r)}<div>
@@ -225,7 +230,7 @@ function renderNation(){
     <h3>Budget</h3>
     <div class="ledger">
       ${allBudget ? `${line('taxes', nm('taxes'), lg.tax, '', lost)}${line('factory', nm('factory'), lg.fac, '', lost)}${line('trade', war ? nm('trade') + ' (blockaded)' : nm('trade'), lg.trade)}${line('upkeep', nm('upkeep'), -lg.upkeep)}
-      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', nm('army'), -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}` : ''}
+      ${sp.build ? line('build', nm('build'), -sp.build) : ''}${sp.army ? line('army', nm('army'), -sp.army) : ''}${sp.reform ? line('reform', nm('reform'), -sp.reform) : ''}${lg.other ? line('event', 'Other changes', lg.other) : ''}` : ''}
       ${line('gold', nm('gold'), net, allBudget ? 'net' : 'net only')}
     </div>
     <button class="btn more" id="allBudget" aria-expanded="${allBudget}">${allBudget ? 'Hide the budget' : 'Show the budget'}</button>

@@ -20,7 +20,7 @@ const cellEls = [], borderEls = [];
   el('path', { d: GEO.land, fill: '#2a2f35', stroke: '#3a414a', 'stroke-width': .6 }, $('gLand'));
   GEO.regions.forEach((g, i) => { const p = el('path', { d: g.d, class: 'cell', stroke: 'rgba(10,12,15,.4)', 'stroke-width': .6, 'stroke-linejoin': 'round' }, $('gCells')); p.dataset.i = i; cellEls.push(p); });
   GEO.borders.forEach(b => borderEls.push({ b, l: el('path', { d: b.d, fill: 'none', stroke: '#0b0e11', 'stroke-width': 1.7, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, $('gBorders')) }));
-  GEO.naval.forEach(([a, b], k) => { const pp = GEO.navalPts[k] || [A(a), A(b)], d = GEO.navalPaths?.[k] || `M${pp[0].join(',')}L${pp[1].join(',')}`; el('path', { d, fill: 'none', stroke: '#9fb1c2', 'stroke-dasharray': '2 3', 'stroke-width': 1, opacity: .45 }, $('gNaval')); });
+  GEO.naval.forEach(([a, b], k) => { el('path', { d: GEO.navalPaths[k], fill: 'none', stroke: '#9fb1c2', 'stroke-dasharray': '2 3', 'stroke-width': 1, opacity: .45 }, $('gNaval')); });
 })();
 const occPatterns = new Set();
 function occPattern(tag){
@@ -91,6 +91,7 @@ function renderMap(){
     const t = fmt(c.army) + 'k'; const w = 13 + t.length * 5;
     marks += `<g transform="translate(${(cx + 6).toFixed(1)},${(cy - 20).toFixed(1)})"><rect x="0" y="-7" width="${w}" height="13" rx="3" fill="rgba(20,24,30,.92)" stroke="${c.color}" stroke-width="1.2"/><g transform="translate(6.5,-.5)">${glyph('army')}</g><text x="12" y="3" font-size="8.5" font-family="IBM Plex Sans" font-weight="600" fill="${INK}">${t}</text></g>`; });
   // capitals, names, ruler emblems, leader crown
+  const leader = S.leaderNow();
   S.alive().forEach(c => {
     const rs = S.regionsOf(c); if (!rs.length) return;
     const cap = S.capitalOf(c);
@@ -106,7 +107,7 @@ function renderMap(){
     labels += `<text class="lbl" x="${x.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs.toFixed(1)}">${name}</text>`;
     const half = name.length * fs * 0.27;
     if (S.inCrisis(c)) labels += at(x - half - 9, ly - 1, glyph('civilWar'));
-    if (S.leader === c.tag) labels += at(x, ly - fs * 0.62 - 5, glyph('leader'));
+    if (leader === c.tag) labels += at(x, ly - fs * 0.62 - 5, glyph('leader'));
   });
   $('gFront').innerHTML = fronts; $('gOcc').innerHTML = occ; $('gSettle').innerHTML = settle; $('gGoals').innerHTML = goals; $('gIcons').innerHTML = icons; $('gMarks').innerHTML = marks; $('gLabels').innerHTML = labels;
 }
@@ -117,9 +118,7 @@ function globalChips(){
   const battle = d > 0 ? `Defenders ${d}% stronger` : d < 0 ? `Attackers ${-d}% stronger` : 'Even battles';
   const chip = (icon, name, fx) => `<div class="chip2" ${tipAttr(name, fx)}>${ic(icon)}${name}</div>`;
   let h = chip('war', e.name, `${battle}. Fortresses stop ${Math.round(e.fort * 100)}% of advances.`);
-  const EVS = CONTENT.events;
-  if (S.railBoom > S.year) h += chip('boom', EVS.railway.name, say('Factories {cost|down} cheaper until {until}.', { cost: EVS.railway.cost, until: S.railBoom }));
-  if (S.depression > S.t) h += chip('event', EVS.panic.name, say(`${nm('goldYear')} down {earns|inv|pct}, {left} left.`, { earns: EVS.panic.earns, left: dur(S.depression - S.t) }));
+  for (const m of S.modifiers) h += chip(m.icon, m.name, say(m.text, { ...m, remaining: m.until - S.t }));
   return h;
 }
 function renderOverlays(){

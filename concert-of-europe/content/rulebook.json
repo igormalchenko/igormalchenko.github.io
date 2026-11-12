@@ -2,7 +2,7 @@
   "The age": [
     "The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.",
     "The year runs {rules.seasons|list}, and every nation decides once a season.",
-    "The {events.greatWar.name} breaks out in the {rules.greatWar.season|season} of {rules.greatWar.year}.",
+    "The {events.greatWar.name} breaks out in the {events.greatWar.schedule.season|season} of {events.greatWar.schedule.from}.",
     "In {rules.start} every province starts at {rules.setup.unrest} unrest, and every nation with {rules.setup.gold.0} to {rules.setup.gold.1} gold and an army between {rules.setup.army.0|pct} and {rules.setup.army.1|pct} of its listed size."
   ],
   "Heirs": [

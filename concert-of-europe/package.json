@@ -4,12 +4,13 @@
   "private": true,
   "description": "A zero-player grand strategy game, 1836 to the 1918 armistice, where every nation is run by the same small forecasting AI.",
   "scripts": {
-    "build": "node tools/check.js && node --test tools/test-war.js tools/test-advances.js && node tools/build.js",
-    "test": "node --test tools/test-war.js tools/test-advances.js",
+    "build": "node tools/check.js && node --test tools/test-war.js tools/test-advances.js tools/test-rule2.js && node tools/build.js",
+    "test": "node --test tools/test-war.js tools/test-advances.js tools/test-rule2.js",
     "map": "node map/build-map.js && node tools/check.js && node tools/build.js",
     "sweep": "node tools/sweep.js",
     "chronicle": "node tools/chronicle.js",
-    "content": "node tools/content.js --format"
+    "content": "node tools/content.js --format",
+    "juggle": "node tools/juggle.js"
   },
   "devDependencies": {
     "d3-delaunay": "^6.0.4",

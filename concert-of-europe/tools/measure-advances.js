@@ -25,7 +25,8 @@ if (!isMainThread) {
   parentPort.postMessage({ seed, player, category, choices, heirs, actions: s.trialActions, alive: s.C[player].alive,
     end: [s.year, s.SEASONS[s.q]], goldPerYear: +s.score(s.C[player]).toFixed(2), provinces: s.regionsOf(s.C[player]).length, wars: s.stats.wars });
 } else {
-  const seed = +(process.argv[2] || 7), player = process.argv[3] || 'PRU';
+  const data = require('./content').load();
+  const seed = +(process.argv[2] || 7), player = process.argv[3] || Object.keys(data.nations).find(t => data.nations[t].starts);
   Promise.all(['military', 'economy'].map(category => new Promise((resolve, reject) => {
     const w = new Worker(__filename, { workerData: { seed, player, category } }); w.on('message', resolve); w.on('error', reject);
   }))).then(results => console.log(JSON.stringify(results, null, 2))).catch(e => { console.error(e); process.exitCode = 1; });

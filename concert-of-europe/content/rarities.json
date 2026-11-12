@@ -1,7 +1,72 @@
 [
-  {"name": "Common", "color": "#cfd3d8", "odds": 0.46, "main": 0, "flat": null, "malus": 0},
-  {"name": "Uncommon", "color": "#6cc070", "odds": 0.3, "main": 1, "flat": null, "malus": 1},
-  {"name": "Rare", "color": "#5b9be6", "odds": 0.15, "main": 1, "flat": 0, "malus": 1},
-  {"name": "Epic", "color": "#a678e8", "odds": 0.08, "main": 1, "flat": 0, "malus": 2},
-  {"name": "Legendary", "color": "#f0c24b", "odds": 0.01, "main": 2, "flat": 1, "malus": 2}
+  {
+    "name": "Common",
+    "color": "#cfd3d8",
+    "odds": 0.46,
+    "main": 0,
+    "flat": null,
+    "malus": 0,
+    "ring": 1,
+    "glow": 0,
+    "pulse": 0,
+    "pulseSeconds": 3.2,
+    "sheen": false,
+    "sample": true
+  },
+  {
+    "name": "Uncommon",
+    "color": "#6cc070",
+    "odds": 0.3,
+    "main": 1,
+    "flat": null,
+    "malus": 1,
+    "ring": 1,
+    "glow": 0,
+    "pulse": 0,
+    "pulseSeconds": 3.2,
+    "sheen": false,
+    "sample": false
+  },
+  {
+    "name": "Rare",
+    "color": "#5b9be6",
+    "odds": 0.15,
+    "main": 1,
+    "flat": 0,
+    "malus": 1,
+    "ring": 1,
+    "glow": 12,
+    "pulse": 0,
+    "pulseSeconds": 3.2,
+    "sheen": false,
+    "sample": false
+  },
+  {
+    "name": "Epic",
+    "color": "#a678e8",
+    "odds": 0.08,
+    "main": 1,
+    "flat": 0,
+    "malus": 2,
+    "ring": 1.4,
+    "glow": 18,
+    "pulse": 22,
+    "pulseSeconds": 3.2,
+    "sheen": false,
+    "sample": false
+  },
+  {
+    "name": "Legendary",
+    "color": "#f0c24b",
+    "odds": 0.01,
+    "main": 2,
+    "flat": 1,
+    "malus": 2,
+    "ring": 1.4,
+    "glow": 24,
+    "pulse": 30,
+    "pulseSeconds": 2.6,
+    "sheen": true,
+    "sample": false
+  }
 ]
