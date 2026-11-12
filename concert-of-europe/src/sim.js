@@ -8,6 +8,7 @@ const RULES = CONTENT.rules, EV = CONTENT.events, PEOPLES = CONTENT.peoples, SEA
 // A trait has a main bonus, from Rare on a one-time flat bonus, and a malus; the rarity says which of each one's values applies.
 const TRAITS = CONTENT.rulers, RARITY = CONTENT.rarities, EFFECTS = CONTENT.effects;
 const TRAIT_KEYS = Object.keys(TRAITS);
+const DEFAULT_AMBITION = Object.keys(CONTENT.ambitions).find(id => CONTENT.ambitions[id].fallback);
 // the effects one trait has at one rarity, in card order: [{slot, fx, value, text}]
 function traitEffects(t, g){
   const T = TRAITS[t], R = RARITY[g], out = [];
@@ -183,9 +184,8 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(RULES.setup.army[0], RULES.setup.army[1]), treasury: (g => d.gold != null ? d.gold : g)(RULES.setup.gold[0] + rand(0, RULES.setup.gold[1] - RULES.setup.gold[0])), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
-      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: tag === EV.serfdom.nation, ambitionId: d.ambition || 'survive', didThisSeason: [], born: S.year,
+      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: tag === EV.serfdom.nation, ambitionId: d.ambition, didThisSeason: [], born: S.year,
       advances: [], advanceYear: null, startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
-    if (S.ready) newRuler(c);   // the rulers of 1836 are crowned once the map and relations exist
     return c;
   }
   for (const t in COUNTRIES) S.C[t] = makeCountry(t, COUNTRIES[t]);
@@ -284,7 +284,6 @@ function createSim(seed, geo, opts = {}){
 
   function computeMajors(){ S.majors = alive().sort((a, b) => power(b) - power(a)).slice(0, RULES.majors.count).map(c => c.tag); }
   computeMajors();
-  S.ready = true;
   // the player's nation gets a stand-in who never reigns: its real ruler of 1836 comes from the first heir card
   alive().forEach(c => { if (c.tag === opts.player) c.ruler = makeRuler(c); else newRuler(c, true); });
 
@@ -741,6 +740,7 @@ function createSim(seed, geo, opts = {}){
       spread();
       const guard = S.majors.map(t2 => S.C[t2]).filter(m => m.alive && m !== o && !warOf(m) && m.allies.size < RULES.allies.max && (rel(m.tag, o.tag) < 0 || m.rival === o.tag)).sort((x, y) => strength(y) - strength(x))[0];
       if (guard) { ally(guard.tag, tag); setRel(guard.tag, tag, 70); nc.guarantee = { by: guard.tag, until: S.year + RULES.newNation.guarantee }; }
+      newRuler(nc);
       L('revolt', `Independence! ${rlist(group)} break${group.length > 1 ? '' : 's'} away from ${N(o)} and ${restored ? 'restore' : 'form'}${group.length > 1 ? '' : 's'} ${N(nc)} under ${RN(nc.ruler)}.${guard ? ` ${N(guard)} guarantees its independence.` : ''}`);
       o.army *= UP.free.army;
     });
@@ -784,14 +784,14 @@ function createSim(seed, geo, opts = {}){
   // fixed at birth from the nation's own entry; a union someone else already proclaimed leaves only survival,
   // and only the great powers of the first season can race to be the richest
   function setAmbition(c){
-    const a = AMBITIONS[c.ambitionId] || AMBITIONS.survive;
+    const a = AMBITIONS[c.ambitionId];
     const gone = (a.kind === 'unite' && a.done) || (a.kind === 'richest' && c.born !== RULES.start);
-    c.ambition = gone ? { id: 'survive', kind: 'survive' } : { id: a.id, kind: a.kind };
+    c.ambition = gone ? { id: DEFAULT_AMBITION, kind: AMBITIONS[DEFAULT_AMBITION].kind } : { id: a.id, kind: a.kind };
   }
   alive().forEach(setAmbition);
   // how the ambition stands: 'open', 'met' (so far, or for good at the armistice) or 'lost'
   function ambitionOf(c){
-    const a = c.ambition || { id: 'survive', kind: 'survive' };
+    const a = c.ambition || { id: DEFAULT_AMBITION, kind: AMBITIONS[DEFAULT_AMBITION].kind };
     // a nation that is gone has lost, but its ambition still names its union
     if (!c.alive) return a.kind === 'unite' ? { ...a, title: AMBITIONS[a.id].title, the: AMBITIONS[a.id].art ?? 'the ', n: 0, need: AMBITIONS[a.id].need, state: 'lost' } : { ...a, state: 'lost' };
     if (a.kind === 'survive') return { ...a, state: S.over ? 'met' : 'open' };

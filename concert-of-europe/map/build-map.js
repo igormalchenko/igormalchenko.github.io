@@ -97,18 +97,17 @@ for (let i = 0; i < n; i++) {
   regions.push({ d: pathOf(mp), ax: r1(anchor[0]), ay: r1(anchor[1]), area: Math.round(area), mp });
 }
 
-// ---- the Ottoman south: land south of the Caucasus goes to Anatolia, along a ragged line rather than a straight cut ----
-let cutLine;
-{
-  const ia = REGIONS.findIndex(r => r[0] === 'ana'), ic = REGIONS.findIndex(r => r[0] === 'cau');
-  const yCut = proj(0, 36.9)[1];
-  cutLine = noisyEdge([930, yCut], [MAP_W + 5, yCut + 3]);
-  const south = [[...cutLine, [MAP_W + 5, MAP_H + 5], [930, MAP_H + 5], [930, yCut]]];
-  const piece = pc.intersection(regions[ic].mp, south).filter(poly => ringArea(poly[0]) > 3);
-  regions[ic].mp = pc.difference(regions[ic].mp, south).filter(poly => ringArea(poly[0]) > 3);
-  regions[ia].mp = pc.union(regions[ia].mp, ...piece);
-  [ia, ic].forEach(i => { const r = regions[i]; r.d = pathOf(r.mp); r.area = Math.round(r.mp.reduce((s, poly) => s + ringArea(poly[0]), 0)); });
-}
+// ---- content-defined cuts: move a clipped piece across a noisy shared boundary ----
+const cutLines = [];
+CONTENT.map.cuts.forEach(c => {
+  const from = REGIONS.findIndex(r => r[0] === c.from), to = REGIONS.findIndex(r => r[0] === c.to);
+  const line = noisyEdge(...c.line); cutLines.push(line);
+  const mask = [[...line, ...c.close]];
+  const piece = pc.intersection(regions[from].mp, mask).filter(poly => ringArea(poly[0]) > 3);
+  regions[from].mp = pc.difference(regions[from].mp, mask).filter(poly => ringArea(poly[0]) > 3);
+  regions[to].mp = pc.union(regions[to].mp, ...piece);
+  [from, to].forEach(i => { const r = regions[i]; r.d = pathOf(r.mp); r.area = Math.round(r.mp.reduce((s, poly) => s + ringArea(poly[0]), 0)); });
+});
 
 // ---- clean-up: detached pieces go to the province they touch; islands stay whole ----
 {
@@ -190,7 +189,7 @@ for (let i = 0; i < n; i++) for (const j of del.neighbors(i)) {
     emitBorder(run);
   });
 }
-landRuns(cutLine).forEach(emitBorder);
+cutLines.forEach(line => landRuns(line).forEach(emitBorder));
 const idx = {}; REGIONS.forEach((r, i) => idx[r[0]] = i);
 // ---- coastline from the shapes: outline points with open sea just beside them ----
 const edgeOK = p => p[0] > 4 && p[0] < MAP_W - 4 && p[1] > 4 && p[1] < MAP_H - 4;

@@ -8,6 +8,7 @@
 //  7. Engine and content match both ways: every number the engine reads exists, and every number in the content is read.
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
+require('./validate').assertContent(require('./content').load());
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 const ctx = {}; vm.createContext(ctx);
 vm.runInContext(require('./content').source() + read('src/text.js') + read('src/ui/registry.js') + '\nthis.REG = REG; this.WORDS = WORDS; this.DRAW = DRAW; this.EMB = EMB; this.CONTENT = CONTENT; this.say = say; this.maps = [TYPE_IC, OPT_IC, MARK_IC, WORD_IC];', ctx);
