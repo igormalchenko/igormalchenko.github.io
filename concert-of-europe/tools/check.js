@@ -120,9 +120,6 @@ Object.entries(C.ambitions).forEach(([id, d]) => { const w = `ambitions.json ${i
   if (d.need > d.provinces.length) bad(w, `needs ${d.need} of only ${d.provinces.length} provinces`);
   if (!Object.values(C.nations).some(n => n.ambition === id)) bad(w, 'no nation holds it'); });
 Object.keys(C.ambitionKinds).forEach(k => { if (!Object.values(C.ambitions).some(a => a.kind === k)) bad('ambitionKinds.json', `no ambition is of kind "${k}"`); });
-['famine', 'compromise'].forEach(k => prov(`events.json ${k}`, C.events[k].province)); C.events.serfdom.provinces.forEach(x => prov('events.json serfdom', x));
-['compromise', 'serfdom'].forEach(k => nation(`events.json ${k}`, C.events[k].nation));
-C.events.awakening.peoples.forEach(p => people('events.json awakening', p)); people('events.json shevchenko', C.events.shevchenko.people); people('events.json compromise', C.events.compromise.people);
 { const odds = C.rarities.reduce((s, r) => s + r.odds, 0); if (Math.abs(odds - 1) > 1e-9) bad('rarities.json', `odds add up to ${odds}, not 1`); }
 Object.entries(C.concepts).forEach(([k, c]) => { if (!c.word && !ctx.DRAW[k]) problems.push(`src/ui/registry.js: concept "${k}" has no drawing in DRAW`); });
 Object.keys(ctx.DRAW).forEach(k => { if (!C.concepts[k] || C.concepts[k].word) problems.push(`src/ui/registry.js: drawing for "${k}", which is not a concept with an icon in concepts.json`); });
@@ -254,30 +251,13 @@ const html = read('src/ui/index.template.html');
 (function leaves(o, pre){ Object.entries(o).forEach(([k, v]) => { const p = pre + k;
   if (v && typeof v === 'object' && !Array.isArray(v)) return leaves(v, p + '.');
   if (!used.has(p) && !html.includes('{{' + p)) bad('rules.json', `${p.slice(6)} is stated but read by no code`); }); })(C.rules, 'rules.');
-Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.json', `event "${k}" is never run by the engine`); });
 
 
-// ---- 8: events: every field an event handler reads exists, and every field an event has is read ----
-// An event's handler is the line in sim.js that starts `const e = EV.<id>`; it reads e.<field>. Elsewhere the engine
-// reads EV.<id>.<field>. Its own name and texts are for the chronicle and the Almanac; a placeholder in them counts as a read.
-{ const sim = read('src/sim.js'), reads = {};
-  const add = (id, f) => (reads[id] = reads[id] || new Set()).add(f);
-  // a handler runs from its `const e = EV.<id>` line to the next handler, comment or the end of the list
-  const lines = sim.split('\n'), block = n => { const out = [lines[n]]; for (let k = n + 1; k < lines.length && !/^\s*(\(\) =>|\/\/|\];)/.test(lines[k]); k++) out.push(lines[k]); return out.join('\n'); };
-  lines.forEach((l, n) => { const h = l.match(/const e = EV\.(\w+)/); if (!h) return; const id = h[1], e = C.events[id], line = block(n); if (!e) return;
-    let m; const re = /\be\.(\w+)/g; while ((m = re.exec(line))) { add(id, m[1]); if (!(m[1] in e)) problems.push(`src/sim.js:${n + 1}: event "${id}" has no field "${m[1]}"`); }
-    if (/\bwithin\(e\)/.test(line)) { add(id, 'years'); if (!e.years) problems.push(`src/sim.js:${n + 1}: event "${id}" is checked with within() but has no "years"`); }
-    if (/say\(e\.\w+,\s*(?:\{\s*\.\.\.e|e\b)/.test(line)) Object.keys(e).forEach(f => { if (/Text$|^text$/.test(f)) (e[f].match(/\{(\w+)/g) || []).forEach(p => add(id, p.slice(1))); }); });
-  SRC.forEach(([, src]) => { let m; const re = /\bEV\.(\w+)\.(\w+)/g; while ((m = re.exec(src))) { add(m[1], m[2]); if (C.events[m[1]] && !(m[2] in C.events[m[1]])) problems.push(`engine reads EV.${m[1]}.${m[2]}, which events.json doesn't have`); } });
-  Object.entries(C.events).forEach(([id, e]) => Object.keys(e).forEach(f => {
-    if (f === 'name' || f === 'effect' || /Text$|^text$/.test(f)) return;
-    if (!(reads[id] && reads[id].has(f))) bad(`events.json ${id}`, `"${f}" is read by nothing: the engine ignores it`); }));
-  // and every field is stated to the player: in its text or effect, or as one of the facts the Almanac lists (relations are hidden)
-  const LISTED = ['year', 'season', 'years', 'from', 'every', 'chance', 'peoples', 'finds', 'pretexts', 'relations'];
-  Object.entries(C.events).forEach(([id, e]) => { const words = Object.keys(e).filter(f => f === 'effect' || /Text$|^text$/.test(f)).map(f => e[f]).join(' ');
-    if (!e.effect && id !== 'opening') bad(`events.json ${id}`, 'needs "effect": a sentence saying what it does and when it can happen');
-    Object.keys(e).forEach(f => { if (f === 'name' || f === 'effect' || /Text$|^text$/.test(f) || LISTED.includes(f)) return;
-      if (!new RegExp(`\\{${f}[|}]`).test(words)) bad(`events.json ${id}`, `"${f}" is never stated: put {${f}} in its text or effect`); }); }); }
+
+// ---- 8: uniform event records are validated by tools/validate.js before evaluation ----
+Object.entries(C.events).forEach(([id, e]) => {
+  if (!e.effect) bad(`events.json ${id}`, 'needs an effect sentence');
+});
 
 // ---- 9: the shape of the content ----
 { const num = (w, v, lo, hi) => { if (typeof v !== 'number' || !(v >= lo && v <= hi)) bad(w, `${JSON.stringify(v)} should be a number from ${lo} to ${hi}`); };
@@ -293,7 +273,6 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
   Object.entries(C.temperaments).forEach(([k, t]) => { ['high', 'low'].forEach(h => { if (!Array.isArray(t[h]) || typeof t[h][0] !== 'number' || typeof t[h][1] !== 'string') bad(`temperaments.json ${k}`, `"${h}" should be [threshold, word]`); });
     if (typeof t.mid !== 'string') bad(`temperaments.json ${k}`, '"mid" should be a word'); });
   if (C.rules.heirs > Object.keys(C.rulers).length) bad('rules.json', `heirs: a card can't show ${C.rules.heirs} different traits out of ${Object.keys(C.rulers).length}`);
-  ['compromise', 'serfdom'].forEach(k => { const n = C.nations[C.events[k].nation]; if (n && !n.starts) bad(`events.json ${k}`, `${C.events[k].nation} is not on the map at the start`); });
   // a trait's three effects are different, and only the flat bonus is a one-time grant at coronation (read as v('x') in coronation)
   const sim = read('src/sim.js'), grants = new Set([...sim.matchAll(/\bv\('(\w+)'\)/g)].map(m => m[1]));
   Object.entries(C.rulers).forEach(([t, q]) => { const w = `rulers.json ${t}`, fxs = ['main', 'flat', 'malus'].map(sl => q[sl] && q[sl].fx);

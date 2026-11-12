@@ -6,7 +6,7 @@ const geo = JSON.parse(fs.readFileSync(path.join(__dirname, '../map/geo.json')))
 function engine(data = load(), forced = null){
   let source = simSource(data);
   if (forced) source = source.replace('want || drawHeir()', `want || ${JSON.stringify(forced)}`);
-  source = source.replace('\n  return S;\n}', '\n  Object.assign(S, { revoltsTest: revolts, ambitionTest: setAmbition });\n  return S;\n}');
+  source = source.replace('\n  return S;\n}', '\n  Object.assign(S, { revoltsTest: revolts, ambitionTest: setAmbition, eventsTest: runEvents });\n  return S;\n}');
   const ctx = {}; vm.createContext(ctx); vm.runInContext(source + '\nthis.createSim = createSim;', ctx);
   return ctx.createSim(1, geo);
 }
@@ -40,4 +40,17 @@ test('independence installs land and diplomacy before applying a capital coronat
   const mine = s.regionsOf(s.C[tag]);
   assert.equal(mine.reduce((n, r) => n + r.fac - before.get(r.id), 0), C.rulers[trait].flat.values[0]);
   assert.ok(s.C[tag].truce[from.tag] > s.year);
+});
+
+test('an added event is executed by its record and an unknown operation is a content error', () => {
+  const C = load(), example = Object.values(C.events).find(e => e.operation === 'apply' && e.target.kind === 'nation' && e.effects.unrest > 0);
+  const e = structuredClone(example); e.name = 'Fixture disturbance'; e.schedule = { ...e.schedule, from:C.rules.start,to:C.rules.end.year,season:-1,period:0,once:true,beforeRoll:false };
+  e.target = { ...e.target, mode:'fixed', nations:[Object.keys(C.nations).find(t => C.nations[t].starts)] };
+  C.events = { fixtureEvent:e };
+  assert.deepEqual(validateContent(C), []);
+  const s = engine(C), c = s.C[e.target.nations[0]], r = s.regionsOf(c)[0], before = r.unrest;
+  s.eventsTest('events'); assert.equal(r.unrest, before + e.effects.unrest);
+  s.eventsTest('events'); assert.equal(r.unrest, before + e.effects.unrest, 'once is keyed by the added identity');
+  e.operation = 'missingOperation';
+  assert.ok(validateContent(C).some(x => x.includes('fixtureEvent') && x.includes('unknown operation')));
 });

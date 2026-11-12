@@ -2,7 +2,6 @@
   "start": 1836,
   "seasons": ["Winter", "Spring", "Summer", "Autumn"],
   "end": {"year": 1918, "season": 3},
-  "greatWar": {"year": 1914, "season": 2},
   "rerolls": 3,
   "reign": {
     "years": [8, 24],

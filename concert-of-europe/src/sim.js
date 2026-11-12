@@ -61,8 +61,8 @@ function createSim(seed, geo, opts = {}){
   // a nation's ruler names, or else its people's (the check makes sure one of them has some)
   const namesOf = c => c.rulerNames || PEOPLES[c.culture].names;
 
-  const S = { seed, t: 0, year: RULES.start, q: 0, regions: [], C: {}, wars: [], log: [], history: [], flags: {}, over: false,
-    marks: [], warNames: {}, railBoom: -1, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: {}, depression: -1, majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0 } };
+  const S = { seed, t: 0, year: RULES.start, q: 0, regions: [], C: {}, wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false,
+    marks: [], warNames: {}, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: {}, majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
     fac: r[7], fort: 0, build: null, unrest: RULES.setup.unrest, occ: null, battle: 0, flash: 0, integ: 1,
@@ -184,7 +184,7 @@ function createSim(seed, geo, opts = {}){
       lean: { pat: clamp(0.25 + d.p[1] * 0.6, 0.1, 0.9), hawk: clamp(d.p[0], 0.1, 0.9) },
       army: d.army * rand(RULES.setup.army[0], RULES.setup.army[1]), treasury: (g => d.gold != null ? d.gold : g)(RULES.setup.gold[0] + rand(0, RULES.setup.gold[1] - RULES.setup.gold[0])), infamy: 0, allies: new Set(), rival: null, truce: {},
       guarantee: null,
-      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, serfs: tag === EV.serfdom.nation, ambitionId: d.ambition, didThisSeason: [], born: S.year,
+      alive: true, noAnnex: !!d.noAnnex, rulerNames: d.rulerNames || null, factoryMultiplier: d.factoryMultiplier, ambitionId: d.ambition, didThisSeason: [], born: S.year,
       advances: [], advanceYear: null, startRegions: 0, reformCd: 0, ledger: null, spent: {}, lastWar: 1830 };
     return c;
   }
@@ -235,9 +235,9 @@ function createSim(seed, geo, opts = {}){
     if (r.occ && !opts.ignoreOcc) return { tax: 0, fac: 0, trade: 0 };
     const u = opts.unrest != null ? opts.unrest : r.unrest;
     const integ = opts.integ != null ? opts.integ : r.integ;
-    const m = (1 - u / 200) * paysWhile(integ) * (opts.admin != null ? opts.admin : adminOf(c)) * fx(c, 'earns') * (S.depression > S.t ? EV.panic.earns : 1);
+    const m = (1 - u / 200) * paysWhile(integ) * (opts.admin != null ? opts.admin : adminOf(c)) * fx(c, 'earns') * globalFx('earns');
     const taxed = fx(c, 'taxes') * (isAccepted(c, r.culture) ? fx(c, 'ownTaxes') : 1);
-    const serf = c.serfs && !S.flags.serf ? EV.serfdom.before : 1;
+    const serf = c.factoryMultiplier;
     const wf = opts.wf != null ? opts.wf : workforce(c);
     const atWar = opts.war != null ? opts.war : !!warOf(c);
     return { tax: r.pop * 0.06 * m * wf * taxed, fac: r.pop * 0.7 * (1 - Math.pow(0.8, opts.fac != null ? opts.fac : r.fac)) * m * wf * serf, trade: r.coast && !atWar ? (r.pop * 0.04 + r.fac * 0.25) * m * fx(c, 'trade') : 0 };
@@ -553,7 +553,7 @@ function createSim(seed, geo, opts = {}){
     const maxFac = RULES.build.maxFactories;
     if (building < maxBuilds(c)) {
       mine.filter(r => r.fac < maxFac && !r.build && !r.occ).forEach(r => {
-        const cost = RULES.price.factory * Math.pow(RULES.price.factoryGrowth, r.fac) * catchup * fx(c, 'factoryCost') * (S.railBoom > S.year ? EV.railway.cost : 1);
+        const cost = RULES.price.factory * Math.pow(RULES.price.factoryGrowth, r.fac) * catchup * fx(c, 'factoryCost') * globalFx('factoryCost');
         if (cost > T) return;
         const gain = (sumInc(regionIncome(r, c, { fac: r.fac + 1, war: false, ignoreOcc: true })) - sumInc(regionIncome(r, c, { war: false, ignoreOcc: true }))) * 4;
         const ev = gain * (H - 1) - cost * gv;
@@ -804,45 +804,121 @@ function createSim(seed, geo, opts = {}){
   }
   S.ambitionOf = ambitionOf;
 
-  // ---------- events (content/events.json: when each can happen, how likely, what it does) ----------
-  const Q = p => chance(p / 4);   // a yearly chance, rolled each season
-  const within = e => S.year >= e.years[0] && S.year <= e.years[1];
-  const EVENTS = [
-    () => { const e = EV.springtime; if (S.year === e.year && S.q === e.season) { L('event', say(e.text, e)); S.regions.forEach(r => r.unrest = Math.min(100, r.unrest + e.unrest)); } },
-    () => { const e = EV.famine; if (within(e) && !S.flags.famine && Q(e.chance)) { S.flags.famine = 1; const r = RB[e.province]; r.pop *= e.pop; r.unrest = Math.min(100, r.unrest + e.unrest); L('event', say(e.text, { ...e, province: Rn(r) })); } },
-    () => { const e = EV.cholera; if (Q(e.chance)) { const vs = alive().sort(() => rng() - 0.5).slice(0, e.nations); vs.forEach(c => regionsOf(c).forEach(r => { r.pop *= e.pop; r.unrest += e.unrest; })); L('event', say(e.text, { ...e, nations: list(vs) })); } },
-    () => { const e = EV.railway; if (S.year >= e.from && !S.flags.rail && Q(e.chance)) { S.flags.rail = 1; S.railBoom = S.year + e.lasts; L('event', say(e.text, e)); } },
-    () => { const e = EV.panic; if (within(e) && !S.flags.dep && Q(e.chance)) { S.flags.dep = 1; alive().forEach(c => c.treasury *= e.gold); S.depression = S.t + e.seasons; S.regions.forEach(r => r.unrest += e.unrest); L('event', say(e.text, e)); } },
-    () => { const e = EV.compromise, a = S.C[e.nation], hp = RB[e.province]; if (a.alive && !S.flags.ausg && S.year >= e.from && hp.owner === e.nation && hp.unrest > e.unrest && Q(e.chance)) {
-      S.flags.ausg = 1; a.acc.add(e.people); a.name = e.newName; a.adj = e.newAdj; hp.unrest = e.calm; L('event', say(e.text, { ...e, nation: N(a) })); } },
-    () => { const e = EV.serfdom, r = S.C[e.nation]; if (r.alive && !S.flags.serf && S.year >= e.from && Q(e.chance)) { S.flags.serf = 1; e.provinces.forEach(id => { if (RB[id].owner === e.nation) RB[id].fac = RB[id].fac + e.factories; }); L('event', say(e.text, { ...e, nation: N(r) })); } },
-    () => { const e = EV.incident; if (Q(e.chance)) { const ps = alive().filter(c => c.rival && S.C[c.rival].alive); if (ps.length) { const c = pick(ps), o = S.C[c.rival]; addRel(c.tag, o.tag, e.relations); L('diplo', say(e.text, { a: N(c), b: N(o) })); } } },
-    () => { const e = EV.marriage; if (Q(e.chance)) { const vs = alive().sort(() => rng() - 0.5).slice(0, 2); if (vs.length === 2 && vs[0].rival !== vs[1].tag) { addRel(vs[0].tag, vs[1].tag, e.relations); L('diplo', say(e.text, { a: N(vs[0]), b: N(vs[1]) })); } } },
-    () => { const e = EV.harvest; if (S.q === e.season && chance(e.chance)) { const c = pick(alive()); regionsOf(c).forEach(r => r.unrest += e.unrest); L('event', say(e.text, { nation: N(c) })); } },
-    // national awakenings raise unrest among a people for good
-    () => { const e = EV.shevchenko; if (within(e) && !S.awake[e.people] && Q(e.chance)) { S.awake[e.people] = e.awake; L('event', say(e.text, e)); } },
-    () => { const e = EV.awakening; if (S.year >= e.from && Q(e.chance)) { const cul = pick(e.peoples);
-      if (!S.awake[cul] && S.regions.some(r => r.culture === cul && !isAccepted(S.C[r.owner], cul))) { S.awake[cul] = e.awake; L('event', say(e.text, { people: cul })); } } },
-    // a military revolution changes who wins battles (content/eras.json)
-    () => { const e = EV.revolution; if (S.year - S.era.since >= e.every && Q(e.chance)) {
-      const nx = pick(CONTENT.eras.filter(x => !x.start && x !== S.era.of)); S.era = { of: nx, name: nx.name, def: nx.def, fort: nx.fort, since: S.year };
-      L('event', say(e.text, { ...e, era: nx.name })); } },
-    // a coal or railway boom makes one province suddenly valuable
-    () => { const e = EV.boom; if (S.year >= e.from && Q(e.chance)) { const r = pick(S.regions.filter(x => !x.occ)); r.fac += e.factories; r.pop *= e.pop; mark(r.i, 'boom');
-      L('event', say(e.text, { ...e, find: pick(e.finds), province: Rn(r), nation: N(S.C[r.owner]) })); } },
-    // diplomatic crisis: an ultimatum to a rival
-    () => { const e = EV.ultimatum; if (Q(e.chance)) { const cs = alive().filter(c => c.rival && S.C[c.rival].alive && !warOf(c) && !warOf(S.C[c.rival]) && isNeighbor(c, S.C[c.rival])); if (!cs.length) return;
-      const c = pick(cs), o = S.C[c.rival];
-      let best = null; borderRegions(c).filter(r => r.owner === o.tag).forEach(r => { const ev = warEval(c, o, r); if (ev && (!best || ev.ev > best.ev)) best = { ...ev, r }; });
-      if (!best || best.ev + e.margin < 0) { if (chance(e.rattle)) L('diplo', say(e.rattleText, { a: N(c), b: N(o), pretext: pick(e.pretexts) })); return; }
-      const oFears = believe(o, theirSide(o, c.tag) * S.era.def / Math.max(1, mySide(c, 0, null, forecastFoes(o, c)))) < e.backDown;
-      if (oFears) { const pay = Math.max(0, o.treasury * e.pay); o.treasury -= pay; c.treasury += pay; regionsOf(o).forEach(r => r.unrest += e.unrest); addRel(c.tag, o.tag, e.relations);
-        L('diplo', say(e.text, { a: N(c), b: N(o), gold: Math.round(pay) })); }
-      else { const name = warName(c, o); declareWar(c, o, best.r, { p: best.p, pTrue: best.pTrue, name, text: say(e.warText, { a: N(c), b: N(o), province: Rn(best.r), war: name }) }); } } },
-    // coups in restless countries (rules.json: reign)
-    () => { alive().forEach(c => {
-      if (unrestOf(c) > RULES.reign.coupUnrest && chance(RULES.reign.coup)) endReign(c, 'coup'); }); },
-  ];
+  // ---------- events: a schedule, selector and operation; IDs never choose behavior ----------
+  const globalFx = key => S.modifiers.filter(m => m.fx === key && S.t < m.until).reduce((v, m) => v * m.value, 1);
+  S.activeModifiers = () => S.modifiers.filter(m => S.t < m.until);
+  function eventTargets(t){
+    let cs = [], rs = [], people = '', pair = null;
+    if (t.kind === 'world') { cs = alive(); rs = S.regions; }
+    if (t.kind === 'province') {
+      const pool = (t.provinces.length ? t.provinces.map(id => RB[id]) : S.regions).filter(r => !t.unoccupied || !r.occ);
+      if (!pool.length) return null;
+      rs = t.mode === 'random' ? [pick(pool)] : pool;
+      cs = t.nations.length ? t.nations.map(tag => S.C[tag]).filter(c => c && c.alive) : [...new Set(rs.map(r => S.C[r.owner]))];
+    }
+    if (t.kind === 'nation') {
+      const pool = t.nations.length ? t.nations.map(tag => S.C[tag]).filter(c => c && c.alive) : alive();
+      if (!pool.length) return null;
+      cs = t.mode === 'random' ? [pick(pool)] : t.mode === 'sample' ? pool.sort(() => rng() - 0.5).slice(0, t.count) : pool;
+      rs = t.provinces.length ? t.provinces.map(id => RB[id]) : cs.flatMap(regionsOf);
+    }
+    if (t.kind === 'people') {
+      people = t.mode === 'random' ? pick(t.peoples) : t.peoples[0];
+      rs = S.regions.filter(r => r.culture === people);
+    }
+    if (t.kind === 'pair') {
+      if (t.mode === 'rivals') {
+        const pool = alive().filter(c => c.rival && S.C[c.rival].alive &&
+          (!t.peace || (!warOf(c) && !warOf(S.C[c.rival]))) && (!t.neighbors || isNeighbor(c, S.C[c.rival])));
+        if (!pool.length) return null;
+        const c = pick(pool); pair = [c, S.C[c.rival]];
+      } else if (t.mode === 'hostile') {
+        const majors = S.majors.map(tag => S.C[tag]).filter(c => c.alive); let best = Infinity;
+        majors.forEach(a => majors.forEach(b => { if (a.tag < b.tag && !a.allies.has(b.tag)) {
+          const v = rel(a.tag, b.tag) - (a.rival === b.tag || b.rival === a.tag ? 40 : 0);
+          if (v < best) { best = v; pair = [a, b]; }
+        } }));
+      } else { const pool = alive().sort(() => rng() - 0.5).slice(0, 2); if (pool.length === 2) pair = pool; }
+      if (!pair || (t.nonrival && pair[0].rival === pair[1].tag)) return null;
+      cs = pair; rs = cs.flatMap(regionsOf);
+    }
+    if (t.owned && (!cs.length || rs.some(r => r.owner !== cs[0].tag)) && t.kind === 'province') return null;
+    if (t.unrestAbove >= 0 && !rs.some(r => r.unrest > t.unrestAbove)) return null;
+    if (t.unawakened && S.awake[people]) return null;
+    if (t.foreign && !rs.some(r => !isAccepted(S.C[r.owner], r.culture))) return null;
+    return { cs, rs: t.owned ? rs.filter(r => cs.some(c => c.tag === r.owner)) : rs, people, pair };
+  }
+  function eventWords(e, x){
+    return { ...e, count: alive().length, people: x.people, province: x.rs.length ? Rn(x.rs[0]) : '',
+      nation: x.cs.length ? N(x.cs[0]) : '', nations: list(x.cs), a: x.cs.length ? N(x.cs[0]) : '', b: x.cs.length > 1 ? N(x.cs[1]) : '' };
+  }
+  function applyEvent(e, x){
+    const f = e.effects;
+    x.cs.forEach(c => {
+      c.treasury *= f.gold;
+      if (f.people) c.acc.add(f.people);
+      if (f.newName) c.name = f.newName;
+      if (f.newAdj) c.adj = f.newAdj;
+      if (f.emancipate) c.factoryMultiplier = 1;
+    });
+    x.rs.forEach(r => { r.pop *= f.pop; r.fac += f.factories; r.unrest = f.unrestSet < 0 ? clamp(r.unrest + f.unrest, 0, 100) : f.unrestSet; });
+    if (x.pair) addRel(x.pair[0].tag, x.pair[1].tag, f.relations);
+    f.modifiers.forEach(m => S.modifiers.push({ ...m, name: e.name, until: S.t + m.seasons }));
+    const words = eventWords(e, x);
+    if (e.finds.length) { words.find = pick(e.finds); x.rs.forEach(r => mark(r.i, 'boom')); }
+    L(e.log, say(e.text, words));
+  }
+  function issueUltimatum(e, x){
+    const [c, o] = x.pair, k = e.crisis;
+    let best = null;
+    borderRegions(c).filter(r => r.owner === o.tag).forEach(r => { const v = warEval(c, o, r); if (v && (!best || v.ev > best.ev)) best = { ...v, r }; });
+    if (!best || best.ev + k.margin < 0) {
+      if (chance(k.rattle)) L(e.log, say(e.rattleText, { ...e, a: N(c), b: N(o), pretext: pick(k.pretexts) }));
+      return;
+    }
+    const fears = believe(o, theirSide(o, c.tag) * S.era.def / Math.max(1, mySide(c, 0, null, forecastFoes(o, c)))) < k.backDown;
+    if (fears) {
+      const pay = Math.max(0, o.treasury * k.pay); o.treasury -= pay; c.treasury += pay;
+      regionsOf(o).forEach(r => r.unrest = clamp(r.unrest + k.unrest, 0, 100)); addRel(c.tag, o.tag, k.relations);
+      L(e.log, say(e.text, { ...e, a: N(c), b: N(o), gold: Math.round(pay) }));
+    } else {
+      const name = warName(c, o);
+      declareWar(c, o, best.r, { p: best.p, pTrue: best.pTrue, name, text: say(e.warText, { ...e, a: N(c), b: N(o), province: Rn(best.r), war: name }) });
+    }
+  }
+  const EVENT_ACTIONS = {
+    apply: applyEvent,
+    awaken(e, x){ S.awake[x.people] = e.effects.awake; L(e.log, say(e.text, eventWords(e, x))); },
+    era(e, x){
+      const next = pick(CONTENT.eras.filter(a => !a.start && a !== S.era.of));
+      S.era = { of: next, name: next.name, def: next.def, fort: next.fort, since: S.year };
+      L(e.log, say(e.text, { ...e, era: next.name }));
+    },
+    ultimatum: issueUltimatum,
+    war(e, x){ startGeneralWar(x.pair, e); },
+    settle(e){
+      if (S.greatWar && S.wars.includes(S.greatWar)) L('peace', say(e.text, e));
+      S.wars.slice().forEach(w => endWar(w, 'lines'));
+    },
+    message(e, x){ L(e.log, say(e.text, eventWords(e, x))); },
+  };
+  function runEvents(phase){
+    for (const [id, e] of Object.entries(EV)) {
+      const d = e.schedule;
+      if (e.phase !== phase || (d.once && S.events[id]) || S.year < d.from || S.year > d.to ||
+          (d.season >= 0 && S.q !== d.season) || S.year - S.era.since < d.eraAge) continue;
+      let targets = d.beforeRoll ? eventTargets(e.target) : null;
+      if (d.beforeRoll && !targets) continue;
+      if (d.period && !chance(d.chance / d.period)) continue;
+      if (!d.beforeRoll) targets = eventTargets(e.target);
+      if (!targets) continue;
+      EVENT_ACTIONS[e.operation](e, targets); S.events[id] = true;
+    }
+  }
+  function coups(){
+    alive().forEach(c => { if (unrestOf(c) > RULES.reign.coupUnrest && chance(RULES.reign.coup)) endReign(c, 'coup'); });
+  }
+
   function successions(){
     alive().forEach(c => {
       if (S.t >= c.ruler.until) endReign(c, 'death');
@@ -859,13 +935,8 @@ function createSim(seed, geo, opts = {}){
     regionsOf(c).forEach(r => r.unrest = Math.max(0, r.unrest - RULES.reform.calm * fx(c, 'reformCalm')));
   }
 
-  function greatWar(){
-    if (S.year < RULES.greatWar.year || S.q < RULES.greatWar.season || S.flags.gw) return;
-    S.flags.gw = 1;
-    const ms = S.majors.map(t => S.C[t]).filter(c => c.alive);
-    let best = null, bv = Infinity;
-    ms.forEach(a => ms.forEach(b => { if (a.tag < b.tag && !a.allies.has(b.tag)) { const v = rel(a.tag, b.tag) - (a.rival === b.tag || b.rival === a.tag ? 40 : 0); if (v < bv) { bv = v; best = [a, b]; } } }));
-    if (!best) return;
+  function startGeneralWar(pair, e){
+    let best = pair;
     let [a, d] = best; if (power(a) < power(d)) [a, d] = [d, a];
     S.wars.forEach(w => { L('peace', `The <em>${w.name}</em> is abandoned as a greater storm gathers.`); S.regions.forEach(r => { if (r.occ && w.att.concat(w.def).includes(r.occ)) r.occ = null; }); });
     S.wars = [];
@@ -876,7 +947,7 @@ function createSim(seed, geo, opts = {}){
         const la = [...c.allies].some(t => sideA.has(t)), ld = [...c.allies].some(t => sideD.has(t));
         if (la && !ld) { sideA.add(c.tag); changed = true; } else if (ld && !la) { sideD.add(c.tag); changed = true; } }); }
     const goal = borderRegions(a).find(r => r.owner === d.tag) || regionsOf(d)[0];
-    const w = declareWar(a, d, goal, { great: true, name: EV.greatWar.name, text: say(EV.greatWar.text, { ...EV.greatWar, a: N(a), b: N(d) }) });
+    const w = declareWar(a, d, goal, { great: true, name: e.name, text: say(e.text, { ...e, a: N(a), b: N(d) }) });
     w.att = [...sideA]; w.def = [...sideD];
     const ja = w.att.slice(1).map(t => S.C[t]), jd = w.def.slice(1).map(t => S.C[t]);
     if (ja.length) L('war', `Bound by treaty, ${list(ja)} ${ja.length > 1 ? 'march' : 'marches'} with ${N(a)}.`);
@@ -964,10 +1035,11 @@ function createSim(seed, geo, opts = {}){
     cs.forEach(c => [...c.allies].forEach(t => { if (rel(c.tag, t) < 0 && chance(RULES.allies.lapse) && !warOf(c) && !guarded(c, t)) { c.allies.delete(t); S.C[t].allies.delete(c.tag); L('diplo', `The alliance between ${N(c)} and ${N(S.C[t])} lapses.`); } }));
     if (S.q === 0) { if (S.year % RULES.majors.every === 0) computeMajors(); alive().forEach(pickRival); }
     S.leader = alive().reduce((b, c) => !b || score(c) > score(b) ? c : b, null).tag;
-    EVENTS.forEach(e => e());
+    runEvents('events');
+    coups();
     successions();
     tickRulers();
-    greatWar();
+    runEvents('war');
     tickProvinces();
     alive().sort(() => rng() - 0.5).forEach(c => { if (c.alive) decide(c); });
     tickWars();
@@ -976,8 +1048,7 @@ function createSim(seed, geo, opts = {}){
     unification();
     if (S.q === 3) S.history.push({ y: S.year, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
     if (S.year === RULES.end.year && S.q === RULES.end.season) {   // the armistice: every world ends here
-      if (S.greatWar && S.wars.includes(S.greatWar)) L('peace', say(EV.armistice.text, EV.armistice));
-      S.wars.slice().forEach(w => endWar(w, 'lines'));
+      runEvents('closing');
       S.over = true;
       const rich = alive().filter(c => c.ambition.kind === 'richest').sort((a, b) => score(b) - score(a))[0];
       const united = alive().filter(c => c.ambition.kind === 'unite' && ambitionOf(c).state === 'met');
@@ -992,7 +1063,7 @@ function createSim(seed, geo, opts = {}){
 
   alive().forEach(pickRival);
   S.history.push({ y: RULES.start - 1, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
-  L('event', say(EV.opening.text, { count: alive().length }));
+  runEvents('opening');
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
   if (opts.player && S.C[opts.player]) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true; S.rerolls = RULES.rerolls;
     // vary the draw by country, so two countries in the same world are not offered the same three characters

@@ -33,7 +33,6 @@ const SECTIONS = {
   } },
   nations: { name: 'Nations', file: 'nations', count: () => Object.keys(CONTENT.nations).length, render(){
     const majors = S ? `<p class="muted">${WORDS.major.name}s now: ${listOf(S.majors.map(t => S.C[t].name))}. ${WORDS.major.desc}</p>` : `<p class="muted">${WORDS.major.desc}</p>`;
-    const serf = CONTENT.events.serfdom;
     return majors + Object.entries(CONTENT.nations).map(([tag, n]) => { const live = S && S.C[tag];
       const amb = ambitionName(n.ambition) + (live && live.ambition && live.ambition.id !== n.ambition ? ` (in this world: ${ambitionName(live.ambition.id)})` : '');
       const rises = Object.keys(CONTENT.peoples).filter(p => risesAs(p) === tag);
@@ -48,7 +47,7 @@ const SECTIONS = {
         ['Ruler names', listOf(n.rulerNames || CONTENT.peoples[n.people].names || [])],
         ['In war names', `${n.pre || n.adj}-…`],
         ['Unions', n.noAnnex ? 'never joins one, by treaty or by vote' : ''],
-        ['Serfs', tag === serf.nation ? say('factories run at {before|frac} speed until the {name}', serf) : ''],
+        ['Serfs', n.factoryMultiplier !== 1 ? say('factories run at {v|frac} speed until the serfs are freed', { v: n.factoryMultiplier }) : ''],
         ['In this world', live ? (live.alive ? (live.name !== n.name ? `now ${live.name}` : 'on the map') + (S.majors.includes(tag) ? `, a ${WORDS.major.name.toLowerCase()}` : '') : 'gone from the map') : S && !n.starts ? 'not yet born' : ''],
       ]), { sub: n.adj, lead: swatch(n.color) }); }).join(''); } },
   peoples: { name: 'Peoples', file: 'peoples', count: () => Object.keys(CONTENT.peoples).length, render(){
@@ -58,7 +57,7 @@ const SECTIONS = {
         ['People', `${Math.round(home.reduce((s, x) => s + x.pop, 0) * 10) / 10}m in ${CONTENT.rules.start}`],
         ['Ruler names', d.names ? listOf(d.names) : ''],
         ['Unites in', listOf(unions)], ['Rises as', risesAs(p) ? nationName(risesAs(p)) : '<span class="muted">no nation: its rebels find no allies</span>'],
-        ['Can awaken', CONTENT.events.awakening.peoples.includes(p) || CONTENT.events.shevchenko.people === p ? 'yes' : '']])); }).join(''); } },
+        ['Can awaken', Object.values(CONTENT.events).some(e => e.operation === 'awaken' && e.target.peoples.includes(p)) ? 'yes' : '']])); }).join(''); } },
   ambitions: { name: 'Ambitions', count: () => Object.keys(CONTENT.ambitions).length, render(){
     const prog = S ? Object.fromEntries(S.unionProgress().map(u => [u.id, u])) : {};
     const holders = id => listOf(Object.values(CONTENT.nations).filter(n => n.ambition === id).map(n => n.name));
@@ -80,12 +79,18 @@ const SECTIONS = {
         return `<tr class="al-e"><td>${p.name}</td><td>${nationName(p.owner)}</td><td>${peopleName(p.people)}</td><td>${p.pop}m</td><td>${p.industry}</td><td>${g && g.coast ? 'coast' : ''}</td><td>${g ? listOf(g.nb.filter(j => !GEO.naval.some(([a, b]) => (a === i && b === j) || (a === j && b === i))).map(j => provName(ids[j]))) : ''}</td>
           <td>${listOf(sea.filter(x => x.includes(id)).map(x => provName(x[0] === id ? x[1] : x[0])))}</td></tr>`; }).join('')}</tbody></table>`; } },
   events: { name: 'Events', file: 'events', count: () => Object.keys(CONTENT.events).length, render(){
-    return Object.entries(CONTENT.events).map(([id, e]) => { const when = e.year ? `${RULES.seasons[e.season]} ${e.year}`
-        : e.years ? `${e.years[0]} to ${e.years[1]}` : e.from ? `from ${e.from}` : e.every ? `at least ${e.every} years after the last` : e.season != null ? `${say('{s|season}', { s: e.season })}s` : '';
-      const lines = ['text', 'rattleText', 'warText'].filter(k => e[k]).map(k => `<p>${say(e[k], Object.assign({}, SAMPLE, e, { province: e.province ? `<i>${provName(e.province)}</i>` : SAMPLE.province, people: e.people || (e.peoples ? e.peoples[0] : SAMPLE.people), nations: typeof e.nations === 'number' ? `<i>${numberWord(e.nations)} nations</i>` : SAMPLE.nations, count: Object.values(CONTENT.nations).filter(n => n.starts).length, find: e.finds ? e.finds[0] : SAMPLE.find, pretext: e.pretexts ? e.pretexts[0] : SAMPLE.pretext, nation: e.nation ? `<i>${nationName(e.nation)}</i>` : SAMPLE.nation }))}</p>`).join('');
-      const effect = e.effect ? `<p class="vibe">${say(e.effect, e)}</p>` : '';
-      return entry(e.name, lines + effect + facts([['When', when], ['Chance', e.chance != null ? yearly(e.chance) : ''], ['Peoples', e.peoples ? listOf(e.peoples.map(peopleName)) : ''],
-        ['Finds', e.finds ? listOf(e.finds) : ''], ['Pretexts', e.pretexts ? listOf(e.pretexts) : '']]), { lead: ic('event') }); }).join(''); } },
+    return Object.values(CONTENT.events).map(e => {
+      const d = e.schedule, t = e.target;
+      const when = d.from === d.to ? `${d.season < 0 ? '' : SEASONS[d.season] + ' '}${d.from}` : `${d.from} to ${d.to}${d.season < 0 ? '' : ', ' + SEASONS[d.season]}`;
+      const words = { ...SAMPLE, ...e, province: t.provinces.length ? `<i>${provName(t.provinces[0])}</i>` : SAMPLE.province,
+        people: t.peoples.length ? t.peoples[0] : SAMPLE.people, nation: t.nations.length ? `<i>${nationName(t.nations[0])}</i>` : SAMPLE.nation,
+        count: Object.values(CONTENT.nations).filter(n => n.starts).length,
+        find: e.finds.length ? e.finds[0] : SAMPLE.find, pretext: e.crisis.pretexts.length ? e.crisis.pretexts[0] : SAMPLE.pretext };
+      const lines = [e.text, e.rattleText, e.warText].filter(Boolean).map(text => `<p>${say(text, words)}</p>`).join('');
+      return entry(e.name, lines + `<p class="vibe">${say(e.effect, words)}</p>` + facts([
+        ['When', when], ['Chance', d.period ? pctOf(d.chance) + (d.period === 4 ? ' a year' : ' at each scheduled season') : 'scheduled'],
+        ['Peoples', listOf(t.peoples.map(peopleName))], ['Finds', listOf(e.finds)], ['Pretexts', listOf(e.crisis.pretexts)],
+      ]), { lead: ic('event') }); }).join(''); } },
   eras: { name: 'Ways of war', file: 'eras', count: () => CONTENT.eras.length, render(){
     return CONTENT.eras.map((e, i) => entry(e.name, facts([['Defender fights', `${e.def}× as hard`], ['A fortress stops an advance', pctOf(e.fort)], ['Begins', e.start ? `in ${CONTENT.rules.start}` : 'with a military revolution']]), { lead: ic('war') })).join(''); } },
   temperaments: { name: 'Temperaments', file: 'temperaments', count: () => Object.keys(CONTENT.temperaments).length, render(){

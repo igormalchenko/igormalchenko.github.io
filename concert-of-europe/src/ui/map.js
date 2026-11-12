@@ -117,9 +117,7 @@ function globalChips(){
   const battle = d > 0 ? `Defenders ${d}% stronger` : d < 0 ? `Attackers ${-d}% stronger` : 'Even battles';
   const chip = (icon, name, fx) => `<div class="chip2" ${tipAttr(name, fx)}>${ic(icon)}${name}</div>`;
   let h = chip('war', e.name, `${battle}. Fortresses stop ${Math.round(e.fort * 100)}% of advances.`);
-  const EVS = CONTENT.events;
-  if (S.railBoom > S.year) h += chip('boom', EVS.railway.name, say('Factories {cost|down} cheaper until {until}.', { cost: EVS.railway.cost, until: S.railBoom }));
-  if (S.depression > S.t) h += chip('event', EVS.panic.name, say(`${nm('goldYear')} down {earns|inv|pct}, {left} left.`, { earns: EVS.panic.earns, left: dur(S.depression - S.t) }));
+  for (const m of S.activeModifiers()) h += chip(m.icon, m.name, say(m.text, { ...m, remaining: m.until - S.t }));
   return h;
 }
 function renderOverlays(){

@@ -12,7 +12,8 @@
     "starts": true,
     "army": 30,
     "relations": {"FRA": 10, "POR": 50},
-    "allies": ["POR"]
+    "allies": ["POR"],
+    "factoryMultiplier": 1
   },
   "FRA": {
     "name": "France",
@@ -26,7 +27,8 @@
     "starts": true,
     "army": 60,
     "relations": {"PRU": -10, "PAP": 45},
-    "allies": ["PAP"]
+    "allies": ["PAP"],
+    "factoryMultiplier": 1
   },
   "PRU": {
     "name": "Prussia",
@@ -38,7 +40,8 @@
     "hawk": 0.85,
     "patience": 0.8,
     "starts": true,
-    "army": 50
+    "army": 50,
+    "factoryMultiplier": 1
   },
   "AUS": {
     "name": "Austria",
@@ -52,7 +55,8 @@
     "starts": true,
     "army": 60,
     "relations": {"SAR": -35, "SIC": 45},
-    "allies": ["SIC"]
+    "allies": ["SIC"],
+    "factoryMultiplier": 1
   },
   "RUS": {
     "name": "Russia",
@@ -65,7 +69,8 @@
     "patience": 0.3,
     "starts": true,
     "army": 90,
-    "relations": {"TUR": -45, "AUS": 25, "PRU": 20}
+    "relations": {"TUR": -45, "AUS": 25, "PRU": 20},
+    "factoryMultiplier": 0.5
   },
   "TUR": {
     "name": "Ottoman Empire",
@@ -78,7 +83,8 @@
     "hawk": 0.35,
     "patience": 0.2,
     "starts": true,
-    "army": 50
+    "army": 50,
+    "factoryMultiplier": 1
   },
   "SPA": {
     "name": "Spain",
@@ -90,7 +96,8 @@
     "hawk": 0.3,
     "patience": 0.3,
     "starts": true,
-    "army": 25
+    "army": 25,
+    "factoryMultiplier": 1
   },
   "POR": {
     "name": "Portugal",
@@ -102,7 +109,8 @@
     "hawk": 0.2,
     "patience": 0.3,
     "starts": true,
-    "army": 8
+    "army": 8,
+    "factoryMultiplier": 1
   },
   "NET": {
     "name": "Netherlands",
@@ -114,7 +122,8 @@
     "hawk": 0.25,
     "patience": 0.7,
     "starts": true,
-    "army": 10
+    "army": 10,
+    "factoryMultiplier": 1
   },
   "BEL": {
     "name": "Belgium",
@@ -126,7 +135,8 @@
     "hawk": 0.15,
     "patience": 0.85,
     "starts": true,
-    "army": 8
+    "army": 8,
+    "factoryMultiplier": 1
   },
   "DEN": {
     "name": "Denmark",
@@ -139,7 +149,8 @@
     "patience": 0.5,
     "starts": true,
     "army": 10,
-    "relations": {"PRU": -15}
+    "relations": {"PRU": -15},
+    "factoryMultiplier": 1
   },
   "SWE": {
     "name": "Sweden",
@@ -152,7 +163,8 @@
     "hawk": 0.3,
     "patience": 0.55,
     "starts": true,
-    "army": 15
+    "army": 15,
+    "factoryMultiplier": 1
   },
   "HAN": {
     "name": "Hanover",
@@ -163,7 +175,8 @@
     "hawk": 0.2,
     "patience": 0.5,
     "starts": true,
-    "army": 8
+    "army": 8,
+    "factoryMultiplier": 1
   },
   "HES": {
     "name": "Hesse",
@@ -174,7 +187,8 @@
     "hawk": 0.2,
     "patience": 0.5,
     "starts": true,
-    "army": 5
+    "army": 5,
+    "factoryMultiplier": 1
   },
   "SAX": {
     "name": "Saxony",
@@ -185,7 +199,8 @@
     "hawk": 0.2,
     "patience": 0.6,
     "starts": true,
-    "army": 8
+    "army": 8,
+    "factoryMultiplier": 1
   },
   "BAV": {
     "name": "Bavaria",
@@ -196,7 +211,8 @@
     "hawk": 0.3,
     "patience": 0.5,
     "starts": true,
-    "army": 15
+    "army": 15,
+    "factoryMultiplier": 1
   },
   "WUR": {
     "name": "Württemberg",
@@ -207,7 +223,8 @@
     "hawk": 0.2,
     "patience": 0.5,
     "starts": true,
-    "army": 7
+    "army": 7,
+    "factoryMultiplier": 1
   },
   "SWI": {
     "name": "Switzerland",
@@ -218,7 +235,8 @@
     "hawk": 0.05,
     "patience": 0.6,
     "starts": true,
-    "army": 6
+    "army": 6,
+    "factoryMultiplier": 1
   },
   "SAR": {
     "name": "Sardinia",
@@ -230,7 +248,8 @@
     "hawk": 0.75,
     "patience": 0.5,
     "starts": true,
-    "army": 20
+    "army": 20,
+    "factoryMultiplier": 1
   },
   "TUS": {
     "name": "Tuscany",
@@ -241,7 +260,8 @@
     "hawk": 0.1,
     "patience": 0.4,
     "starts": true,
-    "army": 4
+    "army": 4,
+    "factoryMultiplier": 1
   },
   "PAP": {
     "name": "Papal States",
@@ -254,7 +274,8 @@
     "starts": true,
     "army": 5,
     "noAnnex": 1,
-    "rulerNames": ["Gregory", "Pius", "Leo"]
+    "rulerNames": ["Gregory", "Pius", "Leo"],
+    "factoryMultiplier": 1
   },
   "SIC": {
     "name": "Two Sicilies",
@@ -265,7 +286,8 @@
     "hawk": 0.35,
     "patience": 0.25,
     "starts": true,
-    "army": 20
+    "army": 20,
+    "factoryMultiplier": 1
   },
   "GRE": {
     "name": "Greece",
@@ -278,7 +300,8 @@
     "patience": 0.3,
     "starts": true,
     "army": 6,
-    "relations": {"TUR": -55}
+    "relations": {"TUR": -55},
+    "factoryMultiplier": 1
   },
   "SER": {
     "name": "Serbia",
@@ -291,7 +314,8 @@
     "patience": 0.25,
     "starts": true,
     "army": 6,
-    "relations": {"TUR": -40}
+    "relations": {"TUR": -40},
+    "factoryMultiplier": 1
   },
   "POL": {
     "name": "Poland",
@@ -302,7 +326,8 @@
     "ambition": "pol",
     "hawk": 0.65,
     "patience": 0.45,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "HUN": {
     "name": "Hungary",
@@ -313,7 +338,8 @@
     "ambition": "hun",
     "hawk": 0.6,
     "patience": 0.45,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "ROM": {
     "name": "Romania",
@@ -324,7 +350,8 @@
     "ambition": "rom",
     "hawk": 0.5,
     "patience": 0.4,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "BUL": {
     "name": "Bulgaria",
@@ -335,7 +362,8 @@
     "ambition": "bul",
     "hawk": 0.65,
     "patience": 0.35,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "IRE": {
     "name": "Ireland",
@@ -346,7 +374,8 @@
     "ambition": "survive",
     "hawk": 0.5,
     "patience": 0.4,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "NOR": {
     "name": "Norway",
@@ -357,7 +386,8 @@
     "ambition": "sca",
     "hawk": 0.4,
     "patience": 0.5,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "FIN": {
     "name": "Finland",
@@ -368,7 +398,8 @@
     "ambition": "survive",
     "hawk": 0.4,
     "patience": 0.5,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "CZE": {
     "name": "Bohemia",
@@ -379,7 +410,8 @@
     "ambition": "survive",
     "hawk": 0.4,
     "patience": 0.5,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "CRO": {
     "name": "Croatia",
@@ -390,7 +422,8 @@
     "ambition": "yug",
     "hawk": 0.55,
     "patience": 0.4,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "LIT": {
     "name": "Lithuania",
@@ -401,7 +434,8 @@
     "ambition": "pol",
     "hawk": 0.5,
     "patience": 0.4,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "UKR": {
     "name": "Ukraine",
@@ -412,7 +446,8 @@
     "ambition": "ukr",
     "hawk": 0.6,
     "patience": 0.35,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "BAL": {
     "name": "Baltic Republic",
@@ -423,7 +458,8 @@
     "ambition": "survive",
     "hawk": 0.4,
     "patience": 0.45,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "ALB": {
     "name": "Albania",
@@ -434,7 +470,8 @@
     "ambition": "survive",
     "hawk": 0.6,
     "patience": 0.3,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "BOS": {
     "name": "Bosnia",
@@ -445,7 +482,8 @@
     "ambition": "yug",
     "hawk": 0.55,
     "patience": 0.35,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "ITA": {
     "name": "Italian Republic",
@@ -456,7 +494,8 @@
     "ambition": "ita",
     "hawk": 0.6,
     "patience": 0.35,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   },
   "SCO": {
     "name": "Scotland",
@@ -467,6 +506,7 @@
     "ambition": "survive",
     "hawk": 0.5,
     "patience": 0.45,
-    "starts": false
+    "starts": false,
+    "factoryMultiplier": 1
   }
 }
