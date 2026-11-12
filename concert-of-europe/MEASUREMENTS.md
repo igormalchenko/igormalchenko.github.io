@@ -76,3 +76,19 @@ Generated sea paths now store their existing straight-line drawing explicitly in
 Final validation: the build passed all 34 tests; all 16 disposable juggle experiments passed (12 valid edits built and completed seed one, four invalid edits were rejected clearly by both commands). Shipping-world player runs for the first two starting nations, seeds one and seven, reached the armistice with finite strengths/gold, bounded unrest, balanced ledgers, unique acquisitions and exactly the development years for which the player was eligible. Their Chronicles had 892 and 738 lines. The final watch-mode seed-one Chronicle had no unfilled placeholders, `undefined` or `NaN`.
 
 Browser visual inspection was unavailable because the preview tool blocked local file URLs. The build's Almanac rendering checks and the DOM-stub chooser/panel/Almanac regression passed; these do not establish visual layout quality.
+
+## Review fixes: Great War window, player stand-in, leader snapshot, natural deaths at the boundary
+
+Seeds 1–40, PR branch before and after. The Great War may only start in the summer of 1914 (as before the refactor); the player's stand-in ruler has neutral effects and is not named in the chronicle; the leader is fixed once a season again; a reign whose years run out ends at the closing boundary, so a revolution, abdication or coup in the same season is what ends it.
+
+| | before | after |
+|---|---|---|
+| wars per world | 43.5 | 41.7 |
+| uprisings per world | 33.1 | 33.8 |
+| worlds ending 1918 Autumn | 40 | 40 |
+| richest power (GBR/FRA/RUS) | 17/21/2 | 17/20/3 |
+| unions proclaimed | ger 40, ibe 26, ita 20, pol 14, bul 10, rom 7, sca 7, gre 6, ukr 3, hun 2 | ger 39, ita 28, ibe 27, pol 13, sca 7, bul 6, rom 6, hun 4, ukr 2, gre 1, yug 1 |
+| unions held in 1918 | ger 25, ita 17, ibe 13, bul 5, gre 5, pol 5, rom 4, sca 3, ukr 2, hun 1 | ger 30, ita 19, ibe 14, bul 5, pol 4, sca 4, hun 2, rom 1, ukr 1, yug 1 |
+| Survive nations alive at the end | 137 of 416 | 138 of 430 |
+
+Every count is of events happening, except "held" and "alive", which count what survives to the armistice. The differences are within the spread of 40 worlds and come mostly from changed RNG order.

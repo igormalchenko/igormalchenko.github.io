@@ -66,7 +66,7 @@ function createSim(seed, geo, opts = {}){
   // a nation's ruler names, or else its people's (the check makes sure one of them has some)
   const namesOf = c => c.namePool === 'people' ? PEOPLES[c.culture].names : c.rulerNames;
 
-  const S = { seed, player: opts.player || null, pending: null, rerolls: 0, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, phase: 'season', inSeason: false, reignQueue: [],
+  const S = { seed, player: opts.player || null, pending: null, rerolls: 0, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, leader: null, phase: 'season', inSeason: false, reignQueue: [],
     marks: [], warNames: {}, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: Object.fromEntries(Object.keys(PEOPLES).map(id => [id, 0])), majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0, dead: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
@@ -306,6 +306,8 @@ function createSim(seed, geo, opts = {}){
   const capitalOf = c => regionsOf(c).slice().sort((a, b) => b.pop * (1 + b.fac) - a.pop * (1 + a.fac))[0];
   const g = v => `${v >= 0 ? '+' : '−'}${Math.abs(Math.round(v))}`;
 
+  // the nation with the most gold a year, fixed once a season so every forecast of the season sees the same leader
+  function computeLeader(){ S.leader = alive().reduce((b, c) => !b || score(c) > score(b) ? c : b, null).tag; }
   function computeMajors(){ S.majors = alive().sort((a, b) => power(b) - power(a)).slice(0, RULES.majors.count).map(c => c.tag); }
 
   function pickRival(c){ // the neighbour that most threatens c's income
@@ -341,14 +343,14 @@ function createSim(seed, geo, opts = {}){
     return { p, ratio };
   }
   // How much c expects to lose over its horizon: for each neighbour, run that neighbour's own war forecast against c.
-  function riskOf(c, extraArmy = 0, extraAlly = null, leaderTag = S.leader){
+  function riskOf(c, extraArmy = 0, extraAlly = null){
     const H = horizon(c);
     let total = 0, top = null, topV = 0;
     neighborsOf(c).forEach(o => {
       if (!o.alive || c.allies.has(o.tag) || (extraAlly && extraAlly === o)) return;
       let best = null;
       borderRegions(o).forEach(r => { if (r.owner !== c.tag) return;
-        const e = warEval(o, c, r, extraArmy, extraAlly, leaderTag); if (e && (!best || e.ev > best.ev)) best = { ...e, r }; });
+        const e = warEval(o, c, r, extraArmy, extraAlly); if (e && (!best || e.ev > best.ev)) best = { ...e, r }; });
       if (!best) return;
       const chanceAttack = Math.min(1, sig((best.ev - 5) / 12) * 0.77);
       const loss = best.p * (provYearly(best.r, c) * ambitionW(c, best.r) * H + Math.max(0, c.treasury) * 0.3 + 20) + c.army * 0.1 * 3;
@@ -360,19 +362,19 @@ function createSim(seed, geo, opts = {}){
   }
   // a's forecast of attacking d for province r (gold over a's horizon)
   // Great powers that would step in to stop a from growing at d's expense, with the chance each joins.
-  function interveners(a, d, leaderTag = S.leader){
-    const leader = leaderTag === a.tag;
+  function interveners(a, d){
+    const leader = S.leader === a.tag;
     return S.majors.map(t => S.C[t]).filter(m => m.alive && m !== a && m !== d && !a.allies.has(m.tag) && !d.allies.has(m.tag) && !warOf(m)
       && (leader || isNeighbor(m, a) || isNeighbor(m, d)) && (leader || rel(m.tag, a.tag) < 10 || m.rival === a.tag))
       .map(m => ({ m, q: Math.min(0.9, 0.25 + 0.35 * clamp(power(a) / Math.max(1, power(m)) - 0.4, 0, 1) + (regionsOf(d).length === 1 ? 0.2 : 0) + (leader ? 0.3 : 0)) }));
   }
   function geoNaval(i, j){ return NAVAL.has(i + '-' + j); }
-  function warEval(a, d, r, dExtra = 0, dAlly = null, leaderTag = S.leader){
+  function warEval(a, d, r, dExtra = 0, dAlly = null){
     if (a.allies.has(d.tag) || (a.truce[d.tag] || 0) > S.year) return null;
     const foesOfD = forecastFoes(a, d);   // who d's side would face, for targeted modifiers
     let their = theirSide(d, a.tag) + dExtra * quality(d, foesOfD);
     if (warOf(d)) their *= 0.5;   // its armies are busy elsewhere
-    interveners(a, d, leaderTag).forEach(({ m, q }) => { their += strength(m, foesOfD) * q * 0.45; });
+    interveners(a, d).forEach(({ m, q }) => { their += strength(m, foesOfD) * q * 0.45; });
     // Sea crossings grant access to a front; combat gives them no separate strength penalty.
     if (r.core === d.tag) their *= fx(d, 'homeFight');   // a Vengeful defender fights harder for his own land
     if (dAlly && !d.allies.has(dAlly.tag)) their += strength(dAlly, foesOfD) * 0.8;
@@ -567,10 +569,10 @@ function createSim(seed, geo, opts = {}){
 
   // ---------- AI: forecast every option in gold over the ruler's horizon ----------
   function considerations(c){
-    const out = [], risks = new Map(), leaderTag = S.leader;
+    const out = [], risks = new Map();
     const risk = (nation, army = 0, ally = null) => {
       const key = JSON.stringify([nation.tag, army, ally && ally.tag]);
-      if (!risks.has(key)) risks.set(key, riskOf(nation, army, ally, leaderTag));
+      if (!risks.has(key)) risks.set(key, riskOf(nation, army, ally));
       return risks.get(key);
     };
     const T = c.treasury, war = warOf(c), H = horizon(c);
@@ -669,7 +671,7 @@ function createSim(seed, geo, opts = {}){
       borderRegions(c).forEach(r => {
         const o = S.C[r.owner];
         if (!o.alive) return;
-        const e = warEval(c, o, r, 0, null, leaderTag); if (!e || e.p < 0.55) return;
+        const e = warEval(c, o, r); if (!e || e.p < 0.55) return;
         if (!best || e.ev > best.ev) best = { type: 'war', o, r, p: e.p, pTrue: e.pTrue, ev: e.ev, label: `Invading ${o.name} for ${r.name}`,
           why: `${Math.abs(e.p - e.pTrue) > 0.07 ? `believes ${Math.round(e.p * 100)}% to win (truly ${Math.round(e.pTrue * 100)}%)` : `${Math.round(e.p * 100)}% to win`}${warOf(o) ? ` while ${o.name} is busy fighting` : ''}${inUnion(c, r) ? `; toward ${theTitle(unionOf(c))}` : ''}; ${r.name} pays ${e.yearly.toFixed(0)} a year once integrated${o.treasury > 100 ? `, plus a share of ${o.name}'s ${Math.round(o.treasury)} gold` : ''}; war costs ~${Math.round(e.cost)}` };
       });
@@ -763,7 +765,7 @@ function createSim(seed, geo, opts = {}){
       const [nc] = birthNations([{ tag, provinces: group, from: o }]);
       spread();
       const guard = nc.guarantee.by === null ? null : S.C[nc.guarantee.by];
-      L('revolt', `Independence! ${rlist(group)} break${group.length > 1 ? '' : 's'} away from ${N(o)} and ${restored ? 'restore' : 'form'}${group.length > 1 ? '' : 's'} ${N(nc)} under ${RN(nc.ruler)}.${guard ? ` ${N(guard)} guarantees its independence.` : ''}`);
+      L('revolt', `Independence! ${rlist(group)} break${group.length > 1 ? '' : 's'} away from ${N(o)} and ${restored ? 'restore' : 'form'}${group.length > 1 ? '' : 's'} ${N(nc)}${nc.ruler.ended ? '' : ` under ${RN(nc.ruler)}`}.${guard ? ` ${N(guard)} guarantees its independence.` : ''}`);
       o.army *= UP.free.army;
     });
   }
@@ -804,7 +806,8 @@ function createSim(seed, geo, opts = {}){
     // All ambitions exist before the first grant can end another nation in this batch.
     born.forEach(({ c, starting }) => {
       if (!c.alive) return;
-      if (c.player) { appointRuler(c, makeRuler(c)); if (!starting) S.pending = heirCard(c, true); }
+      // the player's stand-in never reigns: his effects are neutral until the player crowns a real ruler from the card
+      if (c.player) { appointRuler(c, { ...makeRuler(c), ended: true, cause: 'standIn' }); if (!starting) S.pending = heirCard(c, true); }
       else newRuler(c, starting);
     });
     return born.map(x => x.c);
@@ -984,11 +987,10 @@ function createSim(seed, geo, opts = {}){
     alive().forEach(c => { if (unrestOf(c) > RULES.reign.coupUnrest && chance(RULES.reign.coup)) endReign(c, 'coup'); });
   }
 
+  // during the season a ruler can be murdered; a reign whose years have run out ends at the closing boundary,
+  // so anything that ended it sooner (a revolution, a lost war, a coup) is what the chronicle records
   function successions(){
-    alive().forEach(c => {
-      if (S.t >= c.ruler.until) endReign(c, 'death');
-      else if (chance(RULES.reign.murder / 4)) endReign(c, 'murder');
-    });
+    alive().forEach(c => { if (S.t < c.ruler.until && chance(RULES.reign.murder / 4)) endReign(c, 'murder'); });
   }
   // what changes during a reign: a Drunk's judgment swings anew every season
   function tickRulers(){
@@ -1094,11 +1096,13 @@ function createSim(seed, geo, opts = {}){
     const guarded = (c, t) => (c.guarantee.by === t && S.year < c.guarantee.until) || (S.C[t].guarantee.by === c.tag && S.year < S.C[t].guarantee.until);
     cs.forEach(c => [...c.allies].forEach(t => { if (rel(c.tag, t) < 0 && chance(RULES.allies.lapse) && !warOf(c) && !guarded(c, t)) { c.allies.delete(t); S.C[t].allies.delete(c.tag); L('diplo', `The alliance between ${N(c)} and ${N(S.C[t])} lapses.`); } }));
     if (S.q === 0) { if (S.year % RULES.majors.every === 0) computeMajors(); alive().forEach(pickRival); }
+    computeLeader();
   }
   function resolveReigns(){
     const queue = S.reignQueue; S.reignQueue = [];
     if (S.year === RULES.end.year && S.q === RULES.end.season) return;
     queue.forEach(r => { const c = S.C[r.tag]; if (c.alive) endReign(c, r.how, r.ctx); });
+    alive().forEach(c => { if (!c.ruler.ended && S.t >= c.ruler.until) endReign(c, 'death'); });
   }
   function recordHistory(){ if (S.q === 3) S.history.push({ y: S.year, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) }); }
   function step(){
@@ -1136,7 +1140,7 @@ function createSim(seed, geo, opts = {}){
   }
 
   birthNations(Object.keys(COUNTRIES).map(tag => ({ tag, provinces: S.regions.filter(r => r.owner === tag), from: null })));
-  Object.defineProperty(S, 'leader', { enumerable: true, get: () => { const c = alive().reduce((b, c) => !b || score(c) > score(b) ? c : b, null); return c && c.tag; } });
+  computeLeader();
   alive().forEach(pickRival);
   S.history.push({ y: RULES.start - 1, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
   runEvents('opening');

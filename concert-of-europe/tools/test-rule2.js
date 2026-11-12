@@ -6,7 +6,7 @@ const geo = JSON.parse(fs.readFileSync(path.join(__dirname, '../map/geo.json')))
 function engine(data = load(), forced = null, options = {}, geometry = geo){
   let source = simSource(data);
   if (forced) source = source.replace('want || drawHeir()', `want || ${JSON.stringify(forced)}`);
-  source = source.replace('\n  return S;\n}', '\n  Object.assign(S, { revoltsTest: revolts, ambitionTest: setAmbition, eventsTest: runEvents, transferGoldTest: transferGold, unrestTest: setUnrest, reignTest: endReign });\n  return S;\n}');
+  source = source.replace('\n  return S;\n}', '\n  Object.assign(S, { revoltsTest: revolts, ambitionTest: setAmbition, eventsTest: runEvents, transferGoldTest: transferGold, unrestTest: setUnrest, reignTest: endReign, reignsTest: resolveReigns, successionsTest: successions, fxTest: fx });\n  return S;\n}');
   const ctx = {}; vm.createContext(ctx); vm.runInContext(source + '\nthis.createSim = createSim;', ctx);
   return ctx.createSim(1, geometry, options);
 }
@@ -127,4 +127,19 @@ test('stale or malformed geometry has a diagnostic before headless state creatio
   assert.deepEqual(validateGeometry(C,copy),[]);
   copy.navalPaths[0]=null;assert.ok(validateGeometry(C,copy).some(e=>e.includes('sea drawing')));
   copy.regions.pop();assert.ok(validateGeometry(C,copy).some(e=>e.includes('shape count')));
+});
+
+test('a reign that runs out ends at the boundary only if nothing ended it sooner that season', () => {
+  const s = engine(), c = s.alive()[0], old = c.ruler;
+  old.until = s.t; s.inSeason = true; s.successionsTest(); s.reignTest(c, 'revolution', 'the capital'); s.inSeason = false;
+  const from = s.log.length; s.reignsTest();
+  const lines = s.log.slice(from).map(l => l.h).join(' ');
+  assert.equal(old.ended, true); assert.equal(old.cause, 'revolution');
+  assert.ok(lines.includes('Revolution in the capital'), lines); assert.ok(!lines.includes(' dies.'), lines);
+  assert.ok(c.ruler !== old && c.ruler.until > s.t);
+});
+test('the player stand-in never reigns: neutral effects until a ruler is chosen from the card', () => {
+  const C = load(), tag = Object.keys(C.nations).find(t => C.nations[t].starts), s = engine(C, null, { player:tag });
+  const c = s.C[tag]; assert.equal(s.pending.type, 'heir'); assert.equal(c.ruler.ended, true);
+  for (const [k, e] of Object.entries(C.effects)) assert.equal(s.fxTest(c, k), e.none, k);
 });

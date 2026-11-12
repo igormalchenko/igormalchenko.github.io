@@ -676,7 +676,7 @@
     "phase": "war",
     "operation": "war",
     "log": "event",
-    "schedule": {"from": 1914, "to": 1918, "season": 2, "chance": 1, "period": 0, "once": true, "eraAge": 0, "beforeRoll": false},
+    "schedule": {"from": 1914, "to": 1914, "season": 2, "chance": 1, "period": 0, "once": true, "eraAge": 0, "beforeRoll": false},
     "target": {
       "kind": "pair",
       "mode": "hostile",
