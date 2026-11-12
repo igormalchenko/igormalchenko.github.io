@@ -117,7 +117,7 @@ function globalChips(){
   const battle = d > 0 ? `Defenders ${d}% stronger` : d < 0 ? `Attackers ${-d}% stronger` : 'Even battles';
   const chip = (icon, name, fx) => `<div class="chip2" ${tipAttr(name, fx)}>${ic(icon)}${name}</div>`;
   let h = chip('war', e.name, `${battle}. Fortresses stop ${Math.round(e.fort * 100)}% of advances.`);
-  for (const m of S.activeModifiers()) h += chip(m.icon, m.name, say(m.text, { ...m, remaining: m.until - S.t }));
+  for (const m of S.modifiers) h += chip(m.icon, m.name, say(m.text, { ...m, remaining: m.until - S.t }));
   return h;
 }
 function renderOverlays(){

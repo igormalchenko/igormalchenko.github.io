@@ -111,7 +111,7 @@ function validateContent(C){
   for (const [id, e] of Object.entries(C.events)) {
     const w = `events.json ${id}`;
     const before = errors.length;
-    record(e, {name:'string',phase:'string',operation:'string',log:'string',schedule:'object',target:'object',effects:'object',crisis:'object',text:'string',effect:'string',rattleText:'string',warText:'string',finds:'array'}, w);
+    record(e, {name:'string',phase:'string',operation:'string',log:'string',schedule:'object',target:'object',effects:'object',crisis:'object',text:'string',effect:'string',rattleText:'string',warText:'string',finds:'array',mark:'string'}, w);
     if (errors.length !== before) continue;
     if (!e.name || !e.effect) bad(w, 'needs a name and an effect sentence');
     if (!['events','war','opening','closing'].includes(e.phase)) bad(w, `unknown phase "${e.phase}"`);
@@ -174,7 +174,7 @@ function validateContent(C){
     if (e.operation === 'apply' && f.awake) bad(w, 'awake requires the awaken operation');
     if (e.operation === 'apply' && f.relations !== 0 && t.kind !== 'pair') bad(w, 'relations require a pair selector');
     if (e.operation === 'apply' && t.kind === 'people' && (f.gold !== 1 || f.people || f.newName || f.newAdj || f.emancipate)) bad(w, 'a people selector has no nation target for nation effects');
-    if (e.operation !== 'apply' && (f.modifiers.length || e.finds.length)) bad(w, 'only apply uses global modifiers/finds');
+    if (e.operation !== 'apply' && (f.modifiers.length || e.finds.length || e.mark)) bad(w, 'only apply uses global modifiers/finds/map marks');
     if (e.operation !== 'ultimatum' && (Object.entries(k).some(([key,v]) => key !== 'pretexts' && v !== 0) || k.pretexts.length)) bad(w, 'crisis fields require the ultimatum operation');
     if (e.operation !== 'ultimatum' && (e.rattleText || e.warText)) bad(w, 'rattleText/warText require the ultimatum operation');
     if (['war','ultimatum'].includes(e.operation) && t.kind !== 'pair') bad(w, 'war and ultimatum operations require a pair');

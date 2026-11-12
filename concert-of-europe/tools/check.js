@@ -25,6 +25,8 @@ const lineOf = (src, i) => src.slice(0, i).split('\n').length;
 // ---- 1 and 2: icons ----
 const UI = ['src/ui/map.js', 'src/ui/panel.js', 'src/ui/almanac.js', 'src/ui/main.js'];
 ctx.maps.forEach(m => Object.values(m).forEach(k => { if (!REG[k]) problems.push(`registry.js: icon map points at "${k}", which is not in REG`); }));
+// an event's map mark is drawn through the map's mark icons, so it must be one of them (or empty for none)
+Object.entries(ctx.CONTENT.events).forEach(([id, e]) => { if (e.mark && !Object.hasOwn(ctx.maps[2], e.mark)) problems.push(`events.json ${id}: map mark "${e.mark}" is not a map mark (registry.js MARK_IC)`); });
 const ICON_USE = /\b(?:ic|glyph|nm|statTile|row|line|board)\(\s*'([A-Za-z]+)'|\bREG\.([A-Za-z]+)|\bicon:\s*'([A-Za-z]+)'/g;
 const DRAWN = /<(?:path|circle|ellipse|polygon|polyline|line)\b[^>]*\s(?:d|cx|x1|points)="-?[\d.M]/g;
 UI.forEach(f => {

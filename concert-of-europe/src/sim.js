@@ -66,7 +66,7 @@ function createSim(seed, geo, opts = {}){
   // a nation's ruler names, or else its people's (the check makes sure one of them has some)
   const namesOf = c => c.namePool === 'people' ? PEOPLES[c.culture].names : c.rulerNames;
 
-  const S = { seed, player: opts.player || null, pending: null, rerolls: 0, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, leader: null, phase: 'season', inSeason: false, reignQueue: [],
+  const S = { seed, player: opts.player || null, pending: null, rerolls: opts.player ? RULES.rerolls : 0, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, leader: null, phase: 'season', inSeason: false, reignQueue: [],
     marks: [], warNames: {}, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: Object.fromEntries(Object.keys(PEOPLES).map(id => [id, 0])), majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0, dead: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
@@ -861,7 +861,7 @@ function createSim(seed, geo, opts = {}){
     const a = { ...c.ambition, title: definition.title, the: definition.art, n: 0, need: definition.need,
       rank: 0, of: 0, by: null, proclaimed: false };
     // a nation that is gone has lost, but its ambition still names its union
-    if (!c.alive) return a.kind === 'unite' ? { ...a, title: AMBITIONS[a.id].title, the: AMBITIONS[a.id].art, n: 0, need: AMBITIONS[a.id].need, state: 'lost' } : { ...a, state: 'lost' };
+    if (!c.alive) return { ...a, state: 'lost' };
     if (a.kind === 'survive') return { ...a, state: S.over ? 'met' : 'open' };
     if (a.kind === 'richest') { const rich = alive().filter(o => o.ambition.kind === 'richest').sort((x, y) => score(y) - score(x));
       return { ...a, rank: rich.indexOf(c) + 1, of: rich.length, state: rich[0] === c ? (S.over ? 'met' : 'open') : S.over ? 'lost' : 'open' }; }
@@ -873,8 +873,9 @@ function createSim(seed, geo, opts = {}){
   S.ambitionOf = ambitionOf;
 
   // ---------- events: a schedule, selector and operation; IDs never choose behavior ----------
-  const globalFx = key => S.modifiers.filter(m => m.fx === key && S.t < m.until).reduce((v, m) => v * m.value, 1);
-  S.activeModifiers = () => S.modifiers.filter(m => S.t < m.until);
+  // the modifiers in force; expired ones leave at the season boundary (tickModifiers)
+  const globalFx = key => { let v = 1; for (const m of S.modifiers) if (m.fx === key) v *= m.value; return v; };
+  function tickModifiers(){ S.modifiers = S.modifiers.filter(m => S.t < m.until); }
   function eventTargets(t){
     let cs = [], rs = [], people = '', pair = null;
     if (t.kind === 'world') { cs = alive(); rs = S.regions; }
@@ -933,7 +934,8 @@ function createSim(seed, geo, opts = {}){
     if (x.pair) addRel(x.pair[0].tag, x.pair[1].tag, f.relations);
     f.modifiers.forEach(m => S.modifiers.push({ ...m, name: e.name, until: S.t + m.seasons }));
     const words = eventWords(e, x);
-    if (e.finds.length) { words.find = pick(e.finds); x.rs.forEach(r => mark(r.i, 'boom')); }
+    if (e.finds.length) words.find = pick(e.finds);
+    if (e.mark) x.rs.forEach(r => mark(r.i, e.mark));
     L(e.log, say(e.text, words));
   }
   function issueUltimatum(e, x){
@@ -1135,7 +1137,7 @@ function createSim(seed, geo, opts = {}){
     }
     recordHistory(); S.phase = 'season';
     S.t++; S.year = RULES.start + Math.floor(S.t / 4); S.q = S.t % 4;
-    if (S.player && !S.C[S.player].alive) S.pending = null;
+    tickModifiers();
     offerAdvances();
   }
 
@@ -1145,7 +1147,7 @@ function createSim(seed, geo, opts = {}){
   S.history.push({ y: RULES.start - 1, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) });
   runEvents('opening');
   // a human player rules one country: same rules, but they choose its heirs (starting with the ruler of 1836)
-  if (opts.player && S.C[opts.player].alive) { S.player = opts.player; const pc = S.C[opts.player]; pc.player = true; S.rerolls = RULES.rerolls;
+  if (opts.player && S.C[opts.player].alive) { const pc = S.C[opts.player];
     // vary the draw by country, so two countries in the same world are not offered the same three characters
     for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng();
     S.pending = heirCard(pc, true); }
