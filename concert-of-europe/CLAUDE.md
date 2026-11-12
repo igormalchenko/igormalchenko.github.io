@@ -19,9 +19,21 @@ Every piece of content (rulers, rarities, temperaments, nations (those of 1836 a
 - **After moving or reshaping content,** compare full chronicles and final states before and after (the sweep alone can hide a change). Keep the files tidy with `npm run content`.
 - The numbers quoted in this file (the ruler pool, the ambitions) describe the design and can lag behind; `content/` and the Almanac are the truth.
 
+## Rule 2: the system stays dumb
+
+The goal is a system so plain it can't break: every mechanic built the same way, so content can be added, removed and juggled around freely. Separating content from logic (rule 1) is one part of it. A robust system has fewer edge cases, and fewer edge cases mean less convoluted logic. When a change would make the code cleverer, find the version that makes it dumber.
+
+- **No code names an entry.** The engine and the interface never check for a particular nation, trait, event, people, union or province (`if (tag === 'PRU')`, `if (trait === 'flirt')`). When one entry has to behave differently, the difference becomes a field that every entry of its kind has, and the code reads the field.
+- **Every entry of a kind has the same shape.** No optional fields the code must test for. Each field has a neutral value that changes nothing (as `content/effects.json` already does), so an entry without the feature simply carries the neutral value and the code has no branch for it.
+- **Adding content never needs code.** A new trait, event, nation, people or union is a content edit only. If it needs code, a general mechanism is missing: build the mechanism, not a special case.
+- **One way to make each kind of change.** Land changes hands one way, a reign ends one way (`endReign`), gold is spent and gained one way, a nation is born and dies one way. Nothing else changes the state behind their back. If two places do the same thing differently, merge them.
+- **One job per step of the season.** Each season runs its steps in a fixed order (income, decisions, wars, unrest, rulers, events…). A step does its own job and doesn't quietly do part of another's, or rely on something another step left lying around.
+- **Fix the rule, not the case.** A bug fixed by adding a condition is a warning sign. Look for the general rule that makes the condition unnecessary; a fix that deletes code beats one that adds it.
+- **The juggle test.** Any entry can be added, deleted, or swapped with another, and the build still passes. Anything that breaks shows up as a build-check error, never as a crash or a quietly wrong world. Wherever one of these rules can be checked mechanically, `tools/check.js` checks it, as it does for rule 1.
+
 ## Design rules
 
-1. **One ambition for every nation, judged in autumn 1918.** Each nation is born with one of three (`setAmbition`, see "Ambitions" below): the great powers of 1836 want the most income per year (taxes + factory output + sea trade) among themselves; a nation whose people are divided wants to unite them and still hold them together; every other nation wants to survive. The forecast still counts everything in gold (rule 2); the ambition only changes what some provinces and losses are worth.
+1. **One ambition for every nation, judged in autumn 1918.** Each nation is born with one of three (`setAmbition`, see "Ambitions" below): the great powers of 1836 want the most income per year (taxes + factory output + sea trade) among themselves; a nation whose people are divided wants to unite them and still hold them together; every other nation wants to survive. The forecast still counts everything in gold (design rule 2); the ambition only changes what some provinces and losses are worth.
 2. **Every decision is a forecast in gold.** In `considerations(c)` each option gets `ev` = extra or protected income over the ruler's horizon (8–30 years) minus its cost. The country does every option with positive `ev`, best first, up to 4 a season. Do not reintroduce hand-tuned "urge" scores.
 3. **Same rules for everyone.** No per-country stat bonuses. Countries differ only by starting data, ruler tendencies, a few historical special rules (unifiers, serfdom, accepted cultures) and luck.
 4. **Visible or hidden, never in between.** Any stat shown to the player must visibly change something on the map or in the budget. Infamy and relations maths are hidden plumbing. Prestige, colonies and great-power status were removed on purpose.
@@ -41,9 +53,9 @@ Every piece of content (rulers, rarities, temperaments, nations (those of 1836 a
 - **No suggested pick.** Don't mark what the ministers would choose.
 - **Rerolls.** The player may deal a heir card again three times a game, the opening card included (`rerollHeirs`). The fourth reroll is meant to be sold for $1.99; there is no payment yet, so its button only says "Coming soon". Player only: AI nations pick at random, so they have nothing to reroll for. Rerolls only change which cards are shown, so watch-mode sweeps are unaffected.
 - **A deck with rarities.** The same trait comes at five rarities: the rarer, the bigger the bonus and the smaller the malus, and from Rare on a one-time bonus at coronation. No stacking, levelling or evolutions: the thrill is the pull, not progression. A higher rarity improves the card, not the outcome: which trait suits the nation stays the real choice.
-- **AI countries draw from the same pool by the same odds, and pick at random.** No forecast for heirs: a random pick gives more variety than an AI that always takes the best ruler, and the rules stay the same for everyone (rule 3). (`drawHeir` gives one heir the odds of a random pick from a card.)
+- **AI countries draw from the same pool by the same odds, and pick at random.** No forecast for heirs: a random pick gives more variety than an AI that always takes the best ruler, and the rules stay the same for everyone (design rule 3). (`drawHeir` gives one heir the odds of a random pick from a card.)
 - **Every ruler has a trait.** No blank rulers and no exceptions: Switzerland is a monarchy like everyone else (its federal council was removed to keep one rule for all).
-- **Every ruler visibly changes something** on the map or in the budget (rule 4), and the chronicle names him ("Ludwig II the Drunk"), coloured by his rarity.
+- **Every ruler visibly changes something** on the map or in the budget (design rule 4), and the chronicle names him ("Ludwig II the Drunk"), coloured by his rarity.
 
 ### How a reign ends
 
@@ -54,7 +66,7 @@ Reigns last 8–24 years if nothing ends them sooner. A reign also ends by (`end
 - **Assassination.** 1% a year.
 - **Coup.** The army installs a random ruler from the pool. This is the one succession with no card: the army doesn't ask.
 
-This gives the choice stakes: pick the Bold, and if he loses his war he loses his throne. Measured: a surviving great power sees about 6 cards a game counting the opening one; small nations that die early see fewer.
+This gives the choice stakes: pick the Bold, and if he loses his war he loses his throne.
 
 ### The ruler pool (built)
 
@@ -80,8 +92,6 @@ Each trait has three effects, each read through `fx(c, key)` from `content/effec
 
 The traits (character line in the content): Warmonger, Soldier, Bold, Cautious, Paranoid, Builder, Stingy, Big Spender, Tyrant, Reformer, Drunk, Vengeful, Flirt, Religious, Sharp, Planner, Tolerant, Nationalist, Strict, Sailor. Mirrors on purpose: Bold breaks through the enemy's lines with less advantage, Cautious only with more; the Drunk calms his own people, the Flirt other peoples.
 
-Measured at replacement (40 worlds, seeds 1–40, old pool → new): wars 42.1 → 33.1, uprisings 35.6 → 34.0, Ukraine alive 22 → 27, richest great power France 26 / Britain 10 / Russia 4 → France 24 / Britain 12 / Russia 4, Italy proclaimed 28 → 27, Survive nations alive 166/456 → 183/453. Wars fell because the old pool's hidden war "wants" (land worth more, revenge, legendary levies, isolated enemies) are gone. A nation's share of Europe's gold a year over one reign, by rarity: Common ×0.97, Uncommon ×1.02, Rare ×1.03, Epic ×1.01, Legendary ×1.09. Per trait it swings about ±5% between runs, so only bigger gaps mean anything; the first tuning pass softened Tyrant, Stingy, Paranoid, Soldier, Bold, Reformer and Tolerant.
-
 ## Interface rules
 
 - **Every concept the player sees is one entry in `content/concepts.json`** (one name, one line of description, the words to `avoid`) with its drawing under the same key in `DRAW` in `src/ui/registry.js`. `REG` joins the two; the map, panel, map key, Almanac and tooltips all draw from it (`ic`, `glyph`, `nm`). Concepts with no icon (like Nation) are marked `word` and live in `WORDS`. Add new concepts there, never ad hoc.
@@ -95,11 +105,11 @@ Measured at replacement (40 worlds, seeds 1–40, old pool → new): wars 42.1 �
 
 ## Ruler temperament (settled)
 
-Besides his trait, every ruler has three temperaments, shown as tags in the panel. Each is an input to the same rational forecast (rule 5), and each acts on a different part of it:
+Besides his trait, every ruler has three temperaments, shown as tags in the panel. Each is an input to the same rational forecast (design rule 5), and each acts on a different part of it:
 
 - **Patience** (`ruler.pat`): far-sighted / steady / short-sighted. The horizon of every forecast, 8 to 30 years.
 - **Judgment** (`ruler.bias`): overconfident / clear-eyed / underconfident. Skews the odds he believes in war (`warEval`) and whether he backs down to an ultimatum. Seen in the chronicle's "his generals privately think N%" (the panel shows only what the ministers did, never the forecasts). It leans the way his nation does (`lean.hawk`, from `data.js` `p[0]`).
-- **Thrift** (`ruler.thrift`, read through `thriftOf`): thrifty / balanced / lavish. Multiplies `goldValue`, so it touches every cost in every forecast, from about a third (lavish) to three times (thrifty). Measured over 6 worlds: lavish rulers hold about 5 years of gold a year and spend about 4 times as much on building as thrifty ones, which hold about 10 years.
+- **Thrift** (`ruler.thrift`, read through `thriftOf`): thrifty / balanced / lavish. Multiplies `goldValue`, so it touches every cost in every forecast, from about a third (lavish) to three times (thrifty).
 
 Risk (`ruler.risk`, `lossW`) was removed on purpose: it was a second copy of Judgment that no player could tell apart. In its place the loss term of `warEval` carries a fixed weight of 1.25 (a beaten ruler may lose his throne), and the neighbour-threat formulas use the old average. Don't bring back a second war temperament; a new one must act on something other than war.
 
@@ -119,9 +129,9 @@ A nation only works toward its own ambition. Since the merge, a nation whose peo
 
 **Claims.** A nation claims a province it doesn't own if it once held it (a core), if its people or an accepted people live there, or if it lies in the union the nation works toward or has proclaimed. When a rival proclaims the union, those claims go with it. A claim makes a war for the province cheaper in distrust; only a core or an accepted people makes it quick to integrate (4 years in the forecast instead of 9). There are no programmes any more: Lithuania's one extra province, Belarus, is now part of the Polish Commonwealth.
 
-Measured when dreams merged into ambitions (40 worlds, seeds 1–40, before → after): wars 39.1 → 40.9, uprisings 35.2 → 33.8, Survive nations alive 170/464 → 176/460, Ukraine alive 22 → 27. Italy is proclaimed in 27 worlds instead of 37: before, the Papal States (ambition Survive) proclaimed Italy in about a quarter of the worlds where it formed; now they can't. The Papal States keep Survive on purpose: the Pope opposes unification, and Italy forming in two worlds of three is close to the union-balance target.
+The Papal States keep Survive on purpose: the Pope opposes unification, and letting them proclaim Italy made it form too often.
 
-The AI acts on it in gold (rule 2): a province of the union a nation works toward is worth `worth` (2) times its gold a year to it, to win and to keep (`ambitionW`), and a Survive nation counts every expected loss and the loss term of its own wars `losses` (1.5) times (`surviveW`). Great powers are unchanged.
+The AI acts on it in gold (design rule 2): a province of the union a nation works toward is worth `worth` (2) times its gold a year to it, to win and to keep (`ambitionW`), and a Survive nation counts every expected loss and the loss term of its own wars `losses` (1.5) times (`surviveW`). Great powers are unchanged.
 
 Every nation that can exist is one entry in `content/nations.json`, with the same fields for all and `starts` saying whether it is on the map in 1836: 24 start, 16 can only be born in an uprising. What a nation born in an uprising gets (gold, an army sized by its people, hostility and a truce with the nation it broke from, perhaps a guarantor) is `newNation` in `content/rules.json`. When an uprising wins, the engine picks the nation to rise as (`risesAs` in `src/data.js`): the province's own fallen nation if it was of the same people; else that people's nation that doesn't start on the map (the Italians rise as the Italian Republic); else that people's only nation (the Greeks restore Greece); else none (German rebels outside a fallen German state find no allies). The build refuses two nations of one people that don't start.
 
@@ -143,18 +153,7 @@ Every nation that can exist is one entry in `content/nations.json`, with the sam
 
 Union names follow historical precedent (the Kalmar Union of the northern crowns, the Cossack Hetmanate, Dacia of the Romanian nationalists, the Byzantine Empire of the Greek Great Idea, the Illyrian movement, the Crown of St Stephen). Dacia takes no article (`art: ''`).
 
-Not done yet: **union balance.** Some unions are proclaimed in nearly every world and some in none (measured below); tune `need` and `from` per union so each forms in roughly a third to two thirds of worlds.
-
-Measured (12 worlds, seeds 1–12, end year always autumn 1918). Before ambitions: 34.5 wars and 33.5 uprisings a world. With them: 37.3 and 35.4. The same scoring with the AI weights switched off (`ambitionW` back to 1.35, `surviveW` 1): 35.2 and 34.4, so the weights add about two wars a world.
-
-| | Weights on | Weights off |
-|---|---|---|
-| Richest great power | France 7, Britain 4, Russia 1 | France 9, Britain 2, Russia 1 |
-| Unions proclaimed (worlds out of 12) | German 12, Italy 11, Iberia 11, Bulgaria 6, Dacia 5, Poland 5, Hungary 2, Kalmar 2, Byzantine 2, Hetmanate 1, Illyria 0 | German 12, Italy 11, Iberia 9, Dacia 4, Poland 4, Bulgaria 2, Kalmar 2, Illyria 1, Hetmanate 1, Byzantine 0, Hungary 0 |
-| Unions still held in 1918 | 34 (German 11, Italy 6, Iberia 6, Bulgaria 4, Dacia 4, Hungary, Byzantine, Poland 1 each) | 33 |
-| Survive nations alive in 1918 | 48 of 134 (36%) | 57 of 140 (41%) |
-
-The survive weight doesn't save small nations: they die slightly more often with it on, probably because the union weight makes the German Empire's nations swallow Hanover, Hesse, Saxony and Württemberg faster. Tune this together with dream balance.
+Not done yet: **union balance.** Some unions are proclaimed in nearly every world and some in none (see `MEASUREMENTS.md`); tune `need` and `from` per union so each forms in roughly a third to two thirds of worlds.
 
 ## Future work (agreed, not built)
 
@@ -163,7 +162,7 @@ The survive weight doesn't save small nations: they die slightly more often with
 The "no stacking, levelling or evolutions" rule stays within a game. Across games:
 
 - **Yes: nations to play.** New nations unlock as you play, for example by uniting a people.
-- **Yes: new traits in the deck.** AI nations draw from the same pool, so an unlock changes the world for everyone (rule 3 still holds). Sweeps should run with a fixed pool so they stay comparable.
+- **Yes: new traits in the deck.** AI nations draw from the same pool, so an unlock changes the world for everyone (design rule 3 still holds). Sweeps should run with a fixed pool so they stay comparable.
 - **No:** start dates other than 1836, a ruler book, or permanent stat bonuses.
 
 ### Crisis cards
@@ -189,6 +188,7 @@ Moments that already exist in the code:
 - After any map change run `npm run map` and read the audit table it prints (coastal flags, land neighbours, sea crossings) before trusting it. Coastlines, neighbours and sea crossings come from the shapes; do not hand-type geography from memory. Where the shapes get it wrong, the fix is a pair in `content/map.json` (`land`: joined by land, `sea`: joined by a sea crossing), never a line in the builder.
 - Sweeps are deterministic per seed, so before/after comparisons are fair.
 - Report test results precisely: say whether a number counts an event happening or surviving to the end.
+- Measured results go in `MEASUREMENTS.md`, under a heading naming the change, never in this file. This file holds only rules and design.
 
 ## Map of the code (src/sim.js)
 
