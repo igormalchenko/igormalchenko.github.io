@@ -199,7 +199,7 @@ C.rarities.forEach((r, g) => { const w = `rarities.json ${r.name}`;
     if (!['any', 'coast', 'border', 'target'].includes(d.requires) || !a.eligibility[d.requires]) bad(w, 'unknown or unexplained eligibility');
     if (!Array.isArray(d.effects) || d.effects.length < 1 || d.effects.length > 2) return bad(w, 'needs one or two permanent effects');
     if (new Set(d.effects.map(e => e.fx)).size !== d.effects.length) bad(w, 'duplicate effects');
-    if (d.effects.some(e => e.fx === 'targetFight') !== (d.requires === 'target')) bad(w, 'target eligibility and effect must agree');
+    if (d.effects.some(e => C.effects[e.fx] && C.effects[e.fx].targeted) !== (d.requires === 'target')) bad(w, 'target eligibility and effect must agree');
     d.effects.forEach(e => {
       if (!C.effects[e.fx] || !readFx.has(e.fx) || grants.has(e.fx)) bad(w, `effect ${e.fx} must be a registered, applied permanent modifier`);
       if (!Array.isArray(e.values) || e.values.length !== C.rarities.length || e.values.some(v => !Number.isFinite(v) || v <= 0)) bad(w, 'needs five positive finite strength values');
@@ -208,7 +208,7 @@ C.rarities.forEach((r, g) => { const w = `rarities.json ${r.name}`;
         if (direction === 0 || Math.sign(v - neutral) !== direction || (g && direction * (v - e.values[g - 1]) <= 0)) bad(w, 'each rarity must strengthen the same bonus');
         template(w, e.text, { v, nation: 'X' });
         if (!e.text || !e.text.includes('{v')) bad(w, 'effect wording must state its value');
-        if (e.fx === 'targetFight' && !e.text.includes('{nation}')) bad(w, 'targeted effect must name its target');
+        if (C.effects[e.fx] && C.effects[e.fx].targeted && !e.text.includes('{nation}')) bad(w, 'targeted effect must name its target');
       });
     });
   });
@@ -288,7 +288,7 @@ Object.keys(C.events).forEach(k => { if (!used.has('events.' + k)) bad('events.j
   Object.entries(C.provinces).forEach(([id, p]) => { num(`provinces.json ${id} pop`, p.pop, 0.01, 100); num(`provinces.json ${id} industry`, p.industry, 0, C.rules.build.maxFactories);
     if (!Number.isInteger(p.industry)) bad(`provinces.json ${id}`, 'industry is a number of factories, a whole number'); });
   Object.entries(C.ambitions).forEach(([id, d]) => { if (d.provinces && new Set(d.provinces).size !== d.provinces.length) bad(`ambitions.json ${id}`, 'lists a province twice'); });
-  Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); });
+  Object.entries(C.effects).forEach(([k, d]) => { if (typeof d.none !== 'number') bad(`effects.json ${k}`, 'needs "none", the value that changes nothing'); if (!d.desc) bad(`effects.json ${k}`, 'needs "desc"'); if (d.targeted != null && d.targeted !== true) bad(`effects.json ${k}`, '"targeted" is true or left out'); });
   Object.entries(C.temperaments).forEach(([k, t]) => { ['high', 'low'].forEach(h => { if (!Array.isArray(t[h]) || typeof t[h][0] !== 'number' || typeof t[h][1] !== 'string') bad(`temperaments.json ${k}`, `"${h}" should be [threshold, word]`); });
     if (typeof t.mid !== 'string') bad(`temperaments.json ${k}`, '"mid" should be a word'); });
   if (C.rules.heirs > Object.keys(C.rulers).length) bad('rules.json', `heirs: a card can't show ${C.rules.heirs} different traits out of ${Object.keys(C.rulers).length}`);

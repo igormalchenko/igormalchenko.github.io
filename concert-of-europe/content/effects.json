@@ -39,5 +39,5 @@
   "endGold": {"desc": "Share of the gold he leaves that is spent when his reign ends", "none": 0},
   "civilWar": {"desc": "His reign always ends in civil war, adding this much unrest everywhere", "none": 0},
   "endUnrestOther": {"desc": "Unrest added in other peoples' provinces when his reign ends", "none": 0},
-  "targetFight": {"desc": "Fighting strength against the advance’s named nation only (multiplier)", "none": 1}
+  "targetFight": {"desc": "Fighting strength against the advance’s named nation only (multiplier)", "none": 1, "targeted": true}
 }

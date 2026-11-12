@@ -210,14 +210,14 @@ test('scheduled opportunities are delivered once to living nations, no catch-up;
 // Exercise actual UI formatters repeatedly in a DOM stub, without a browser or randomness.
 test('chooser, nation hovers, top bar and generated Almanac render without changing simulation state', () => {
   const { ctx, create } = engine(); const s = create(7, { player: 'FRA' }); s.chooseHeir(0); ctx.S = s;
-  const els = {}, element = () => ({ innerHTML: '', textContent: '', style: {}, dataset: {}, parentElement: { parentElement: {} }, classList: { add(){}, remove(){}, contains(){return false;} }, querySelector(){return {focus(){}};}, querySelectorAll(){return [];}, addEventListener(){}, focus(){} });
+  const els = {}, element = () => ({ innerHTML: '', textContent: '', style: {}, dataset: {}, classList: { add(){}, remove(){}, contains(){return false;} }, querySelector(){return {focus(){}};}, querySelectorAll(){return [];}, addEventListener(){}, focus(){} });
   ctx.$ = id => els[id] ||= element(); ctx.document = { querySelectorAll: () => [] };
   vm.runInContext(fs.readFileSync(require('node:path').join(__dirname, '../src/ui/registry.js'), 'utf8') + '\nlet selected="FRA"; const fmt=v=>Math.round(v).toLocaleString("en"); const nameSpan=t=>S.C[t].name;\n' + fs.readFileSync(require('node:path').join(__dirname, '../src/ui/panel.js'), 'utf8') + fs.readFileSync(require('node:path').join(__dirname, '../src/ui/almanac.js'), 'utf8'), ctx);
   const before = json(s);
   for (let i = 0; i < 3; i++) vm.runInContext('showAdvance(); renderAdvanceProgress(); SECTIONS.advances.render();', ctx);
   assert.equal(json(s), before); assert.match(els.heirTitle.innerHTML, /Choose a development/);
   assert.equal((els.heirCards.innerHTML.match(/class="fx /g) || []).length <= 6, true);
-  assert.equal(els.reroll.parentElement.parentElement.hidden, true);
+  assert.equal(els.rerolls.hidden, true);
   assert.match(els.advanceProgress.innerHTML, /1836/);
   s.chooseAdvance(0); const hover = vm.runInContext('advanceLines(S.C.FRA.advances[0]).join(". ")', ctx);
   assert.ok(hover.length); assert.doesNotMatch(hover, /undefined|NaN|\{/);

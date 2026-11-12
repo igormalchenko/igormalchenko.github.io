@@ -27,7 +27,7 @@ const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 const nm2 = k => WORDS[k].name;
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
-  $('reroll').parentElement.parentElement.hidden = false;
+  $('rerolls').hidden = false;
   // one line per effect: the main bonus, the flat bonus from Rare up, the malus
   const fxLine = e => `<p class="fx fx-${e.slot}">${iconize(e.text)}</p>`;
   const card = (r, i) => { const g = r.grade;
@@ -59,7 +59,7 @@ function showAdvance(){
   const p = S.pending, c = S.C[p.tag];
   $('heirTitle').innerHTML = ic('advance') + say(CONTENT.advances.choiceTitle, { nation: c.name });
   $('heirSub').textContent = CONTENT.advances.choiceInstructions;
-  $('reroll').parentElement.parentElement.hidden = true;
+  $('rerolls').hidden = true;
   $('heirCards').innerHTML = p.options.map((a, i) => {
     const d = CONTENT.advances.cards[a.id], r = TIER[a.grade];
     return `<button class="heir development tier${a.grade + 1}" data-i="${i}" style="--tc:${r.color};animation-delay:${i * 90}ms">

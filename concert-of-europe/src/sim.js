@@ -32,13 +32,27 @@ function createSim(seed, geo, opts = {}){
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const sig = x => 1 / (1 + Math.exp(-x));
   // Resolve ruler and permanent national contributions in one path. Zero-neutral effects add; unit-neutral effects multiply.
+  // A nation's advance values grouped by effect, in acquisition order; rebuilt only when its list grows or is replaced.
+  // A targeted effect (effects.json `targeted`) keeps the nation it is aimed at and applies only against it.
+  const ADV_FX = new WeakMap();
+  const advFx = c => {
+    const list = c?.advances; if (!list || !list.length) return null;
+    let m = ADV_FX.get(list);
+    if (!m || m.len !== list.length) {
+      m = { len: list.length, by: {} };
+      for (const a of list) for (const e of CONTENT.advances.cards[a.id].effects)
+        (m.by[e.fx] || (m.by[e.fx] = [])).push({ v: e.values[a.grade], target: EFFECTS[e.fx].targeted ? a.target : null });
+      ADV_FX.set(list, m);
+    }
+    return m.by;
+  };
   const fx = (c, k, against = []) => {
     let value = c?.ruler?.fx?.[k] ?? EFFECTS[k].none;
-    const tags = Array.isArray(against) ? against : [against.tag || against];
-    for (const a of c?.advances || []) {
-      if (k === 'targetFight' && !tags.includes(a.target)) continue;
-      for (const e of CONTENT.advances.cards[a.id].effects) if (e.fx === k)
-        value = EFFECTS[k].none === 1 ? value * e.values[a.grade] : value + e.values[a.grade];
+    const vs = advFx(c)?.[k]; if (!vs) return value;
+    const mul = EFFECTS[k].none === 1, foes = EFFECTS[k].targeted && (Array.isArray(against) ? against : [against.tag || against]);
+    for (const { v, target } of vs) {
+      if (foes && !foes.includes(target)) continue;
+      value = mul ? value * v : value + v;
     }
     return value;
   };
@@ -338,12 +352,13 @@ function createSim(seed, geo, opts = {}){
   function geoNaval(i, j){ return (S.navalSet || (S.navalSet = new Set((geo.naval || []).flatMap(([x, y]) => [x + '-' + y, y + '-' + x])))).has(i + '-' + j); }
   function warEval(a, d, r, dExtra = 0, dAlly = null){
     if (a.allies.has(d.tag) || (a.truce[d.tag] || 0) > S.year) return null;
-    let their = theirSide(d, a.tag) + dExtra * quality(d, forecastFoes(a, d));
+    const foesOfD = forecastFoes(a, d);   // who d's side would face, for targeted modifiers
+    let their = theirSide(d, a.tag) + dExtra * quality(d, foesOfD);
     if (warOf(d)) their *= 0.5;   // its armies are busy elsewhere
-    interveners(a, d).forEach(({ m, q }) => { their += strength(m, forecastFoes(a, d)) * q * 0.45; });
+    interveners(a, d).forEach(({ m, q }) => { their += strength(m, foesOfD) * q * 0.45; });
     // Sea crossings grant access to a front; combat gives them no separate strength penalty.
     if (r.core === d.tag) their *= fx(d, 'homeFight');   // a Vengeful defender fights harder for his own land
-    if (dAlly && !d.allies.has(dAlly.tag)) their += strength(dAlly, forecastFoes(a, d)) * 0.8;
+    if (dAlly && !d.allies.has(dAlly.tag)) their += strength(dAlly, foesOfD) * 0.8;
     const ratio = mySide(a, 0, null, forecastFoes(d, a, dAlly)) * (r.core === a.tag ? fx(a, 'homeFight') : 1) / Math.max(1, their * S.era.def);
     const pTrue = pWin(ratio), p = believe(a, ratio);   // what the ruler believes
     if (p < 0.5) return null;
@@ -925,7 +940,6 @@ function createSim(seed, geo, opts = {}){
 
   function step(){
     if (S.over || S.pending) return;
-    offerAdvances(); if (S.pending) return;
     const cs = alive();
     cs.forEach(c => {
       let tax = 0, fac = 0, trade = 0; regionsOf(c).forEach(r => { const x = regionIncome(r, c); tax += x.tax; fac += x.fac; trade += x.trade; });
