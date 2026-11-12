@@ -182,6 +182,36 @@ Moments that already exist in the code:
 - **Union within reach** (`unification`). Proclaim now or wait for a better border.
 - **Royal marriage** (the marriage event). Choose the court; the next heirs carry a claim there.
 
+### Projects (proposed, under discussion)
+
+Great works in the manner of Civilization's wonders: the Suez Canal, the Paris Exposition, the Trans-Siberian Railway, a Dreadnought programme. A new decision for the governor, not for the player.
+
+- **Unique in the world.** Each project can be finished once, by one nation. Several may race for it; when one finishes, the others lose what they put in (the race is the counterweight, design rule 6).
+- **More unlock with time and achievements.** Each project has a year from which it can be started and a condition from the ordinary state (factories, a coast, a union proclaimed, a war won). Both are fields on every project, with a neutral value that means "always".
+- **A commitment.** The nation commits gold up front and the project takes a fixed number of seasons in its capital. It is one more option in `considerations(c)` with an `ev` in gold like any other (design rule 2): its effect over the ruler's horizon minus its cost, discounted by the chance a rival finishes first. No urge scores. The ruler shapes it only through his ordinary effects (a Builder's cheaper factories, a lavish thrift), and the player only through the heir he picks.
+- **The project belongs to its province.** Started in the capital of that day, it stays where it was started (`capitalOf` moves as the economy does). A finished project works for whoever owns the province, so it changes hands by the one land transfer, and conquering it is part of what a province is worth. A project under construction in a lost province is lost.
+- **Content only.** `content/projects.json`, every entry the same shape (name, icon, year, condition, cost, seasons, effects); the effects are read through `fx` exactly like advances, so a new project is a content edit. A finished project shows on the map in its province (design rule 4).
+- **Open:** whether "achievements" means in-game conditions (above) or unlocks across games (metaprogression, which would then add projects to the pool for everyone, like new traits). Whether the player gets to confirm or veto a project when the ministers propose one (that would be a crisis card, and break "no managing between turns" unless it comes as one).
+
+### AI difficulty (proposed, under discussion)
+
+Today AI nations pick their heirs and advances at random. A difficulty level would let them choose instead.
+
+- **Difficulty changes decisions, never stats.** No bonus gold or armies for the AI at any level; design rule 3 holds because the rules stay the same, only the quality of the choosing differs.
+- **Levels.** The easy level is today's random pick. The hard level picks the heir and the advance with the best forecast, in gold, by the same means the ministers use for everything else (design rule 2), never a hand-tuned value per trait. Between them, a level that picks the best with some chance and at random otherwise.
+- **The hard part is the forecast of a card.** Valuing a ruler means running `considerations(c)` as he would see it, or forecasting income under his effects. It must reuse the existing forecast, not a second one.
+- **Sweeps and watch mode** run at one fixed level, so they stay comparable. The level is part of the setup like the seed.
+- **Open:** whether difficulty also sharpens the ministers themselves (for example clearer judgment), which would touch the temperaments below.
+
+### The old ruler temperaments (proposed: remove or rework)
+
+Patience, judgment and thrift (`ruler.pat`, `ruler.bias`, `ruler.thrift`, leaning by nation through `lean`) were the whole of a ruler's character before traits. Now they are a second, hidden character under the card: the heir cards don't show them, yet thrift alone multiplies every cost by a third to three, which can outweigh the trait the player picked. That breaks "what you see is what you get" and doubles the ways a ruler differs.
+
+- **Proposed: remove them.** Every ruler gets the neutral horizon, judgment and thrift; the trait is the whole character. Traits that act on them already exist (`horizon`, `bias`, `swing`, `sharp`, the spending traits), so the variety survives where the player can see it. `content/temperaments.json`, `lean` and the panel's temperament tags go.
+- **What it costs.** Random misjudgment and thrift are a large share of the chaos (design rule 5): wars and crises will likely fall. Measure with a 40-world sweep and replace the lost chaos with visible inputs (new traits, events, eras), not by bringing back hidden rolls.
+- **The alternative, rework:** keep them but put them on the card face up, as a second line of character. That keeps the variety but makes each card harder to read at once.
+- **Open:** remove or rework; and whether a nation's lean (Prussia hawkish, Britain far-sighted) is worth keeping as a field in `content/nations.json` once rulers no longer carry it.
+
 ## Workflow
 
 - **"Locally" means edit and build only.** When the user asks for a change "locally", edit the files and run `npm run build`; don't start a web server. Before handing over, open the built `index.html` straight from disk (`file://`) in the browser pane and screenshot it yourself; the user then reviews it. Don't commit or push until the user says so.
