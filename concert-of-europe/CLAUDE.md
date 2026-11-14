@@ -2,6 +2,12 @@
 
 Read README.md first for what this is and why. This file holds the design rules that were settled deliberately; do not undo them without asking.
 
+## Aim: autonomous development that stays simple
+
+The goal is a codebase and harness ready for unattended work from a prompt like "make the game fun": the AI can invent and ship several features, and the user can keep some and discard others on taste without having to rescue their implementation. Engineering quality should follow from how the system is built, rather than depend on the AI's intelligence or care. Preparing the system for this is part of the work.
+
+Good development leaves the system dumb and able to remain dumb. A mechanic that produces edge cases is a candidate for simplification or removal, including an existing mechanic; one that fits the ordinary rules is a candidate to stay. Change the design before accumulating patches around it. The harness should expose and resist that accumulation; passing tests does not make exceptions acceptable. Apply this understanding to changes to the engine and harness as well as gameplay.
+
 ## Rule 0: commit and push every time
 
 When a change is done, commit it and push it to `master` without asking for confirmation, every time. Commit everything in the working tree, including changes another chat left behind. The only exception is when the user explicitly says not to commit or not to push.
