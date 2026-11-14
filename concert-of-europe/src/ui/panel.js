@@ -25,9 +25,16 @@ const emblem = r => r && r.trait ? `<svg class="emb" viewBox="-8 -8 16 16" role=
 // one heir per card: who he is (the title he will be known by), his character in a line, what he does
 const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
 const nm2 = k => WORDS[k].name;
+// a few free rerolls a game for each kind of card; then one more will be for sale (no payment yet)
+function showReroll(){
+  const left = S.rerolls[S.pending.type];
+  $('rerolls').hidden = false;
+  $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $${RULES.price.reroll}`;
+  $('reroll').disabled = false; $('reroll').classList.remove('nope'); $('rerollNote').textContent = '';
+  Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
+}
 function showHeir(){
   const p = S.pending, c = S.C[p.tag];
-  $('rerolls').hidden = false;
   // one line per effect: the main bonus, the flat bonus from Rare up, the malus
   const fxLine = e => `<p class="fx fx-${e.slot}">${iconize(e.text)}</p>`;
   const card = (r, i) => { const g = r.grade;
@@ -44,11 +51,7 @@ function showHeir(){
   $('heirSub').textContent = p.opening ? 'Pick a ruler. The ministers run everything else.'
     : `${why}${p.crisis ? ' Rival claimants will fight whoever you pick.' : ''}`;
   $('heirCards').innerHTML = p.options.map(card).join('');
-  // three free rerolls a game; the fourth will be for sale (no payment yet)
-  const left = S.rerolls;
-  $('reroll').textContent = left > 0 ? `${nm2('reroll')} (${left} left)` : `${nm2('reroll')} · $${RULES.price.reroll}`;
-  $('reroll').disabled = false; $('reroll').classList.remove('nope'); $('rerollNote').textContent = '';
-  Object.assign($('reroll').dataset, { tip: WORDS.reroll.name, desc: WORDS.reroll.desc });
+  showReroll();
   $('heirModal').classList.add('on');
   $('heirCards').querySelector('.heir').focus();
 }
@@ -59,7 +62,7 @@ function showAdvance(){
   const p = S.pending, c = S.C[p.tag];
   $('heirTitle').innerHTML = ic('advance') + say(CONTENT.advances.choiceTitle, { nation: c.name });
   $('heirSub').textContent = CONTENT.advances.choiceInstructions;
-  $('rerolls').hidden = true;
+  showReroll();
   $('heirCards').innerHTML = p.options.map((a, i) => {
     const d = CONTENT.advances.cards[a.id], r = TIER[a.grade];
     return `<button class="heir development ${tierClass(a.grade)}" data-i="${i}" style="${tierStyle(a.grade)};animation-delay:${i * 90}ms">

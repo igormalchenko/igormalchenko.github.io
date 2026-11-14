@@ -14,7 +14,7 @@ $('again').onclick = freshWorld;
 $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
 $('reroll').onclick = () => {
-  if (S.rerollHeirs()) { showHeir(); return; }
+  if (S.reroll()) { (S.pending.type === 'advance' ? showAdvance : showHeir)(); return; }
   // out of free rerolls: the paid one isn't built yet, so the button shakes and says so
   const b = $('reroll'); $('rerollNote').textContent = 'Coming soon';
   b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope');
@@ -38,7 +38,7 @@ document.addEventListener('keydown', e => {
   if (e.key === ' ' && e.target.tagName === 'BUTTON' && e.target.closest('.modal')) return;
   // the number on a card resolves the current mandatory choice
   if (S.pending && $('heirModal').classList.contains('on') && /^[1-9]$/.test(e.key) && +e.key <= S.pending.options.length) { const b = $('heirCards').querySelector(`.heir[data-i="${+e.key - 1}"]`); if (b) b.click(); return; }
-  if (S.pending && S.pending.type === 'heir' && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
+  if (S.pending && $('heirModal').classList.contains('on') && (e.key === 'r' || e.key === 'R')) { if (!$('reroll').disabled) $('reroll').click(); return; }
   if (S.pending) return;
   if (e.key === ' ' || e.key === 'p' || e.key === 'P') { e.preventDefault(); if (document.querySelector('.modal.on')) return; timer ? stopAuto() : startAuto(); }
   if ((e.key === 'a' || e.key === 'A') && !document.querySelector('.modal.on')) { e.preventDefault(); openAlmanac(); return; }

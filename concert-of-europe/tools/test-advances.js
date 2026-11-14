@@ -22,10 +22,22 @@ test('opening ruler precedes development; invalid choices and rendering draws ar
   assert.equal(s.pending.type,'heir');assert.equal(s.C.A.advances.length,0);s.chooseHeir(0);
   assert.equal(s.pending.type,'advance');const before=json(s);
   for(const i of [-1,s.pending.options.length,NaN,0.5])assert.equal(s.chooseAdvance(i),false);
-  s.step();assert.equal(json(s),before);assert.equal(s.rerollHeirs(),false);
+  s.step();assert.equal(json(s),before);
   assert.equal(s.chooseAdvance(0),true);assert.equal(s.chooseAdvance(0),false);
   assert.equal(s.nextAdvanceYear(),C.advances.years[1]);
 });
+test('heir and advance cards each spend their own rerolls',()=>{
+  const {C,create}=engine(),s=create(7,{player:'A'});
+  assert.equal(s.pending.type,'heir');
+  for(let k=0;k<C.rules.rerolls.heir;k++)assert.equal(s.reroll(),true);
+  assert.equal(s.reroll(),false);assert.equal(s.pending.type,'heir');s.chooseHeir(0);
+  assert.equal(s.pending.type,'advance');assert.equal(s.rerolls.advance,C.rules.rerolls.advance);
+  const n=s.pending.options.length,draws=[JSON.stringify(s.pending.options)];
+  for(let k=0;k<C.rules.rerolls.advance;k++){assert.equal(s.reroll(),true);assert.equal(s.pending.type,'advance');assert.equal(s.pending.options.length,n);draws.push(JSON.stringify(s.pending.options));}
+  assert.equal(s.reroll(),false);assert.ok(new Set(draws).size>1);
+  assert.equal(s.chooseAdvance(0),true);assert.equal(s.rerolls.heir,0);
+});
+test('watch mode has no rerolls',()=>{const {create}=engine(),s=create(7);assert.equal(JSON.stringify(s.rerolls),'{"heir":0,"advance":0}');assert.equal(s.reroll(),false);});
 test('offers use independent rarity rolls, categories, eligibility and the strongest available target',()=>{
   const {C,create}=engine(),s=create();blank(s);const c=s.C.E;c.rival='A';c.allies.clear();
   const counts=C.rarities.map(()=>0),n=2000;

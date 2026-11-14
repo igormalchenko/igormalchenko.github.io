@@ -168,7 +168,7 @@
   },
   "reroll": {
     "name": "Reroll",
-    "desc": "Deal {rules.heirs|word} new heirs instead of these (key R). {rules.rerolls|Word} free rerolls a game.",
+    "desc": "Deal this card again (key R). Free rerolls a game: {rules.rerolls.heir|word} for heir cards, {rules.rerolls.advance|word} for advance cards.",
     "word": true,
     "avoid": []
   },

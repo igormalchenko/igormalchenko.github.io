@@ -66,7 +66,7 @@ function createSim(seed, geo, opts = {}){
   // a nation's ruler names, or else its people's (the check makes sure one of them has some)
   const namesOf = c => c.namePool === 'people' ? PEOPLES[c.culture].names : c.rulerNames;
 
-  const S = { seed, player: opts.player || null, pending: null, rerolls: opts.player ? RULES.rerolls : 0, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, forecastLeader: null, phase: 'season', inSeason: false, reignQueue: [],
+  const S = { seed, player: opts.player || null, pending: null, rerolls: { heir: opts.player ? RULES.rerolls.heir : 0, advance: opts.player ? RULES.rerolls.advance : 0 }, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, forecastLeader: null, phase: 'season', inSeason: false, reignQueue: [],
     marks: [], warNames: {}, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: Object.fromEntries(Object.keys(PEOPLES).map(id => [id, 0])), majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0, dead: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
@@ -147,10 +147,11 @@ function createSim(seed, geo, opts = {}){
     const names = namesOf(c).map(n => [rng(), n]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
     return { type: 'heir', tag: c.tag, opening, year: S.year, options: slots.map((s, i) => makeRuler(c, { ...s, nm: names[i % names.length] })), old: c.ruler.name, why, crisis };
   }
-  // the player may deal a card again, three times a game; AI nations pick at random and never need to
-  function rerollHeirs(){
-    const p = S.pending; if (!p || p.type !== 'heir' || !(S.rerolls > 0)) return false;
-    S.rerolls--; S.pending = heirCard(S.C[p.tag], p.opening, p.why, p.crisis); return true;
+  // the player may deal a waiting card again, a few times a game for each kind of card; AI nations pick at random and never need to
+  const redeal = { heir: p => heirCard(S.C[p.tag], p.opening, p.why, p.crisis), advance: p => ({ ...p, options: drawAdvances(S.C[p.tag]) }) };
+  function reroll(){
+    const p = S.pending; if (!p || !(S.rerolls[p.type] > 0)) return false;
+    S.rerolls[p.type]--; S.pending = redeal[p.type](p); return true;
   }
   function chooseHeir(i){
     const p = S.pending; if (!p || p.type !== 'heir' || !Number.isInteger(i) || !p.options[i]) return false;
@@ -1155,7 +1156,7 @@ function createSim(seed, geo, opts = {}){
     for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng();
     S.pending = heirCard(pc, true); }
   offerAdvances();
-  Object.assign(S, { chooseAdvance, nextAdvanceYear, chooseHeir, rerollHeirs, step, alive, considerations, SEASONS, riskOf, thriftOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
+  Object.assign(S, { chooseAdvance, nextAdvanceYear, chooseHeir, reroll, step, alive, considerations, SEASONS, riskOf, thriftOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
   return S;
 }
 

@@ -6,7 +6,7 @@
     "In {rules.start} every province starts at {rules.setup.unrest} unrest, and every nation with {rules.setup.gold.0} to {rules.setup.gold.1} gold and an army between {rules.setup.army.0|pct} and {rules.setup.army.1|pct} of its listed size."
   ],
   "Heirs": [
-    "Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls|word} times a game.",
+    "Each heir card offers {rules.heirs|word} heirs, and the player may deal again {rules.rerolls.heir|word} times a game.",
     "Every heir is a rarity and a trait. A {rarities.0.name} or {rarities.1.name} ruler has a bonus and a malus; from {rarities.2.name} on he also brings a one-time bonus at his coronation. The rarer he is, the bigger the bonus and the smaller the malus.",
     "More rerolls will be for sale at ${rules.price.reroll} each; they are not for sale yet."
   ],
@@ -72,7 +72,7 @@
   "Development": [
     "Every living nation receives a development offer in {advances.season|season} of {advances.years|list}, using the game calendar. The opening player offer follows the opening ruler choice. There are no retrospective awards for missed opportunities.",
     "Each offer contains one eligible, unowned advance from each category: {advances.categories.military.name}, {advances.categories.economy.name} and {advances.categories.government.name}. Identities are random within categories; an unavailable category is filled from the remaining eligible pool without duplicates.",
-    "The player must choose one face-up card and the game pauses until resolved. AI nations receive equivalent offers and choose randomly. Advances cost no gold and cannot be rerolled.",
+    "The player must choose one face-up card and the game pauses until resolved. AI nations receive equivalent offers and choose randomly. Advances cost no gold. The player may deal an advance card again {rules.rerolls.advance|word} times a game, apart from the heir rerolls.",
     "Each offered card independently draws its rarity: {rarities.0.name} {rarities.0.odds|pct}, {rarities.1.name} {rarities.1.odds|pct}, {rarities.2.name} {rarities.2.odds|pct}, {rarities.3.name} {rarities.3.odds|pct}, {rarities.4.name} {rarities.4.odds|pct}. Rarity strengthens the same effects without adding grants or penalties. Every advance has one or two effects at every rarity, with no added grants, penalties or levels.",
     "Advances belong to the nation and survive ruler changes. Each can be acquired only once, regardless of rarity, with no upgrades or replacements. Percentage modifiers multiply with other advances and the ruler; planning years add. Costs stay positive through multiplication.",
     "Coast cards require a coastal province; border cards require a living neighbour. Targeted cards require a living neighbouring non-ally and name a fixed target when offered, preferring the rival, otherwise the strongest eligible neighbour. The target strength bonus applies only against that nation; casualty reductions apply to every battle.",
