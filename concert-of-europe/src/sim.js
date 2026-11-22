@@ -25,6 +25,8 @@ function advanceEffects(a, nation = a.target ? CONTENT.nations[a.target].name : 
     text: say(e.text, { v: e.values[a.grade], nation }) }));
 }
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
+// Storage budgets for continued worlds, independent of the simulation's content and rules.
+const CONTINUATION_HISTORY = { log: 5000, years: 512, marks: 4 };
 
 function createSim(seed, geo, opts = {}){
   if (opts.player && !Object.hasOwn(COUNTRIES, opts.player)) throw new Error(`Unknown starting player nation: ${opts.player}`);
@@ -67,7 +69,7 @@ function createSim(seed, geo, opts = {}){
   const namesOf = c => c.namePool === 'people' ? PEOPLES[c.culture].names : c.rulerNames;
 
   const S = { seed, player: opts.player || null, pending: null, rerolls: { heir: opts.player ? RULES.rerolls.heir : 0, advance: opts.player ? RULES.rerolls.advance : 0 }, t: 0, year: RULES.start, q: 0, regions: [], C: Object.create(null), wars: [], log: [], history: [], events: Object.fromEntries(Object.keys(EV).map(id => [id, false])), modifiers: [], over: false, forecastLeader: null, phase: 'season', inSeason: false, reignQueue: [],
-    marks: [], warNames: {}, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: Object.fromEntries(Object.keys(PEOPLES).map(id => [id, 0])), majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0, dead: 0 } };
+    continued: false, marks: [], warNames: {}, era: (e => ({ of: e, name: e.name, def: e.def, fort: e.fort, since: RULES.start }))(CONTENT.eras.find(e => e.start)), awake: Object.fromEntries(Object.keys(PEOPLES).map(id => [id, 0])), majors: [], greatWar: null, stats: { wars: 0, revolts: 0, battles: 0, rulers: 0, dead: 0 } };
 
   REGIONS.forEach((r, i) => S.regions.push({ i, id: r[0], name: r[1], owner: r[4], core: r[4], culture: r[5], pop: r[6],
     fac: r[7], fort: 0, build: null, unrest: RULES.setup.unrest, occ: null, battle: 0, flash: 0, integ: 1,
@@ -1111,6 +1113,24 @@ function createSim(seed, geo, opts = {}){
     alive().forEach(c => { if (!c.ruler.ended && S.t >= c.ruler.until) endReign(c, 'death'); });
   }
   function recordHistory(){ if (S.q === 3) S.history.push({ y: S.year, p: Object.fromEntries(alive().map(c => [c.tag, score(c)])) }); }
+  function advanceDate(){
+    S.phase = 'season';
+    S.t++; S.year = RULES.start + Math.floor(S.t / 4); S.q = S.t % 4;
+    tickModifiers();
+    offerAdvances();
+    if (S.continued) {
+      S.log.splice(0, Math.max(0, S.log.length - CONTINUATION_HISTORY.log));
+      S.history.splice(0, Math.max(0, S.history.length - CONTINUATION_HISTORY.years));
+      S.marks = S.marks.filter(m => S.t - m.t <= CONTINUATION_HISTORY.marks);
+    }
+  }
+  function continueGame(){
+    if (!S.over) return false;
+    S.continued = true; S.over = false;
+    // The final season and its history are already complete; resume at the next date.
+    advanceDate();
+    return true;
+  }
   function step(){
     if (S.over || S.pending) return;
     if (S.phase === 'season') {
@@ -1139,10 +1159,7 @@ function createSim(seed, geo, opts = {}){
       L('event', `<strong>The age ends.</strong> ${rich ? `${N(rich)} is the richest great power. ` : ''}${united.length ? `${list(united)} still ${united.length > 1 ? 'hold their peoples' : 'holds its people'} together. ` : 'No united people outlives the war. '}${survivors.length ? `${list(survivors)} survive${survivors.length > 1 ? '' : 's'}.` : ''}`);
       return;
     }
-    recordHistory(); S.phase = 'season';
-    S.t++; S.year = RULES.start + Math.floor(S.t / 4); S.q = S.t % 4;
-    tickModifiers();
-    offerAdvances();
+    recordHistory(); advanceDate();
   }
 
   birthNations(Object.keys(COUNTRIES).map(tag => ({ tag, provinces: S.regions.filter(r => r.owner === tag), from: null })));
@@ -1156,7 +1173,7 @@ function createSim(seed, geo, opts = {}){
     for (let i = [...pc.tag].reduce((a, ch) => a + ch.charCodeAt(0), 0) % 13; i > 0; i--) rng();
     S.pending = heirCard(pc, true); }
   offerAdvances();
-  Object.assign(S, { chooseAdvance, nextAdvanceYear, chooseHeir, reroll, step, alive, considerations, SEASONS, riskOf, thriftOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
+  Object.assign(S, { chooseAdvance, nextAdvanceYear, chooseHeir, reroll, step, continueGame, alive, considerations, SEASONS, riskOf, thriftOf, inCrisis, TRAITS, traitDesc, capitalOf, landNeighbors });
   return S;
 }
 

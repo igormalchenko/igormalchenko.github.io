@@ -1,6 +1,7 @@
 {
   "The age": [
     "The age runs from {rules.start} to the armistice of {rules.end.season|season} {rules.end.year}.",
+    "After the armistice results, Continue playing resumes the same world. Charts and the chronicle keep recent history, and historical events and development offers keep their existing schedules.",
     "The year runs {rules.seasons|list}, and every nation decides once a season.",
     "The {events.greatWar.name} breaks out in the {events.greatWar.schedule.season|season} of {events.greatWar.schedule.from}.",
     "In {rules.start} every province starts at {rules.setup.unrest} unrest, and every nation with {rules.setup.gold.0} to {rules.setup.gold.1} gold and an army between {rules.setup.army.0|pct} and {rules.setup.army.1|pct} of its listed size."

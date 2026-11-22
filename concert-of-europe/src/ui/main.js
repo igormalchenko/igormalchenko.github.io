@@ -11,6 +11,10 @@ $('reworld').onclick = freshWorld;
 $('seed').onclick = () => { if (S.over) { freshWorld(); return; } stopAuto(); $('newModal').classList.add('on'); $('abandon').focus(); };
 $('abandon').onclick = () => { $('newModal').classList.remove('on'); freshWorld(); };
 $('again').onclick = freshWorld;
+$('continue').onclick = () => {
+  if (!S.continueGame()) return;
+  $('endModal').classList.remove('on'); render(); checkPending(); startAuto();
+};
 $('watch').onclick = () => $('startModal').classList.remove('on');
 $('startBody').addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (!b) return; e.stopPropagation(); $('startModal').classList.remove('on'); newWorld(S.seed, b.dataset.play); });
 $('reroll').onclick = () => {

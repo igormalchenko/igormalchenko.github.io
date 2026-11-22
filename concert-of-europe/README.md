@@ -30,6 +30,8 @@ Around that loop: wars are fought province by province (occupation, front lines,
 
 Click any province or country to see its ruler, budget, forecasts and history.
 
+At the armistice, choose **Continue playing** to keep the same world running beyond 1918. Historical events and development offers finish on their existing schedules; the ordinary simulation and ruler choices continue. Continued worlds retain the latest 5,000 chronicle entries and 512 annual income snapshots, and discard expired map markers. Population growth is unchanged.
+
 You can watch, or rule one country. A ruling player makes no day-to-day decisions: the country's ministers (the same AI as everyone else) run the state, and the player chooses its sovereign from three very different heirs in 1836 and at every succession. The game pauses for each choice.
 
 ## Running it
