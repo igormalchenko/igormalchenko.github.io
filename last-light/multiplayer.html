@@ -126,7 +126,7 @@ Do not replace useful state with atmospheric text or giant onboarding copy.
 #mpInlineStatus{font:10px var(--mono);color:#b4dcbd}
 .mpPanel{position:fixed;inset:0;z-index:60;background:#031009ea;display:grid;place-items:center;padding:14px;overflow:auto}
 .mpBox{width:min(500px,100%);max-height:95dvh;overflow:auto;background:#11251b;border:1px solid #496c51;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.mpBox .row{flex-wrap:wrap}.mpBox textarea{width:100%;min-height:85px;resize:vertical;white-space:pre-wrap;background:#0b1a13;color:#d4e9d8;border:1px solid #426047;border-radius:5px;padding:8px;font:11px var(--mono)}
+.mpBox .row{flex-wrap:wrap}.mpBox input{width:100%;max-width:220px;min-height:46px;background:#0b1a13;color:#e4f5e6;border:1px solid #507458;border-radius:6px;padding:7px 10px;font:700 27px var(--mono);letter-spacing:.19em;text-align:center}.roomCode{font:750 clamp(30px,7vw,45px) var(--mono);letter-spacing:.2em;color:#c5edca;font-variant-numeric:tabular-nums;user-select:all}.mpBox .mpHelp{margin:0}
 .mpBox label{font:10px var(--mono);color:#abc6af}.mpHelp{font-size:11px;line-height:1.5;color:#a6c1ad}.mpBox button{min-height:32px}
 #pilotScreen{position:fixed;inset:0;z-index:35;display:flex;flex-direction:column;background:#08140f;min-height:0}
 .pilotHeader{height:42px;flex:none;background:#0b1d15;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 12px;font:11px var(--mono)}
@@ -134,16 +134,33 @@ Do not replace useful state with atmospheric text or giant onboarding copy.
 .pilotView{position:relative;flex:1;min-height:180px;overflow:hidden;background:#08140f}
 #pilotCanvas{display:block;width:100%;height:100%}
 #pilotStage{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);white-space:nowrap;color:#dfd29b;font:12px var(--mono);pointer-events:none}
-.pilotFooter{flex:none;min-height:180px;display:grid;grid-template-columns:minmax(170px,1fr) minmax(275px,1.1fr);gap:12px;padding:12px;border-top:1px solid #344f3c;background:#102019}
-.pilotFly{display:flex;flex-direction:column;gap:8px}.pilotStats{display:flex;gap:13px;font:11px var(--mono);color:#b9d8c1;flex-wrap:wrap}
-.pilotSteer{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1}.pilotSteer .btn{min-height:58px;font:650 15px var(--mono);touch-action:none;user-select:none}
-.pilotComms{min-width:0;display:flex;flex-direction:column;gap:7px}
-#pilotRadioLog{height:80px;min-height:60px;overflow-y:auto;background:#0e2017;border:1px solid #33513c;border-radius:6px;padding:6px;font:11px/1.5 var(--sans)}
+/* Pilot: same cartographic language as ATC, with readable instrumentation. */
+.pilotFooter{flex:none;display:grid;grid-template-columns:minmax(290px,1.05fr) minmax(280px,1fr);gap:12px;padding:10px 12px;border-top:1px solid #344f3c;background:#102019}
+.pilotFly{display:flex;flex-direction:column;min-width:0;gap:8px}
+.pilotInstruments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.pilotInstrument{min-width:0;display:flex;flex-direction:column;gap:4px;padding:9px 10px 8px;background:#0d2017;border:1px solid #385943;border-radius:6px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pilotInstrumentName{font-size:10px;letter-spacing:.06em;color:#a9c6b0}
+.pilotInstrumentValue{color:#edf5eb;font-size:clamp(19px,2.2vw,27px);font-weight:700;letter-spacing:-.04em;white-space:nowrap;line-height:1.18}
+.pilotInstrumentStatus{font-size:10px;letter-spacing:.025em;color:#9bcca9}
+.pilotInstrument.failed{border-color:#816454}.pilotInstrument.failed .pilotInstrumentValue,.pilotInstrument.failed .pilotInstrumentStatus{color:#e3a9a0}
+.pilotInstrument.low .pilotInstrumentValue{color:#efcf91}
+.pilotInstrument.unreliable{border-color:#8f774c}.pilotInstrument.unreliable .pilotInstrumentStatus{color:#e5c58b}
+.pilotSteer{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pilotSteer .btn{min-height:48px;font:650 13px var(--mono);touch-action:none;user-select:none}
+.pilotComms{min-width:0;display:flex;flex-direction:column;gap:6px}
+#pilotRadioLog{height:82px;min-height:55px;overflow-y:auto;background:#0e2017;border:1px solid #33513c;border-radius:6px;padding:6px;font:11px/1.5 var(--sans)}
 .mpLine{margin-bottom:4px;overflow-wrap:anywhere}.mpLine span{font:10px var(--mono);color:#a7c5b0}
 .pilotQuick{display:flex;gap:4px;flex-wrap:wrap}.pilotQuick .btn{min-height:26px;padding:4px 7px;font-size:10px}
 .pilotReply{display:flex;gap:6px}.pilotReply input,.mpChat input{min-width:0;flex:1;border:1px solid #426047;border-radius:6px;background:#0a1a12;color:#e3efe1;padding:8px}
 .mpChat{display:flex;gap:5px}.mpChat .btn{padding:6px 8px}
-@media(max-width:700px){.pilotFooter{display:flex;flex-direction:column;gap:8px;padding:8px}.pilotSteer .btn{min-height:48px}.pilotComms{gap:5px}#pilotRadioLog{height:74px}.pilotHeader{gap:7px;padding:0 8px}}
+@media(max-width:760px){
+ .pilotFooter{display:flex;flex-direction:column;gap:8px;padding:8px;max-height:min(58dvh,510px);overflow-y:auto}
+ .pilotInstrument{padding:7px 8px;gap:3px}.pilotInstrumentValue{font-size:clamp(19px,5vw,26px)}
+ .pilotSteer .btn{min-height:44px}
+ .pilotComms{gap:5px}#pilotRadioLog{height:62px;min-height:46px}
+ .pilotHeader{gap:7px;padding:0 8px}
+}
+@media(max-width:350px){.pilotInstrument{padding:6px}.pilotInstrumentValue{font-size:18px}.pilotInstrumentName,.pilotInstrumentStatus{font-size:9px}}
 
 </style>
 </head>
@@ -192,15 +209,19 @@ Do not replace useful state with atmospheric text or giant onboarding copy.
 <div class="mpPanel hide" id="mpPanel" role="dialog" aria-label="Two-player connection" aria-modal="true"><section class="mpBox">
  <div class="row"><strong class="brand" id="mpRole">TWO PLAYERS</strong><button class="btn ghost" id="mpClose">Close</button></div>
  <div class="row"><button class="btn" id="mpHost">Host as ATC</button><button class="btn" id="mpJoin">Join as pilot</button></div>
- <p class="mpHelp">ATC sends an offer. Pilot sends an answer. Direct WebRTC needs a peer-to-peer network route; some networks block it.</p>
- <div id="mpConnect" class="hide"><label for="mpIn" id="mpPasteLabel">Paste connection code</label><textarea id="mpIn" spellcheck="false" autocapitalize="off" placeholder="Paste code here"></textarea><button class="btn" id="mpApply">Connect</button></div>
- <div id="mpOutWrap" class="hide"><label for="mpOut">Send this code to the other player</label><textarea id="mpOut" readonly aria-label="Connection code"></textarea><button class="btn" id="mpCopy">Copy code</button></div>
+ <div id="mpRoomWrap" class="hide"><span class="cap">ROOM CODE</span><div class="roomCode" id="mpRoomCode" aria-label="Six digit room code">······</div><p class="mpHelp">Tell the pilot this number.</p></div>
+ <div id="mpConnect" class="hide"><label for="mpIn">ROOM CODE</label><div class="row"><input id="mpIn" type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]{6}" maxlength="6" spellcheck="false" aria-label="Six digit room code" placeholder="000000"><button class="btn primary" id="mpApply">Join room</button></div></div>
  <p class="mpHelp" id="mpStatus" role="status">Choose a role.</p>
+ <p class="mpHelp">Internet required to connect. No game server.</p>
 </section></div>
 <div id="pilotScreen" class="hide" aria-label="Pilot cockpit">
  <header class="pilotHeader"><strong>LAST LIGHT</strong><span id="pilotName">PILOT</span><span id="pilotClock">00:00</span><span id="pilotConnection">CONNECTING</span></header>
- <div class="pilotView"><canvas id="pilotCanvas" aria-label="Very limited view of nearby terrain ahead and to the sides"></canvas><div id="pilotStage">Waiting for ATC…</div></div>
- <div class="pilotFooter"><div class="pilotFly"><div class="pilotStats"><span id="pilotHeading">HDG —</span><span id="pilotSpeed">— KT</span><span id="pilotFuel">FUEL —</span></div><div class="pilotSteer"><button class="btn" id="pilotLeft" disabled>← TURN LEFT</button><button class="btn" id="pilotRight" disabled>TURN RIGHT →</button></div><span class="controlHint">Hold ← / → or A / D to turn. Release to fly straight.</span></div>
+ <div class="pilotView"><canvas id="pilotCanvas" aria-label="Limited top-down terrain view oriented to the aircraft, without a north marker"></canvas><div id="pilotStage">Waiting for ATC…</div></div>
+ <div class="pilotFooter"><div class="pilotFly"><div class="pilotInstruments" aria-label="Aircraft instruments">
+ <div class="pilotInstrument" id="pilotCompassBox"><span class="pilotInstrumentName">COMPASS</span><strong class="pilotInstrumentValue" id="pilotHeading">—</strong><span class="pilotInstrumentStatus" id="pilotCompassStatus">NO READING</span></div>
+ <div class="pilotInstrument" id="pilotSpeedBox"><span class="pilotInstrumentName">AIRSPEED</span><strong class="pilotInstrumentValue" id="pilotSpeed">— kt</strong><span class="pilotInstrumentStatus" id="pilotSpeedStatus">NO READING</span></div>
+ <div class="pilotInstrument" id="pilotFuelBox"><span class="pilotInstrumentName">FUEL</span><strong class="pilotInstrumentValue" id="pilotFuel">— min</strong><span class="pilotInstrumentStatus" id="pilotFuelStatus">NO READING</span></div>
+ </div><div class="pilotSteer"><button class="btn" id="pilotLeft" disabled>← TURN LEFT</button><button class="btn" id="pilotRight" disabled>TURN RIGHT →</button></div><span class="controlHint">Hold ← / → or A / D to turn. Release to fly straight.</span></div>
  <div class="pilotComms"><div class="row"><span class="cap">RADIO</span><span class="controlHint">Report only what you can see.</span></div><div id="pilotRadioLog" role="log" aria-live="polite"></div>
  <div class="pilotQuick"><button class="btn ghost" data-pilot-report="left" disabled>Left</button><button class="btn ghost" data-pilot-report="ahead" disabled>Ahead</button><button class="btn ghost" data-pilot-report="right" disabled>Right</button><button class="btn ghost" data-pilot-report="heading" disabled>Heading / speed</button><button class="btn ghost" data-pilot-report="fuel" disabled>Fuel</button></div>
  <div class="pilotReply"><input id="pilotRadioInput" maxlength="180" placeholder="Tell ATC what you see" aria-label="Radio reply"><button id="pilotSend" class="btn primary" disabled>Send</button></div></div></div>
@@ -785,9 +806,9 @@ function ellipse(x,y,rx,ry,col,stroke){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0
 // Tiny vector landmarks stay legible at different zoom levels and never rely on font glyphs.
 // A dark under-stroke preserves contrast against terrain fills without radar-like badges.
 const TERRAIN_NAME={woods:'Woods',water:'Water',ridge:'High ground',town:'Settlement',road:'Road'};
-function terrainSymbol(l,x,y){
- ctx.save();ctx.translate(Math.round(x)+.5,Math.round(y)+.5);
- ctx.lineCap='round';ctx.lineJoin='round';
+function terrainSymbol(l,x,y,g=ctx){
+ g.save();g.translate(Math.round(x)+.5,Math.round(y)+.5);
+ g.lineCap='round';g.lineJoin='round';
  const strokes=[];let color;
  if(l.type==='woods'){
   color='#acd2a8';
@@ -805,17 +826,28 @@ function terrainSymbol(l,x,y){
   color='#e6cf9e';
   strokes.push([[-7,-8],[-4,-5],[-5,1],[-8,7]],[[5,-8],[8,-2],[6,3],[8,8]]);
  }
- const paint=(width,ink)=>{ctx.beginPath();for(const pts of strokes){pts.forEach(([px,py],i)=>i?ctx.lineTo(px,py):ctx.moveTo(px,py));}ctx.strokeStyle=ink;ctx.lineWidth=width;ctx.stroke();};
+ const paint=(width,ink)=>{g.beginPath();for(const pts of strokes){pts.forEach(([px,py],i)=>i?g.lineTo(px,py):g.moveTo(px,py));}g.strokeStyle=ink;g.lineWidth=width;g.stroke();};
  paint(3.6,'#0b1b15');paint(1.65,color);
- if(l.type==='road'){ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(-1,-7);ctx.lineTo(0,7);ctx.strokeStyle='#e6cf9e';ctx.lineWidth=1.3;ctx.stroke();}
- ctx.restore();
+ if(l.type==='road'){g.setLineDash([2,3]);g.beginPath();g.moveTo(-1,-7);g.lineTo(0,7);g.strokeStyle='#e6cf9e';g.lineWidth=1.3;g.stroke();}
+ g.restore();
 }
+// One terrain geometry and symbol system for both ATC and pilot views.
+function terrainPoints(l,project){const points=[];
+ for(let i=0;i<=25;i++){const a=i/25*PI*2,variation=1+.07*Math.sin(a*7+l.x);
+  points.push(project(l.x+Math.cos(a)*l.rx*variation,l.y+Math.sin(a)*l.ry*variation));}
+ return points;
+}
+function terrainPaint(type){return{
+ fill:type==='woods'?'#243c2b':type==='water'?'#173f48':type==='ridge'?'#38433b':type==='town'?'#544d3a':'#564b36',
+ stroke:type==='water'?'#507e87':type==='woods'?'#4b7453':type==='ridge'?'#6f8270':'#85745e'};
+}
+function terrainPath(g,points){g.beginPath();points.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();}
 function terrain(){for(const l of LAND){const [x,y]=xy(l.x,l.y),rx=l.rx*view.scale,ry=l.ry*view.scale;if(rx<3)continue;
- let fill=l.type==='woods'?'#243c2b':l.type==='water'?'#173f48':l.type==='ridge'?'#38433b':l.type==='town'?'#544d3a':'#564b36';let stroke=l.type==='water'?'#507e87':l.type==='woods'?'#4b7453':l.type==='ridge'?'#6f8270':'#85745e';
- ctx.beginPath();for(let i=0;i<=25;i++){const a=i/25*PI*2,variation=1+.07*Math.sin(a*7+l.x);const px=x+Math.cos(a)*rx*variation,py=y+Math.sin(a)*ry*variation;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=.9;ctx.stroke();
- // Skip tiny features that cannot support a crisp symbol at this zoom.
+ const {fill,stroke}=terrainPaint(l.type);
+ terrainPath(ctx,terrainPoints(l,xy));ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=.9;ctx.stroke();
  if(Math.min(rx,ry)>=6)terrainSymbol(l,x,y);
 }}
+
 function base(){ctx.fillStyle='#0a1a13';ctx.fillRect(0,0,view.w,view.h);for(let x=-80;x<=80;x+=10){line(xy(x,-80),xy(x,80),'#1c3227',.7)}for(let y=-80;y<=80;y+=10){line(xy(-80,y),xy(80,y),'#1c3227',.7)}const [ox,oy]=xy(0,0);for(const r of [10,20,30,40,50,60]){circle(ox,oy,r*view.scale,'#30553c',.7);label(r+' NM',...xy(0,r),'#547a5c',9)}label('N ↑',...xy(0,65),'#98bea1',12,'center');terrain();}
 function weather(){for(const w of WEATHER){const z=weatherAt(w),[x,y]=xy(z.x,z.y),rx=z.rx*view.scale,ry=z.ry*view.scale;
  ctx.save();ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,2*PI);ctx.clip();
@@ -952,58 +984,69 @@ $('chooseMode').onclick=()=>{
  $('chooseMode').setAttribute('aria-expanded',String(open));
 };
 function hideBriefingOptions(){$('briefingOptions').classList.add('hide');$('chooseMode').setAttribute('aria-expanded','false');}
-// Two-player mode: WebRTC data channel; the ATC tab alone owns the world.
-// No signaling service: codes carry full ICE-gathered descriptions.
-const MP={role:null,pc:null,channel:null,connected:false,active:false,turn:0,control:0,lastSync:0,
- status:null,client:null,offerCode:'',answerCode:'',lastMessage:null,
- generation:0,offerId:null,connectTimer:null,disconnectTimer:null,busy:false};
+// PeerJS Cloud handles rendezvous; WebRTC data may be direct or TURN-relayed.
+// A six-digit room code replaces manual SDP offer/answer copying. The code is not a secure password.
+const MP={role:null,peer:null,channel:null,connected:false,active:false,turn:0,control:0,lastSync:0,
+ client:null,room:null,generation:0,connectTimer:null,disconnectTimer:null,busy:false};
+let mpLibPromise=null;
 function mpStatus(s){$('mpStatus').textContent=s;}
 function mpClearTimers(){clearTimeout(MP.connectTimer);clearTimeout(MP.disconnectTimer);MP.connectTimer=null;MP.disconnectTimer=null;}
-function mpSend(packet){
- if(MP.channel?.readyState!=='open')return false;
- try{MP.channel.send(JSON.stringify(packet));return true;}
- catch(e){mpStatus('Connection interrupted. Reconnect both browsers.');mpDisconnected();return false;}
+function mpLoadPeer(){
+ if(window.Peer)return Promise.resolve(window.Peer);
+ if(mpLibPromise)return mpLibPromise;
+ mpLibPromise=new Promise((resolve,reject)=>{
+  const script=document.createElement('script');
+  script.src='https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js';
+  script.async=true;
+  const timer=setTimeout(()=>fail('Connection library timed out. Check your internet connection.'),12000);
+  function fail(message){clearTimeout(timer);script.remove();mpLibPromise=null;reject(Error(message));}
+  script.onload=()=>{clearTimeout(timer);if(window.Peer)resolve(window.Peer);else fail('Connection library did not load.');};
+  script.onerror=()=>fail('Could not load the connection library. Check your internet connection.');
+  document.head.appendChild(script);
+ });
+ return mpLibPromise;
 }
-function mpResetConnection(){
- ++MP.generation;mpClearTimers();MP.connected=false;MP.active=false;MP.turn=0;MP.control=0;MP.busy=false;MP.offerId=null;
- if(MP.channel){MP.channel.onopen=null;MP.channel.onclose=null;MP.channel.onmessage=null;try{MP.channel.close();}catch(_){}}
- if(MP.pc){MP.pc.onconnectionstatechange=null;try{MP.pc.close();}catch(_){}}
- MP.pc=null;MP.channel=null;MP.client=null;MP.lastSync=0;
+function mpRoomNumber(){
+ const a=new Uint32Array(1);
+ if(globalThis.crypto?.getRandomValues)crypto.getRandomValues(a);
+ else a[0]=Math.floor(Math.random()*0x100000000);
+ return String(a[0]%1000000).padStart(6,'0');
+}
+function mpValidRoom(raw){
+ const code=String(raw||'').trim().replace(/[ -]/g,'');
+ if(!/^\d{6}$/.test(code))throw Error('Enter the six digits from ATC.');
+ return code;
+}
+function mpPeerId(code){return 'lastlight-rescue-'+code;}
+function mpClearConnection(){
+ ++MP.generation;mpClearTimers();MP.connected=false;MP.active=false;MP.turn=0;MP.control=0;MP.busy=false;
+ const channel=MP.channel,peer=MP.peer;
+ MP.channel=null;MP.peer=null;MP.client=null;MP.lastSync=0;MP.room=null;
+ if(channel){try{channel.close();}catch(_){}}
+ if(peer){try{peer.destroy();}catch(_){}}
  $('mpInlineStatus').textContent='';
 }
-const mpCodec={
- encode:obj=>btoa(JSON.stringify(obj)),
- decode:raw=>{
-  const s=String(raw||'').trim().replace(/^LL1:/i,'').replace(/\s/g,'');
-  if(!s)throw Error('Paste the other player’s connection code first.');
-  let obj;
-  try{obj=JSON.parse(atob(s));}catch(_){throw Error('Code could not be read. Copy the entire code, without extra text.');}
-  if(!obj||!['offer','answer'].includes(obj.type)||typeof obj.sdp!=='string'||obj.sdp.length>24000||!obj.sdp.startsWith('v=0')||typeof obj.id!=='string'||!/^[a-z0-9]{8,24}$/i.test(obj.id))
-   throw Error('Invalid or outdated code. Both players need this version of LAST LIGHT.');
-  return obj;
- }
-};
-function mpCandidateCount(sdp){return (sdp.match(/^a=candidate:/gm)||[]).length;}
-async function mpIceDone(pc,gen){
- if(pc.iceGatheringState!=='complete'){
-  await new Promise((resolve,reject)=>{
-   const timeout=setTimeout(()=>{pc.removeEventListener('icegatheringstatechange',check);reject(Error('Network discovery timed out. Check browser/VPN settings and retry.'));},18000);
-   const check=()=>{if(pc.iceGatheringState==='complete'){clearTimeout(timeout);pc.removeEventListener('icegatheringstatechange',check);resolve();}};
-   pc.addEventListener('icegatheringstatechange',check);check();
-  });
- }
- if(gen!==MP.generation||pc!==MP.pc)throw Error('Connection setup cancelled.');
- if(!mpCandidateCount(pc.localDescription?.sdp||''))throw Error(location.protocol==='file:'?'No peer address found. Try opening the game over HTTPS or localhost; VPNs may also block WebRTC.':'No peer address found. Browser or network blocks WebRTC. Try Chrome/Firefox, without VPN.');
+function mpSend(packet){
+ if(!MP.channel?.open)return false;
+ try{MP.channel.send(JSON.stringify(packet));return true;}
+ catch(_){mpStatus('Connection interrupted. Rejoin the room.');mpDisconnected();return false;}
 }
-function mpAttachChannel(ch){
- MP.channel=ch;
- ch.onopen=()=>{
-  if(ch!==MP.channel)return;
+function mpPeerError(error){
+ const type=error?.type||'';
+ if(type==='peer-unavailable')return 'Room not found. Check the code and that ATC is hosting.';
+ if(type==='unavailable-id')return 'Room number already in use. Create a new room.';
+ if(['socket-error','socket-closed','server-error','network'].includes(type))return 'Room service unavailable. Check the internet connection.';
+ if(type==='webrtc')return 'Direct connection failed. Try the same Wi-Fi or disable VPN.';
+ return 'Connection failed: '+String(error?.message||type||'unknown error');
+}
+function mpAttachChannel(conn){
+ if(MP.channel && MP.channel!==conn){try{conn.close();}catch(_){}return;}
+ MP.channel=conn;
+ conn.on('open',()=>{
+  if(conn!==MP.channel)return;
   mpClearTimers();MP.connected=true;MP.busy=false;
   $('pause').disabled=false;
-  mpStatus('Connected.');$('mpConnect').classList.add('hide');
-  // The connection dialog must not sit on top of the pilot cockpit.
-  $('mpPanel').classList.add('hide');
+  mpStatus('Connected.');$('mpPanel').classList.add('hide');
   if(MP.role==='host'){
    if(S.started&&!S.complete){MP.active=true;showStatus('Pilot reconnected. Resume when ready.');}
    else{$('start').disabled=false;$('start').textContent='Start rescue';}
@@ -1014,14 +1057,20 @@ function mpAttachChannel(ch){
    $('pilotConnection').textContent='CONNECTED';
    $('pilotStage').textContent='Waiting for ATC to start…';
   }
- };
- ch.onclose=()=>mpDisconnected();
- ch.onerror=()=>mpStatus('Connection error. Try again or use the same Wi-Fi.');
- ch.onmessage=e=>{
-  let msg;try{msg=JSON.parse(e.data);}catch(_){return;}
+ });
+ conn.on('close',()=>{
+  if(conn!==MP.channel)return;
+  MP.channel=null;
+  if(MP.connected)mpDisconnected();
+  else mpStatus('Could not connect. Check the room number and try again.');
+ });
+ conn.on('error',()=>{if(conn===MP.channel)mpStatus('Peer connection interrupted. Try again.');});
+ conn.on('data',raw=>{
+  if(conn!==MP.channel)return;
+  let msg;try{msg=typeof raw==='string'?JSON.parse(raw):raw;}catch(_){return;}
   if(!msg||typeof msg.type!=='string')return;
   if(MP.role==='host')mpHostMessage(msg);else mpPilotMessage(msg);
- };
+ });
 }
 function mpDisconnected(){
  if(!MP.connected)return;
@@ -1033,106 +1082,103 @@ function mpDisconnected(){
  }
  if(MP.role==='pilot'){
   $('pilotConnection').textContent='DISCONNECTED';
-  $('pilotStage').textContent='Connection lost. Reconnect from the start screen.';
+  $('pilotStage').textContent='Connection lost. Rejoin from the connection screen.';
   $('pilotLeft').disabled=true;$('pilotRight').disabled=true;$('pilotSend').disabled=true;
   document.querySelectorAll('[data-pilot-report]').forEach(b=>b.disabled=true);
  }
  $('mpPanel').classList.remove('hide');
- mpStatus('Connection lost. Choose your role again and exchange fresh codes.');
+ if(MP.role==='host'&&MP.peer&&!MP.peer.destroyed){
+  $('mpRoomWrap').classList.remove('hide');
+  mpStatus('Pilot disconnected. This room stays open; the pilot can rejoin using the same number.');
+ }else{
+  $('mpConnect').classList.remove('hide');
+  if(MP.room)$('mpIn').value=MP.room;
+  mpStatus('Connection lost. Rejoin with the same room code.');
+ }
 }
 function mpOpen(role){
- mpResetConnection();MP.role=role;$('mpPanel').classList.remove('hide');
- $('mpOut').value='';$('mpIn').value='';$('mpOutWrap').classList.add('hide');
- $('mpConnect').classList.remove('hide');$('mpPasteLabel').textContent=role==='host'?'Paste pilot answer':'Paste ATC offer';
- $('mpApply').textContent=role==='host'?'Connect':'Generate answer';
- $('mpRole').textContent=role==='host'?'HOST · ATC':'JOIN · PILOT';
- $('mpClose').textContent='Cancel';$('mpApply').disabled=false;
- $('pilotScreen').classList.add('hide');
+ mpClearConnection();MP.role=role;$('mpPanel').classList.remove('hide');
+ $('mpIn').value='';$('mpRoomCode').textContent='······';
+ $('mpRoomWrap').classList.add('hide');$('mpConnect').classList.toggle('hide',role==='host');
+ $('mpApply').disabled=false;$('mpRole').textContent=role==='host'?'HOST · ATC':'JOIN · PILOT';
+ $('mpClose').textContent='Cancel';$('pilotScreen').classList.add('hide');
  if(role==='host'){
   if(!S.started){SESSION.mode='standard';document.querySelector('[data-preset="standard"]').click();$('start').disabled=true;}
-  mpStatus('Finding a peer address…');mpCreateHost();
- }else{mpStatus('1. Paste the ATC offer. 2. Send your answer back.');}
+  mpStatus('Opening room…');mpCreateHost(MP.generation);
+ }else{mpStatus('Enter the room number shown by ATC.');$('mpIn').focus();}
 }
-function mpPc(){
- if(!window.RTCPeerConnection)throw Error('WebRTC unavailable. Use a current Chrome, Firefox or Safari.');
- const pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]});
- MP.pc=pc;
- pc.onconnectionstatechange=()=>{
-  if(pc!==MP.pc)return;
-  if(pc.connectionState==='connected'){clearTimeout(MP.disconnectTimer);MP.disconnectTimer=null;}
-  if(pc.connectionState==='failed'){
-   if(MP.connected)mpDisconnected();
-   mpStatus('Peer connection failed. Try the same Wi-Fi or disable VPN. Some networks need a relay.');
-  }else if(pc.connectionState==='disconnected'&&MP.connected){
-   // Short wireless interruptions should not destroy a working flight.
-   clearTimeout(MP.disconnectTimer);
-   MP.disconnectTimer=setTimeout(()=>{if(pc===MP.pc&&pc.connectionState==='disconnected')mpDisconnected();},10000);
-  }
- };
- return pc;
-}
-async function mpCreateHost(){
- const gen=MP.generation;
+async function mpCreateHost(gen,attempt=0){
  try{
-  const pc=mpPc();mpAttachChannel(pc.createDataChannel('rescue',{ordered:true}));
-  await pc.setLocalDescription(await pc.createOffer());await mpIceDone(pc,gen);
-  if(gen!==MP.generation)return;
-  MP.offerId=Math.random().toString(36).slice(2,14);
-  $('mpOut').value=mpCodec.encode({type:'offer',sdp:pc.localDescription.sdp,id:MP.offerId});
-  $('mpOutWrap').classList.remove('hide');mpStatus('Send your code to the pilot. Then paste their answer.');
- }catch(e){if(gen===MP.generation)mpStatus(e.message||'Could not create an offer. Try again.');}
+  const Peer=await mpLoadPeer();if(gen!==MP.generation)return;
+  if(!window.RTCPeerConnection)throw Error('WebRTC is unavailable in this browser.');
+  const code=mpRoomNumber(),peer=new Peer(mpPeerId(code));MP.peer=peer;MP.room=code;
+  peer.on('open',()=>{
+   if(gen!==MP.generation||peer!==MP.peer)return;
+   $('mpRoomCode').textContent=code;$('mpRoomWrap').classList.remove('hide');
+   mpStatus('Tell the pilot this six-digit number.');
+  });
+  peer.on('connection',conn=>{
+   if(gen!==MP.generation||peer!==MP.peer||MP.role!=='host'){
+    try{conn.close();}catch(_){}return;
+   }
+   mpAttachChannel(conn);
+  });
+  peer.on('error',error=>{
+   if(gen!==MP.generation||peer!==MP.peer)return;
+   if(error?.type==='unavailable-id'&&attempt<3){
+    try{peer.destroy();}catch(_){}MP.peer=null;mpCreateHost(gen,attempt+1);return;
+   }
+   mpStatus(mpPeerError(error));
+  });
+  peer.on('disconnected',()=>{
+   if(gen===MP.generation&&peer===MP.peer&&!MP.connected)mpStatus('Room service disconnected. Try hosting again.');
+  });
+ }catch(error){if(gen===MP.generation)mpStatus(error.message||'Could not create a room.');}
 }
 async function mpApplyCode(){
- if(MP.busy)return;
+ if(MP.role!=='pilot'||MP.busy)return;
+ let code;try{code=mpValidRoom($('mpIn').value);}catch(error){mpStatus(error.message);return;}
  MP.busy=true;$('mpApply').disabled=true;
- let gen=MP.generation;
+ mpStatus('Finding ATC…');
+ mpClearTimers();
+ // A fresh guest ID avoids stale WebRTC attempts when joining again.
+ if(MP.channel){const ch=MP.channel;MP.channel=null;try{ch.close();}catch(_){}}
+ if(MP.peer){try{MP.peer.destroy();}catch(_){}MP.peer=null;}
+ const gen=++MP.generation;MP.room=code;
  try{
-  const data=mpCodec.decode($('mpIn').value);
-  if(MP.role==='host'){
-   if(data.type!=='answer')throw Error('This is an offer. Paste the answer from the pilot.');
-   if(data.id!==MP.offerId)throw Error('Answer is from a different attempt. Exchange fresh codes.');
-   if(!MP.pc||MP.pc.signalingState!=='have-local-offer')throw Error('Offer expired. Choose Host as ATC to restart.');
-   await MP.pc.setRemoteDescription({type:'answer',sdp:data.sdp});
-   if(gen!==MP.generation)return;
-   mpStatus('Connecting… Both browsers must stay open.');
-   const pc=MP.pc;
-   MP.connectTimer=setTimeout(()=>{if(pc===MP.pc&&!MP.connected)mpStatus('No direct route found. Try the same Wi-Fi or disable VPN. Some networks require a relay.');},22000);
-  }else{
-   if(data.type!=='offer')throw Error('This is an answer. Paste the ATC offer here.');
-   // Reset a previous attempt without destroying the selected role.
-   if(MP.pc){mpResetConnection();MP.role='pilot';gen=MP.generation;MP.busy=true;}
-   const activeGen=MP.generation;
-   MP.offerId=data.id;
-   const pc=mpPc();pc.ondatachannel=e=>{if(pc===MP.pc)mpAttachChannel(e.channel);};
-   await pc.setRemoteDescription({type:'offer',sdp:data.sdp});
-   await pc.setLocalDescription(await pc.createAnswer());
-   mpStatus('Finding a peer address…');await mpIceDone(pc,activeGen);
-   if(activeGen!==MP.generation)return;
-   $('mpOut').value=mpCodec.encode({type:'answer',sdp:pc.localDescription.sdp,id:MP.offerId});
-   $('mpOutWrap').classList.remove('hide');mpStatus('Send this answer back to ATC.');
-  }
- }catch(e){
-  if(gen===MP.generation){
-   const detail=e.message||'';
-   mpStatus(e.name==='InvalidStateError'||e.name==='OperationError'||/remote description|SDP/i.test(detail)?'Connection code was rejected. Restart pairing on both browsers.':detail||'Connection setup failed. Try again.');
-  }
- }
- finally{MP.busy=false;$('mpApply').disabled=false;}
+  const Peer=await mpLoadPeer();if(gen!==MP.generation)return;
+  if(!window.RTCPeerConnection)throw Error('WebRTC is unavailable in this browser.');
+  const peer=new Peer();MP.peer=peer;
+  peer.on('open',()=>{
+   if(gen!==MP.generation||peer!==MP.peer)return;
+   mpStatus('Connecting to ATC…');
+   mpAttachChannel(peer.connect(mpPeerId(code),{reliable:true}));
+   MP.connectTimer=setTimeout(()=>{
+    if(gen===MP.generation&&!MP.connected)mpStatus('Connection timed out. Check the room code, internet and VPN.');
+   },25000);
+  });
+  peer.on('error',error=>{if(gen===MP.generation&&peer===MP.peer)mpStatus(mpPeerError(error));});
+  peer.on('disconnected',()=>{if(gen===MP.generation&&peer===MP.peer&&!MP.connected)mpStatus('Room service disconnected. Try again.');});
+ }catch(error){if(gen===MP.generation)mpStatus(error.message||'Could not join the room.');}
+ finally{if(gen===MP.generation){MP.busy=false;$('mpApply').disabled=false;}}
 }
 function mpFeatures(){
  const p=S.pilot;if(!p)return [];
  const heading=rad(p.heading),sin=Math.sin(heading),cos=Math.cos(heading);
- const vis=inStorm(p)?8:18;
+ const vis=inStorm(p)?8:14;
  const project=(x,y)=>{const dx=x-p.x,dy=y-p.y;return {forward:dx*sin+dy*cos,right:dx*cos-dy*sin};};
  const features=[];
  for(const l of LAND){
   const v=project(l.x,l.y),d=Math.hypot(v.forward,v.right);
-  // Include shapes crossing the visible edge but never distant world features.
-  if(d>vis+Math.min(l.rx,l.ry)||v.forward<-Math.max(l.rx,l.ry))continue;
-  features.push({type:l.type,forward:+v.forward.toFixed(2),right:+v.right.toFixed(2),rx:l.rx,ry:l.ry});
+  if(d>vis+Math.max(l.rx,l.ry)||v.forward<-Math.max(l.rx,l.ry))continue;
+  const outline=terrainPoints(l,(x,y)=>{const q=project(x,y);return[+q.right.toFixed(2),+q.forward.toFixed(2)];});
+  features.push({type:l.type,forward:+v.forward.toFixed(2),right:+v.right.toFixed(2),rx:l.rx,ry:l.ry,outline});
  }
  const field=project(0,0);
- if(Math.hypot(field.forward,field.right)<vis+2&&field.forward>-2)features.push({type:'field',forward:+field.forward.toFixed(2),right:+field.right.toFixed(2),rx:.8,ry:1.7});
+ if(Math.hypot(field.forward,field.right)<vis+3&&field.forward>-3){
+  const runway=[project(0,0),project(0,2.5)].map(q=>[+q.right.toFixed(2),+q.forward.toFixed(2)]);
+  features.push({type:'field',forward:+field.forward.toFixed(2),right:+field.right.toFixed(2),runway});
+ }
  return features;
 }
 function mpSnapshot(){
@@ -1141,7 +1187,12 @@ function mpSnapshot(){
  // No absolute coordinates, other aircraft, whole chart, or weather locations are transmitted.
   call:p.name,sequence:S.sequence,clock:clock(S.t),fuel:Math.max(0,Math.round(p.fuelLeft/60)),
   heading:p.equipment.compass?Math.round(p.heading):null,compass:p.equipment.compass,
-  speed:Math.round(p.speed),visibility:inStorm(p)?8:18,
+  speed:Math.round(p.speed),visibility:inStorm(p)?8:14,
+  instruments:{
+   compass:{value:p.equipment.compass?Math.round(p.heading):null,status:p.equipment.compass?'working':'failed'},
+   airspeed:{value:Math.round(p.speed),status:'working'},
+   fuel:{value:Math.max(0,Math.round(p.fuelLeft/60)),status:'working'}
+  },
   features:S.started&&$('intro').classList.contains('hide')?mpFeatures():[],paused:S.paused,complete:S.complete,outcome:S.outcome,
   onFinal:p.approach,mission:p.missionId};
 }
@@ -1151,7 +1202,7 @@ function mpPushSnapshot(ts){
  mpSend(mpSnapshot());
 }
 function mpFlightReport(kind){
- const p=S.pilot,vis=inStorm(p)?8:18;
+ const p=S.pilot,vis=inStorm(p)?8:14;
  if(kind==='fuel'){
   const estimate=Math.max(0,Math.round(p.fuelLeft/120)*2);
   S.reportedFuel={seconds:estimate*60,at:S.t,burnAt:p.burnConsumed};
@@ -1191,9 +1242,26 @@ function mpPilotMessage(msg){
   $('pilotName').textContent=msg.call;
   $('pilotClock').textContent=msg.clock;
   $('pilotConnection').textContent=msg.paused?'PAUSED':'CONNECTED';
-  $('pilotFuel').textContent='FUEL ~'+msg.fuel+'m';
-  $('pilotHeading').textContent=msg.compass?`HDG ${String(msg.heading).padStart(3,'0')}°`:'COMPASS OUT';
-  $('pilotSpeed').textContent=msg.speed+' KT';
+  // A dead instrument shows no value. Low fuel is separate from instrument health.
+  const instruments=msg.instruments||{
+   compass:{value:msg.heading,status:msg.compass?'working':'failed'},
+   airspeed:{value:msg.speed,status:'working'},fuel:{value:msg.fuel,status:'working'}
+  };
+  const c=instruments.compass,a=instruments.airspeed,f=instruments.fuel;
+  $('pilotHeading').textContent=c.status!=='failed'&&Number.isFinite(c.value)?String(c.value).padStart(3,'0')+'°':'—';
+  $('pilotSpeed').textContent=a.status!=='failed'&&Number.isFinite(a.value)?a.value+' kt':'—';
+  $('pilotFuel').textContent=f.status!=='failed'&&Number.isFinite(f.value)?'~'+f.value+' min':'—';
+  for(const [box,status,reading] of [
+   ['pilotCompassBox','pilotCompassStatus',c],['pilotSpeedBox','pilotSpeedStatus',a],['pilotFuelBox','pilotFuelStatus',f]
+  ]){
+   const working=reading.status==='working';
+   $(box).classList.toggle('failed',reading.status==='failed');
+   $(box).classList.toggle('unreliable',reading.status==='unreliable');
+   $(status).textContent=working?'● WORKING':reading.status==='unreliable'?'! UNRELIABLE':'× FAILED';
+  }
+  const low=f.status==='working'&&f.value<=12;
+  $('pilotFuelBox').classList.toggle('low',low);
+  $('pilotFuelStatus').textContent=f.status==='working'?(low?'! LOW · WORKING':'● WORKING'):f.status==='unreliable'?'! UNRELIABLE':'× FAILED';
   const stage=msg.complete?(msg.outcome==='landed'?'LANDED · Waiting for ATC':'FUEL EXHAUSTED · Waiting for ATC'):!msg.started?'Waiting for ATC to start…':msg.onFinal?'FINAL · Landing from here':msg.paused?'Paused by ATC':'';
   $('pilotStage').textContent=stage;
   const enabled=msg.started&&!msg.paused&&!msg.complete&&!msg.onFinal;
@@ -1241,45 +1309,64 @@ function mpDrawPilot(){
  const c=$('pilotCanvas'),m=MP.client;if(!m)return;
  const rect=c.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
  if(rect.width<2||rect.height<2)return;
- const w=rect.width,h=rect.height;if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);}
+ const w=rect.width,h=rect.height;if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){
+  c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);
+ }
  const g=c.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);
  g.fillStyle='#08140f';g.fillRect(0,0,w,h);
- const vis=m.visibility||18,px=Math.min(w/38,h/23),x0=w/2,y0=h*.82;
+ const vis=m.visibility||14,px=Math.min((w-20)/(2*vis),(h-18)/(1.35*vis)),x0=w/2,y0=Math.min(h-20,Math.max(vis*px+12,h*.64));
  const project=(right,forward)=>[x0+right*px,y0-forward*px];
- // Nothing outside the local forward/side sector is ever rendered.
+ // Aircraft-up local chart: no radar, no regional grid, no north marker.
+ // The host sends only nearby relative geometry; the view clips it to the
+ // forward and lateral field, with the same map geometry and symbols as ATC.
+ const aperture=103;
  g.save();g.beginPath();g.moveTo(x0,y0);
- for(let deg=-108;deg<=108;deg+=3){const a=rad(deg),v=project(Math.sin(a)*vis,Math.cos(a)*vis);g.lineTo(v[0],v[1]);}
+ for(let deg=-aperture;deg<=aperture;deg+=2){const a=rad(deg),point=project(Math.sin(a)*vis,Math.cos(a)*vis);g.lineTo(...point);}
  g.closePath();g.clip();g.fillStyle='#10251b';g.fillRect(0,0,w,h);
- for(const l of m.features||[]){
-  const [x,y]=project(l.right,l.forward),rx=l.rx*px,ry=l.ry*px;
-  if(l.type==='field'){
-   g.save();g.translate(x,y);g.rotate(-rad(m.heading||180));g.fillStyle='#8ebfaa';g.fillRect(-3,-8,6,16);g.strokeStyle='#ccf0cf';g.strokeRect(-3,-8,6,16);g.restore();continue;
+ for(const feature of m.features||[]){
+  if(feature.type==='field'){
+   if(!feature.runway)continue;
+   const [a,b]=feature.runway.map(q=>project(...q));
+   g.beginPath();g.moveTo(...a);g.lineTo(...b);g.strokeStyle='#d1dace';g.lineWidth=Math.max(4,px*.15);g.stroke();
+   g.setLineDash([3,4]);g.strokeStyle='#526755';g.lineWidth=1;g.stroke();g.setLineDash([]);
+   continue;
   }
-  const fills={woods:'#254b31',water:'#1f5050',ridge:'#66573d',town:'#667266',road:'#657463'};
-  g.beginPath();g.ellipse(x,y,Math.max(2,rx),Math.max(2,ry),0,0,PI*2);
-  g.fillStyle=fills[l.type]||'#456b46';g.fill();g.strokeStyle=l.type==='water'?'#70b8aa':'#729979';g.lineWidth=1.2;g.stroke();
-  if(l.type==='woods'){g.fillStyle='#b4d8a7';for(const j of [-1,0,1]){g.beginPath();g.moveTo(x+j*6,y-5);g.lineTo(x+j*6-4,y+3);g.lineTo(x+j*6+4,y+3);g.closePath();g.fill();}}
-  if(l.type==='water'){g.strokeStyle='#8bd4c7';for(const j of [-1,1]){g.beginPath();g.moveTo(x-8,y+j*4);g.quadraticCurveTo(x-2,y+j*4-3,x+8,y+j*4);g.stroke();}}
-  if(l.type==='ridge'){g.strokeStyle='#ddc393';g.beginPath();g.moveTo(x-9,y+4);g.lineTo(x,y-6);g.lineTo(x+9,y+4);g.stroke();}
-  if(l.type==='town'){g.fillStyle='#d3ddc7';for(const j of [-1,0,1])g.fillRect(x+j*8-2,y-2-j%2*2,4,5);}
+  if(!Array.isArray(feature.outline)||feature.outline.length<3)continue;
+  const {fill,stroke}=terrainPaint(feature.type),points=feature.outline.map(q=>project(...q));
+  terrainPath(g,points);g.fillStyle=fill;g.fill();g.strokeStyle=stroke;g.lineWidth=.9;g.stroke();
+  // If a large landform enters view while its chart-center icon remains outside,
+  // repeat that same pictogram on the visible portion so the shape stays legible.
+  const centerDistance=Math.hypot(feature.right,feature.forward);
+  const centerAngle=Math.abs(Math.atan2(feature.right,feature.forward));
+  let iconAt=centerDistance<=vis-1&&centerAngle<=rad(aperture-8)?[feature.right,feature.forward]:null;
+  if(!iconAt){
+   const choices=[];
+   for(const f of [.16,.28,.43,.58,.74])for(const r of [-.78,-.55,-.3,0,.3,.55,.78]){
+    const x=r*vis,y=f*vis;
+    if(Math.hypot(x,y)>=vis*.89||Math.hypot(x,y)<=vis*.14)continue;
+    const q=project(x,y);
+    if(g.isPointInPath(q[0],q[1]))choices.push({x,y,d:Math.hypot(x-feature.right,y-feature.forward)});
+   }
+   choices.sort((a,b)=>a.d-b.d);
+   if(choices.length)iconAt=[choices[0].x,choices[0].y];
+  }
+  if(iconAt&&Math.min(feature.rx,feature.ry)*px>=6)terrainSymbol(feature,...project(...iconAt),g);
  }
  g.restore();
- // The plane is an orientation cue, not a player position plotted on a regional map.
- g.strokeStyle='#c7e9ce';g.lineWidth=2;g.beginPath();g.moveTo(x0,y0-13);g.lineTo(x0,y0+12);g.moveTo(x0-11,y0+2);g.lineTo(x0+11,y0+2);g.stroke();
- if(m.visibility<12){g.fillStyle='#a2b3a6';g.font='11px ui-monospace,monospace';g.textAlign='center';g.fillText('CLOUD · LIMITED VISIBILITY',w/2,25);}
+ // Sparse orientation cue only: aircraft is fixed upright while terrain rotates.
+ g.save();g.translate(x0,y0);g.lineCap='round';g.strokeStyle='#cee8d2';g.lineWidth=2;
+ g.beginPath();g.moveTo(0,-13);g.lineTo(0,12);g.moveTo(-11,3);g.lineTo(11,3);g.moveTo(-4,9);g.lineTo(4,9);g.stroke();g.restore();
+ if(vis<=8){g.fillStyle='#c6cfbe';g.font='11px ui-monospace,monospace';g.textAlign='center';g.fillText('CLOUD · SHORT VISIBILITY',w/2,24);}
 }
-$('multiplayer').onclick=()=>{$('mpPanel').classList.remove('hide');mpStatus('Choose a role.');};
+$('multiplayer').onclick=()=>{$('mpPanel').classList.remove('hide');mpStatus(MP.connected?'Connected.':'Choose a role.');};
 $('mpHost').onclick=()=>mpOpen('host');$('mpJoin').onclick=()=>mpOpen('pilot');
 $('mpApply').onclick=mpApplyCode;
-$('mpCopy').onclick=async()=>{
- try{await navigator.clipboard.writeText($('mpOut').value);mpStatus('Code copied.');}
- catch(_){$('mpOut').select();try{if(document.execCommand('copy')){mpStatus('Code copied.');return;}}catch(_){}mpStatus('Code selected. Use Copy on your device.');}
-};
+$('mpIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();mpApplyCode();}});
 $('mpClose').onclick=()=>{
  $('mpPanel').classList.add('hide');
  if(!MP.connected){
   const wasHost=MP.role==='host',inFlight=wasHost&&S.started&&!S.complete;
-  mpResetConnection();MP.role=null;$('start').disabled=false;
+  mpClearConnection();MP.role=null;$('start').disabled=false;
   $('start').textContent=SESSION.mode==='shift'?'Start shift':'Start rescue';
   $('pause').disabled=false;$('atcChat').classList.add('hide');$('speed').disabled=false;
   if(inFlight){S.pilot.mode='hold';S.pilot.target=S.pilot.heading;showStatus('Pilot disconnected. Solo controls restored; resume when ready.');updateSidebar();}
@@ -1307,7 +1394,7 @@ window.addEventListener('blur',()=>{if(MP.role==='pilot'&&MP.control)mpTurn(0);}
 window.addEventListener('resize',resize);if('ResizeObserver'in window)new ResizeObserver(resize).observe($('mapWrap'));
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.mode){S.mode=null;updateSidebar();}if(e.code==='Space'&&!['INPUT','BUTTON','TEXTAREA'].includes(e.target.tagName)){e.preventDefault();if(S.started&&!S.complete)$('pause').click()}});
 // Tiny deterministic inspection surface for automated browser tests; not used by gameplay.
-if(location.search.includes('dev=1'))window.__lastLightDev={MP,mpOpen,mpFeatures,mpSnapshot,mpPushSnapshot,mpSteerHost,mpFlightReport,mpPilotMessage,mpHostMessage,mpTransmit,mpAsk,mpCodec,S,WORLD,RESCUE,SESSION,CAPABILITIES,AIRFRAMES,PILOT_STYLES,SHIFT_CURVE,profileFor,candidateProfile,rescueBudget,launchRescue,nextRescue,LAND,WEATHER,RADIO_ZONES,routeRadioExposure,weatherAt,blocked,inStorm,radarVisible,radioBlocked,uplinkWorks,downlinkWorks,canAskPilot,voluntaryReport,autoReportTick,reset,step,onAsk,viewReport,sendCommand,sendRelative,sendMaintain,sendHold,setHeading,updatePilot,radarTick,xy,unxy,finish,fail,weather,inspect,configureWeather};
+if(location.search.includes('dev=1'))window.__lastLightDev={MP,mpOpen,mpFeatures,mpSnapshot,mpPushSnapshot,mpSteerHost,mpFlightReport,mpPilotMessage,mpHostMessage,mpTransmit,mpAsk,mpRoomNumber,mpValidRoom,mpClearConnection,S,WORLD,RESCUE,SESSION,CAPABILITIES,AIRFRAMES,PILOT_STYLES,SHIFT_CURVE,profileFor,candidateProfile,rescueBudget,launchRescue,nextRescue,LAND,WEATHER,RADIO_ZONES,routeRadioExposure,weatherAt,blocked,inStorm,radarVisible,radioBlocked,uplinkWorks,downlinkWorks,canAskPilot,voluntaryReport,autoReportTick,reset,step,onAsk,viewReport,sendCommand,sendRelative,sendMaintain,sendHold,setHeading,updatePilot,radarTick,xy,unxy,finish,fail,weather,inspect,configureWeather};
 reset();resize();requestAnimationFrame(animate);
 })();
 </script></body></html>
