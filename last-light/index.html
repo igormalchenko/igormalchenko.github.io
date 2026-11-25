@@ -43,11 +43,19 @@ standalone regression modes while evolving these systems.
 Do not replace useful state with atmospheric text or giant onboarding copy.
 -->
 <!--
-LAST LIGHT — LIVING TECHNICAL REFERENCE (v0.14)
+LAST LIGHT — LIVING TECHNICAL REFERENCE (v0.14 multiplayer hotfix)
 Update this comment whenever an architectural contract changes. The original
 DESIGN NORTH STAR is preserved verbatim. The later product decision explicitly
 rejects guaranteed fairness or solvability for generated missions.
 
+
+MULTIPLAYER HOTFIX CONTRACTS
+  Each unseeded page load selects an independent first-shift seed from browser
+  entropy; ?seed=N reproduces the first played shift, in both solo and ATC host.
+  ATC exclusively advances the simulation clock at 1x/3x; the pilot receives
+  time-scaled authoritative state and never runs independent flight physics.
+  The pilot terrain uses the same color palette as ATC, and glyph positions are
+  fixed in world coordinates (no viewport-dependent landmark relabeling).
 
 V0.14 PRESENTATION AND AUTONOMY
   Every new shift opens the non-destructive, pausing How to play overlay;
@@ -214,8 +222,8 @@ SOURCE / TESTS
 .pilotInstrumentValue{color:#edf5eb;font-size:clamp(19px,2.2vw,27px);font-weight:700;letter-spacing:-.04em;white-space:nowrap;line-height:1.18}
 .pilotInstrumentStatus{font-size:10px;letter-spacing:.025em;color:#9bcca9}
 .pilotInstrument.failed{border-color:#816454}.pilotInstrument.failed .pilotInstrumentValue,.pilotInstrument.failed .pilotInstrumentStatus{color:#e3a9a0}
-.pilotInstrument.low .pilotInstrumentValue{color:#efcf91}
-.pilotInstrument.unreliable{border-color:#8f774c}.pilotInstrument.unreliable .pilotInstrumentStatus{color:#e5c58b}
+.pilotInstrument.low .pilotInstrumentValue,.pilotInstrument.low .pilotInstrumentStatus{color:#efcf91}
+.pilotInstrument.unreliable{border-color:#8f774c}.pilotInstrument.unreliable .pilotInstrumentValue,.pilotInstrument.unreliable .pilotInstrumentStatus{color:#e5c58b}
 .pilotSteer{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pilotSteer .btn{min-height:48px;font:650 13px var(--mono);touch-action:none;user-select:none}
 .pilotComms{min-width:0;display:flex;flex-direction:column;gap:6px}
@@ -339,7 +347,7 @@ SOURCE / TESTS
  <p class="mpHelp">Internet required to connect. No game server.</p>
 </section></div>
 <div id="pilotScreen" class="hide" aria-label="Pilot cockpit">
- <header class="pilotHeader"><strong>LAST LIGHT</strong><span id="pilotName">PILOT</span><span id="pilotClock">00:00</span><span id="pilotConnection">CONNECTING</span><button class="mini" id="pilotReturnSetup" type="button">Menu</button></header>
+ <header class="pilotHeader"><strong>LAST LIGHT</strong><span id="pilotName">PILOT</span><span id="pilotClock">00:00</span><span class="mono hide" id="pilotRate">3×</span><span id="pilotConnection">CONNECTING</span><button class="mini" id="pilotReturnSetup" type="button">Menu</button></header>
  <div class="pilotView"><canvas id="pilotCanvas" aria-label="Limited top-down terrain view oriented to the aircraft, without a north marker"></canvas><div id="pilotStage">Waiting for ATC…</div></div>
  <div class="pilotFooter"><div class="pilotFly"><div class="pilotInstruments" aria-label="Aircraft instruments">
  <div class="pilotInstrument" id="pilotCompassBox"><span class="pilotInstrumentName">COMPASS</span><strong class="pilotInstrumentValue" id="pilotHeading">—</strong><span class="pilotInstrumentStatus" id="pilotCompassStatus">NO READING</span></div>
@@ -882,9 +890,9 @@ function integrateIndependentTraffic(planes,time,dt,{norm,brg,clamp,diff,rad}){
  * world terrain arrays or radar contacts in this network payload.
  * The caller supplies only prefiltered, relative visible terrain features.
  */
-function pilotStatePacket(p,{started,sequence,clock,storm,features,paused,complete,outcome}){
+function pilotStatePacket(p,{started,sequence,clock,storm,features,paused,complete,outcome,rate=1}){
  return {type:'state',started,
-  call:p.name,sequence,clock,fuel:Math.max(0,Math.round(p.fuelLeft/60)),
+  call:p.name,sequence,clock,fuel:Math.max(0,Math.round(p.fuelLeft/60)),rate,
   heading:p.equipment.compass?Math.round(p.heading):null,compass:p.equipment.compass,
   speed:Math.round(p.speed),visibility:storm?8:14,
   instruments:{
@@ -1351,8 +1359,8 @@ function ellipse(x,y,rx,ry,col,stroke){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0
 // Tiny vector landmarks stay legible at different zoom levels and never rely on font glyphs.
 // A dark under-stroke preserves contrast against terrain fills without radar-like badges.
 const TERRAIN_NAME={woods:'Woods',water:'Water',ridge:'High ground',town:'Settlement',road:'Road'};
-function terrainSymbol(l,x,y,g=ctx){
- g.save();g.translate(Math.round(x)+.5,Math.round(y)+.5);
+function terrainSymbol(l,x,y,g=ctx,snap=true){
+ g.save();g.translate(snap?Math.round(x)+.5:x,snap?Math.round(y)+.5:y);
  g.lineCap='round';g.lineJoin='round';
  const strokes=[];let color;
  if(l.type==='woods'){
@@ -1365,22 +1373,26 @@ function terrainSymbol(l,x,y,g=ctx){
   color='#bdcbb9';
   strokes.push([[-9,6],[-2,-6],[3,2],[6,-3],[10,6]],[[-4,-2],[-2,-6],[1,-1]],[[5,0],[6,-3],[8,0]]);
  }else if(l.type==='town'){
-  color='#decba9';
+  color='#f0cda3';
   strokes.push([[-8,7],[-8,-2],[-3,-2],[-3,7]],[[-2,7],[-2,-7],[4,-7],[4,7]],[[5,7],[5,-3],[9,-3],[9,7]],[[-9,7],[10,7]]);
  }else{
-  color='#e6cf9e';
+  color='#c9dce3';
   strokes.push([[-7,-8],[-4,-5],[-5,1],[-8,7]],[[5,-8],[8,-2],[6,3],[8,8]]);
  }
  const paint=(width,ink)=>{g.beginPath();for(const pts of strokes){pts.forEach(([px,py],i)=>i?g.lineTo(px,py):g.moveTo(px,py));}g.strokeStyle=ink;g.lineWidth=width;g.stroke();};
  paint(3.6,'#0b1b15');paint(1.65,color);
- if(l.type==='road'){g.setLineDash([2,3]);g.beginPath();g.moveTo(-1,-7);g.lineTo(0,7);g.strokeStyle='#e6cf9e';g.lineWidth=1.3;g.stroke();}
+ if(l.type==='road'){g.setLineDash([2,3]);g.beginPath();g.moveTo(-1,-7);g.lineTo(0,7);g.strokeStyle='#c9dce3';g.lineWidth=1.3;g.stroke();}
  g.restore();
 }
+// Pilot terrain uses the same terrainPaint() palette and vector pictograms as ATC.
+// Icon anchors are fixed in world space: never reposition symbols to fit the
+// current viewport, since that makes landmarks appear to jump as aircraft move.
+function pilotTerrainAnchors(l){return [{x:l.x,y:l.y}];}
 // One terrain geometry and symbol system for both ATC and pilot views.
 function terrainPoints(l,project){return terrainWorldPolygon(l).map(([x,y])=>project(x,y));}
 function terrainPaint(type){return{
- fill:type==='woods'?'#243c2b':type==='water'?'#173f48':type==='ridge'?'#38433b':type==='town'?'#544d3a':'#564b36',
- stroke:type==='water'?'#507e87':type==='woods'?'#4b7453':type==='ridge'?'#6f8270':'#85745e'};
+ fill:type==='woods'?'#243c2b':type==='water'?'#173f48':type==='ridge'?'#38433b':type==='town'?'#73553f':'#40515c',
+ stroke:type==='water'?'#507e87':type==='woods'?'#4b7453':type==='ridge'?'#6f8270':type==='town'?'#ac8966':'#7797a5'};
 }
 function terrainPath(g,points){g.beginPath();points.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();}
 function terrain(){for(const l of WORLD.terrain){const [x,y]=xy(l.x,l.y),rx=l.rx*view.scale,ry=l.ry*view.scale;if(rx<3)continue;
@@ -1542,7 +1554,7 @@ $('markPin').onclick=()=>{S.mode=S.mode==='mark'?null:'mark';updateSidebar()};$(
 $('radioToggle').onclick=()=>{const dock=$('radioDock');dock.classList.toggle('collapsed');const open=!dock.classList.contains('collapsed');$('radioToggle').setAttribute('aria-expanded',String(open));if(open)$('radioToggle').classList.remove('reportPulse');$('radioToggle').innerHTML=(open?'▾':'▸')+' <span>RADIO</span>';};
 $('aim').onclick=()=>{if(!S.estimate)return;S.mode=S.mode==='aim'?null:'aim';updateSidebar()};
 $('pause').onclick=()=>{if(MP.role==='host'&&!MP.connected)return;S.paused=!S.paused;if(S.paused)MP.turn=0;$('pause').textContent=S.paused?'▶ Resume':'Ⅱ Pause';updateSidebar();mpPushSnapshot()};
-$('speed').onclick=()=>{if(MP.role==='host'&&MP.connected)return;S.rate=S.rate===1?3:S.rate===3?1:1;$('speed').textContent=S.rate+'×'};
+$('speed').onclick=()=>{if(MP.role==='pilot')return;S.rate=S.rate===1?3:1;$('speed').textContent=S.rate+'×';mpPushSnapshot()};
 // Confirm destructive session actions; cancel leaves all simulation state untouched.
 let pendingSessionAction=null,lastSessionFocus=null,sessionWasPaused=false;
 function closeSessionConfirm(restorePause=true){
@@ -1578,7 +1590,7 @@ $('sessionProceed').onclick=()=>{
 };
 document.addEventListener('pointerdown',e=>{if($('sessionMenu').open&&!$('sessionMenu').contains(e.target))$('sessionMenu').open=false;});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sessionConfirm').classList.contains('hide')){e.preventDefault();closeSessionConfirm();}});
-$('start').onclick=()=>{if(MP.role==='host'&&!MP.connected)return;hideBriefingOptions();S.started=true;$('intro').classList.add('hide');MP.active=MP.role==='host'&&MP.connected;if(MP.active){$('atcChat').classList.remove('hide');$('speed').disabled=true;S.rate=1;}reset();mpPushSnapshot();};$('again').onclick=()=>{S.started=true;nextRescue();mpPushSnapshot();};$('chooseRescue').onclick=()=>{$('finish').classList.add('hide');$('intro').classList.remove('hide');S.paused=true;MP.active=false;mpPushSnapshot();hideBriefingOptions();selectGuide(0);};
+$('start').onclick=()=>{if(MP.role==='host'&&!MP.connected)return;hideBriefingOptions();S.started=true;$('intro').classList.add('hide');MP.active=MP.role==='host'&&MP.connected;if(MP.active){$('atcChat').classList.remove('hide');$('speed').disabled=false;S.rate=1;}reset();mpPushSnapshot();};$('again').onclick=()=>{S.started=true;nextRescue();mpPushSnapshot();};$('chooseRescue').onclick=()=>{$('finish').classList.add('hide');$('intro').classList.remove('hide');S.paused=true;MP.active=false;mpPushSnapshot();hideBriefingOptions();selectGuide(0);};
 
 // The first tutorial image follows the selected ATC instrument level.
 const ATC_BRIEF_IMAGES={
@@ -1680,6 +1692,7 @@ function mpClearConnection(){
  ++MP.generation;mpClearTimers();MP.connected=false;MP.active=false;MP.turn=0;MP.control=0;MP.busy=false;
  const channel=MP.channel,peer=MP.peer;
  MP.channel=null;MP.peer=null;MP.client=null;MP.lastSync=0;MP.room=null;
+  $('pilotRate').classList.add('hide');
  if(channel){try{channel.close();}catch(_){}}
  if(peer){try{peer.destroy();}catch(_){}}
  $('mpInlineStatus').textContent='';
@@ -1830,7 +1843,8 @@ function mpFeatures(){
   const v=project(l.x,l.y),d=Math.hypot(v.forward,v.right);
   if(d>vis+Math.max(l.rx,l.ry)||v.forward<-Math.max(l.rx,l.ry))continue;
   const outline=terrainPoints(l,(x,y)=>{const q=project(x,y);return[+q.right.toFixed(2),+q.forward.toFixed(2)];});
-  features.push({type:l.type,forward:+v.forward.toFixed(2),right:+v.right.toFixed(2),rx:l.rx,ry:l.ry,outline});
+  const anchors=pilotTerrainAnchors(l).map(q=>project(q.x,q.y)).map(q=>[+q.right.toFixed(2),+q.forward.toFixed(2)]);
+  features.push({type:l.type,forward:+v.forward.toFixed(2),right:+v.right.toFixed(2),rx:l.rx,ry:l.ry,outline,anchors});
  }
  const fieldPosition=runwayPoint(0,0),field=project(fieldPosition.x,fieldPosition.y);
  if(Math.hypot(field.forward,field.right)<vis+3&&field.forward>-3){
@@ -1843,7 +1857,7 @@ function mpSnapshot(){
  const p=S.pilot;
  const started=S.started&&$('intro').classList.contains('hide');
  return pilotStatePacket(p,{started,sequence:S.sequence,clock:clock(S.t),storm:inStorm(p),
-  features:started?mpFeatures():[],paused:S.paused,complete:S.complete,outcome:S.outcome});
+  features:started?mpFeatures():[],paused:S.paused,complete:S.complete,outcome:S.outcome,rate:S.rate});
 }
 function mpPushSnapshot(ts){
  if(MP.role!=='host'||!MP.connected||!S.pilot)return;
@@ -1890,6 +1904,7 @@ function mpPilotMessage(msg){
   MP.client=msg;
   $('pilotName').textContent=msg.call;
   $('pilotClock').textContent=msg.clock;
+   $('pilotRate').textContent=(msg.rate||1)+'×';$('pilotRate').classList.toggle('hide',!(msg.rate>1));
   $('pilotConnection').textContent=msg.paused?'PAUSED':'CONNECTED';
   // A dead instrument shows no value. Low fuel is separate from instrument health.
   const instruments=msg.instruments||{
@@ -1971,7 +1986,7 @@ function mpDrawPilot(){
  const aperture=103;
  g.save();g.beginPath();g.moveTo(x0,y0);
  for(let deg=-aperture;deg<=aperture;deg+=2){const a=rad(deg),point=project(Math.sin(a)*vis,Math.cos(a)*vis);g.lineTo(...point);}
- g.closePath();g.clip();g.fillStyle='#10251b';g.fillRect(0,0,w,h);
+ g.closePath();g.clip();g.fillStyle='#0a1a13';g.fillRect(0,0,w,h);
  for(const feature of m.features||[]){
   if(feature.type==='field'){
    if(!feature.runway)continue;
@@ -1983,23 +1998,13 @@ function mpDrawPilot(){
   if(!Array.isArray(feature.outline)||feature.outline.length<3)continue;
   const {fill,stroke}=terrainPaint(feature.type),points=feature.outline.map(q=>project(...q));
   terrainPath(g,points);g.fillStyle=fill;g.fill();g.strokeStyle=stroke;g.lineWidth=.9;g.stroke();
-  // If a large landform enters view while its chart-center icon remains outside,
-  // repeat that same pictogram on the visible portion so the shape stays legible.
-  const centerDistance=Math.hypot(feature.right,feature.forward);
-  const centerAngle=Math.abs(Math.atan2(feature.right,feature.forward));
-  let iconAt=centerDistance<=vis-1&&centerAngle<=rad(aperture-8)?[feature.right,feature.forward]:null;
-  if(!iconAt){
-   const choices=[];
-   for(const f of [.16,.28,.43,.58,.74])for(const r of [-.78,-.55,-.3,0,.3,.55,.78]){
-    const x=r*vis,y=f*vis;
-    if(Math.hypot(x,y)>=vis*.89||Math.hypot(x,y)<=vis*.14)continue;
-    const q=project(x,y);
-    if(g.isPointInPath(q[0],q[1]))choices.push({x,y,d:Math.hypot(x-feature.right,y-feature.forward)});
-   }
-   choices.sort((a,b)=>a.d-b.d);
-   if(choices.length)iconAt=[choices[0].x,choices[0].y];
+  // World-anchored symbols; clipping naturally hides those outside visibility.
+  // Never move a symbol to the nearest visible screen-grid point.
+  if(Math.min(feature.rx,feature.ry)*px>=6)for(const anchor of feature.anchors||[[feature.right,feature.forward]]){
+   const dist=Math.hypot(anchor[0],anchor[1]);
+   if(dist>vis-.4||Math.abs(Math.atan2(anchor[0],anchor[1]))>rad(aperture-9))continue;
+   terrainSymbol(feature,...project(...anchor),g,false);
   }
-  if(iconAt&&Math.min(feature.rx,feature.ry)*px>=6)terrainSymbol(feature,...project(...iconAt),g);
  }
  g.restore();
  // Sparse orientation cue only: aircraft is fixed upright while terrain rotates.
@@ -2044,9 +2049,20 @@ window.addEventListener('resize',resize);if('ResizeObserver'in window)new Resize
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.mode){S.mode=null;updateSidebar();}if($('howToPlay').classList.contains('hide')&&e.code==='Space'&&!['INPUT','BUTTON','TEXTAREA'].includes(e.target.tagName)){e.preventDefault();if(S.started&&!S.complete)$('pause').click()}});
 // Tiny deterministic inspection surface for automated browser tests; not used by gameplay.
 if(location.search.includes('dev=1'))window.__lastLightDev={ATC_VIEW,chooseATCLevel,radar,hit,MP,mpOpen,mpFeatures,mpSnapshot,mpPushSnapshot,mpSteerHost,mpFlightReport,mpPilotMessage,mpHostMessage,mpTransmit,mpAsk,mpRoomNumber,mpValidRoom,mpClearConnection,S,WORLD,RESCUE,SESSION,CAPABILITIES,AIRFRAMES,PILOT_STYLES,SHIFT_CURVE,createSectorForShift,profileFor,candidateProfile,rescueBudget,launchRescue,nextRescue,LAND,WEATHER,RADIO_ZONES,routeRadioExposure,weatherAt,blocked,inStorm,radarVisible,radioBlocked,uplinkWorks,downlinkWorks,canAskPilot,voluntaryReport,autoReportTick,reset,step,onAsk,viewReport,sendCommand,sendRelative,sendMaintain,sendHold,setHeading,updatePilot,radarTick,xy,unxy,finish,fail,weather,inspect,configureWeather};
+// Seeded sector selection: unseeded relaunches randomize; ?seed=N remains reproducible.
+// Multiplayer time scaling: only ATC advances WORLD.time; pilot receives snapshots.
+// Pilot map colors are shared with ATC, and icons are anchored in terrain space.
 // Reproducibility: ?seed=728419 selects the first playable shift's sector.
-const requestedSeed=Number(new URLSearchParams(location.search).get('seed'));
-if(Number.isSafeInteger(requestedSeed)&&requestedSeed>=1&&requestedSeed<=2147483647)S.seed=requestedSeed-2;
+const seedQuery=new URLSearchParams(location.search);
+const requestedSeed=Number(seedQuery.get('seed'));
+const explicitSeed=seedQuery.has('seed')&&Number.isSafeInteger(requestedSeed)&&requestedSeed>=1&&requestedSeed<=2147483647;
+const randomSeed=()=>{
+ if(globalThis.crypto?.getRandomValues){const words=new Uint32Array(1);crypto.getRandomValues(words);return 1+words[0]%2147483647;}
+ return 1+(Math.floor(Date.now()+performance.now())%2147483647);
+};
+// reset() runs once for setup and again when the first actual shift begins.
+// Initialize accordingly so ?seed=N reproduces the FIRST PLAYED shift.
+S.seed=(explicitSeed?requestedSeed:randomSeed())-2;
 reset();resize();requestAnimationFrame(animate);
 })();
 </script></body></html>
